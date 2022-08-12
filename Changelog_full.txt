@@ -1030,7 +1030,7 @@
 2097 [Bitrate Calculator] improved M2TS calculation assumption. Warning: it is better but also not correct
 2096 [Update] changed recommended path for neroaacenc to tools\eac3to
 2095 [Log] changed resource lock behavior. Bug #3466426
-2094 [MP4 Muxer] use ISO 639-2/T language codes when muxing. Bug #3201829
+2094 [MP4 Muxer] use ISO 639-2/T language codes when muxing. Bug #3202229
 2093 [Update] if a component is missing a warning message will appear at startup
 2092 [MainForm] offer to install AviSynth if AviSynth is not found but the installer is availabe (x86 only)
 2091 [Settings] changed default value of "Autostart Queue" to enabled
@@ -1113,7 +1113,7 @@
 2020 [x264] enforce "--p-pyramid none" for the PSP device
 2019 [Lame] changed encoding modes to reflect valid values
             Warning: review custom lame presets as there is no full update path
-2018 [x264] enhanced help
+2022 [x264] enhanced help
      [x264] small fixes/improvements
 2017 [File Indexer] added MKV audio demuxer for FFMS
 2016 [Update] enable 2010 only for debug builds
@@ -2164,7 +2164,7 @@
     - (kurtnoise) [CodecManager] add M2TS as VideoType & ContainerType
     - (kurtnoise) [MediaInfoFile] when VCodec is null, check the video format in this case. 
     - (kurtnoise) [JobUtil] use output name to create logfile instead of input. #2690832
-    - (kurtnoise) [FileSize] rounding values with 2 digits instead of 1. Feature Requests #2772018 & #2465440
+    - (kurtnoise) [FileSize] rounding values with 2 digits instead of 1. Feature Requests #2772022 & #2465440
     - (kurtnoise) add Device Output Type to the One-Click Encoder. Available through Advanced Settings.
     - (kurtnoise) [PrettyFormatting] fix an error with temporal substring...Note to myself : test external patches before to commit them like a dumb. 
     - (kurtnoise) [AutoEncodeTool] add Device Output Type.
@@ -2623,7 +2623,7 @@
     - (kurtnoise) [ProfileImporter] use the ContextHelp stuff for the tooltip like in the x264 config.
     - (kurtnoise) [ProfileImporter] put SetToolTips method in the Shown Event instead of the Load one. Presets Importation failed otherwise...
 
-0.3.0.2018
+0.3.0.2022
     - (kurtnoise) added DTS MA & DTS HD as file extension for audio inputs. updated RaWavSource config according to the last library default settings. Both require NicAudio 2.02 or higher...
     - (kurtnoise) [x264Encoder] cosmetics.
     - (kurtnoise) added a toolTip in the Presets Importer to inform people that we can check all presets via the right click button on the list.
@@ -4397,7 +4397,7 @@ Enforced "en-us" culture for double->string conversion (directshowsource fps) in
 Add Richard Berg's right-click patch
 Add godhead's Muxing patch
 
-0.2.3.2018 14 Jan 2006
+0.2.3.2022 14 Jan 2006
 Fix up (auto)cropping crashes when the preview window is closed
 
 0.2.3.2017 13 Jan 2006
