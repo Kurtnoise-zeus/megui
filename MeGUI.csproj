@@ -1,0 +1,1200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <Import Project="packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{12D5215B-0254-4616-A53C-C8B7B6A2C8E9}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>MeGUI</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MeGUI</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;x86</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;x86</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;x64</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <NoStdLib>false</NoStdLib>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;x64</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.84.0.0, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SevenZipSharp">
+      <HintPath>lib\SevenZipSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="core\details\JobControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>JobControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\details\mux\baseMuxWindow.resx">
+      <DependentUpon>baseMuxWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\details\mux\MuxStreamControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MuxStreamControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\details\mux\MuxWindow.resx">
+      <DependentUpon>MuxWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\details\video\VideoConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>VideoConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\details\video\VideoEncodingComponent.resx">
+      <DependentUpon>VideoEncodingComponent.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App.ico" />
+    <None Include=".editorconfig" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Changelog.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Changelog_full.txt" />
+    <Content Include="gpl.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib_x64\7z.dll" Condition=" '$(Platform)' == 'x64' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib_x64\AvisynthWrapper.dll" Condition=" '$(Platform)' == 'x64' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib_x86\7z.dll" Condition=" '$(Platform)' == 'x86' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib_x86\AvisynthWrapper.dll" Condition=" '$(Platform)' == 'x86' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\ContextHelp.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="lib_x64\MediaInfo.dll" Condition=" '$(Platform)' == 'x64' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib_x86\MediaInfo.dll" Condition=" '$(Platform)' == 'x86' ">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="core\details\AudioTrackInfo.cs" />
+    <Compile Include="core\details\CleanupJob.cs" />
+    <Compile Include="core\details\CodecManager.cs" />
+    <Compile Include="core\details\DependencyChain.cs" />
+    <Compile Include="core\details\DialogManager.cs" />
+    <Compile Include="core\details\DialogSettings.cs" />
+    <Compile Include="core\details\JobControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\details\JobControl.Designer.cs">
+      <DependentUpon>JobControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\details\MediaFileFactory.cs" />
+    <Compile Include="core\details\MeGUISettings.cs" />
+    <Compile Include="core\details\mux\baseMuxWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\details\mux\baseMuxWindow.Designer.cs">
+      <DependentUpon>baseMuxWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\details\mux\MuxJob.cs" />
+    <Compile Include="core\details\mux\MuxPath.cs" />
+    <Compile Include="core\details\mux\MuxPathComparer.cs" />
+    <Compile Include="core\details\mux\MuxProvider.cs" />
+    <Compile Include="core\details\mux\MuxSettings.cs" />
+    <Compile Include="core\details\mux\MuxStreamControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\details\mux\MuxStreamControl.Designer.cs">
+      <DependentUpon>MuxStreamControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\details\mux\MuxWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\details\mux\MuxWindow.Designer.cs">
+      <DependentUpon>MuxWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\details\PackageSystem.cs" />
+    <Compile Include="core\details\ProfileManager.cs" />
+    <Compile Include="core\details\StatusUpdate.cs" />
+    <Compile Include="core\details\Streams.cs" />
+    <Compile Include="core\details\SubtitleTrackInfo.cs" />
+    <Compile Include="core\details\TaggedJob.cs" />
+    <Compile Include="core\details\TrackInfo.cs" />
+    <Compile Include="core\details\VideoTrackInfo.cs" />
+    <Compile Include="core\details\video\VideoCodecSettings.cs" />
+    <Compile Include="core\details\video\VideoConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\details\video\VideoConfigurationPanel.Designer.cs">
+      <DependentUpon>VideoConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\details\video\VideoEncodingComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\details\video\VideoEncodingComponent.Designer.cs">
+      <DependentUpon>VideoEncodingComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\details\video\VideoJob.cs" />
+    <Compile Include="core\gui\AdaptiveMuxWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\AdaptiveMuxWindow.Designer.cs">
+      <DependentUpon>AdaptiveMuxWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ARChooser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\AudioEncodingComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\AudioEncodingComponent.Designer.cs">
+      <DependentUpon>AudioEncodingComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\AudioEncodingTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\AudioEncodingTab.Designer.cs">
+      <DependentUpon>AudioEncodingTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\AudioEncodingWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\AudioEncodingWindow.Designer.cs">
+      <DependentUpon>AudioEncodingWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\AutoUpdateServerConfigWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\AutoUpdateServerConfigWindow.Designer.cs">
+      <DependentUpon>AutoUpdateServerConfigWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\AspectRatioChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\AspectRatioChooser.Designer.cs">
+      <DependentUpon>AspectRatioChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\CustomProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="core\gui\messageboxex\MessageBoxEx.cs" />
+    <Compile Include="core\gui\messageboxex\MessageBoxExForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\messageboxex\MessageBoxExForm.Designer.cs">
+      <DependentUpon>MessageBoxExForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\VideoPlayer.Designer.cs">
+      <DependentUpon>VideoPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\plugins\implemented\ThreadJobProcessor.cs" />
+    <Compile Include="core\util\SubtitleUtil.cs" />
+    <Compile Include="packages\audio\fdkaac\FDKAACSettings.cs" />
+    <Compile Include="packages\audio\fdkaac\FDKAACConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\fdkaac\FDKAACConfigurationPanel.Designer.cs">
+      <DependentUpon>FDKAACConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\ffaac\FFAACConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\ffaac\FFAACConfigurationPanel.Designer.cs">
+      <DependentUpon>FFAACConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\ffaac\FFAACSettings.cs" />
+    <Compile Include="packages\muxer\ffmpeg\FFmpegMuxer.cs" />
+    <Compile Include="packages\reader\lmash\lsmashReader.cs" />
+    <Compile Include="packages\reader\mediainfo\wrapper\AudioTrack.cs" />
+    <Compile Include="packages\reader\mediainfo\wrapper\ChaptersTrack.cs" />
+    <Compile Include="packages\reader\mediainfo\wrapper\GeneralTrack.cs" />
+    <Compile Include="packages\reader\mediainfo\wrapper\MediaInfoWrapper.cs" />
+    <Compile Include="packages\reader\mediainfo\wrapper\TextTrack.cs" />
+    <Compile Include="packages\reader\mediainfo\wrapper\VideoTrack.cs" />
+    <Compile Include="packages\reader\ttxt\ttxtReader.cs" />
+    <Compile Include="packages\tools\autoencode\AutoEncodeWindow.Designer.cs">
+      <DependentUpon>AutoEncodeWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\avscreator\AviSynthColorspace.cs" />
+    <Compile Include="packages\tools\avscreator\AviSynthProfileConfigPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\tools\avscreator\AviSynthProfileConfigPanel.Designer.cs">
+      <DependentUpon>AviSynthProfileConfigPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ConfigableProfilesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\ConfigableProfilesControl.Designer.cs">
+      <DependentUpon>ConfigableProfilesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\CountdownWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\CountdownWindow.Designer.cs">
+      <DependentUpon>CountdownWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\FileBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\FileBar.Designer.cs">
+      <DependentUpon>FileBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\FileSCBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\FileSizeBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\FileSizeBar.Designer.cs">
+      <DependentUpon>FileSizeBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\FileSizeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\FileSizeDialog.Designer.cs">
+      <DependentUpon>FileSizeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\FPSChooser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\HelpButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\HelpButton.Designer.cs">
+      <DependentUpon>HelpButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\IndividualWorkerSummary.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\IndividualWorkerSummary.Designer.cs">
+      <DependentUpon>IndividualWorkerSummary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\InputBox.Designer.cs">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\JobQueue.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\JobQueue.Designer.cs">
+      <DependentUpon>JobQueue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\JobWorkerWindow.cs" />
+    <Compile Include="core\gui\LogTree.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\LogTree.Designer.cs">
+      <DependentUpon>LogTree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\NiceComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\NiceComboBox.Designer.cs">
+      <DependentUpon>NiceComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\NumberChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\NumberChooser.Designer.cs">
+      <DependentUpon>NumberChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ProfileConfigurationWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\ProfileConfigurationWindow.Designer.cs">
+      <DependentUpon>ProfileConfigurationWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ProfileExporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\ProfileExporter.Designer.cs">
+      <DependentUpon>ProfileExporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ProfileImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\ProfileImporter.Designer.cs">
+      <DependentUpon>ProfileImporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ProfilePorter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\ProfilePorter.Designer.cs">
+      <DependentUpon>ProfilePorter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\Profiles.cs">
+    </Compile>
+    <Compile Include="core\gui\ProgressTaskbar.cs" />
+    <Compile Include="core\gui\ProgressWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\ProgressWindow.Designer.cs">
+      <DependentUpon>ProgressWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ProgressWindowInfo.cs" />
+    <Compile Include="core\gui\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\SimpleProfilesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\SimpleProfilesControl.Designer.cs">
+      <DependentUpon>SimpleProfilesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\Chapter.cs" />
+    <Compile Include="packages\tools\mp4fpsmod\MP4FpsMod.cs" />
+    <Compile Include="packages\tools\mp4fpsmod\MP4FpsModJob.cs" />
+    <Compile Include="packages\tools\sourcedetector\SourceDetector.cs" />
+    <Compile Include="packages\tools\sourcedetector\SourceDetectorConfigWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\sourcedetector\SourceDetectorConfigWindow.designer.cs">
+      <DependentUpon>SourceDetectorConfigWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\sourcedetector\SourceDetectorSettings.cs" />
+    <Compile Include="core\gui\StandardAndCustomComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\StandardAndCustomComboBox.Designer.cs">
+      <DependentUpon>StandardAndCustomComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\TargetSizeSCBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\TextViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\TextViewer.Designer.cs">
+      <DependentUpon>TextViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\BDInfo\TSStreamFile.cs" />
+    <Compile Include="packages\tools\cqmeditor\QuantizerMatrixDialog.Designer.cs">
+      <DependentUpon>QuantizerMatrixDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\update\ProgramSettings.cs" />
+    <Compile Include="packages\tools\update\UpdateCacher.cs" />
+    <Compile Include="packages\tools\update\UpdateHandler.cs" />
+    <Compile Include="packages\tools\update\UpdateWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\update\UpdateWindow.designer.cs">
+      <DependentUpon>UpdateWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\VideoPlayer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\VideoPlayerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\VideoPlayerControl.designer.cs">
+      <DependentUpon>VideoPlayerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\WorkerSummary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\WorkerSummary.Designer.cs">
+      <DependentUpon>WorkerSummary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ZonesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="core\gui\ZonesControl.Designer.cs">
+      <DependentUpon>ZonesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\ZonesWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\ZonesWindow.Designer.cs">
+      <DependentUpon>ZonesWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\plugins\implemented\CommandlineJobProcessor.cs" />
+    <Compile Include="core\plugins\implemented\CommandlineMuxer.cs" />
+    <Compile Include="core\plugins\implemented\video\CommandlineVideoEncoder.cs" />
+    <Compile Include="core\plugins\interfaces\IJobProcessor.cs" />
+    <Compile Include="core\plugins\interfaces\IMediaFile.cs" />
+    <Compile Include="core\plugins\interfaces\IMuxing.cs" />
+    <Compile Include="core\plugins\interfaces\IPackage.cs" />
+    <Compile Include="core\plugins\interfaces\ISettingsProvider.cs" />
+    <Compile Include="core\plugins\interfaces\Job.cs" />
+    <Compile Include="core\plugins\interfaces\JobProcessorManager.cs" />
+    <Compile Include="core\plugins\interfaces\Profile.cs" />
+    <Compile Include="core\util\AudioUtil.cs" />
+    <Compile Include="core\util\Autocrop.cs" />
+    <Compile Include="core\util\BitrateCalculatorPreProcessor.cs" />
+    <Compile Include="core\util\DAR.cs" />
+    <Compile Include="core\util\DeinterlaceFilter.cs" />
+    <Compile Include="core\util\DragDropUtil.cs" />
+    <Compile Include="core\util\Drives.cs" />
+    <Compile Include="core\util\EnumProxy.cs" />
+    <Compile Include="core\util\Exceptions.cs" />
+    <Compile Include="core\util\FileSize.cs" />
+    <Compile Include="core\util\FileUtil.cs" />
+    <Compile Include="core\util\FilmCutter.cs" />
+    <Compile Include="core\util\GenericRegisterer.cs" />
+    <Compile Include="core\util\HttpProxy.cs" />
+    <Compile Include="core\util\IFOparser.cs" />
+    <Compile Include="core\util\JobUtil.cs" />
+    <Compile Include="core\util\LanguageSelectionContainer.cs" />
+    <Compile Include="core\util\LogItem.cs" />
+    <Compile Include="core\util\NotifyCounter.cs" />
+    <Compile Include="core\util\OSInfo.cs" />
+    <Compile Include="core\util\PrettyFormatting.cs" />
+    <Compile Include="core\util\Resolution.cs" />
+    <Compile Include="core\util\Shutdown.cs" />
+    <Compile Include="core\util\Util.cs" />
+    <Compile Include="core\util\VideoUtil.cs" />
+    <Compile Include="core\util\WindowUtil.cs" />
+    <Compile Include="packages\audio\AudioCodecSettings.cs" />
+    <Compile Include="packages\audio\AudioConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\AudioConfigurationPanel.Designer.cs">
+      <DependentUpon>AudioConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\AudioJob.cs" />
+    <Compile Include="packages\audio\AudioEncoderInterface.cs" />
+    <Compile Include="packages\audio\ffac3\AC3ConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\ffac3\AC3ConfigurationPanel.Designer.cs">
+      <DependentUpon>AC3ConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\ffac3\AC3Settings.cs" />
+    <Compile Include="packages\audio\ffmp2\MP2ConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\ffmp2\MP2ConfigurationPanel.Designer.cs">
+      <DependentUpon>MP2ConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\ffmp2\MP2Settings.cs" />
+    <Compile Include="packages\audio\flac\FlacConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\flac\FlacConfigurationPanel.Designer.cs">
+      <DependentUpon>FlacConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\flac\FlacSettings.cs" />
+    <Compile Include="packages\audio\lame\lameConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\lame\lameConfigurationPanel.Designer.cs">
+      <DependentUpon>lameConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\lame\MP3Settings.cs" />
+    <Compile Include="packages\audio\naac\NeroAACSettings.cs" />
+    <Compile Include="packages\audio\naac\neroConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\naac\neroConfigurationPanel.Designer.cs">
+      <DependentUpon>neroConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\opus\OpusConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\opus\OpusConfigurationPanel.Designer.cs">
+      <DependentUpon>OpusConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\opus\OpusSettings.cs" />
+    <Compile Include="packages\audio\qaac\qaacConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\qaac\qaacConfigurationPanel.Designer.cs">
+      <DependentUpon>qaacConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\qaac\QaacSettings.cs" />
+    <Compile Include="packages\audio\vorbis\OggVorbisConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\vorbis\OggVorbisConfigurationPanel.Designer.cs">
+      <DependentUpon>OggVorbisConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\vorbis\OggVorbisSettings.cs" />
+    <Compile Include="packages\demuxer\mkvextract\MkvExtract.cs" />
+    <Compile Include="packages\demuxer\mkvextract\MkvExtractJob.cs" />
+    <Compile Include="packages\demuxer\mkvextract\MkvInfo.cs" />
+    <Compile Include="packages\demuxer\pgcdemux\PgcDemux.cs" />
+    <Compile Include="packages\demuxer\pgcdemux\PgcDemuxJob.cs" />
+    <Compile Include="packages\muxer\avimuxgui\AMGMuxer.cs" />
+    <Compile Include="packages\muxer\mkvmerge\MkvMergeMuxer.cs" />
+    <Compile Include="packages\muxer\mp4box\MP4BoxMuxer.cs" />
+    <Compile Include="packages\muxer\tsmuxer\tsMuxeR.cs" />
+    <Compile Include="packages\reader\avs\AvsReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="packages\reader\d2v\d2vReader.cs" />
+    <Compile Include="packages\reader\dgm\dgmReader.cs" />
+    <Compile Include="packages\reader\dgi\dgiReader.cs" />
+    <Compile Include="packages\reader\ffms\ffmsReader.cs" />
+    <Compile Include="packages\reader\mediainfo\MediaInfoFile.cs" />
+    <Compile Include="packages\reader\vobsub\idxReader.cs" />
+    <Compile Include="packages\tools\autoencode\AutoEncodeDefaults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\autoencode\AutoEncodeDefaults.Designer.cs">
+      <DependentUpon>AutoEncodeDefaults.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\autoencode\AutoEncodeDefaultsSettings.cs" />
+    <Compile Include="packages\tools\autoencode\AutoEncodeWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\avclevelschecker\AVCLevels.cs" />
+    <Compile Include="packages\tools\avscreator\AviSynthJob.cs" />
+    <Compile Include="packages\tools\avscreator\AviSynthProcessor.cs" />
+    <Compile Include="packages\tools\avscreator\AviSynthSettings.cs" />
+    <Compile Include="packages\tools\avscreator\AviSynthWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\avscreator\AviSynthWindow.Designer.cs">
+      <DependentUpon>AviSynthWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\avscreator\AvisynthWrapper.cs" />
+    <Compile Include="packages\tools\avscreator\ScriptServer.cs" />
+    <Compile Include="packages\tools\besplitter\AudioJoinJob.cs" />
+    <Compile Include="packages\tools\besplitter\AudioSplitJob.cs" />
+    <Compile Include="packages\tools\besplitter\Joiner.cs" />
+    <Compile Include="packages\tools\besplitter\Splitter.cs" />
+    <Compile Include="packages\tools\besplitter\Besplitter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\besplitter\Besplitter.Designer.cs">
+      <DependentUpon>Besplitter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\calculator\AudioTrackSizeTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\tools\calculator\AudioTrackSizeTab.Designer.cs">
+      <DependentUpon>AudioTrackSizeTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\calculator\CalcData.cs" />
+    <Compile Include="packages\tools\calculator\Calculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\calculator\Calculator.Designer.cs">
+      <DependentUpon>Calculator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\calculator\ExtraSizeTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\tools\calculator\ExtraSizeTab.Designer.cs">
+      <DependentUpon>ExtraSizeTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\BDInfoExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\BDInfo\TSPlaylistFile.cs" />
+    <Compile Include="packages\tools\chaptercreator\BDInfo\TSStream.cs" />
+    <Compile Include="packages\tools\chaptercreator\BDInfo\TSStreamClip.cs" />
+    <Compile Include="packages\tools\chaptercreator\BDInfo\TSStreamClipFile.cs" />
+    <Compile Include="packages\tools\chaptercreator\BlurayExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\ChapterCreator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\ChapterCreator.Designer.cs">
+      <DependentUpon>ChapterCreator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\ChapterExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\ChapterInfo.cs" />
+    <Compile Include="packages\tools\chaptercreator\DvdExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\frmStreamSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\frmStreamSelect.designer.cs">
+      <DependentUpon>frmStreamSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\chaptercreator\IfoExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\MplsExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\MediaInfoExtractor.cs" />
+    <Compile Include="packages\tools\chaptercreator\TextExtractor.cs" />
+    <Compile Include="packages\tools\cqmeditor\QuantizerMatrixDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\cutter\Cutter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\cutter\Cutter.Designer.cs">
+      <DependentUpon>Cutter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\fileindexer\LSMASHIndexer.cs" />
+    <Compile Include="packages\tools\fileindexer\LSMASHIndexJob.cs" />
+    <Compile Include="packages\tools\fileindexer\FileIndexerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\fileindexer\FileIndexerWindow.Designer.cs">
+      <DependentUpon>FileIndexerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\fileindexer\IndexJob.cs" />
+    <Compile Include="packages\tools\fileindexer\FFMSIndexJob.cs" />
+    <Compile Include="packages\tools\fileindexer\FFMSIndexer.cs" />
+    <Compile Include="packages\tools\fileindexer\D2VIndexer.cs" />
+    <Compile Include="packages\tools\fileindexer\DGIIndexer.cs" />
+    <Compile Include="packages\tools\fileindexer\DGIIndexJob.cs" />
+    <Compile Include="packages\tools\fileindexer\D2VIndexJob.cs" />
+    <Compile Include="packages\tools\fileindexer\DGMIndexJob.cs" />
+    <Compile Include="packages\tools\fileindexer\DGMIndexer.cs" />
+    <Compile Include="packages\tools\hdbdextractor\CustomDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="packages\tools\hdbdextractor\Eac3ToInfo.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\AudioStream.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\AudioStreamType.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\Chapter.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\ChapterStream.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\Feature.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\File.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\JoinStream.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\Stream.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\StreamType.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\SubtitleStream.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\VideoStream.cs" />
+    <Compile Include="packages\tools\hdbdextractor\eac3to\VideoStreamType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="packages\tools\hdbdextractor\Extensions.cs" />
+    <Compile Include="packages\tools\hdbdextractor\HDBDStreamExtractor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\hdbdextractor\HDBDStreamExtractor.Designer.cs">
+      <DependentUpon>HDBDStreamExtractor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\hdbdextractor\HDStreamExtractorIndexer.cs" />
+    <Compile Include="packages\tools\hdbdextractor\HDStreamsExJob.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickAudioControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickAudioControl.Designer.cs">
+      <DependentUpon>OneClickAudioControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickProcessing.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickStreamControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickStreamControl.Designer.cs">
+      <DependentUpon>OneClickStreamControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickAudioTrack.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickPostprocessingProperties.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickConfigPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickConfigPanel.Designer.cs">
+      <DependentUpon>OneClickConfigPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickPostProcessing.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickPostProcessingJob.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickSettings.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickStream.cs" />
+    <Compile Include="packages\tools\oneclick\OneClickWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\oneclick\OneClickWindow.Designer.cs">
+      <DependentUpon>OneClickWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\vobsub\SubtitleIndexJob.cs" />
+    <Compile Include="packages\tools\vobsub\VobSubIndexer.cs" />
+    <Compile Include="packages\tools\vobsub\VobSubIndexWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="packages\tools\vobsub\VobSubIndexWindow.Designer.cs">
+      <DependentUpon>VobSubIndexWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\tools\worker\WorkerPriority.cs" />
+    <Compile Include="packages\tools\worker\WorkerSettings.cs" />
+    <Compile Include="packages\video\huffyuv\hfyuSettings.cs" />
+    <Compile Include="packages\video\ffmpeg\ffmpegEncoder.cs" />
+    <Compile Include="packages\video\x264\x264ConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\video\x264\x264ConfigurationPanel.Designer.cs">
+      <DependentUpon>x264ConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\video\x264\x264Device.cs" />
+    <Compile Include="packages\video\x264\x264SettingsHandler.cs" />
+    <Compile Include="packages\video\x264\x264Encoder.cs" />
+    <Compile Include="packages\video\x264\x264Settings.cs" />
+    <Compile Include="packages\video\x265\x265SettingsHandler.cs" />
+    <Compile Include="packages\video\x265\x265ConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\video\x265\x265ConfigurationPanel.Designer.cs">
+      <DependentUpon>x265ConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\video\x265\x265Settings.cs" />
+    <Compile Include="packages\video\x265\x265Encoder.cs" />
+    <Compile Include="packages\video\xvid\xvidConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\video\xvid\xvidConfigurationPanel.Designer.cs">
+      <DependentUpon>xvidConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\video\xvid\XviDEncoder.cs" />
+    <Compile Include="packages\video\xvid\xvidSettings.cs" />
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <EmbeddedResource Include="core\gui\AdaptiveMuxWindow.resx">
+      <DependentUpon>AdaptiveMuxWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\AudioEncodingComponent.resx">
+      <DependentUpon>AudioEncodingComponent.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\AudioEncodingTab.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AudioEncodingTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\AudioEncodingWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AudioEncodingWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\AutoUpdateServerConfigWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AutoUpdateServerConfigWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\AspectRatioChooser.resx">
+      <DependentUpon>AspectRatioChooser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\messageboxex\MessageBoxExForm.resx">
+      <DependentUpon>MessageBoxExForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\fdkaac\FDKAACConfigurationPanel.resx">
+      <DependentUpon>FDKAACConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\ffaac\FFAACConfigurationPanel.resx">
+      <DependentUpon>FFAACConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\avscreator\AviSynthProfileConfigPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AviSynthProfileConfigPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ConfigableProfilesControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ConfigableProfilesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\CountdownWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CountdownWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\FileBar.resx">
+      <DependentUpon>FileBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\FileSizeBar.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FileSizeBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\FileSizeDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FileSizeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\HelpButton.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>HelpButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\IndividualWorkerSummary.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>IndividualWorkerSummary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\JobQueue.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>JobQueue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\LogTree.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LogTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\NiceComboBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NiceComboBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\NumberChooser.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>NumberChooser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ProfileConfigurationWindow.resx">
+      <DependentUpon>ProfileConfigurationWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ProfileExporter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProfileExporter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ProfileImporter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProfileImporter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ProfilePorter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProfilePorter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\Profiles.resx">
+      <DependentUpon>Profiles.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ProgressWindow.resx">
+      <DependentUpon>ProgressWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\SimpleProfilesControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SimpleProfilesControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\sourcedetector\SourceDetectorConfigWindow.resx">
+      <DependentUpon>SourceDetectorConfigWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\TextViewer.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TextViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\update\UpdateWindow.resx">
+      <DependentUpon>UpdateWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\VideoPlayer.resx">
+      <DependentUpon>VideoPlayer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\VideoPlayerControl.resx">
+      <DependentUpon>VideoPlayerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\WorkerSummary.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>WorkerSummary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ZonesControl.resx">
+      <DependentUpon>ZonesControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\ZonesWindow.resx">
+      <DependentUpon>ZonesWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\AudioConfigurationPanel.resx">
+      <DependentUpon>AudioConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\ffac3\AC3ConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AC3ConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\ffmp2\MP2ConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MP2ConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\flac\FlacConfigurationPanel.resx">
+      <DependentUpon>FlacConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\lame\lameConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>lameConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\naac\neroConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>neroConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\opus\OpusConfigurationPanel.resx">
+      <DependentUpon>OpusConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\qaac\qaacConfigurationPanel.resx">
+      <DependentUpon>qaacConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\vorbis\OggVorbisConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OggVorbisConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\autoencode\AutoEncodeDefaults.resx">
+      <DependentUpon>AutoEncodeDefaults.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\autoencode\AutoEncodeWindow.resx">
+      <DependentUpon>AutoEncodeWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\avscreator\AviSynthWindow.resx">
+      <DependentUpon>AviSynthWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\besplitter\Besplitter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Besplitter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\calculator\AudioTrackSizeTab.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AudioTrackSizeTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\calculator\Calculator.resx">
+      <DependentUpon>Calculator.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\calculator\ExtraSizeTab.resx">
+      <DependentUpon>ExtraSizeTab.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\chaptercreator\ChapterCreator.resx">
+      <DependentUpon>ChapterCreator.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\chaptercreator\frmStreamSelect.resx">
+      <DependentUpon>frmStreamSelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\cqmeditor\QuantizerMatrixDialog.resx">
+      <DependentUpon>QuantizerMatrixDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\cutter\Cutter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Cutter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\fileindexer\FileIndexerWindow.resx">
+      <DependentUpon>FileIndexerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\hdbdextractor\HDBDStreamExtractor.resx">
+      <DependentUpon>HDBDStreamExtractor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\oneclick\OneClickAudioControl.resx">
+      <DependentUpon>OneClickAudioControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\oneclick\OneClickStreamControl.resx">
+      <DependentUpon>OneClickStreamControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\oneclick\OneClickConfigPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OneClickConfigPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\oneclick\OneClickWindow.resx">
+      <DependentUpon>OneClickWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\tools\vobsub\VobSubIndexWindow.resx">
+      <DependentUpon>VobSubIndexWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\video\x264\x264ConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>x264ConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\video\x265\x265ConfigurationPanel.resx">
+      <DependentUpon>x265ConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\video\xvid\xvidConfigurationPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>xvidConfigurationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pause.ico" />
+    <EmbeddedResource Include="play.ico" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
+    <Analyzer Include="packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>cmd /c "SubWCRev $(ProjectDir) $(ProjectDir)AssemblyInfo.template $(ProjectDir)AssemblyInfo.cs&amp;exit 0"</PreBuildEvent>
+    <PostBuildEvent>MOVE /Y "$(TargetDir)lib_$(PlatformName)\*.*" "$(TargetDir)"
+RD /S /Q "$(TargetDir)lib_$(PlatformName)"</PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
+  </Target>
+  <Import Project="packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
+</Project>

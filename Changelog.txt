@@ -1,0 +1,68 @@
+2928 [DGIndexNV]            updated to support the free version. Patch by Donald Graft (#672)
+     [MeGUI]                .NET 4.8 is required now to run MeGUI
+2927 [Audio Encoder]        improved log output
+2926 [Log]                  improved log output of Unicode/extended ASCII characters
+2925 [Updater]              do not try to copy empty redist directories
+2924 [OneClick]             fixed missing jobs if the mux job does not contain any subtitles (regression of 2921)
+2923 [AviSynth Profiles]    ensured that every template has the crucial entries for input, crop and resize. Bug #951
+2922 [QAAC]                 fixed not able to encode. Bug #954 (regression of 2914)
+2921 [OneClick]             subsequent jobs in batch mode and the cleanup job will be created in any case
+2920 [Video Encoder]        improved job abort behavior
+2919 [Main]                 improved error handling when copying the redist files
+2918 [Profile Selector]     fixed new profile not available immediately. Bug #953
+2917 [L-SMASH Indexer]      always show source and cachefile (if available)
+2916 [FFmpeg AAC Encoder]   fixed quality mode using the wrong number format (regression of 2904)
+2915 [L-SMASH Indexer]      added support for recent versions
+                            enabled VC-1 decoding support
+                            enabled custom index file locations
+2914 [Audio Encoder]        improved error handling
+
+Changelog 2896 --> 2913
+
+Features/Changes:
+[DGIndexNV Indexer]    adjusted AVS script parameters (requires DGIndexNV 2053.163+)
+[DGIndexNV Indexer]    mod2 is forced for crop values (was mod4 before)
+[FFmpeg AAC Encoder]   added FFmpeg AAC encoder. patch by Yarick Yermak (patch #71)
+[FFmpeg AAC Encoder]   unlike the other AAC encoder this one is available without any additional actions
+[Main]                 moved the changelog to the tab control
+[Main]                 new entries after an update will be highlighted
+[Chapter Creator]      added frame + output time code (if different from input)
+[Chapter Creator]      improved/changed handling
+
+Enhancements/Fixes:
+[Jobs]                 added in the Options window the possibility to enable/disable standby when jobs are running
+[OneClick]             fixed an error when switching profile settings. Bug #946
+[OneClick]             fixed not applying "automatic deinterlacing" filters. Bug #945 (regression of 2887)
+[Settings]             fixed worker settings window when using High DPI (regression of 2884)
+[Main]                 fixed OneClick audio/video profile selections overwriting the main tab profile selections at next restart
+
+
+Changelog 2876 --> 2896
+
+Features/Changes:
+[Worker]               improved worker handling
+                       - for each job type the process and I/O priority can be defined
+                       - changing the priority in the progress window does change it only for the current job
+                       - rule sets can be specified based on which it is determined how many jobs of which type are allowed to run in parallel
+                       - settings to be found in the options window	  
+[Main]                 some menu items have been moved/renamed:
+                       - "options\settings"       to "options"
+                       - "options\update"         to "tools\update"
+                       - "workers\worker summary" to "view\worker overview"
+[Settings]             input filters are restricted to 8 bit by default (to be disabled in the options window)
+[OneClick]             added support for VFR input files (requires mkv/mp4 output)
+ 
+
+Enhancements/Fixes:
+[OneClick]             fixed only using at maximum 2 audio/subtitle tracks in batch mode (regression of 2861). bug #927
+[x264]                 fixed high bit depth support if ffmpeg is not used (regression of 2874)
+[AVS Script Creator]   if resize with DGIndexNV is enabled also cropping will be done that way (mod4 is forced for crop values)
+
+
+Known Problems:
+- Windows Vista and older are not supported
+- Unicode is not supported
+- M2TS bitrate calculator does not calculate correct values as the specifications are unknown
+
+Full changelog: 
+http://sourceforge.net/p/megui/code/HEAD/tree/megui/trunk/Changelog_full.txt?format=raw
