@@ -40,24 +40,24 @@ namespace MeGUI
         BicubicSoft,
         [EnumTitle("Blackman", "BlackmanResize({0},{1})")]
         Blackman,
+        [EnumTitle("Gauss (Neutral)", "GaussResize({0},{1})")]
+        Gauss,
         [EnumTitle("Lanczos (Sharp)", "LanczosResize({0},{1})")]
         Lanczos,
         [EnumTitle("Lanczos4 (Sharp)", "Lanczos4Resize({0},{1})")]
         Lanczos4,
-        [EnumTitle("Gauss (Neutral)", "GaussResize({0},{1})")]
-        Gauss,
         [EnumTitle("Point (Sharp)", "PointResize({0},{1})")]
         Point,
+        [EnumTitle("Sinc (Neutral)", "SincResize({0},{1})")]
+        Sinc,
+        [EnumTitle("Sinc (8 taps)", "SincResize({0},{1},8)")]
+        Sinc8,
         [EnumTitle("Spline16 (Neutral)", "Spline16Resize({0},{1})")]
         Spline16,
         [EnumTitle("Spline36 (Neutral)", "Spline36Resize({0},{1})")]
         Spline36,
         [EnumTitle("Spline64 (Sharp)", "Spline64Resize({0},{1})")]
-        Spline64,
-        [EnumTitle("Sinc", "SincResize({0},{1})")]
-        Sinc,
-        [EnumTitle("Sinc (8 taps)", "SincResize({0},{1},8)")]
-        Sinc8
+        Spline64
     }
 
     public enum DenoiseFilterType
