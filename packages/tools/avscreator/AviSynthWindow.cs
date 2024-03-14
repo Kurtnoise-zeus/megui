@@ -502,7 +502,7 @@ namespace MeGUI
 		{
 			try
 			{
-				using (StreamWriter sw = new StreamWriter(path, false, Encoding.Default))
+				using (StreamWriter sw = new StreamWriter(path, false))
                 {
 				    sw.Write(avisynthScript.Text);
 				    sw.Close();

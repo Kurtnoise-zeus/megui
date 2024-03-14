@@ -60,7 +60,7 @@ namespace MeGUI
             string strAVSFile = String.Empty;
             try
             {
-                StreamReader sr = new StreamReader(job.Input, Encoding.Default);
+                StreamReader sr = new StreamReader(job.Input);
                 strAVSFile = sr.ReadToEnd();
                 sr.Close();
             }
