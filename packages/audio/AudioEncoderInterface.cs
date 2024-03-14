@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -1775,7 +1776,8 @@ function c61_c51(clip a)
      side  = GetChannel(a, 6, 7)
      mix   = MixAudio(back, side, 1.0, 1.0).SoftClipperFromAudX(0.0)
      return MergeChannels(front, mix)
-  }");
+  }"
+);
                 }
                 else
                 {
@@ -1784,23 +1786,32 @@ function c61_c51(clip a)
 # As AudioLimiter.dll is not available, SoftClipperFromAudX() cannot be used
 # 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> standard 5.1
 function c71_c51(clip a)
-  {
-     front = GetChannel(a, 1, 2, 3, 4)
-     back  = GetChannel(a, 5, 6)
-     side  = GetChannel(a, 7, 8)
-     mix   = MixAudio(back, side, 0.5, 0.5)#.SoftClipperFromAudX(0.0)
+    {
+        front = GetChannel(a, 1, 2, 3, 4)
+        back = GetChannel(a, 5, 6)
+        side = GetChannel(a, 6, 7)
+        mix = MixAudio(back, side, 0.5, 0.5).SoxFilter(""compand 0.0,0.0 -90,-84,-8,-2,-6,-1,-0,-0.1"")
      return MergeChannels(front, mix)
-  }
+    }
+# 5.1.2 Channels L,R,C,LFE,SL,SR,TFL,TFR -> standard 5.1
+function c512_c51(clip a)
+    {
+        front = GetChannel(a, 1, 2)
+        midch = GetChannel(a, 3, 4, 5, 6)
+        topfr = GetChannel(a, 7, 8)
+        mix = MixAudio(front, topfr, 0.5, 0.5).SoxFilter(""compand 0.0,0.0 -90,-84,-8,-2,-6,-1,-0,-0.1"")
+     return MergeChannels(mix, midch)
+    }
 # 6.1 Channels L,R,C,LFE,BC,SL,SR -> standard 5.1
 function c61_c51(clip a)
-  {
-     front = GetChannel(a, 1, 2, 3, 4)
-     bcent = GetChannel(a, 5).Amplify(0.7071)
-     back  = MergeChannels(bcent, bcent)
-     side  = GetChannel(a, 6, 7)
-     mix   = MixAudio(back, side, 0.5, 0.5)#.SoftClipperFromAudX(0.0)
+    {
+        front = GetChannel(a, 1, 2, 3, 4)
+        back = GetChannel(a, 5, 5)
+        side = GetChannel(a, 6, 7)
+        mix = MixAudio(back, side, 0.25, 0.75).SoxFilter(""compand 0.0, 0.0 - 90, -84, -8, -2, -6, -1, -0, -0.1"")
      return MergeChannels(front, mix)
-  }");
+    }"
+);
                 }
             }
 
