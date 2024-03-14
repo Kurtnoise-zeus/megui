@@ -1407,6 +1407,9 @@ new JobProcessorFactory(new ProcessorFactory(init), "AviSynthAudioEncoder");
                 case TimeModificationMode.SlowDown25To24:
                     script.Append("SSRC(Round((AudioRate()*25.0)/24.0)).AssumeSampleRate(AudioRate())" + Environment.NewLine);
                     break;
+                case TimeModificationMode.SpeedUp23976To24WithCorrection:
+                    script.Append((MainForm.Instance.Settings.AviSynthPlus ? "TimeStretch" : "TimeStretchPlugin") + "AssumeSampleRate(Round((AudioRate()*1001.0)/100.0)).SSRC(AudioRate())" + Environment.NewLine + "TimeStretch(tempo=(1001.0/10.0))" + Environment.NewLine);
+                    break;
                 case TimeModificationMode.SpeedUp23976To25WithCorrection:
                     script.Append((MainForm.Instance.Settings.AviSynthPlus ? "TimeStretch" : "TimeStretchPlugin") + "(tempo=(1001.0/9.6))" + Environment.NewLine);
                     break;
@@ -1418,6 +1421,9 @@ new JobProcessorFactory(new ProcessorFactory(init), "AviSynthAudioEncoder");
                     break;
                 case TimeModificationMode.SlowDown25To24WithCorrection:
                     script.Append((MainForm.Instance.Settings.AviSynthPlus ? "TimeStretch" : "TimeStretchPlugin") + "(tempo=(2400.0/25.0))" + Environment.NewLine);
+                    break;
+                case TimeModificationMode.SlowDown24To23976WithCorrection:
+                    script.Append((MainForm.Instance.Settings.AviSynthPlus ? "TimeStretch" : "TimeStretchPlugin") + "SSRC(Round((AudioRate() * 1001.0) / 1000.0)).AssumeSampleRate(AudioRate())" + Environment.NewLine + "TimeStretch(tempo = (100.0 / 1.001))" + Environment.NewLine);
                     break;
             }
 

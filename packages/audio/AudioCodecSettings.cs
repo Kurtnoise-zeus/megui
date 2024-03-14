@@ -95,12 +95,16 @@ namespace MeGUI
         SpeedUp24To25,
         [EnumTitle("Slow-down (25 to 24)")]
         SlowDown25To24,
+        [EnumTitle("Speed-up (23.976 to 24) with pitch correction")]
+        SpeedUp23976To24WithCorrection,
         [EnumTitle("Speed-up (23.976 to 25) with pitch correction")]
         SpeedUp23976To25WithCorrection,
         [EnumTitle("Slow-down (25 to 23.976) with pitch correction")]
         SlowDown25To23976WithCorrection,
         [EnumTitle("Speed-up (24 to 25) with pitch correction")]
         SpeedUp24To25WithCorrection,
+        [EnumTitle("Slow-down (24 to 23.976) with pitch correction")]
+        SlowDown24To23976WithCorrection,
         [EnumTitle("Slow-down (25 to 24) with pitch correction")]
         SlowDown25To24WithCorrection
     };
