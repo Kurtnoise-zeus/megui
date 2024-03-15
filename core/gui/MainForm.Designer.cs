@@ -51,6 +51,8 @@ namespace MeGUI
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.inputTab = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.videoEncodingComponent1 = new MeGUI.VideoEncodingComponent();
+            this.audioEncodingComponent1 = new MeGUI.AudioEncodingComponent();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.resetButton = new System.Windows.Forms.Button();
@@ -59,8 +61,11 @@ namespace MeGUI
             this.autoEncodeButton = new System.Windows.Forms.Button();
             this.OneClickEncButton = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.jobControl1 = new MeGUI.core.details.JobControl();
             this.logTab = new System.Windows.Forms.TabPage();
+            this.logTree1 = new MeGUI.core.gui.LogTree();
             this.changelogTab = new System.Windows.Forms.TabPage();
+            this.txtChangeLog = new System.Windows.Forms.RichTextBox();
             this.mnuMuxers = new System.Windows.Forms.MenuItem();
             this.mnuToolsAdaptiveMuxer = new System.Windows.Forms.MenuItem();
             this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
@@ -94,11 +99,6 @@ namespace MeGUI
             this.openMeGUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitMeGUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtChangeLog = new System.Windows.Forms.RichTextBox();
-            this.videoEncodingComponent1 = new MeGUI.VideoEncodingComponent();
-            this.audioEncodingComponent1 = new MeGUI.AudioEncodingComponent();
-            this.jobControl1 = new MeGUI.core.details.JobControl();
-            this.logTree1 = new MeGUI.core.gui.LogTree();
             this.tabControl1.SuspendLayout();
             this.inputTab.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -154,6 +154,37 @@ namespace MeGUI
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 58F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(506, 440);
             this.tableLayoutPanel1.TabIndex = 4;
+            // 
+            // videoEncodingComponent1
+            // 
+            this.videoEncodingComponent1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.videoEncodingComponent1.BackColor = System.Drawing.SystemColors.Control;
+            this.videoEncodingComponent1.FileType = "";
+            this.videoEncodingComponent1.Location = new System.Drawing.Point(3, 3);
+            this.videoEncodingComponent1.MinimumSize = new System.Drawing.Size(500, 168);
+            this.videoEncodingComponent1.Name = "videoEncodingComponent1";
+            this.videoEncodingComponent1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.videoEncodingComponent1.PrerenderJob = false;
+            this.videoEncodingComponent1.Size = new System.Drawing.Size(500, 178);
+            this.videoEncodingComponent1.TabIndex = 0;
+            this.videoEncodingComponent1.VideoInput = "";
+            this.videoEncodingComponent1.VideoOutput = "";
+            // 
+            // audioEncodingComponent1
+            // 
+            this.audioEncodingComponent1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.audioEncodingComponent1.AutoScroll = true;
+            this.audioEncodingComponent1.BackColor = System.Drawing.SystemColors.Control;
+            this.audioEncodingComponent1.Location = new System.Drawing.Point(3, 187);
+            this.audioEncodingComponent1.MinimumSize = new System.Drawing.Size(400, 192);
+            this.audioEncodingComponent1.Name = "audioEncodingComponent1";
+            this.audioEncodingComponent1.Padding = new System.Windows.Forms.Padding(0, 3, 3, 0);
+            this.audioEncodingComponent1.Size = new System.Drawing.Size(500, 250);
+            this.audioEncodingComponent1.TabIndex = 1;
             // 
             // splitContainer1
             // 
@@ -260,6 +291,15 @@ namespace MeGUI
             this.tabPage2.Text = "Queue";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // jobControl1
+            // 
+            this.jobControl1.BackColor = System.Drawing.SystemColors.Control;
+            this.jobControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.jobControl1.Location = new System.Drawing.Point(0, 0);
+            this.jobControl1.Name = "jobControl1";
+            this.jobControl1.Size = new System.Drawing.Size(506, 472);
+            this.jobControl1.TabIndex = 0;
+            // 
             // logTab
             // 
             this.logTab.Controls.Add(this.logTree1);
@@ -269,6 +309,14 @@ namespace MeGUI
             this.logTab.TabIndex = 13;
             this.logTab.Text = "Log";
             this.logTab.UseVisualStyleBackColor = true;
+            // 
+            // logTree1
+            // 
+            this.logTree1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logTree1.Location = new System.Drawing.Point(0, 0);
+            this.logTree1.Name = "logTree1";
+            this.logTree1.Size = new System.Drawing.Size(506, 472);
+            this.logTree1.TabIndex = 0;
             // 
             // changelogTab
             // 
@@ -280,6 +328,17 @@ namespace MeGUI
             this.changelogTab.TabIndex = 14;
             this.changelogTab.Text = "Changelog";
             this.changelogTab.UseVisualStyleBackColor = true;
+            // 
+            // txtChangeLog
+            // 
+            this.txtChangeLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtChangeLog.Location = new System.Drawing.Point(3, 3);
+            this.txtChangeLog.Name = "txtChangeLog";
+            this.txtChangeLog.ReadOnly = true;
+            this.txtChangeLog.Size = new System.Drawing.Size(500, 466);
+            this.txtChangeLog.TabIndex = 0;
+            this.txtChangeLog.Text = "";
+            this.txtChangeLog.WordWrap = false;
             // 
             // mnuMuxers
             // 
@@ -504,65 +563,6 @@ namespace MeGUI
             this.exitMeGUIToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.exitMeGUIToolStripMenuItem.Text = "Exit MeGUI";
             this.exitMeGUIToolStripMenuItem.Click += new System.EventHandler(this.exitMeGUIToolStripMenuItem_Click);
-            // 
-            // txtChangeLog
-            // 
-            this.txtChangeLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtChangeLog.Location = new System.Drawing.Point(3, 3);
-            this.txtChangeLog.Name = "txtChangeLog";
-            this.txtChangeLog.ReadOnly = true;
-            this.txtChangeLog.Size = new System.Drawing.Size(500, 466);
-            this.txtChangeLog.TabIndex = 0;
-            this.txtChangeLog.Text = "";
-            this.txtChangeLog.WordWrap = false;
-            // 
-            // videoEncodingComponent1
-            // 
-            this.videoEncodingComponent1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.videoEncodingComponent1.BackColor = System.Drawing.SystemColors.Control;
-            this.videoEncodingComponent1.FileType = "";
-            this.videoEncodingComponent1.Location = new System.Drawing.Point(3, 3);
-            this.videoEncodingComponent1.MinimumSize = new System.Drawing.Size(500, 168);
-            this.videoEncodingComponent1.Name = "videoEncodingComponent1";
-            this.videoEncodingComponent1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
-            this.videoEncodingComponent1.PrerenderJob = false;
-            this.videoEncodingComponent1.Size = new System.Drawing.Size(500, 178);
-            this.videoEncodingComponent1.TabIndex = 0;
-            this.videoEncodingComponent1.VideoInput = "";
-            this.videoEncodingComponent1.VideoOutput = "";
-            // 
-            // audioEncodingComponent1
-            // 
-            this.audioEncodingComponent1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.audioEncodingComponent1.AutoScroll = true;
-            this.audioEncodingComponent1.BackColor = System.Drawing.SystemColors.Control;
-            this.audioEncodingComponent1.Location = new System.Drawing.Point(3, 187);
-            this.audioEncodingComponent1.MinimumSize = new System.Drawing.Size(400, 192);
-            this.audioEncodingComponent1.Name = "audioEncodingComponent1";
-            this.audioEncodingComponent1.Padding = new System.Windows.Forms.Padding(0, 3, 3, 0);
-            this.audioEncodingComponent1.Size = new System.Drawing.Size(500, 250);
-            this.audioEncodingComponent1.TabIndex = 1;
-            // 
-            // jobControl1
-            // 
-            this.jobControl1.BackColor = System.Drawing.SystemColors.Control;
-            this.jobControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.jobControl1.Location = new System.Drawing.Point(0, 0);
-            this.jobControl1.Name = "jobControl1";
-            this.jobControl1.Size = new System.Drawing.Size(506, 472);
-            this.jobControl1.TabIndex = 0;
-            // 
-            // logTree1
-            // 
-            this.logTree1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logTree1.Location = new System.Drawing.Point(0, 0);
-            this.logTree1.Name = "logTree1";
-            this.logTree1.Size = new System.Drawing.Size(506, 472);
-            this.logTree1.TabIndex = 0;
             // 
             // MainForm
             // 

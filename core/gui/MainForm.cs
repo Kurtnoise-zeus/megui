@@ -124,6 +124,8 @@ namespace MeGUI
             this.trayIcon.Icon = new Icon(myAssembly.GetManifestResourceStream(name + "App.ico"));
             this.Icon = trayIcon.Icon;
             this.TitleText = Application.ProductName + " " + new System.Version(Application.ProductVersion).Build;
+            if (new System.Version(Application.ProductVersion).Revision != 0)
+                this.TitleText += "." + (new System.Version(Application.ProductVersion).Revision);
             if (MainForm.Instance.Settings.IsMeGUIx64)
                 this.TitleText += " x64";
             getVersionInformation();
@@ -1286,7 +1288,12 @@ namespace MeGUI
             if (!MainForm.Instance.Settings.IsMeGUIx64)
                 i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + " x86" + (bDebug ? " (DEBUG)" : string.Empty), false);
             else
-                i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + " x64" + (bDebug ? " (DEBUG)" : string.Empty), false);
+            {
+                if (new System.Version(Application.ProductVersion).Revision != 0)
+                    i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + "." + (new System.Version(Application.ProductVersion).Revision) + " x64" + (bDebug ? " (DEBUG)" : string.Empty), false);
+                else
+                    i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + " x64" + (bDebug ? " (DEBUG)" : string.Empty), false);
+            }
             if (File.Exists(Path.ChangeExtension(Application.ExecutablePath, ".pdb")))
                 i.LogValue("MeGUI Debug Data", "available", false);
             string strUpdateCheck = "Disabled";
