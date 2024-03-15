@@ -277,7 +277,7 @@ namespace MeGUI
                         else
                             fpsString = tt.ToString(ci) + "/1000";
                     }
-                    sb.Append(":fps=" + fpsString);
+                    sb.Append(":fps=" + PrettyFormatting.ReplaceFPSValue(fpsString, oVideoInfo.VideoInfo.FPS_N, oVideoInfo.VideoInfo.FPS_D));
 
                     if (oVideoInfo.HasVideo)
                     {

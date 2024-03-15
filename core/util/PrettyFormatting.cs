@@ -117,8 +117,13 @@ namespace MeGUI.core.util
         /// </summary>
         /// <param name="fpsIn">the input fps</param>
         /// <returns>the output fps formated</returns>
-        public static string ReplaceFPSValue(string fpsIn)
+        public static string ReplaceFPSValue(string fpsIn, int fps_n, int fps_d)
         {
+             if (fps_n > 0 && fps_d > 0)
+             {
+                return fps_n + "/" + fps_d;
+             }      
+            
             string fpsOut;
             fpsIn = fpsIn.Replace(',', '.');
 

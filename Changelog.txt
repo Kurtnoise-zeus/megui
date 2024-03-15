@@ -1,3 +1,5 @@
+2929 [MP4/MKV Muxer]        use the full fraction of the frame rate (e.g. 24000/1001) when available. Bug #968
+     [MediaInfo]            added the frame rate numerator and denominator to the log output
 2928 [DGIndexNV]            updated to support the free version. Patch by Donald Graft (#672)
      [MeGUI]                .NET 4.8 is required now to run MeGUI
 2927 [Audio Encoder]        improved log output

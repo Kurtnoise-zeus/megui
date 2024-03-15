@@ -41,6 +41,8 @@ namespace MediaInfoWrapper
         private string _AspectRatioString;
         private string _PixelAspectRatio;
         private string _FrameRate;
+        private string _FrameRateNum;
+        private string _FrameRateDen;
         private string _FrameRateOriginal;
         private string _FrameRateMode;
         private string _FrameRateModeString;
@@ -233,6 +235,36 @@ namespace MediaInfoWrapper
             set
             {
                 this._FrameRate = value;
+            }
+        }
+
+        ///<summary> Frames per second </summary>
+        public string FrameRateNum
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(this._FrameRateNum))
+                    this._FrameRateNum = "";
+                return _FrameRateNum;
+            }
+            set
+            {
+                this._FrameRateNum = value;
+            }
+        }
+
+        ///<summary> Frames per second </summary>
+        public string FrameRateDen
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(this._FrameRateDen))
+                    this._FrameRateDen = "";
+                return _FrameRateDen;
+            }
+            set
+            {
+                this._FrameRateDen = value;
             }
         }
 

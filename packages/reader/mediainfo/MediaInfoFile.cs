@@ -524,7 +524,7 @@ namespace MeGUI
                         _VideoInfo.ScanType = track.ScanTypeString;
                         _VideoInfo.Type = GetVideoType(_VideoInfo.Codec, cType, file);
                         _VideoInfo.DAR = Resolution.GetDAR((int)_VideoInfo.Width, (int)_VideoInfo.Height, track.AspectRatio, easyParseDecimal(track.PixelAspectRatio), track.AspectRatioString);
-                        if (track.FrameRateMode.ToLower().Equals("vfr"))
+                        if(track.FrameRateMode.ToLowerInvariant().Equals("vfr"))
                             _VideoInfo.VariableFrameRateMode = true;
 
                         // get the FPS
@@ -544,6 +544,8 @@ namespace MeGUI
                         }
                         if (fps != null)
                             _VideoInfo.FPS = (double)fps;
+                        _ = Int32.TryParse(track.FrameRateNum, out _VideoInfo.FPS_N);
+                        _ = Int32.TryParse(track.FrameRateDen, out _VideoInfo.FPS_D);
 
                         Int32.TryParse(track.BitDepth, out _VideoInfo.BitDepth);
                     }
@@ -720,6 +722,10 @@ namespace MeGUI
                         oTrack.Info("FrameCount: " + t.FrameCount);
                     if (!String.IsNullOrEmpty(t.FrameRate))
                         oTrack.Info("FrameRate: " + t.FrameRate);
+                    if (!String.IsNullOrEmpty(t.FrameRateNum))
+                        oTrack.Info("FrameRate_N: " + t.FrameRateNum);
+                    if (!String.IsNullOrEmpty(t.FrameRateDen))
+                        oTrack.Info("FrameRate_D: " + t.FrameRateDen);
                     if (!String.IsNullOrEmpty(t.FrameRateOriginal))
                         oTrack.Info("FrameRateOriginal: " + t.FrameRateOriginal);
                     if (!String.IsNullOrEmpty(t.FrameRateMode))

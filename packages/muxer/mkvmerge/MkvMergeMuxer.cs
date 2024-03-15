@@ -152,7 +152,7 @@ namespace MeGUI
                         if (settings.Framerate.HasValue)
                             fpsString = String.Format("{0:##.###}", settings.Framerate.Value);
                         if (!String.IsNullOrEmpty(fpsString))
-                            sb.Append(" --default-duration " + trackID + ":" + PrettyFormatting.ReplaceFPSValue(fpsString) + "fps");
+                            sb.Append(" --default-duration " + trackID + ":" + PrettyFormatting.ReplaceFPSValue(fpsString, oVideoInfo.VideoInfo.FPS_N, oVideoInfo.VideoInfo.FPS_D) + "fps");
                     }
                     string timeStampFile = inputFile + ".timestamps.txt";
                     if (!String.IsNullOrEmpty(settings.TimeStampFile) || File.Exists(timeStampFile))

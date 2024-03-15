@@ -532,6 +532,8 @@ namespace MediaInfoWrapper
                         _tracktemp_.AspectRatioString = GetSpecificMediaInfo(StreamKind.Video, num2, "AspectRatio/String");
                         _tracktemp_.PixelAspectRatio = GetSpecificMediaInfo(StreamKind.Video, num2, "PixelAspectRatio");
                         _tracktemp_.FrameRate = GetSpecificMediaInfo(StreamKind.Video,num2,"FrameRate");
+                        _tracktemp_.FrameRateNum = GetSpecificMediaInfo(StreamKind.Video, num2, "FrameRate_Num");
+                        _tracktemp_.FrameRateDen = GetSpecificMediaInfo(StreamKind.Video, num2, "FrameRate_Den");
                         _tracktemp_.FrameRateOriginal = GetSpecificMediaInfo(StreamKind.Video, num2, "FrameRate_Original");
                         _tracktemp_.FrameRateMode = GetSpecificMediaInfo(StreamKind.Video, num2, "FrameRate_Mode");
                         _tracktemp_.FrameRateModeString = GetSpecificMediaInfo(StreamKind.Video, num2, "FrameRate_Mode/String");
