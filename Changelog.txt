@@ -1,3 +1,4 @@
+2937 [Video Encoder]        fixed not applying the proper bitrate for desired file sizes. Bug #976 (regression of 2930)
 2936 [Main]                 added startup splash screen
 2935 [Muxer]                remember last accessed folder independant for the input folders and the output folder
 2934 [Muxer]                improved the forced subtitle track name generation

@@ -1004,6 +1004,8 @@ namespace MeGUI
             PackageSystem.MediaFileTypes.Register(new ffmsFileFactory());       // HandleLevel 12
             PackageSystem.MediaFileTypes.Register(new MediaInfoFileFactory());  // HandleLevel  5
 
+            PackageSystem.JobPreProcessors.Register(BitrateCalculatorPreProcessor.CalculationProcessor);
+
             PackageSystem.JobPostProcessors.Register(d2vIndexJobPostProcessor.PostProcessor);
             PackageSystem.JobPostProcessors.Register(dgmIndexJobPostProcessor.PostProcessor);
             PackageSystem.JobPostProcessors.Register(dgiIndexJobPostProcessor.PostProcessor);
