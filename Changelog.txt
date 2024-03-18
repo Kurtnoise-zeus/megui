@@ -1,3 +1,4 @@
+2933 [Main]                 improved OS detection
 2932 [Progress Window]      improved number formatting
 2931 [Logger]               improved error handling
      [Main]                 delete orphaned source detector log files at startup
