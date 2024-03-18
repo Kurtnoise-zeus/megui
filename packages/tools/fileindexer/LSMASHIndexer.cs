@@ -47,30 +47,28 @@ namespace MeGUI
         {
             try
             {
-                if (!String.IsNullOrEmpty(job.Output))
+                if (!String.IsNullOrEmpty(Job.Output))
                 {
-                    FileUtil.ensureDirectoryExists(Path.GetDirectoryName(job.Output));
-                    FileUtil.DeleteFile(job.Input + ".lwi", base.log);
+                    FileUtil.ensureDirectoryExists(Path.GetDirectoryName(Job.Output));
+                    FileUtil.DeleteFile(Job.Input + ".lwi", base.log);
                 }
             }
             finally
             {
                 base.checkJobIO();
             }
-            su.Status = "Creating LSMASH index...";
+            Su.Status = "Creating LSMASH index...";
         }
 
         protected override void RunInThread()
         {
             try
             {
-                // job output file in case of LWLibavVideoSource()
-                base.jobOutputFile = job.Input + ".lwi";
 
                 // generate the avs script
                 StringBuilder strAVSScript = new StringBuilder();
                 MediaInfoFile oInfo = null;
-                strAVSScript.Append(VideoUtil.getLSMASHVideoInputLine(job.Input, job.Output, 0, ref oInfo));
+                strAVSScript.Append(VideoUtil.getLSMASHVideoInputLine(Job.Input, Job.Output, 0, ref oInfo));
                 if (oInfo != null)
                     oInfo.Dispose();
                 base.log.LogValue("AviSynth script", strAVSScript.ToString(), ImageType.Information);
@@ -93,27 +91,27 @@ namespace MeGUI
                 {
                     // avs script has no video track or an error has been thrown
                     base.log.LogEvent(strErrorText, ImageType.Error);
-                    su.HasError = true;
+                    Su.HasError = true;
                 }
             }
             catch (Exception ex)
             {
                 base.log.LogValue("Error: ", ex.Message, ImageType.Error);
-                su.HasError = true;
+                Su.HasError = true;
             }
         }
 
         protected override void doExitConfig()
         {
             // no further action if job failed or was aborted
-            if (su.HasError || su.WasAborted)
+            if (Su.HasError || Su.WasAborted)
             {
-                job.FilesToDelete.Add(job.Input + ".lwi");
+                Job.FilesToDelete.Add(Job.Input + ".lwi");
                 base.doExitConfig();
                 return;
             }
 
-            if (job.DemuxMode == 0 || job.AudioTracks.Count == 0 || su.HasError)
+            if (Job.DemuxMode == 0 || Job.AudioTracks.Count == 0 || Su.HasError)
             {
                 // no audio processing
                 base.doExitConfig();
@@ -125,7 +123,7 @@ namespace MeGUI
             for (int iCurrentTrack = 0; iCurrentTrack <= 29; iCurrentTrack++) // hard limit to max. 30 tracks
             {
                 StringBuilder strAVSScript = new StringBuilder();
-                strAVSScript.Append(VideoUtil.getLSMASHAudioInputLine(job.Input, job.Output, iCurrentTrack));
+                strAVSScript.Append(VideoUtil.getLSMASHAudioInputLine(Job.Input, Job.Output, iCurrentTrack));
 
                 // is this an audio track?
                 string strErrorText;
@@ -133,15 +131,15 @@ namespace MeGUI
                     continue;
                 iCurrentAudioTrack++;
 
-                foreach (AudioTrackInfo oAudioTrack in job.AudioTracks)
+                foreach (AudioTrackInfo oAudioTrack in Job.AudioTracks)
                 {
                     if (oAudioTrack.TrackIndex != iCurrentAudioTrack)
                         continue;
 
                     // write avs file
                     string strAudioAVSFile;
-                    strAudioAVSFile = Path.GetFileNameWithoutExtension(job.Output) + "_track_" + (oAudioTrack.TrackIndex + 1) + "_" + oAudioTrack.Language.ToLowerInvariant() + ".avs";
-                    strAudioAVSFile = Path.Combine(Path.GetDirectoryName(job.Output), Path.GetFileName(strAudioAVSFile));
+                    strAudioAVSFile = Path.GetFileNameWithoutExtension(Job.Output) + "_track_" + (oAudioTrack.TrackIndex + 1) + "_" + oAudioTrack.Language.ToLowerInvariant() + ".avs";
+                    strAudioAVSFile = Path.Combine(Path.GetDirectoryName(Job.Output), Path.GetFileName(strAudioAVSFile));
                     try
                     {
                         strAVSScript.AppendLine(@"# detected channels: " + oAudioTrack.NbChannels);
@@ -156,7 +154,7 @@ namespace MeGUI
                     }
                     break;
                 }
-                if (++iTracksFound == job.AudioTracks.Count)
+                if (++iTracksFound == Job.AudioTracks.Count)
                     break;
             }
 

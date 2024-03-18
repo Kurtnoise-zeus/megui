@@ -1,3 +1,6 @@
+2930 [Progress Window]      improved the job progress window in several ways. major ones are:
+                            - processing rate got renamed to speed and is now also showing the current speed
+                            - the current speed is used to calculate the remaining time
 2929 [MP4/MKV Muxer]        use the full fraction of the frame rate (e.g. 24000/1001) when available. Bug #968
      [MediaInfo]            added the frame rate numerator and denominator to the log output
 2928 [DGIndexNV]            updated to support the free version. Patch by Donald Graft (#672)

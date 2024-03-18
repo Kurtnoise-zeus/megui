@@ -57,9 +57,9 @@ namespace MeGUI
 
         public x264Encoder(string encoderPath) : base()
         {
-            executable = encoderPath;
+            Executable = encoderPath;
             if (UseWrapper())
-                iMinimumChildProcessCount = 1;
+                IMinimumChildProcessCount = 1;
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
@@ -1010,14 +1010,14 @@ namespace MeGUI
         /// </summary>
         private void CheckTCFile()
         {
-            x264Settings xs = (x264Settings)job.Settings;
+            x264Settings xs = (x264Settings)Job.Settings;
             if (String.IsNullOrEmpty(xs.TCFile) || !File.Exists(xs.TCFile))
                 return;
 
             if (File.Exists(xs.TCFile + ".x264"))
                 FileUtil.DeleteFile(xs.TCFile + ".x264", log);
 
-            su.Status = "Checking TC File...";
+            Su.Status = "Checking TC File...";
             try
             {
                 using (StreamReader sr = new StreamReader(xs.TCFile))
@@ -1031,7 +1031,7 @@ namespace MeGUI
                             bFound = true;
                             sw.WriteLine("# timecode format v2");
                             sw.WriteLine(sr.ReadToEnd());
-                            job.FilesToDelete.Add(xs.TCFile + ".x264");
+                            Job.FilesToDelete.Add(xs.TCFile + ".x264");
                             xs.TCFile = xs.TCFile + ".x264";
                         }
                     }
@@ -1043,7 +1043,7 @@ namespace MeGUI
             {
                 log.LogValue("Error parsing " + xs.TCFile, ex.Message, ImageType.Error, true);
             }
-            su.Status = "Encoding video...";
+            Su.Status = "Encoding video...";
         }
 
         protected override string Commandline
@@ -1051,8 +1051,8 @@ namespace MeGUI
             get 
             {
                 CheckTCFile();
-                string strCommandLine = genCommandline(job.Input, job.Output, job.DAR, hres, vres, fps_n, fps_d, ref numberOfFrames, job.Settings as x264Settings, job.Zones, base.log);
-                su.NbFramesTotal = numberOfFrames;
+                string strCommandLine = genCommandline(Job.Input, Job.Output, Job.DAR, Hres, Vres, Fps_n, Fps_d, ref NumberOfFrames, Job.Settings as x264Settings, Job.Zones, base.log);
+                Su.NbFramesTotal = NumberOfFrames;
                 return strCommandLine;
             }
         }

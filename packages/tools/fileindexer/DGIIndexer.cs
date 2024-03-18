@@ -41,22 +41,25 @@ namespace MeGUI
         public DGIIndexer(string executableName)
         {
             UpdateCacher.CheckPackage("dgindexnv");
-            executable = executableName;
+            Executable = executableName;
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
         {
+            if (String.IsNullOrEmpty(line))
+                return;
+            
             if (Regex.IsMatch(line, "^[0-9]{1,3}$", RegexOptions.Compiled))
             {
-                su.PercentageDoneExact = Int32.Parse(line);
+                Su.PercentageCurrent = Int32.Parse(line);
                 return;
             }
 
             if (line.Contains("Project"))
-                su.Status = "Creating DGI...";
+                Su.Status = "Creating DGI...";
             else
-                su.Status = "Creating " + line;
-            base.su.ResetTime();
+                Su.Status = "Creating " + line;
+            base.Su.ResetTime();
             base.ProcessLine(line, stream, oType);
         }
 
@@ -169,15 +172,15 @@ namespace MeGUI
         {
             try
             {
-                if (!String.IsNullOrEmpty(job.Output))
-                    FileUtil.ensureDirectoryExists(Path.GetDirectoryName(job.Output));
+                if (!String.IsNullOrEmpty(Job.Output))
+                    FileUtil.ensureDirectoryExists(Path.GetDirectoryName(Job.Output));
                 CheckINI();
             }
             finally
             {
                 base.checkJobIO();
             }
-            su.Status = "Creating DGI...";
+            Su.Status = "Creating DGI...";
         }
 
         protected override string Commandline
@@ -185,17 +188,17 @@ namespace MeGUI
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("-i \"" + job.Input + "\"");
-                if (MainForm.Instance.Settings.AutoLoadDG && Path.GetExtension(job.Input).ToLowerInvariant().Equals(".vob"))
+                sb.Append("-i \"" + Job.Input + "\"");
+                if (MainForm.Instance.Settings.AutoLoadDG && Path.GetExtension(Job.Input).ToLowerInvariant().Equals(".vob"))
                 {
-                    string strFile = Path.GetFileNameWithoutExtension(job.Input);
+                    string strFile = Path.GetFileNameWithoutExtension(Job.Input);
                     int iNumber = 0;
                     if (int.TryParse(strFile.Substring(strFile.Length - 1), out iNumber))
                     {
                         while (++iNumber < 10)
                         {
                             string strNewFile = "";
-                            strNewFile = Path.Combine(Path.GetDirectoryName(job.Input), strFile.Substring(0, strFile.Length - 1) + iNumber.ToString() + ".vob");
+                            strNewFile = Path.Combine(Path.GetDirectoryName(Job.Input), strFile.Substring(0, strFile.Length - 1) + iNumber.ToString() + ".vob");
                             if (File.Exists(strNewFile))
                                 sb.Append(",\"" + strNewFile + "\"");
                             else
@@ -203,13 +206,13 @@ namespace MeGUI
                         }
                     }
                 }
-                if (job.DemuxVideo)
-                    sb.Append(" -od \"" + job.Output + "\" -h");
+                if (Job.DemuxVideo)
+                    sb.Append(" -od \"" + Job.Output + "\" -h");
                 else 
-                    sb.Append(" -o \"" + job.Output + "\" -h");
-                if (job.DemuxMode > 0)
+                    sb.Append(" -o \"" + Job.Output + "\" -h");
+                if (Job.DemuxMode > 0)
                     sb.Append(" -a"); // demux everything
-                if (Path.GetExtension(job.Input).ToLowerInvariant().Equals(".mpls"))
+                if (Path.GetExtension(Job.Input).ToLowerInvariant().Equals(".mpls"))
                     sb.Append(" -ang 0");
                 return sb.ToString();
             }
@@ -239,9 +242,11 @@ namespace MeGUI
             int iLineCount = 0;
             string line = null;
             bool bPathExtended = false;
-            using (StreamReader reader = new StreamReader(job.Output, Encoding.Default))
+
+            using (StreamReader reader = new StreamReader(Job.Output, Encoding.Default))
+
             {
-                using (StreamWriter writer = new StreamWriter(job.Output + ".temp", false, Encoding.Default))
+                using (StreamWriter writer = new StreamWriter(Job.Output + ".temp", false, Encoding.Default))
                 {
                     while ((line = reader.ReadLine()) != null)
                     {
@@ -257,7 +262,7 @@ namespace MeGUI
                             {
                                 string strSize = line.Substring(line.LastIndexOf(" "));
                                 string strSourceFile = line.Substring(0, line.LastIndexOf(" "));
-                                string strFullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(job.Input), strSourceFile));
+                                string strFullPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Job.Input), strSourceFile));
                                 writer.WriteLine(strFullPath + strSize);
                             }
                         }
@@ -267,21 +272,21 @@ namespace MeGUI
                         }
                     }
                 }
-            }
-            FileUtil.DeleteFile(job.Output, log);
-            File.Move(job.Output + ".temp", job.Output);
+             }
+            FileUtil.DeleteFile(Job.Output, log);
+            File.Move(Job.Output + ".temp", Job.Output);
             log.LogEvent("Corrected missing Full_Path_In_Files=1", ImageType.Information);
         }
 
         protected override void doExitConfig()
         {
-            if (!File.Exists(job.Output))
+            if (!File.Exists(Job.Output))
             {
-                su.HasError = true;
+                Su.HasError = true;
             }
             else
             {
-                if (!DGIHasFullPath(job.Output))
+                if (!DGIHasFullPath(Job.Output))
                     AddFullPathToDGI();
             }
 

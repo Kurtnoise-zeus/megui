@@ -31,13 +31,14 @@ namespace MeGUI
 
     public abstract class CommandlineVideoEncoder : CommandlineJobProcessor<VideoJob>
     {
-        #region variables 
-        private ulong? currentFrameNumber;
-        protected ulong numberOfFrames;
-        protected int lastStatusUpdateFramePosition = 0;
-        protected int hres = 0, vres = 0;
-        protected int fps_n = 0, fps_d = 0;
-        protected bool usesSAR = false;
+        #region variables
+#pragma warning disable CA1051 // Do not declare visible instance fields
+        protected ulong NumberOfFrames;
+        protected int Vres = 0;
+        protected int Fps_d = 0;
+        protected int Hres = 0;
+        protected int Fps_n = 0;
+#pragma warning restore CA1051 // Do not declare visible instance fields
         #endregion
 
         public CommandlineVideoEncoder() : base()
@@ -48,19 +49,19 @@ namespace MeGUI
         protected override void checkJobIO()
         {
             base.checkJobIO();
-            su.Status = "Encoding video...";
-            getInputProperties(job);
+            Su.Status = "Encoding video...";
+            getInputProperties(Job);
         }
 
         private string GetAVSFileContent()
         {
-            if (!File.Exists(job.Input) || !Path.GetExtension(job.Input).ToLowerInvariant().Equals(".avs"))
+            if (!File.Exists(Job.Input) || !Path.GetExtension(Job.Input).ToLowerInvariant().Equals(".avs"))
                 return string.Empty;
 
             string strAVSFile = String.Empty;
             try
             {
-                StreamReader sr = new StreamReader(job.Input);
+                StreamReader sr = new StreamReader(Job.Input, Encoding.Default);
                 strAVSFile = sr.ReadToEnd();
                 sr.Close();
             }
@@ -79,15 +80,22 @@ namespace MeGUI
         protected void getInputProperties(VideoJob job)
         {
             log.LogValue("AviSynth input script", GetAVSFileContent());
-
+ 
+            if (job == null)
+            {
+                log.LogEvent("job not found", ImageType.Error);
+                    return;
+            }
+            
             double fps;
             Dar d = Dar.A1x1;
             AviSynthColorspace colorspace_original;
-            JobUtil.GetAllInputProperties(job.Input, out numberOfFrames, out fps, out fps_n, out fps_d, out hres, out vres, out d, out colorspace_original);
+            JobUtil.GetAllInputProperties(job.Input, out NumberOfFrames, out fps, out Fps_n, out Fps_d, out Hres, out Vres, out d, out colorspace_original);
 
             Dar? dar = job.DAR;
-            su.NbFramesTotal = numberOfFrames;
-            su.ClipLength = TimeSpan.FromSeconds((double)numberOfFrames / fps);
+            Su.NbFramesTotal = NumberOfFrames;
+            Su.FPS = fps;
+            Su.ClipLength = TimeSpan.FromSeconds((double)NumberOfFrames / fps);
 
             if (!job.DAR.HasValue)
                 job.DAR = d;
@@ -96,11 +104,11 @@ namespace MeGUI
             if (log == null)
                 return;
 
-            log.LogEvent("resolution: " + hres + "x" + vres);
-            log.LogEvent("frame rate: " + fps_n + "/" + fps_d);
-            log.LogEvent("frames: " + numberOfFrames);
-            log.LogEvent("length: " + string.Format("{0:00}:{1:00}:{2:00}.{3:000}", 
-                (int)(su.ClipLength.Value.TotalHours), su.ClipLength.Value.Minutes, su.ClipLength.Value.Seconds, su.ClipLength.Value.Milliseconds));
+            log.LogEvent("resolution: " + Hres + "x" + Vres);
+            log.LogEvent("frame rate: " + Fps_n + "/" + Fps_d);
+            log.LogEvent("frames: " + NumberOfFrames);
+            log.LogEvent("length: " + string.Format(new System.Globalization.CultureInfo("en-US"), "{0:00}:{1:00}:{2:00}.{3:000}",
+            (int)(Su.ClipLength.Value.TotalHours), Su.ClipLength.Value.Minutes, Su.ClipLength.Value.Seconds, Su.ClipLength.Value.Milliseconds));
             if (dar.HasValue && d.AR == dar.Value.AR)
             {
                 log.LogValue("aspect ratio", d);
@@ -134,7 +142,7 @@ namespace MeGUI
 
                     // Check everything again, to see if it is all fixed now
                     AviSynthColorspace colorspace_converted;
-                    JobUtil.GetAllInputProperties(job.Input, out numberOfFrames, out fps, out fps_n, out fps_d, out hres, out vres, out d, out colorspace_converted);
+                    JobUtil.GetAllInputProperties(job.Input, out NumberOfFrames, out fps, out Fps_n, out Fps_d, out Hres, out Vres, out d, out colorspace_converted);
                     if (colorspace_original != colorspace_converted)
                         log.LogValue("color space converted", colorspace_converted.ToString());
                     else
@@ -147,7 +155,7 @@ namespace MeGUI
 
         protected override void doExitConfig()
         {
-            if (!su.HasError && !su.WasAborted)
+            if (!Su.HasError && !Su.WasAborted)
                 compileFinalStats();
 
             base.doExitConfig();
@@ -160,26 +168,26 @@ namespace MeGUI
         {
             try
             {
-                if (string.IsNullOrEmpty(job.Output) || !File.Exists(job.Output))
+                if (string.IsNullOrEmpty(Job.Output) || !File.Exists(Job.Output))
                     return;
 
-                FileInfo fi = new FileInfo(job.Output);
+                FileInfo fi = new FileInfo(Job.Output);
                 long size = fi.Length; // size in bytes
-                long bitrate = (long)((double)(size * 8.0) / (su.ClipLength.Value.TotalSeconds * 1000.0));
+                long bitrate = (long)((double)(size * 8.0) / (Su.ClipLength.Value.TotalSeconds * 1000.0));
 
                 LogItem stats = log.Info(string.Format("[{0:G}] {1}", DateTime.Now, "Final statistics"));
-                if (job.Settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.CQ) // CQ mode
-                    stats.LogValue("Constant Quantizer Mode", "Quantizer " + job.Settings.BitrateQuantizer + " computed...");
-                else if (job.Settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.quality)
-                    stats.LogValue("Constant Quality Mode", "Quality " + job.Settings.BitrateQuantizer + " computed...");
+                if (Job.Settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.CQ) // CQ mode
+                    stats.LogValue("Constant Quantizer Mode", "Quantizer " + Job.Settings.BitrateQuantizer + " computed...");
+                else if (Job.Settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.quality)
+                    stats.LogValue("Constant Quality Mode", "Quality " + Job.Settings.BitrateQuantizer + " computed...");
                 else
-                    stats.LogValue("Video Bitrate Desired", job.Settings.BitrateQuantizer + " kbit/s");
+                    stats.LogValue("Video Bitrate Desired", Job.Settings.BitrateQuantizer + " kbit/s");
                 stats.LogValue("Video Bitrate Obtained (approximate)", bitrate + " kbit/s");
 
-                if ((this is x264Encoder || this is x265Encoder) && currentFrameNumber != su.NbFramesTotal)
+                if ((this is x264Encoder || this is x265Encoder) && Su.NbFramesDone != Su.NbFramesTotal)
                 {
-                    stats.LogEvent("Number of encoded frames does not match the source: " + su.NbFramesDone + "/" + su.NbFramesTotal, ImageType.Error);
-                    su.HasError = true;
+                    stats.LogEvent("Number of encoded frames does not match the source: " + Su.NbFramesDone + "/" + Su.NbFramesTotal, ImageType.Error);
+                    Su.HasError = true;
                 }
             }
             catch (Exception e)
@@ -191,21 +199,22 @@ namespace MeGUI
 
         protected bool setFrameNumber(string frameString)
         {
-            int currentFrameNumber;
-            if (int.TryParse(frameString, out currentFrameNumber))
+            int iCurrentFrameNumber;
+            if (int.TryParse(frameString, out iCurrentFrameNumber))
             {
-                if (currentFrameNumber < 0)
-                    this.currentFrameNumber = 0;
+                if (iCurrentFrameNumber < 0)
+                {
+                    Su.NbFramesDone = 0;
+                    Su.PercentageCurrent = 0;
+                }
                 else
-                    this.currentFrameNumber = (ulong)currentFrameNumber;
-                 return true;
+                    {
+                        Su.NbFramesDone = (ulong)iCurrentFrameNumber;
+                        Su.PercentageCurrent = (decimal)Su.NbFramesDone / Su.NbFramesTotal * 100;
+                    }
+                return true;
             }
             return false;
-        }
-
-        protected override void doStatusCycleOverrides()
-        {
-            su.NbFramesDone = currentFrameNumber;
         }
     }
 }

@@ -75,13 +75,13 @@ namespace MeGUI.core.details
 
         protected override void RunInThread()
         {
-            su.Status = "Cleanup files...";
+            Su.Status = "Cleanup files...";
 
             log.LogValue("Delete Intermediate Files option set", MainForm.Instance.Settings.DeleteIntermediateFiles);
             if (MainForm.Instance.Settings.DeleteIntermediateFiles)
             {
-                log.Add(FileUtil.DeleteIntermediateFiles(job.FilesToDelete, true, false));
-                job.FilesToDelete.Clear();
+                log.Add(FileUtil.DeleteIntermediateFiles(Job.FilesToDelete, true, false));
+                Job.FilesToDelete.Clear();
             }
         }
     }

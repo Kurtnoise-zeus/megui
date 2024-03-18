@@ -45,21 +45,21 @@ namespace MeGUI.packages.tools.besplitter
         public Splitter(string exe)
         {
             UpdateCacher.CheckPackage("besplit");
-            executable = exe;
+            Executable = exe;
         }
 
         protected override string Commandline
         {
             get
             {
-                return job.generateSplitCommandline();
+                return Job.generateSplitCommandline();
             }
         }
 
         protected override void checkJobIO()
         {
-            int endFrame = job.TheCuts.AllCuts[job.TheCuts.AllCuts.Count - 1].endFrame;
-            su.ClipLength = TimeSpan.FromSeconds((double)endFrame / job.TheCuts.Framerate);
+            int endFrame = Job.TheCuts.AllCuts[Job.TheCuts.AllCuts.Count - 1].endFrame;
+            Su.ClipLength = TimeSpan.FromSeconds((double)endFrame / Job.TheCuts.Framerate);
             base.checkJobIO();
         }
 
@@ -74,7 +74,7 @@ namespace MeGUI.packages.tools.besplitter
                     int mins = int.Parse(line.Substring(4, 2));
                     int secs = int.Parse(line.Substring(7, 2));
                     int millis = int.Parse(line.Substring(10, 3));
-                    su.ClipPosition = new TimeSpan(0, hours, mins, secs, millis);
+                    Su.ClipPosition = new TimeSpan(0, hours, mins, secs, millis);
                     return;
                 }
                 catch (Exception)

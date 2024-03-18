@@ -44,8 +44,8 @@ namespace MeGUI
 
         public x265Encoder(string encoderPath) : base()
         {
-            executable = encoderPath;
-            iMinimumChildProcessCount = 1;
+            Executable = encoderPath;
+            IMinimumChildProcessCount = 1;
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
@@ -71,7 +71,7 @@ namespace MeGUI
             base.ProcessLine(line, stream, oType);
         }
 
-        public static string genCommandline(string input, string output, Dar? d, int hres, int vres, int fps_n, int fps_d, ref ulong numberOfFrames, x265Settings _xs, Zone[] zones, LogItem log)
+        public static string genCommandline(string input, string output, Dar? d, int hres, int vres, ref ulong numberOfFrames, x265Settings _xs, LogItem log)
         {
             int qp;
             StringBuilder sb = new StringBuilder();
@@ -221,8 +221,8 @@ namespace MeGUI
         {
             get 
             {
-                string strCommandLine = genCommandline(job.Input, job.Output, job.DAR, hres, vres, fps_n, fps_d, ref numberOfFrames, job.Settings as x265Settings, job.Zones, base.log);
-                su.NbFramesTotal = numberOfFrames;
+                string strCommandLine = genCommandline(Job.Input, Job.Output, Job.DAR, Hres, Vres, ref NumberOfFrames, Job.Settings as x265Settings, base.log);
+                Su.NbFramesTotal = NumberOfFrames;
                 return strCommandLine;
             }
         }

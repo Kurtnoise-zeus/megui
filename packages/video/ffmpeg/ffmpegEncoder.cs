@@ -44,7 +44,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "FFmpegEncoder");
             : base()
         {
             UpdateCacher.CheckPackage("ffmpeg");
-            executable = encoderPath;
+            Executable = encoderPath;
         }
 
         #region commandline generation
@@ -53,7 +53,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "FFmpegEncoder");
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("-y -i \"" + job.Input + "\" -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 \"" + job.Output + "\" ");
+                sb.Append("-y -i \"" + Job.Input + "\" -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 \"" + Job.Output + "\" ");
                 return sb.ToString();
             }
         }

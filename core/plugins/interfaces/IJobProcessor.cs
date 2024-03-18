@@ -91,7 +91,7 @@ namespace MeGUI
         }
     }
 	
-    public interface IJobProcessor
+    public interface IJobProcessor : IDisposable
     {
         /// <summary>
         /// sets up encoding

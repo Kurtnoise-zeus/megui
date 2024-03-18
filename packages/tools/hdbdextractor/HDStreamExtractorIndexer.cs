@@ -41,7 +41,7 @@ namespace MeGUI
         public HDStreamExtractorIndexer(string executablePath)
         {
             UpdateCacher.CheckPackage("eac3to");
-            this.executable = executablePath;
+            this.Executable = executablePath;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace MeGUI
 
         protected override void checkJobIO()
         {
-            foreach (string strSource in job.Source)
+            foreach (string strSource in Job.Source)
                 Util.ensureExists(strSource);
         }
 
@@ -87,7 +87,7 @@ namespace MeGUI
         {
             try
             {
-                string[] entry = Regex.Split(job.Args, "[0-9]{1,3}:\\\"");
+                string[] entry = Regex.Split(Job.Args, "[0-9]{1,3}:\\\"");
                 if (entry.Length < 2 || entry[1].Length < 3)
                     return;
 
@@ -102,47 +102,47 @@ namespace MeGUI
                     while ((line = file.ReadLine()) != null)
                     {
                         if (line.ToLowerInvariant().Contains("<error>"))
-                            stdoutLog.LogEvent(line, ImageType.Error);
+                            StdoutLog.LogEvent(line, ImageType.Error);
                         else if (line.ToLowerInvariant().Contains("<warning>")
                             && !FileUtil.RegExMatch(line, @"\[\w\d{2}\] audio overlaps for ", true)
                             && !FileUtil.RegExMatch(line, @"\[\w\d{2}\] the video framerate is correct, but rather unusual", true))
-                            stdoutLog.LogEvent(line, ImageType.Warning);
+                            StdoutLog.LogEvent(line, ImageType.Warning);
                         if (line.Contains("Getting \"Haali Matroska Muxer\" instance failed"))
                         {
                             // haali media splitter is missing ==> try to (re)install it
-                            if (!su.WasAborted && FileUtil.InstallHaali(ref log))
-                                base.bSecondPassNeeded = true;
+                            if (!Su.WasAborted && FileUtil.InstallHaali(ref log))
+                                base.BSecondPassNeeded = true;
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                stdoutLog.LogEvent("Error parsing: " + job.Args, ImageType.Error);
+                StdoutLog.LogEvent("Error parsing: " + Job.Args, ImageType.Error);
             }
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
         {
+            if (String.IsNullOrEmpty(line))
+                return;
+            
             if (line.StartsWith("process: ")) //status update
             {
-                su.PercentageDoneExact = getPercentage(line);
-                if (!base.bFirstPass)
-                    su.Status = "Fixing audio gaps/overlaps...";
+                if (!base.BFirstPass)
+                    Su.Status = "Fixing audio gaps/overlaps...";
                 else
-                    su.Status = "Extracting Tracks...";
+                    Su.Status = "Extracting Tracks...";
+                Su.PercentageCurrent = getPercentage(line);
             }
             else if (line.StartsWith("analyze: "))
             {
-                su.PercentageDoneExact = getPercentage(line);
-                su.Status = "Analyzing...";
+                Su.Status = "Analyzing...";
             }
             else if (line.ToLowerInvariant().Contains("starting 2nd pass"))
             {
-                su.PercentageDoneExact = 0;
-                su.ResetTime();
-                base.bFirstPass = false;
-                su.Status = "Fixing audio gaps/overlaps...";
+                base.BFirstPass = false;
+                Su.Status = "Fixing audio gaps/overlaps...";
                 base.ProcessLine(line, stream, oType);
             }
             else if (line.ToLowerInvariant().Contains("without making use of the gap/overlap information") 
@@ -150,10 +150,10 @@ namespace MeGUI
             {
                 // "2nd pass will be necessary"
                 // "will be stripped in 2nd pass"
-                if (!base.bSecondPassNeeded)
+                if (!base.BSecondPassNeeded)
                 {
                     log.LogEvent("Job will be executed a second time to make use of the gap/overlap information");
-                    base.bSecondPassNeeded = true;
+                    base.BSecondPassNeeded = true;
                 }
                 base.ProcessLine(line, stream, oType);
             }
@@ -167,7 +167,7 @@ namespace MeGUI
             {
                 base.ProcessLine(line, stream, ImageType.Warning);
             }
-            else if (su.PercentageDoneExact > 0 && su.PercentageDoneExact < 100
+            else if (Su.PercentageCurrent > 0 && Su.PercentageCurrent < 100
                 && !line.ToLowerInvariant().Contains("creating file ") 
                 && !line.ToLowerInvariant().Contains("(seamless branching)...")
                 && !FileUtil.RegExMatch(line, @"\w\d{2} extracting \w+ track number \d+", true))
@@ -183,36 +183,36 @@ namespace MeGUI
             get
             {
                 StringBuilder sb = new StringBuilder();
-                if (job.InputType == 1) // Folder as Input
+                if (Job.InputType == 1) // Folder as Input
                 {
-                    if (job.Input.IndexOf("BDMV") > 0 && (job.Input.ToLowerInvariant().EndsWith(".m2ts") || job.Input.ToLowerInvariant().EndsWith(".mpls")))
-                        sb.Append(string.Format("\"{0}\" {1}) {2}", job.Input.Substring(0, job.Input.IndexOf("BDMV")), job.FeatureNb, job.Args.Trim() + " -progressnumbers"));
-                    else if (job.Input.ToLowerInvariant().EndsWith(".evo"))
-                        sb.Append(string.Format("\"{0}\" {1}) {2}", job.Input.Substring(0, job.Input.IndexOf("HVDVD_TS")), job.FeatureNb, job.Args.Trim() + " -progressnumbers"));
+                    if (Job.Input.IndexOf("BDMV") > 0 && (Job.Input.ToLowerInvariant().EndsWith(".m2ts") || Job.Input.ToLowerInvariant().EndsWith(".mpls")))
+                        sb.Append(string.Format("\"{0}\" {1}) {2}", Job.Input.Substring(0, Job.Input.IndexOf("BDMV")), Job.FeatureNb, Job.Args.Trim() + " -progressnumbers"));
+                    else if (Job.Input.ToLowerInvariant().EndsWith(".evo"))
+                        sb.Append(string.Format("\"{0}\" {1}) {2}", Job.Input.Substring(0, Job.Input.IndexOf("HVDVD_TS")), Job.FeatureNb, Job.Args.Trim() + " -progressnumbers"));
                     else
-                        sb.Append(string.Format("\"{0}\" {1}) {2}", job.Input, job.FeatureNb, job.Args.Trim() + " -progressnumbers"));
+                        sb.Append(string.Format("\"{0}\" {1}) {2}", Job.Input, Job.FeatureNb,Job.Args.Trim() + " -progressnumbers"));
                 }
                 else
                 {
-                    if (job.Source.Count == 0 && !String.IsNullOrEmpty(job.Input))
-                        job.Source.Add(job.Input);
+                    if (Job.Source.Count == 0 && !String.IsNullOrEmpty(Job.Input))
+                        Job.Source.Add(Job.Input);
 
-                    string strSource = string.Format("\"{0}\"", job.Source[0]);
-                    for (int i = 1; i < job.Source.Count; i++)
-                        strSource += string.Format("+\"{0}\"", job.Source[i]);
-                    sb.Append(string.Format("{0} {1}", strSource, job.Args.Trim() + " -progressnumbers"));
+                    string strSource = string.Format("\"{0}\"", Job.Source[0]);
+                    for (int i = 1; i < Job.Source.Count; i++)
+                        strSource += string.Format("+\"{0}\"", Job.Source[i]);
+                    sb.Append(string.Format("{0} {1}", strSource, Job.Args.Trim() + " -progressnumbers"));
                 }
 
-                MatchCollection arrOutputFiles = Regex.Matches(job.Args, "[0-9]:\".+?\"");
+                MatchCollection arrOutputFiles = Regex.Matches(Job.Args, "[0-9]:\".+?\"");
                 foreach (Match oOutputFile in arrOutputFiles)
                 {
                     string strOutputFile = oOutputFile.Groups[0].Value.Substring(3, oOutputFile.Groups[0].Value.Length - 4);
-                    if (!job.FilesToDelete.Contains(strOutputFile + ".gaps"))
-                        job.FilesToDelete.Add(strOutputFile + ".gaps");
+                    if (!Job.FilesToDelete.Contains(strOutputFile + ".gaps"))
+                        Job.FilesToDelete.Add(strOutputFile + ".gaps");
 
-                    string strLogFile = System.IO.Path.Combine(job.Output, System.IO.Path.GetFileNameWithoutExtension(strOutputFile) + " - Log.txt");
-                    if (!job.FilesToDelete.Contains(strLogFile))
-                        job.FilesToDelete.Add(strLogFile);
+                    string strLogFile = System.IO.Path.Combine(Job.Output, System.IO.Path.GetFileNameWithoutExtension(strOutputFile) + " - Log.txt");
+                    if (!Job.FilesToDelete.Contains(strLogFile))
+                        Job.FilesToDelete.Add(strLogFile);
                 }
 
                 return sb.ToString();

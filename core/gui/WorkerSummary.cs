@@ -31,6 +31,7 @@ namespace MeGUI.core.gui
     public partial class WorkerSummary : Form
     {
         Dictionary<string, IndividualWorkerSummary> displays = new Dictionary<string, IndividualWorkerSummary>();
+        private Timer _GUIUpdateTimer = new Timer();
 
         public WorkerSummary()
         {
@@ -43,7 +44,29 @@ namespace MeGUI.core.gui
             panel1.Width = width;
             panel1.Location = new Point(0, 0);
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            _GUIUpdateTimer.Tick += new EventHandler(TimerEventProcessor);
+            _GUIUpdateTimer.Interval = 5000;
         }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+                _GUIUpdateTimer.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void TimerEventProcessor(Object myObject, EventArgs myEventArgs)
+        {
+    RefreshInfo();
+}
 
         public void RefreshInfo()
         {
@@ -78,23 +101,18 @@ namespace MeGUI.core.gui
         private void WorkerSummary_VisibleChanged(object sender, EventArgs e)
         {
             if (Visible)
+            { 
                 RefreshInfo();
-        }
-
-        internal void RefreshInfo(string name)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new MethodInvoker(delegate { RefreshInfo(name); }));
-                return;
+                _GUIUpdateTimer.Start();
             }
-            if (Visible && displays.ContainsKey(name))
-                displays[name].RefreshInfo();
+            else
+                _GUIUpdateTimer.Stop();
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            e.Cancel = true;
+            if (e != null)
+                e.Cancel = true;
             Hide();
         }
     }

@@ -40,16 +40,16 @@ namespace MeGUI
         public PgcDemux(string executablePath)
         {
             UpdateCacher.CheckPackage("pgcdemux");
-            this.executable = executablePath;
+            this.Executable = executablePath;
         }
 
         protected override void checkJobIO()
         {
             try
             {
-                if (!String.IsNullOrEmpty(job.TemporaryPath))
-                    FileUtil.ensureDirectoryExists(job.TemporaryPath);
-                su.Status = "Preparing VOB...";
+                if (!String.IsNullOrEmpty(Job.TemporaryPath))
+                    FileUtil.ensureDirectoryExists(Job.TemporaryPath);
+                Su.Status = "Preparing VOB...";
             }
             finally
             {
@@ -64,10 +64,10 @@ namespace MeGUI
                 StringBuilder sb = new StringBuilder();
 
                 // Input File
-                sb.Append("-pgc " + job.PGCNumber);
-                if (job.AngleNumber > 0)
-                    sb.Append(" -ang " + job.AngleNumber);
-                sb.Append(" -noaud -nosub -customvob n,v,a,s,l \"" + job.Input + "\" \"" + job.TemporaryPath + "\"");
+                sb.Append("-pgc " + Job.PGCNumber);
+                                if (Job.AngleNumber > 0)
+                    sb.Append(" -ang " + Job.AngleNumber);
+                sb.Append(" -noaud -nosub -customvob n,v,a,s,l \"" + Job.Input + "\" \"" + Job.TemporaryPath + "\"");
                 return sb.ToString();
             }
         }
@@ -77,7 +77,7 @@ namespace MeGUI
             for (int i = 1; i < 10; i++)
             {
                 // check first if the output file already exists and delete it
-                string output = job.OutputFileName.Substring(0, job.OutputFileName.Length - 5) + i + ".VOB";
+                string output = Job.OutputFileName.Substring(0, Job.OutputFileName.Length - 5) + i + ".VOB";
                 if (File.Exists(output))
                 {
                     File.Delete(output);
@@ -85,7 +85,7 @@ namespace MeGUI
                 }
 
                 // move the new output file to the desired location if found
-                string input = Path.Combine(job.TemporaryPath, "VTS_01_" + i + ".VOB");
+                string input = Path.Combine(Job.TemporaryPath, "VTS_01_" + i + ".VOB");
                 if (!File.Exists(input))
                     continue;
 

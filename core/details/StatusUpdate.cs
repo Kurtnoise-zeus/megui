@@ -22,6 +22,7 @@ using System;
 using System.Diagnostics;
 
 using MeGUI.core.util;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace MeGUI
 {
@@ -30,45 +31,64 @@ namespace MeGUI
 	/// it contains all the elements that will be updated in the GUI at some point
 	/// </summary>
 	public class StatusUpdate
-	{
-		private bool hasError, isComplete, wasAborted;
-        private string jobName, status;
-        private TimeSpan? clipPosition, clipLength, estimatedTime;
-        private ulong? nbFramesDone, nbFramesTotal;
-        private FileSize? filesize, projectedFileSize;
-        private string processingspeed;
-		private decimal percentage;
-        private JobStatus jobStatus;
-        private static readonly TimeSpan FiveSeconds = new TimeSpan(0, 0, 5);
-        private const int UpdatesPerEstimate = 10;
-        private TimeSpan[] previousUpdates = new TimeSpan[UpdatesPerEstimate];
-        private decimal[] previousUpdatesProgress = new decimal[UpdatesPerEstimate];
-        private int updateIndex = 0;
-        private Stopwatch oTimePaused = new Stopwatch();
-        private DateTime oTimeStart;
-        private TimeSpan oTimeElapsed;
+    {
+        private string _processingSpeedOverall;
 
-        internal StatusUpdate(string name)
+        private ulong? nbFramesDone, nbFramesTotal;
+
+        #region REAL variables
+        // The following groups each allow progress to be calculated (in percent)
+
+        ulong? _frame = null;
+        ulong? _framecount = null;
+
+        TimeSpan? _currentTime = null;
+        TimeSpan? _totalTime = null;
+        private double? _fps = null;
+        #endregion
+
+        #region ESTIMATED variables
+
+        // variables for time handling - exact
+        private Stopwatch _oTimeElapsed = new Stopwatch();
+        private TimeSpan _timeRemaining;
+
+        private decimal? _percentCurrent;
+        private decimal _percentEstimated;
+
+        private string _strStatus, _strJobOutput, _strJobName;
+        private bool _bHasError, _bIsComplete, _bWasAborted;
+        private JobStatus _jobStatus;
+
+        private FileSize? _fileSizeCurrent, _fileSizeEstimated, _fileSizeTotal;
+
+        private TimeSpan? _clipPosition, _clipLength;
+
+        private StatusHistory _statusHistory;
+
+        private string _processingSpeedCurrent;
+
+        #endregion
+
+        public StatusUpdate(string name, string jobOutput)
 		{
-            jobName = name;
-            estimatedTime = null;
-			hasError = false;
-			isComplete = false;
-			wasAborted = false;
-			clipPosition = null;
-            clipLength = null;
+            _strJobName = name;
+            _strJobOutput = jobOutput;
+            _bHasError = false;
+            _bIsComplete = false;
+            _bWasAborted = false;
+            _strStatus = "";
+            _percentEstimated = 0;
+			_clipPosition = null;
+            _clipLength = null;
             nbFramesDone = null;
             nbFramesTotal = null;
-			projectedFileSize = null;
-            processingspeed = null;
-			filesize = null;
-            jobStatus = MeGUI.JobStatus.PROCESSING;
+            _processingSpeedCurrent = null;
+            _processingSpeedOverall = null;
+            
+            _jobStatus = MeGUI.JobStatus.PROCESSING;
+            _statusHistory = new StatusHistory();
             ResetTime();
-            for (int i = 0; i < UpdatesPerEstimate; ++i)
-            {
-                previousUpdates[i] = TimeSpan.Zero;
-                previousUpdatesProgress[i] = 0M;
-            }
 		}
 
         /// <summary>
@@ -76,8 +96,8 @@ namespace MeGUI
         /// </summary>
         public string Status
         {
-            get { return status; }
-            set { status = value; }
+            get { return _strStatus; }
+            set { _strStatus = value; }
         }
 
         /// <summary>
@@ -85,14 +105,14 @@ namespace MeGUI
         /// </summary>
         public JobStatus JobStatus
         {
-            get { return jobStatus; }
+            get { return _jobStatus; }
             set
             {
-                jobStatus = value;
-                if (jobStatus == JobStatus.PAUSED)
-                    oTimePaused.Start();
+                _jobStatus = value;
+                if (_jobStatus == JobStatus.PAUSED)
+                    _oTimeElapsed.Stop();
                 else
-                    oTimePaused.Stop();
+                    _oTimeElapsed.Start();
             }
         }
 
@@ -100,54 +120,54 @@ namespace MeGUI
 		/// does the job have any errors?
 		/// </summary>
 		public bool HasError
-		{
-			get { return hasError; }
-			set { hasError = value; }
-		}
+        {
+			get { return _bHasError; }
+			set { _bHasError = value; }
+        }
 
 		/// <summary>
 		///  has the encoding job completed?
 		/// </summary>
 		public bool IsComplete
-		{
-			get { return isComplete; }
-			set { isComplete = value; }
-		}
+        {
+			get { return _bIsComplete; }
+			set { _bIsComplete = value; }
+        }
 
 		/// <summary>
 		/// did we get this statusupdate because the job was aborted?
 		/// </summary>
 		public bool WasAborted
-		{
-			get { return wasAborted; }
-			set { wasAborted = value; }
-		}
+        {
+			get { return _bWasAborted; }
+			set { _bWasAborted = value; }
+        }
 
 		/// <summary>
 		/// name of the job this statusupdate is refering to
 		/// </summary>
 		public string JobName
-		{
-			get { return jobName; }
-			set { jobName = value; }
-		}
+        {
+			get { return _strJobName; }
+			set { _strJobName = value; }
+        }
 
 		/// <summary>
 		///  position in clip
 		/// </summary>
 		public TimeSpan? ClipPosition
-		{
-			get { return clipPosition; }
-            set { _currentTime = value ?? _currentTime; clipPosition = _currentTime; }
-		}
+        {
+			get { return _clipPosition; }
+            set { _currentTime = value ?? _currentTime; _clipPosition = _currentTime; }
+        }
 
         /// <summary>
         /// Length of clip
         /// </summary>
         public TimeSpan? ClipLength
         {
-            get { return clipLength; }
-            set { _totalTime = value ?? _totalTime; clipLength = _totalTime;  }
+            get { return _clipLength; }
+            set { _totalTime = value ?? _totalTime; _clipLength = _totalTime; }
         }
 
 		/// <summary>
@@ -166,169 +186,282 @@ namespace MeGUI
 		{
 			get { return nbFramesTotal; }
             set { _framecount = value ?? _framecount; nbFramesTotal = _framecount; }
-		}
+        }
 
         /// <summary>
-        /// Some estimate of the encoding speed (eg FPS, or ratio to realtime)
+        /// FPS of the source
         /// </summary>
-        public string ProcessingSpeed
+        public double? FPS
         {
-            get { return processingspeed; }
+            get { return _fps; }
+            set { _fps = value ?? _fps; }
+        }
+
+        /// <summary>
+        /// Some estimate of the overall encoding speed (eg FPS, or ratio to realtime)
+        /// </summary>
+        public string OverallSpeed
+        {
+            get { return _processingSpeedOverall; }
+        }
+
+        /// <summary>
+        /// Some estimate of the current encoding speed (eg FPS, or ratio to realtime)
+        /// </summary>
+        public string CurrentSpeed
+        {
+            get { return _processingSpeedCurrent; }
+        }
+
+        /// <summary>
+        /// projected output size
+        /// </summary>
+        public FileSize? FileSizeTotal
+       {
+            get
+            {
+                if (!_fileSizeTotal.HasValue && _fileSizeEstimated.HasValue)
+                    return _fileSizeEstimated;
+                return _fileSizeTotal;
+            }
+            set { _fileSizeTotal = value; }
+        }
+
+        /// <summary>
+        /// size of the encoded file at this point
+        /// </summary>
+        public FileSize? FileSizeCurrent
+        {
+            get { return _fileSizeCurrent; }
+            set { _fileSizeCurrent = value; }
         }
 
 		/// <summary>
-		/// projected output size
+		/// gets / sets the exact percentage of the job progress
 		/// </summary>
-		public FileSize? ProjectedFileSize
-		{
-			get { return projectedFileSize; }
-            set { _totalSize = value ?? _totalSize; projectedFileSize = _totalSize; }
-		}
-
-        public int PercentageDone
+        public decimal? PercentageCurrent
         {
-            get { return (int)PercentageDoneExact; }
+            get { return _percentCurrent; }
+            set
+                {
+                    decimal ? _percentOld = _percentCurrent;
+                    _percentCurrent = value;
+                    _percentEstimated = value ?? 0M;
+                if (_percentCurrent.HasValue)
+                {
+                    if (_statusHistory.InitialResetCount == 0)
+                    {
+                        _statusHistory.InitialResetCount = 1;
+                        _oTimeElapsed.Restart();
+                    }
+                    else if (_percentOld.HasValue && _percentOld > _percentCurrent)
+                    {
+                        ResetTime();
+                        _statusHistory.InitialResetCount = 0;
+                    }
+                    else if (_statusHistory.InitialResetCount == 1)
+                        _statusHistory.InitialResetCount = 2;
+                    _statusHistory.SetValue(value ?? 0M, _oTimeElapsed.Elapsed);
+                }
+        }
+    }
+
+        /// <summary>
+        /// gets / sets the estimated percentage of the job progress
+        /// </summary>
+        public decimal PercentageEstimated
+        {
+            get { return _percentEstimated; }
         }
 
-		/// <summary>
-		/// gets / sets the exact percentage of the encoding progress
-		/// </summary>
-        public decimal? PercentageDoneExact
+        /// <summary>
+        /// time elapsed between start of encoding and the point where this status update is being sent
+        /// </summary>
+        public TimeSpan TimeElapsed
         {
-            get { return percentage; }
-            set { _percent = value ?? _percent; percentage = _percent ?? 0M; }
+        get { return _oTimeElapsed.Elapsed; }
         }
 
-		/// <summary>
-		/// size of the encoded file at this point
-		/// </summary>
-		public FileSize? CurrentFileSize
-		{
-			get { return filesize; }
-            set { _currentSize = value ?? _currentSize; filesize = _currentSize; }
-		}
-
-		/// <summary>
-		/// time elapsed between start of encoding and the point where this status update is being sent
-		/// </summary>
-		public TimeSpan TimeElapsed
-		{
-			get { return oTimeElapsed; }
-		}
+        /// <summary>
+        /// time elapsed between start of encoding and the point where this status update is being sent
+        /// </summary>
+        public TimeSpan TimeRemaining
+        {
+            get { return _timeRemaining; }
+        }
 
         public void ResetTime()
         {
-            oTimePaused.Reset();
-            oTimeStart = DateTime.Now;
+            _oTimeElapsed.Reset();
+            _statusHistory = new StatusHistory();
+            _oTimeElapsed.Start();
         }
-
-        #region REAL variables
-        TimeSpan? _timeEstimate = null;
-        public FileSize? _audioSize = null;
-
-        // The following groups each allow progress to be calculated (in percent)
-        decimal? _percent = null;
-
-        ulong? _frame = null;
-        ulong? _framecount = null;
-
-        FileSize? _currentSize = null;
-        FileSize? _totalSize = null;
-
-        TimeSpan? _currentTime = null;
-        TimeSpan? _totalTime = null;
-        #endregion
 
         public void FillValues()
         {
             try
             {
-                oTimeElapsed = (DateTime.Now - oTimeStart) - oTimePaused.Elapsed;
-
                 // First we attempt to find the percent done
                 decimal? fraction = null;
 
                 // Percent
-                if (_percent.HasValue)
-                    fraction = _percent / 100M;
-                // Time estimates
-                else if (_timeEstimate.HasValue && _timeEstimate != TimeSpan.Zero)
-                    fraction = ((decimal)oTimeElapsed.Ticks / (decimal)_timeEstimate.Value.Ticks);
+                if (_percentCurrent.HasValue)
+                    fraction = _percentCurrent / 100M;
                 // Frame counts
                 else if (_frame.HasValue && _framecount.HasValue && _framecount != 0)
                     fraction = ((decimal)_frame.Value / (decimal)_framecount.Value);
                 // File sizes
-                else if (_currentSize.HasValue && _totalSize.HasValue && _totalSize != FileSize.Empty)
-                    fraction = (_currentSize.Value / _totalSize.Value);
+                else if (_fileSizeCurrent.HasValue && _fileSizeTotal.HasValue && _fileSizeTotal != FileSize.Empty)
+                    fraction = (_fileSizeCurrent.Value / _fileSizeTotal.Value);
                 // Clip positions
                 else if (_currentTime.HasValue && _totalTime.HasValue && _totalTime != TimeSpan.Zero)
                     fraction = ((decimal)_currentTime.Value.Ticks / (decimal)_totalTime.Value.Ticks);
 
-                if (fraction.HasValue)
-                    percentage = fraction.Value * 100M;
-
                 /// Frame counts
                 if (_frame.HasValue)
-                    nbFramesDone = _frame.Value;
+                    NbFramesDone = _frame.Value;
                 if (_framecount.HasValue)
-                    nbFramesTotal = _framecount.Value;
+                    NbFramesTotal = _framecount.Value;
                 if (_framecount.HasValue && !_frame.HasValue && fraction.HasValue)
-                    nbFramesDone = (ulong)(fraction.Value * _framecount.Value);
+                    NbFramesDone = (ulong)(fraction.Value * _framecount.Value);
                 if (!_framecount.HasValue && _frame.HasValue && fraction.HasValue)
-                    nbFramesTotal = (ulong)(_frame.Value / fraction.Value);
+                    NbFramesTotal = (ulong)(_frame.Value / fraction.Value);
 
-                /// Sizes
-                if (_currentSize.HasValue)
-                    filesize = _currentSize;
-                if (_totalSize.HasValue)
-                    projectedFileSize = _totalSize;
-                if (_currentSize.HasValue && !_totalSize.HasValue && fraction.HasValue)
-                    projectedFileSize = _currentSize / fraction.Value;
-                // We don't estimate current size
-                // because it would suggest to the user that
-                // we are actually measuring it
-
-                // We don't estimate the current time or total time
-                // in the clip, because it would suggest we are measuring it.
-                if (_currentTime.HasValue)
-                    clipPosition = _currentTime;
+                // File size
+                _fileSizeCurrent = FileSize.Of2(_strJobOutput);
+                if (_fileSizeCurrent.HasValue && !_fileSizeTotal.HasValue && fraction.HasValue)
+                    _fileSizeEstimated = _fileSizeCurrent / fraction.Value;
+                
+                // Clip position
                 if (_totalTime.HasValue)
-                    clipLength = _totalTime;
-                // However, if we know the total time and the percent, it is
-                // ok to estimate the current position
-                if (_totalTime.HasValue && !_currentTime.HasValue && fraction.HasValue)
-                    clipPosition = new TimeSpan((long)((decimal)_totalTime.Value.Ticks * fraction.Value));
-
-                // FPS
-                if (_frame.HasValue && oTimeElapsed.TotalSeconds > 0)
-                    processingspeed =
-                        Util.ToString((decimal)_frame.Value / (decimal)oTimeElapsed.TotalSeconds, false) + " FPS";
-                // Other processing speeds
-                else if (_currentTime.HasValue && oTimeElapsed.Ticks > 0)
-                    processingspeed =
-                        Util.ToString((decimal)_currentTime.Value.Ticks / (decimal)oTimeElapsed.Ticks, false) + "x realtime";
-                else if (fraction.HasValue && _totalTime.HasValue && oTimeElapsed.Ticks > 0)
-                    processingspeed =
-                        Util.ToString((decimal)_totalTime.Value.Ticks * fraction.Value / (decimal)oTimeElapsed.Ticks, false) + "x realtime";
-
-                // Processing time
-                if (fraction.HasValue)
+                    _clipLength = _totalTime;
+                if (_currentTime.HasValue)
+                    _clipPosition = _currentTime;
+                else if (_totalTime.HasValue && fraction.HasValue)
+                    _clipPosition = new TimeSpan((long)((decimal)_totalTime.Value.Ticks * fraction.Value));
+                
+                // Overall speed
+                if (_frame.HasValue && _oTimeElapsed.Elapsed.TotalSeconds > 0)
+                    _processingSpeedOverall =
+                    Util.ToString((decimal)_frame.Value / (decimal)_oTimeElapsed.Elapsed.TotalSeconds, false) + " FPS";
+                else if (_currentTime.HasValue && _oTimeElapsed.ElapsedTicks > 0)
+                    _processingSpeedOverall =
+                    Util.ToString((decimal)_currentTime.Value.Ticks / (decimal)_oTimeElapsed.ElapsedTicks, false) + "x";
+                else if (fraction.HasValue && _totalTime.HasValue && _oTimeElapsed.ElapsedTicks > 0)
+                    _processingSpeedOverall =
+                    Util.ToString((decimal)_totalTime.Value.Ticks * fraction.Value / (decimal)_oTimeElapsed.ElapsedTicks, false) + "x";
+                else if (_statusHistory.InitialResetCount > 1)
+                    _processingSpeedOverall = Util.ToString(_statusHistory.GetSpeedOverall(), false) + " PPM";
+                
+                
+                _percentEstimated = _statusHistory.GetEstimatedProgress(_oTimeElapsed.Elapsed, out decimal dProgressPerTick);
+                if (_percentEstimated > 0)
                 {
-                    TimeSpan time = oTimeElapsed - previousUpdates[updateIndex];
-                    decimal progress = fraction.Value - previousUpdatesProgress[updateIndex];
-                    if (progress > 0 && time > FiveSeconds)
-                        estimatedTime = new TimeSpan((long)((decimal)time.Ticks * (1M - fraction) / progress));
+                    // estimate remaining time
+                    _timeRemaining = new TimeSpan((long)(((decimal)100 - _percentEstimated) * ((decimal)1 / dProgressPerTick)));
+                    
+                    if (_frame.HasValue && _totalTime.HasValue)
+                        _processingSpeedCurrent = ((_totalTime.Value.Ticks / (100 / (dProgressPerTick))) * (decimal)_fps.Value).ToString("0.00") + " FPS";
+                    else if (_totalTime.HasValue)
+                        _processingSpeedCurrent = (_totalTime.Value.Ticks / (100 / (dProgressPerTick))).ToString("0.00") + "x";
                     else
-                        estimatedTime = new TimeSpan((long)((decimal)oTimeElapsed.Ticks * ((1 / fraction.Value) - 1)));
-
-                    previousUpdates[updateIndex] = oTimeElapsed;
-                    previousUpdatesProgress[updateIndex] = fraction.Value;
-                    updateIndex = (updateIndex+1)% UpdatesPerEstimate;
+                        _processingSpeedCurrent = Util.ToString(dProgressPerTick * 600000000, false) + " PPM";
                 }
+                else
+                    _processingSpeedCurrent = _processingSpeedOverall;
             }
             catch (Exception)
             {
             }
         }
-	}
+    }
+
+    public class StatusHistory
+    {
+        private static readonly TimeSpan _timeBetweenUpdates = new TimeSpan(0, 0, 5);
+        private const int _historySize = 10;
+
+        private TimeSpan _lastTime;
+        private decimal _lastValue;
+        private decimal _progressPerTick;
+        private TimeSpan[] _historyTime = new TimeSpan[_historySize];
+        private decimal[] _historyValue = new decimal[_historySize];
+        private int _nextIndex = 0;
+        private int _oldestIndex = 0;
+        private int _initialResetCount = 0;
+
+        public int InitialResetCount { get => _initialResetCount; set => _initialResetCount = value; }
+
+        public StatusHistory()
+        {
+            for (int i = 0; i<_historySize; ++i)
+            {
+                _historyTime[i] = TimeSpan.Zero;
+                _historyValue[i] = 0M;
+            }
+
+        _lastValue = -1;
+
+        SetValue(0, new TimeSpan(0));
+    }
+
+    public void SetValue(decimal progress, TimeSpan time)
+    {
+                if (_lastValue == progress)
+                        return;
+    
+    _lastTime = time;
+    _lastValue = progress;
+    
+                if (_historyTime[_nextIndex] != TimeSpan.Zero && (time - _historyTime[(_nextIndex + 9) % _historySize]) < _timeBetweenUpdates)
+                        return;
+    
+    _historyTime[_nextIndex] = time;
+    _historyValue[_nextIndex] = progress;
+    _nextIndex = (_nextIndex + 1) % _historySize;
+    
+    _oldestIndex = _nextIndex;
+                if (_historyTime[_oldestIndex] == TimeSpan.Zero)
+                    {
+                        for (int i = 1; i < _historySize; ++i)
+                            {
+            _oldestIndex = (_nextIndex + i) % _historySize;
+                                if (_historyTime[_oldestIndex] != TimeSpan.Zero)
+                                        break;
+                            }
+                    }
+    
+    decimal dProgressPerTick;
+                if (_lastTime != TimeSpan.Zero && _lastTime != _historyTime[_oldestIndex])
+                    {
+        TimeSpan oTimeElapsed = _lastTime - _historyTime[_oldestIndex];
+        decimal dProgressElapsed = _lastValue - _historyValue[_oldestIndex];
+        dProgressPerTick = dProgressElapsed / oTimeElapsed.Ticks;
+                    }
+                else
+        dProgressPerTick = 0;
+    _progressPerTick = dProgressPerTick;
+            }
+
+        public decimal GetEstimatedProgress(TimeSpan _timeElapsedTotal, out decimal dProgressPerTick)
+        {
+    TimeSpan oTimeElapsed = _timeElapsedTotal - _lastTime;
+    decimal dProgressEstimated = 0;
+                if (oTimeElapsed.Ticks > 0)
+        dProgressEstimated = oTimeElapsed.Ticks * _progressPerTick;
+                else
+        dProgressEstimated = 0;
+    dProgressPerTick = _progressPerTick;
+    
+    decimal estimatedProgress = _lastValue + dProgressEstimated;
+                if (estimatedProgress > 100)
+                        return 100;
+                return estimatedProgress;
+            }
+
+        public decimal GetSpeedOverall()
+        {
+                return _lastValue / (decimal)_lastTime.TotalMinutes;
+            }
+    }
 }

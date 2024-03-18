@@ -36,7 +36,6 @@ namespace MeGUI.packages.video.x265
     public partial class x265ConfigurationPanel : MeGUI.core.details.video.VideoConfigurationPanel, Editable<x265Settings>
     {
         #region variables
-        public static bool levelEnforced; // flag to prevent recursion in EnforceLevels. There's probably a better way to do this.
         private XmlDocument ContextHelp = new XmlDocument();
         #endregion
         #region start / stop
@@ -612,7 +611,7 @@ namespace MeGUI.packages.video.x265
         protected override string getCommandline()
         {
             ulong x = 1;
-            return x265Encoder.genCommandline(null, null, null, -1, -1, 0, 1, ref x, Settings as x265Settings, null, null);
+            return x265Encoder.genCommandline(null, null, null, -1, -1, ref x, Settings as x265Settings, null);
         }
 
         /// <summary>
@@ -773,7 +772,11 @@ namespace MeGUI.packages.video.x265
                 return xs;
             }
             set
-            {  // Warning! The ordering of components matters because of the dependency code!
+            {
+                // Warning! The ordering of components matters because of the dependency code!
+                if (value == null)
+                    return;
+                
                 x265Settings xs = value;
                 updating = true;
                 tbx265Presets.Value = (int)xs.x265PresetLevel;

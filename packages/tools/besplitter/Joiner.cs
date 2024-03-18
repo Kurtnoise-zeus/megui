@@ -43,7 +43,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "BeSplit_Joiner");
         public Joiner(string exe)
         {
             UpdateCacher.CheckPackage("besplit");
-            executable = exe;
+            Executable = exe;
         }
 
         protected override bool checkExitCode
@@ -55,7 +55,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "BeSplit_Joiner");
         {
             get
             {
-                return job.generateJoinCommandline(tmpfile);
+                return Job.generateJoinCommandline(tmpfile);
             }
         }
 
@@ -66,10 +66,10 @@ new JobProcessorFactory(new ProcessorFactory(init), "BeSplit_Joiner");
             try
             {
                 // now create the temporary list
-                tmpfile = Path.Combine(Path.GetDirectoryName(job.Output), Path.GetRandomFileName());
+                tmpfile = Path.Combine(Path.GetDirectoryName(Job.Output), Path.GetRandomFileName());
                 using (StreamWriter w = new StreamWriter(File.OpenWrite(tmpfile), Encoding.Default))
                 {
-                    foreach (string file in job.InputFiles)
+                    foreach (string file in Job.InputFiles)
                     {
                         Util.ensureExists(file);
                         totalSize += FileSize.Of(file);
@@ -81,8 +81,8 @@ new JobProcessorFactory(new ProcessorFactory(init), "BeSplit_Joiner");
             {
                 throw new JobRunException("Error generating temporary *.lst file: " + e.Message, e);
             }
-            su.ProjectedFileSize = totalSize;
-            su.ClipLength = job.ClipLength;
+            Su.FileSizeTotal = totalSize;
+            Su.ClipLength = Job.ClipLength;
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)

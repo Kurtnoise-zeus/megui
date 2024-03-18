@@ -26,6 +26,7 @@ using System.Text;
 
 using MeGUI.core.details;
 using MeGUI.core.util;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace MeGUI
 {
@@ -40,15 +41,15 @@ namespace MeGUI
                 return new MP4BoxMuxer(mf.Settings.Mp4Box.Path);
             return null;
         }
-        
-        private int numberOfAudioTracks, numberOfSubtitleTracks, trackNumber;
+
+        private int numberOfAudioTracks, trackNumber;
         private enum LineType : int {other = 0, importing, writing, splitting, empty, error };
         private string lastLine;
 
         public MP4BoxMuxer(string executablePath)
         {
             UpdateCacher.CheckPackage("mp4box");
-            this.executable = executablePath;
+            this.Executable = executablePath;
             trackNumber = 0;
             lastLine = "";
         }
@@ -56,8 +57,7 @@ namespace MeGUI
         #region setup/start overrides
         protected override void checkJobIO()
         {
-            this.numberOfAudioTracks = job.Settings.AudioStreams.Count;
-            this.numberOfSubtitleTracks = job.Settings.SubtitleStreams.Count;
+            this.numberOfAudioTracks = Job.Settings.AudioStreams.Count;
 
             base.checkJobIO();
         }
@@ -69,7 +69,7 @@ namespace MeGUI
         /// </summary>
         /// <param name="line">the line to be analyzed</param>
         /// <returns>the line type</returns>
-        private LineType getLineType(string line)
+        private static LineType getLineType(string line)
         {
             if (line.StartsWith("Import"))
                 return LineType.importing;
@@ -93,53 +93,53 @@ namespace MeGUI
                         trackNumber++;
                     break;
                 case LineType.importing:
-                    su.PercentageDoneExact = getPercentage(line);
                     if (trackNumber == 1) // video
                     {
-                        if (String.IsNullOrEmpty(su.Status) || !su.Status.Equals("Importing Video Track..."))
+                        if (String.IsNullOrEmpty(Su.Status) || !Su.Status.Equals("Importing Video Track..."))
                         {
-                            su.Status = "Importing Video Track...";
-                            su.ResetTime();
+                            Su.Status = "Importing Video Track...";
+                            //Su.ResetTime();
                         }
                     }
                     else if (trackNumber == 2 && numberOfAudioTracks > 0) // first audio track
                     {
-                        if (String.IsNullOrEmpty(su.Status) || !su.Status.Equals("Importing Audio Track 1..."))
+                        if (String.IsNullOrEmpty(Su.Status) || !Su.Status.Equals("Importing Audio Track 1..."))
                         {
-                            su.Status = "Importing Audio Track 1...";
-                            su.ResetTime();
+                            Su.Status = "Importing Audio Track 1...";
+                            //Su.ResetTime();
                         }
                     }
                     else if (trackNumber == 3 && numberOfAudioTracks > 1) // second audio track
                     {
-                        if (String.IsNullOrEmpty(su.Status) || !su.Status.Equals("Importing Audio Track 2..."))
+                        if (String.IsNullOrEmpty(Su.Status) || !Su.Status.Equals("Importing Audio Track 2..."))
                         {
-                            su.Status = "Importing Audio Track 2...";
-                            su.ResetTime();
+                            Su.Status = "Importing Audio Track 2...";
+                            //Su.ResetTime();
                         }
                     }
                     else
-                    {
-                        if (String.IsNullOrEmpty(su.Status) || !su.Status.Equals("Importing Tracks..."))
                         {
-                            su.Status = "Importing Tracks...";
-                            su.ResetTime();
+                            if (String.IsNullOrEmpty(Su.Status) || !Su.Status.Equals("Importing Tracks..."))
+                            {
+                                Su.Status = "Importing Tracks...";
+                                //Su.ResetTime();
+                            }
                         }
-                    }
+                    Su.PercentageCurrent = getPercentage(line);
                     break;
 
                 case LineType.splitting:
-                    su.PercentageDoneExact = getPercentage(line);
-                    su.Status = "Splitting...";
+                    Su.PercentageCurrent = getPercentage(line);
+                    Su.Status = "Splitting...";
                     break;
 
                 case LineType.writing:
-                    su.PercentageDoneExact = getPercentage(line);
-                    if (String.IsNullOrEmpty(su.Status) || !su.Status.Equals("Writing..."))
-                    {
-                        su.Status = "Writing...";
-                        su.ResetTime();
-                    }
+                    if (String.IsNullOrEmpty(Su.Status) || !Su.Status.Equals("Writing..."))
+                        {
+                            Su.Status = "Writing...";
+                            //Su.ResetTime();
+                        }
+                    Su.PercentageCurrent = getPercentage(line);
                     break;
 
                 case LineType.other:
@@ -176,7 +176,7 @@ namespace MeGUI
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        private bool isEmptyLine(string line)
+        private static bool isEmptyLine(string line)
         {
             char[] characters = line.ToCharArray();
             bool isEmpty = true;
@@ -192,40 +192,11 @@ namespace MeGUI
         }
         #endregion
 
-        #region additional stuff
-        /// <summary>
-        /// compiles mp4 overhead statistics and dumps them to the log and a logfile
-        /// </summary>
-        public void printStatistics()
-        {
-            try
-            {
-                FileSize len = FileSize.Of(job.Output);
-                FileSize Empty = FileSize.Empty;
-                if (!Path.GetExtension(job.Input).ToLowerInvariant().Equals(".mp4"))
-                {
-                    FileSize rawSize = FileSize.Of(job.Input);
-                    LogItem i = new LogItem("MP4 Muxing statistics");
-                    i.LogValue("Size of raw video stream", rawSize);
-                    i.LogValue("Size of final MP4 file", len);
-                    i.LogValue("Codec", job.Codec);
-                    i.LogValue("Number of b-frames", job.NbOfBFrames);
-                    i.LogValue("Number of source frames", job.NbOfFrames);
-                    log.Add(i);
-                }
-            }
-            catch (Exception e)
-            {
-                log.LogValue("An exception occurred when printing mux statistics", e, ImageType.Warning);
-            }
-        }
-        #endregion
-
         protected override string Commandline
         {
             get
             {
-                MuxSettings settings = job.Settings;
+                MuxSettings settings = Job.Settings;
                 CultureInfo ci = new CultureInfo("en-us");
                 StringBuilder sb = new StringBuilder();
  
@@ -250,44 +221,30 @@ namespace MeGUI
                         }
                     }
 
-                    MediaInfoFile oVideoInfo = new MediaInfoFile(strInput, ref log);
-                    sb.Append("-add \"" + strInput);
-
-                    int trackID = 1;
-                    if (oVideoInfo.HasVideo && oVideoInfo.ContainerFileType == ContainerType.MP4)
-                        trackID = oVideoInfo.VideoInfo.Track.TrackID;
-                    sb.Append("#trackID=" + trackID);
-
-                    string fpsString = "";
-
-                    // https://sourceforge.net/p/megui/bugs/958/ & https://sourceforge.net/p/megui/feature-requests/660/
-                    if (!string.IsNullOrEmpty(oVideoInfo.VideoInfo.FPS_N.ToString()) || !string.IsNullOrEmpty(oVideoInfo.VideoInfo.FPS_D.ToString()))
-                        fpsString = oVideoInfo.VideoInfo.FPS_N.ToString(ci) + "/" + oVideoInfo.VideoInfo.FPS_D.ToString(ci);
-                    else
-                        fpsString = oVideoInfo.VideoInfo.FPS.ToString(ci);
-
-                    if (settings.Framerate.HasValue)
+                    using (MediaInfoFile oVideoInfo = new MediaInfoFile(strInput, ref log))
                     {
-                        decimal fpsv = (decimal) settings.Framerate.Value;
-                        var tt = Math.Round(fpsv, 0) * 1000;
-
-                        if (fpsv % 1 > 0)                                                   
-                            fpsString = tt.ToString(ci) + "/1001";
-                           
-                        else
-                            fpsString = tt.ToString(ci) + "/1000";
-                    }
-                    sb.Append(":fps=" + PrettyFormatting.ReplaceFPSValue(fpsString, oVideoInfo.VideoInfo.FPS_N, oVideoInfo.VideoInfo.FPS_D));
-
-                    if (oVideoInfo.HasVideo)
-                    {
-                        Dar? dar = oVideoInfo.VideoInfo.DAR;
-                        if (settings.DAR.HasValue)
-                            dar = settings.DAR;
-                        if (dar != null && dar.HasValue)
+                        sb.Append("-add \"" + strInput);
+                        
+                        int trackID = 1;
+                        if (oVideoInfo.HasVideo && oVideoInfo.ContainerFileType == ContainerType.MP4)
+                            trackID = oVideoInfo.VideoInfo.Track.TrackID;
+                        sb.Append("#trackID=" + trackID);
+                        
+                        string fpsString = oVideoInfo.VideoInfo.FPS.ToString(ci);
+                        if (settings.Framerate.HasValue)
+                            fpsString = settings.Framerate.Value.ToString(ci);
+                        sb.Append(":fps=" + PrettyFormatting.ReplaceFPSValue(fpsString, oVideoInfo.VideoInfo.FPS_N, oVideoInfo.VideoInfo.FPS_D));
+                        
+                        if (oVideoInfo.HasVideo)
                         {
-                            Sar sar = dar.Value.ToSar((int)oVideoInfo.VideoInfo.Width, (int)oVideoInfo.VideoInfo.Height);
-                            sb.Append(":par=" + sar.X + ":" + sar.Y);
+                            Dar ? dar = oVideoInfo.VideoInfo.DAR;
+                            if (settings.DAR.HasValue)
+                                dar = settings.DAR;
+                            if (dar != null && dar.HasValue)
+                            {
+                                Sar sar = dar.Value.ToSar((int)oVideoInfo.VideoInfo.Width, (int)oVideoInfo.VideoInfo.Height);
+                                sb.Append(":par=" + sar.X + ":" + sar.Y);
+                            }
                         }
                     }
 
@@ -295,7 +252,7 @@ namespace MeGUI
                     {
                         string tracknameFilePath = FileUtil.CreateUTF8TracknameFile(settings.VideoName, strInput, 0);
                         sb.Append(":name=file://" + tracknameFilePath);
-                        job.FilesToDelete.Add(tracknameFilePath);
+                        Job.FilesToDelete.Add(tracknameFilePath);
                     }
                     else
                         sb.Append(":name="); // to erase the default GPAC string
@@ -307,39 +264,36 @@ namespace MeGUI
                 foreach (object o in settings.AudioStreams)
                 {
                     MuxStream stream = (MuxStream)o;
-                    MediaInfoFile oInfo = new MediaInfoFile(stream.path, ref log);
-
-                    if (!oInfo.HasAudio)
+                    using (MediaInfoFile oInfo = new MediaInfoFile(stream.path, ref log))
                     {
-                        log.Error("No audio track found: " + stream.path);
-                        continue;
-                    }
-
-                    sb.Append(" -add \"" + stream.path);
-
-                    int trackID = 1;
-                    int heaac_flag = -1;
-                    if (oInfo.AudioInfo.Tracks.Count > 0)
-                    {
-                        if (oInfo.ContainerFileType == ContainerType.MP4)
-                            trackID = oInfo.AudioInfo.Tracks[0].TrackID;
-                        heaac_flag = oInfo.AudioInfo.Tracks[0].AACFlag;
-                    }
-                    sb.Append("#trackID=" + trackID);
-
-                    if (oInfo.ContainerFileType == ContainerType.MP4 || oInfo.AudioInfo.Tracks[0].AudioCodec == AudioCodec.AAC)
-                    {
-                        switch (heaac_flag)
+                        if (!oInfo.HasAudio)
                         {
-                            case 1: sb.Append(":sbr"); break;
-                            case 2: sb.Append(":ps"); break;
-                            default: sb.Append(""); break;
+                            log.Error("No audio track found: " + stream.path);
+                            continue;
+                        }
+
+                        sb.Append(" -add \"" + stream.path);
+
+                        int trackID = 1;
+                        int heaac_flag = -1;
+                        if (oInfo.AudioInfo.Tracks.Count > 0)
+                        {
+                            if (oInfo.ContainerFileType == ContainerType.MP4)
+                                trackID = oInfo.AudioInfo.Tracks[0].TrackID;
+                            heaac_flag = oInfo.AudioInfo.Tracks[0].AACFlag;
+                        }
+                        sb.Append("#trackID=" + trackID);
+
+                        if (oInfo.ContainerFileType == ContainerType.MP4 || oInfo.AudioInfo.Tracks[0].AudioCodec == AudioCodec.AAC)
+                        {
+                            switch (heaac_flag)
+                            {
+                                case 1: sb.Append(":sbr"); break;
+                                case 2: sb.Append(":ps"); break;
+                                default: sb.Append(""); break;
+                            }
                         }
                     }
-
-                  //  if (oInfo.AudioInfo.Tracks[0].AudioCodec == AudioCodec.OPUS)
-                  //      sb.Append(":timescale=44100"); // + oInfo.AudioInfo.Tracks[0].SamplingRate);
-
                     if (!string.IsNullOrEmpty(stream.language))
                     {
                         foreach (KeyValuePair<string, string> strLanguage in LanguageSelectionContainer.LanguagesTerminology)
@@ -355,8 +309,8 @@ namespace MeGUI
                     {
                         string tracknameFilePath = FileUtil.CreateUTF8TracknameFile(stream.name, stream.path, trackCount);
                         sb.Append(":name=file://" + tracknameFilePath);
-                        job.FilesToDelete.Add(tracknameFilePath);
-                    }
+                        Job.FilesToDelete.Add(tracknameFilePath);
+                        }
                     else
                         sb.Append(":name="); // to erase the default GPAC string
                     if (stream.delay != 0)
@@ -406,8 +360,8 @@ namespace MeGUI
                     {
                         string tracknameFilePath = FileUtil.CreateUTF8TracknameFile(stream.name, stream.path, trackCount);
                         sb.Append(":name=file://" + tracknameFilePath);
-                        job.FilesToDelete.Add(tracknameFilePath);
-                    }
+                        Job.FilesToDelete.Add(tracknameFilePath);
+                        }
                     else
                         sb.Append(":name="); // to erase the default GPAC string
                     if (settings.DeviceType == "iPod" || settings.DeviceType == "iPhone" || settings.DeviceType == "iPad" || settings.DeviceType == "Apple TV")
@@ -436,7 +390,7 @@ namespace MeGUI
                         if (settings.ChapterInfo.SaveText(strChapterFile))                            
                             sb.Append(" -chap \"" + strChapterFile + "\"");
                     }
-                    job.FilesToDelete.Add(strChapterFile);
+                    Job.FilesToDelete.Add(strChapterFile);
                 }
 
                 if (settings.SplitSize.HasValue)
@@ -455,10 +409,10 @@ namespace MeGUI
                     if (string.IsNullOrEmpty(settings.VideoInput) && !string.IsNullOrEmpty(settings.AudioStreams.ToString()))
                         settings.MuxedOutput = Path.ChangeExtension(settings.MuxedOutput, ".m4a");
 
-                    if (File.Exists(settings.MuxedOutput) && !settings.MuxedOutput.Equals(job.Output) && !MainForm.Instance.DialogManager.overwriteJobOutput(settings.MuxedOutput))
-                        throw new MeGUI.core.gui.JobWorker.JobStartException("File exists and the user doesn't want to overwrite", MeGUI.core.gui.JobWorker.ExceptionType.UserSkip);
-                    job.Output = settings.MuxedOutput;
-                }
+                   if (File.Exists(settings.MuxedOutput) && !settings.MuxedOutput.Equals(Job.Output) && !MainForm.Instance.DialogManager.overwriteJobOutput(settings.MuxedOutput))
+                    throw new MeGUI.core.gui.JobStartException("File exists and the user doesn't want to overwrite", MeGUI.core.gui.ExceptionType.UserSkip);
+                        Job.Output = settings.MuxedOutput;
+                    }
 
                 // force to create a new output file
                 sb.Append(" -new \"" + settings.MuxedOutput + "\"");

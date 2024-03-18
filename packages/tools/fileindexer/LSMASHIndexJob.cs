@@ -25,8 +25,7 @@ namespace MeGUI
 {
     public class LSMASHIndexJob : IndexJob
     {
-        public LSMASHIndexJob()
-            : base()
+        public LSMASHIndexJob() : base()
         {
         }
 
@@ -34,10 +33,8 @@ namespace MeGUI
         {
             Input = input;
             LoadSources = loadSources;
-            if (String.IsNullOrEmpty(indexFile))
-                Output = input + ".lwi";
-            else
-                Output = indexFile;
+            Output = input + ".lwi";
+            OutputFile = indexFile;
 
             if (audioTracks == null || audioTracks.Count == 0)
             {
@@ -52,7 +49,14 @@ namespace MeGUI
 
             DemuxVideo = false;
         }
-       
+
+        private string outputFile;
+        public string OutputFile
+        {
+            get { return outputFile; }
+            set { outputFile = value; }
+        }
+    
         public override string CodecString
         {
             get { return "lsmashindex"; }

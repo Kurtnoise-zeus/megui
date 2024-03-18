@@ -50,13 +50,13 @@ namespace MeGUI
         public D2VIndexer(string executableName)
         {
             UpdateCacher.CheckPackage("dgindex");
-            executable = executableName;
+            Executable = executableName;
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
         {
             if (Regex.IsMatch(line, "^[0-9]{1,3}$", RegexOptions.Compiled))
-                su.PercentageDoneExact = Int32.Parse(line);
+                Su.PercentageCurrent = Int32.Parse(line);
             else
                 base.ProcessLine(line, stream, oType);
         }
@@ -67,21 +67,21 @@ namespace MeGUI
             {
                 StringBuilder sb = new StringBuilder();
                 int idx = 0;
-                string projName = Path.Combine(Path.GetDirectoryName(job.Output), Path.GetFileNameWithoutExtension(job.Output));
+                string projName = Path.Combine(Path.GetDirectoryName(Job.Output), Path.GetFileNameWithoutExtension(Job.Output));
                 if (MainForm.Instance.Settings.AutoLoadDG)
-                    sb.Append("-SD=< -AIF=<" + job.Input);
+                    sb.Append("-SD=< -AIF=<" + Job.Input);
                 else
-                    sb.Append("-SD=< -IF=<" + job.Input);
-                if (job.DemuxVideo)
+                    sb.Append("-SD=< -IF=<" + Job.Input);
+                if (Job.DemuxVideo)
                     sb.Append("< -OFD=<" + projName + "< -FO=0 -exit -hide");
                 else 
                     sb.Append("< -OF=<" + projName + "< -FO=0 -exit -hide");
-                if (job.DemuxMode == 2)
+                if (Job.DemuxMode == 2)
                     sb.Append(" -OM=2"); // demux everything
-                else if (job.DemuxMode == 1)
+                else if (Job.DemuxMode == 1)
                 {
                     sb.Append(" -OM=1 -TN="); // demux only tracks checked
-                    foreach (AudioTrackInfo ati in job.AudioTracks)
+                    foreach (AudioTrackInfo ati in Job.AudioTracks)
                     {
                         if (idx > 0)
                              sb.Append("," + ati.DgIndexID);
@@ -99,44 +99,44 @@ namespace MeGUI
         {
             try
             {
-                if (!String.IsNullOrEmpty(job.Output))
-                    FileUtil.ensureDirectoryExists(Path.GetDirectoryName(job.Output));
+                if (!String.IsNullOrEmpty(Job.Output))
+                    FileUtil.ensureDirectoryExists(Path.GetDirectoryName(Job.Output));
             }
             finally
             {
                 base.checkJobIO();
             }
-            su.Status = "Creating DGV...";
+            Su.Status = "Creating DGV...";
         }
         
         protected override void doExitConfig()
         {
-            if (MainForm.Instance.Settings.AutoForceFilm && !su.HasError && !su.WasAborted )
+            if (MainForm.Instance.Settings.AutoForceFilm && !Su.HasError && !Su.WasAborted )
             {
                 LogItem l = log.LogEvent("Running auto force film");
                 double filmPercent;
                 try
                 {
-                    filmPercent = d2vFile.GetFilmPercent(job.Output);
+                    filmPercent = d2vFile.GetFilmPercent(Job.Output);
                 }
                 catch (Exception error)
                 {
                     l.LogValue("Exception opening file to apply force film", error, ImageType.Error);
-                    su.HasError = true;
+                    Su.HasError = true;
                     return;
                 }
-                if (!su.HasError)
+                if (!Su.HasError)
                 {
                     l.LogValue("Film percentage", filmPercent);
                     if (MainForm.Instance.Settings.ForceFilmThreshold <= (decimal)filmPercent)
                     {
-                        bool success = applyForceFilm(job.Output);
+                        bool success = applyForceFilm(Job.Output);
                         if (success)
                             l.LogEvent("Applied force film");
                         else
                         {
                             l.Error("Applying force film failed");
-                            su.HasError = true;
+                            Su.HasError = true;
                         }
                     }
                 }
@@ -186,21 +186,25 @@ namespace MeGUI
             }
         }
 
-        protected override void doStatusCycleOverrides()
+        protected override void RunStatusCycle()
         {
-            try
+            while (isRunning())
             {
-                if (su.TimeElapsed < TwoSeconds) // give it some time to start up, otherwise MainWindowHandle remains null
-                    return; 
-                string text = proc.MainWindowTitle;
-
-                Match m = DGPercent.Match(text);
-                if (m.Success)
+                try
                 {
-                    su.PercentageDoneExact = int.Parse(m.Groups["num"].Value);
+                    if (Su.TimeElapsed<TwoSeconds) // give it some time to start up, otherwise MainWindowHandle remains null
+                        return;
+                    string text = Proc.MainWindowTitle;
+
+                    Match m = DGPercent.Match(text);
+                    if (m.Success)
+                    {
+                        Su.PercentageCurrent = int.Parse(m.Groups["num"].Value);
+                    }
                 }
+                catch (Exception) { }
+                    Thread.Sleep(1000);
             }
-            catch (Exception) { }
         }
 
     }

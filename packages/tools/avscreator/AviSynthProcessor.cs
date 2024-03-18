@@ -32,8 +32,8 @@ namespace MeGUI
 
     public class AviSynthProcessor : IJobProcessor
     {
-        public static readonly JobProcessorFactory Factory =
-            new JobProcessorFactory(new ProcessorFactory(init), "AviSynthProcessor");
+        public static readonly JobProcessorFactory Factory = new JobProcessorFactory(new ProcessorFactory(init), "AviSynthProcessor");
+
 
         private static IJobProcessor init(MainForm mf, Job j)
         {
@@ -42,23 +42,40 @@ namespace MeGUI
         }
 
         #region variables
-        protected System.Threading.ManualResetEvent mre = new System.Threading.ManualResetEvent(true); // lock used to pause encoding
+        private System.Threading.ManualResetEvent mre = new System.Threading.ManualResetEvent(true); // lock used to pause encoding
         private AvsFile file;
         private IVideoReader reader;
         private bool aborted;
         private ulong position;
         private Thread processorThread, statusThread;
-        public StatusUpdate su = null;
-        private AviSynthJob job;
+        private StatusUpdate su = null;
         #endregion
         #region start / stop
         public AviSynthProcessor()
         {
         }
-        #endregion
-        #region processing
 
-        private void update()
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                mre.Dispose();
+                file.Dispose();
+            }
+            // free native resources
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+#endregion
+
+#region processing
+
+private void update()
         {
             while (!aborted && position < su.NbFramesTotal)
             {
@@ -91,9 +108,13 @@ namespace MeGUI
         /// <returns>true if the setup has succeeded, false if it has not</returns>
         public void setup(Job job, StatusUpdate su, LogItem _)
         {
+            if (job == null || su == null)
+            {
+                throw new JobRunException("job or su are null");
+            }
+            
             Debug.Assert(job is AviSynthJob, "Job isn't an AviSynthJob");
             this.su = su;
-            this.job = (AviSynthJob)job;
 
             try 
             {
@@ -105,6 +126,7 @@ namespace MeGUI
                 throw new JobRunException(ex);
             }
             this.su.NbFramesTotal = (ulong)reader.FrameCount;
+            this.su.FPS = file.VideoInfo.FPS;
             this.su.ClipLength = TimeSpan.FromSeconds((double)this.su.NbFramesTotal / file.VideoInfo.FPS);
             this.su.Status = "Playing through file...";
             position = 0;
@@ -137,7 +159,6 @@ namespace MeGUI
             {
                 statusThread.Start();
                 processorThread.Start();
-                su.ResetTime();
             }
             catch (Exception e)
             {

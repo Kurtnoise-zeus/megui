@@ -34,21 +34,34 @@ namespace MeGUI.core.details
         private string owningWorker;
         private List<string> requiredJobNames;
         private List<string> enabledJobNames;
-        public string EncodingSpeed = "";
+        private string encodingSpeed = "";
 
         [XmlIgnore]
-        public List<TaggedJob> EnabledJobs = new List<TaggedJob>();
+        private StatusUpdate su;
 
         [XmlIgnore]
-        public List<TaggedJob> RequiredJobs = new List<TaggedJob>();
+        private List<TaggedJob> enabledJobs = new List<TaggedJob>();
+
+        [XmlIgnore]
+        private List<TaggedJob> requiredJobs = new List<TaggedJob>();
 
         public TaggedJob() { }
 
-        internal TaggedJob(Job j)
-            : this()
+        internal TaggedJob(Job j) : this()
         {
             job = j;
         }
+
+        public string EncodingSpeed { get => encodingSpeed; set => encodingSpeed = value; }
+        
+        [XmlIgnore]
+        public StatusUpdate Su { get => su; set => su = value; }
+
+        [XmlIgnore]
+        public List<TaggedJob> EnabledJobs { get => enabledJobs; set => enabledJobs = value; }
+
+        [XmlIgnore]
+        public List<TaggedJob> RequiredJobs { get => requiredJobs; set => requiredJobs = value; }
 
         public Job Job
         {
@@ -65,6 +78,9 @@ namespace MeGUI.core.details
 
         public void AddDependency(TaggedJob other)
         {
+            if (other == null)
+                return;
+            
             // we can't have each job depending on the other
             System.Diagnostics.Debug.Assert(!other.RequiredJobs.Contains(this));
             RequiredJobs.Add(other);
@@ -104,7 +120,12 @@ namespace MeGUI.core.details
         public JobStatus Status
         {
             get { return status; }
-            set { status = value; }
+            set
+            {
+                status = value;
+                                if (Su != null)
+                    Su.JobStatus = status;
+            }
         }
 
         /// <summary>

@@ -110,7 +110,7 @@ namespace MeGUI
         #region event handlers
         private void videoInput_FileSelected(FileBar sender, FileBarEventArgs args)
         {
-            if (!string.IsNullOrEmpty(videoInput.Filename) && !MainForm.Instance.openFile(videoInput.Filename, out oInfo))
+            if (!string.IsNullOrEmpty(videoInput.Filename) && !MainForm.Instance.openFile(videoInput.Filename))
             {
                 videoInput.Filename = String.Empty;
                 videoOutput.Filename = String.Empty;

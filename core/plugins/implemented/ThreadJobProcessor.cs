@@ -31,31 +31,54 @@ namespace MeGUI
         where TJob : Job
     {
         #region variables
-        protected TJob job;
-        protected StatusUpdate su;
+        private TJob job;
+        private StatusUpdate su;
+        private Thread processThread;
+        private ManualResetEvent mre = new System.Threading.ManualResetEvent(true); // lock used to pause processing
+        private bool continueWorking = true;
+
+#pragma warning disable CA1051 // Do not declare visible instance fields
         protected LogItem log;
-        protected Thread processThread;
-        protected ManualResetEvent mre = new System.Threading.ManualResetEvent(true); // lock used to pause processing
-        protected bool continueWorking = true;
-        protected string jobOutputFile = string.Empty;
+#pragma warning restore CA1051 // Do not declare visible instance fields
+        
+        protected TJob Job { get => job; set => job = value; }
+        protected StatusUpdate Su { get => su; set => su = value; }
+        protected ManualResetEvent Mre { get => mre; set => mre = value; }
         #endregion
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                mre.Dispose();
+            }
+            // free native resources
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         protected virtual void checkJobIO()
         {
             // only check if the input file exist if it is not a cleanup job
             if (!(this is MeGUI.core.details.CleanupJobRunner))
-                Util.ensureExists(job.Input);
-            jobOutputFile = job.Output;
+                Util.ensureExists(Job.Input);
         }
 
         protected virtual void doExitConfig()
         {
-            if (su.HasError || su.WasAborted)
+            if (Su.HasError || Su.WasAborted)
                 return;
 
-            if (!String.IsNullOrEmpty(job.Output) && File.Exists(job.Output))
+            if (!String.IsNullOrEmpty(Job.Output) && File.Exists(Job.Output))
             {
-                MediaInfoFile oInfo = new MediaInfoFile(job.Output, ref log);
+                using (MediaInfoFile oInfo = new MediaInfoFile(Job.Output, ref log))
+                {
+                }
             }
         }
 
@@ -64,8 +87,9 @@ namespace MeGUI
         protected void ThreadFinished()
         {
             doExitConfig();
-            su.IsComplete = true;
-            StatusUpdate(su);
+            Su.IsComplete = true;
+            if (StatusUpdate != null)
+                StatusUpdate(Su);
         }
 
         #region IVideoEncoder overridden Members
@@ -76,9 +100,9 @@ namespace MeGUI
 
             this.log = log;
             TJob job = (TJob)job2;
-            this.job = job;
+            this.Job = job;
 
-            this.su = su;
+            this.Su = su;
             checkJobIO();
         }
 
@@ -86,7 +110,7 @@ namespace MeGUI
         {
             try
             {
-                WorkerPriority.GetJobPriority(job, out WorkerPriorityType oPriority, out bool lowIOPriority);
+                WorkerPriority.GetJobPriority(Job, out WorkerPriorityType oPriority, out bool lowIOPriority);
                 processThread = new Thread(new ThreadStart(RunInThread));
                 processThread.Priority = OSInfo.GetThreadPriority(oPriority);
                 processThread.Start();
@@ -102,9 +126,9 @@ namespace MeGUI
         {
             try
             {
-                su.WasAborted = true;
+                Su.WasAborted = true;
                 continueWorking = false;
-                mre.Set(); // if it's paused, then unpause
+                Mre.Set(); // if it's paused, then unpause
                 while (IsRunning())
                     MeGUI.core.util.Util.Wait(1000);
                 return;
@@ -117,12 +141,12 @@ namespace MeGUI
 
         public virtual bool pause()
         {
-            return mre.Reset();
+            return Mre.Reset();
         }
 
         public virtual bool resume()
         {
-            return mre.Set();
+            return Mre.Set();
         }
 
         public bool IsRunning()
@@ -148,7 +172,7 @@ namespace MeGUI
         public bool IsJobStopped()
         {
             // check for stop or suspend of the thread
-            mre.WaitOne();
+            Mre.WaitOne();
             return !continueWorking;
         }
 
@@ -159,13 +183,7 @@ namespace MeGUI
         protected void RunStatusCycle()
         {
             while (IsRunning())
-            {
-                su.CurrentFileSize = FileSize.Of2(jobOutputFile);
-                su.FillValues();
-                if (StatusUpdate != null && IsRunning())
-                    StatusUpdate(su);
                 MeGUI.core.util.Util.Wait(1000);
-            }
             ThreadFinished();
         }
         #endregion

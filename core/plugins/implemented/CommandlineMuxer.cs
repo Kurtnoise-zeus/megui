@@ -31,34 +31,37 @@ namespace MeGUI
     {
         protected virtual void setProjectedFileSize()
         {
-            su.ProjectedFileSize = FileSize.Empty;
-            su.ProjectedFileSize += (FileSize.Of2(job.Settings.VideoInput) ?? FileSize.Empty);
-            su.ProjectedFileSize += (FileSize.Of2(job.Settings.MuxedInput) ?? FileSize.Empty);
+            FileSize totalSize = FileSize.Empty;
 
-            foreach (MuxStream s in job.Settings.AudioStreams)
-                su.ProjectedFileSize += FileSize.Of2(s.path) ?? FileSize.Empty;
+            totalSize += (FileSize.Of2(Job.Settings.VideoInput) ?? FileSize.Empty);
+            totalSize += (FileSize.Of2(Job.Settings.MuxedInput) ?? FileSize.Empty);
 
-            foreach (MuxStream s in job.Settings.SubtitleStreams)
-                su.ProjectedFileSize += FileSize.Of2(s.path) ?? FileSize.Empty;
+            foreach (MuxStream s in Job.Settings.AudioStreams)
+                totalSize += FileSize.Of2(s.path) ?? FileSize.Empty;
+            
+            foreach (MuxStream s in Job.Settings.SubtitleStreams)
+                totalSize += FileSize.Of2(s.path) ?? FileSize.Empty;
+            
+            Su.FileSizeTotal = totalSize;
         }
 
         protected override void checkJobIO()
         {
-            ensureInputFilesExistIfNeeded(job.Settings);
+            ensureInputFilesExistIfNeeded(Job.Settings);
             setProjectedFileSize();
 
             if (log != null)
             {
-                if (job.Settings.DAR.HasValue)
-                    log.LogValue("aspect ratio (job)", job.Settings.DAR.Value);
-                if (job.Settings.Framerate.HasValue)
-                    log.LogValue("frame rate (job)", job.Settings.Framerate.Value);
-                if (!String.IsNullOrEmpty(job.Settings.DeviceType))
-                    log.LogValue("device type", job.Settings.DeviceType);
+                if (Job.Settings.DAR.HasValue)
+                    log.LogValue("aspect ratio (job)", Job.Settings.DAR.Value);
+                if (Job.Settings.Framerate.HasValue)
+                    log.LogValue("frame rate (job)", Job.Settings.Framerate.Value);
+                if (!String.IsNullOrEmpty(Job.Settings.DeviceType))
+                    log.LogValue("device type", Job.Settings.DeviceType);
             }
         }
 
-        private void ensureInputFilesExistIfNeeded(MuxSettings settings)
+        private static void ensureInputFilesExistIfNeeded(MuxSettings settings)
         {
             Util.ensureExistsIfNeeded(settings.MuxedInput);
             Util.ensureExistsIfNeeded(settings.VideoInput);

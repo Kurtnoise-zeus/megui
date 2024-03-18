@@ -51,6 +51,20 @@ namespace MeGUI.core.details
             summary = new WorkerSummary();
         }
 
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+                summary.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
         public JobQueue GlobalJobQueue
         {
             get { return globalJobQueue; }
@@ -136,7 +150,7 @@ namespace MeGUI.core.details
         /// <param name="startIdleWorkers">if true idle workers will be started</param>
         public void AdjustWorkerCount(bool startIdleWorkers)
         {
-            lock (mainForm.Jobs.ResourceLock)
+            lock (ResourceLock)
             {
                 // remove worker(s) if needed
                 if (PermanentWorkerCount > MainForm.Instance.Settings.WorkerMaximumCount)
@@ -205,7 +219,7 @@ namespace MeGUI.core.details
         /// <summary>
         /// lock object
         /// </summary>
-        public object ResourceLock
+        public static object ResourceLock
         {
             get { return resourceLock; }
         }
@@ -234,12 +248,13 @@ namespace MeGUI.core.details
         }
 
         /// <summary>
-        /// Unassigns a Job
+        /// Unassigns a <see cref="Job"/>
         /// </summary>
         /// <param name="j"></param>
-        public void UnassignJob(TaggedJob j)
+        public static void UnassignJob(TaggedJob j)
         {
-            j.OwningWorker = null;
+            if (j != null)
+                j.OwningWorker = null;
         }
         
         /// <summary>
@@ -247,9 +262,10 @@ namespace MeGUI.core.details
         /// </summary>
         /// <param name="j">the job to assign</param>
         /// <param name="WorkerName">the worker to assign the job to</param>
-        public void AssignJob(TaggedJob j, string WorkerName)
+        public static void AssignJob(TaggedJob j, string WorkerName)
         {
-            j.OwningWorker = WorkerName;
+            if (j != null)
+                j.OwningWorker = WorkerName;
         }
 
         #region properties
@@ -378,6 +394,9 @@ namespace MeGUI.core.details
         /// <param name="job">job to delete</param>
         public void DeleteJob(TaggedJob job)
         {
+            if (job == null)
+                return;
+            
             if (job.Status == JobStatus.PROCESSING || job.Status == JobStatus.PAUSED || job.Status == JobStatus.ABORTING)
             {
                 MessageBox.Show("You cannot delete a job while it is being processed.", "Deleting " + job.Name + " failed", MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -442,13 +461,13 @@ namespace MeGUI.core.details
                     LogItem oLog = FileUtil.DeleteIntermediateFiles(filesToDelete, false, true);
                     if (oLog != null)
                     {
-                        LogItem log = mainForm.Log.Info(string.Format("Log for {0} ({1}, {2} -> {3})", job.Name, job.Job.EncodingMode, job.InputFileName, job.OutputFileName));
+                        LogItem log = mainForm.Log.Info(string.Format(new System.Globalization.CultureInfo("en-US"), "Log for {0} ({1}, {2} -> {3})", job.Name, job.Job.EncodingMode, job.InputFileName, job.OutputFileName));
                         log.Add(oLog);
                     }
                 }
             }
 
-            lock (mainForm.Jobs.ResourceLock)
+            lock (ResourceLock)
             {
                 if (globalJobQueue.HasJob(job))
                     globalJobQueue.RemoveJobFromQueue(job);
@@ -505,11 +524,14 @@ namespace MeGUI.core.details
         }
 
         #region saving / loading jobs
-        public List<string> ToStringList(IEnumerable<TaggedJob> jobList)
+        public static List<string> ToStringList(IEnumerable<TaggedJob> jobList)
         {
             List<string> strings = new List<string>();
-            foreach (TaggedJob j in jobList)
-                strings.Add(j.Name);
+            if (jobList != null)
+            {
+                foreach (TaggedJob j in jobList)
+                    strings.Add(j.Name);
+            }
             return strings;
         }
 
@@ -518,7 +540,7 @@ namespace MeGUI.core.details
         /// </summary>
         public void SaveJobs()
         {
-            lock (mainForm.Jobs.ResourceLock)
+            lock (ResourceLock)
             {
                 foreach (TaggedJob job in allJobs.Values)
                 {
@@ -532,11 +554,6 @@ namespace MeGUI.core.details
                 string path = Path.Combine(mainForm.MeGUIPath, "joblists.xml");
                 Util.XmlSerialize(s, path);
             }
-        }
-
-        public class JobListSerializer
-        {
-            public List<string> mainJobList = new List<string>();
         }
 
         /// <summary>
@@ -589,14 +606,18 @@ namespace MeGUI.core.details
         public List<TaggedJob> ToJobList(IEnumerable<string> list)
         {
             List<TaggedJob> jobList = new List<TaggedJob>();
-            foreach (string name in list)
+            if (list != null)
             {
-                try
+                foreach (string name in list)
                 {
-                    jobList.Add(allJobs[name]);
-                }
-                catch (KeyNotFoundException)
-                {
+                    try
+                    {
+                        jobList.Add(allJobs[name]);
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        
+                     }
 
                 }
             }
@@ -610,8 +631,11 @@ namespace MeGUI.core.details
         /// </summary>
         /// <param name="job">the Job object to be saved</param>
         /// <param name="path">The path where the program was launched from</param>
-        public void SaveJob(TaggedJob job, string path)
+        public static void SaveJob(TaggedJob job, string path)
         {
+            if (job == null)
+                return;
+
             string fileName = Path.Combine(Path.Combine(path, "jobs"), job.Name + ".xml");
             Util.XmlSerialize(job, fileName);
         }
@@ -621,7 +645,7 @@ namespace MeGUI.core.details
         /// </summary>
         /// <param name="name">name of the job to be loaded (corresponds to the filename)</param>
         /// <returns>the Job object that was read from the harddisk</returns>
-        private TaggedJob LoadJob(string name)
+        private static TaggedJob LoadJob(string name)
         {
             XmlSerializer ser = null;
             using (Stream s = File.OpenRead(name))
@@ -683,7 +707,7 @@ namespace MeGUI.core.details
 
         private void AddJob(TaggedJob job)
         {
-            lock (mainForm.Jobs.ResourceLock)
+            lock (ResourceLock)
             {
                 int jobNr = 1;
                 string name = "";
@@ -705,8 +729,11 @@ namespace MeGUI.core.details
 
         public void ShowAfterEncodingStatus(MeGUISettings Settings)
         {
+            if (Settings == null)
+                return;
+            
             currentAfterEncoding = Settings.AfterEncoding;
-            cbAfterEncoding.SelectedIndex = (int) currentAfterEncoding;
+            cbAfterEncoding.SelectedIndex = (int)currentAfterEncoding;
             if (String.IsNullOrEmpty(Settings.AfterEncodingCommand))
                 cbAfterEncoding.Items[2] = "Run command (command not specified!)";
             else
@@ -729,11 +756,14 @@ namespace MeGUI.core.details
         /// </summary>
         /// <param name="j"></param>
         /// <returns></returns>
-        public bool AreDependenciesMet(TaggedJob j)
+        public static bool AreDependenciesMet(TaggedJob j)
         {
-            foreach (TaggedJob job in j.RequiredJobs)
-                if (job.Status != JobStatus.DONE && job.Status != JobStatus.SKIP)
-                    return false;
+            if (j != null)
+            {
+                foreach (TaggedJob job in j.RequiredJobs)
+                    if (job.Status != JobStatus.DONE && job.Status != JobStatus.SKIP)
+                        return false;
+            }
 
             return true;
         }
@@ -755,18 +785,6 @@ namespace MeGUI.core.details
                 AbortAll();
         }
 
-        private List<Pair<string, bool>> ListWorkers()
-        {
-            List<Pair<string, bool>> ans = new List<Pair<string,bool>>();
-            
-            foreach (JobWorker w in workers.Values)
-            {
-                ans.Add(new Pair<string,bool>(w.Name, false));
-            }
-
-            return ans;
-        }
-
         private void WorkerFinishedJobs(object sender, EventArgs e)
         {
             if (IsAnyWorkerRunning)
@@ -781,13 +799,11 @@ namespace MeGUI.core.details
             summary.BringToFront();
         }
 
-        public void UpdateProgress(string name)
-        {
-            summary.RefreshInfo(name);
-        }
-
         public void ShutDown(JobWorker w)
         {
+            if (w == null)
+                return;
+            
             workers.Remove(w.Name);
             summary.Remove(w.Name);
         }
@@ -819,5 +835,10 @@ namespace MeGUI.core.details
         {
             currentAfterEncoding = (AfterEncoding)cbAfterEncoding.SelectedIndex;
         }
+
+    public class JobListSerializer
+    {
+        public List<string> mainJobList = new List<string>();
     }
+}
 }

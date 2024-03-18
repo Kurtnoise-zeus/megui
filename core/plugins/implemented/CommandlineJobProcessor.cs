@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -28,59 +29,92 @@ using MeGUI.core.util;
 
 namespace MeGUI
 {
-    public enum StreamType : ushort { None = 0, Stderr = 1, Stdout = 2 }
+    public enum StreamType : Int32 { None = 0, Stderr = 1, Stdout = 2 }
 
     public abstract class CommandlineJobProcessor<TJob> : IJobProcessor
         where TJob : Job
     {
         #region variables
-        protected TJob job;
-        protected bool isProcessing = false;
-        protected Process proc = new Process(); // the encoder process
-        protected string executable; // path and filename of the commandline encoder to be used
-        protected ManualResetEvent mre = new ManualResetEvent(true); // lock used to pause encoding
-        protected ManualResetEvent stdoutDone = new ManualResetEvent(false);
-        protected ManualResetEvent stderrDone = new ManualResetEvent(false);
-        protected StatusUpdate su;
+        private TJob job;
+        private Process proc = new Process(); // the encoder process
+        private string executable; // path and filename of the commandline encoder to be used
+        private ManualResetEvent mre = new ManualResetEvent(true); // lock used to pause encoding
+        private ManualResetEvent stdoutDone = new ManualResetEvent(false);
+        private ManualResetEvent stderrDone = new ManualResetEvent(false);
+        private StatusUpdate su;
+#pragma warning disable CA1051 // Do not declare visible instance fields
         protected LogItem log;
-        protected LogItem stdoutLog;
-        protected LogItem stderrLog;
-        protected Thread readFromStdErrThread;
-        protected Thread readFromStdOutThread;
-        protected List<string> tempFiles = new List<string>();
-        protected bool bFirstPass = true;
-        protected bool bSecondPassNeeded = false;
-        protected bool bWaitForExit = false;
-        protected bool bCommandLine = true;
-        protected List<int> arrSuccessCodes = new List<int>() { 0 };
-        protected int iMinimumChildProcessCount = 0;
+#pragma warning restore CA1051 // Do not declare visible instance fields
+        private LogItem stdoutLog;
+        private LogItem stderrLog;
+        private Thread readFromStdErrThread;
+        private Thread readFromStdOutThread;
+        private bool bFirstPass = true;
+        private bool bSecondPassNeeded = false;
+        private bool bWaitForExit = false;
+        private bool bCommandLine = true;
+        private List<int> arrSuccessCodes = new List<int>() { 0 };
+        private int iMinimumChildProcessCount = 0;
 
+        protected TJob Job { get => job; set => job = value; }
+        protected Process Proc { get => proc; set => proc = value; }
+        protected string Executable { get => executable; set => executable = value; }
+        protected StatusUpdate Su { get => su; set => su = value; }
+        protected LogItem StdoutLog { get => stdoutLog; set => stdoutLog = value; }
+        protected bool BFirstPass { get => bFirstPass; set => bFirstPass = value; }
+        protected bool BSecondPassNeeded { get => bSecondPassNeeded; set => bSecondPassNeeded = value; }
+        protected bool BCommandLine { get => bCommandLine; set => bCommandLine = value; }
+        protected List<int> ArrSuccessCodes { get => arrSuccessCodes; set => arrSuccessCodes = value; }
+        protected int IMinimumChildProcessCount { get => iMinimumChildProcessCount; set => iMinimumChildProcessCount = value; }
         #endregion
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                proc.Dispose();
+                mre.Dispose();
+                stdoutDone.Dispose();
+                stderrDone.Dispose();
+            }
+            // free native resources
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         protected virtual void checkJobIO()
         {
-            Util.ensureExists(job.Input);
+            Util.ensureExists(Job.Input);
         }
 
         protected virtual void doExitConfig()
         {
-            if (su.HasError || su.WasAborted)
+            if (Su.HasError || Su.WasAborted)
                 return;
-
-            if (String.IsNullOrEmpty(job.Output))
+            
+            if (String.IsNullOrEmpty(Job.Output))
                 return;
-
-            if (File.Exists(job.Output))
+            
+            if (File.Exists(Job.Output))
             {
-                MediaInfoFile oInfo = new MediaInfoFile(job.Output, ref log);
-            }
-            else if (Path.GetExtension(job.Output).ToLower().Equals(".avi"))
+                using (MediaInfoFile oInfo = new MediaInfoFile(Job.Output, ref log))
+                {
+                                    }
+                            }
+            else if (Path.GetExtension(Job.Output).ToLowerInvariant().Equals(".avi"))
             {
-                string strFile = Path.GetFileNameWithoutExtension(job.Output) + " (1).avi";
-                strFile = Path.Combine(Path.GetDirectoryName(job.Output), strFile);
+                string strFile = Path.GetFileNameWithoutExtension(Job.Output) + " (1).avi";
+                strFile = Path.Combine(Path.GetDirectoryName(Job.Output), strFile);
                 if (File.Exists(strFile))
                 {
-                    MediaInfoFile oInfo = new MediaInfoFile(strFile, ref log);
+                    using (MediaInfoFile oInfo = new MediaInfoFile(strFile, ref log))
+                    {
+                    }
                 }
             }
         }
@@ -105,7 +139,7 @@ namespace MeGUI
         /// <returns></returns>
         protected virtual bool secondRunNeeded()
         {
-            if (bFirstPass && bSecondPassNeeded)
+            if (BFirstPass && BSecondPassNeeded)
                 return true;
             return false;
         }
@@ -128,7 +162,7 @@ namespace MeGUI
         protected void proc_Exited(object sender, EventArgs e)
         {
             mre.Set();  // Make sure nothing is waiting for pause to stop
-            if (bCommandLine)
+            if (BCommandLine)
             {
                 stdoutDone.WaitOne(); // wait for stdout to finish processing
                 stderrDone.WaitOne(); // wait for stderr to finish processing
@@ -137,30 +171,30 @@ namespace MeGUI
             getErrorLine();
 
             // check the exitcode
-            if (checkExitCode && !arrSuccessCodes.Contains(proc.ExitCode))
+            if (checkExitCode && !ArrSuccessCodes.Contains(Proc.ExitCode))
             {
-                string strError = WindowUtil.GetErrorText(proc.ExitCode);
-                if (!su.WasAborted)
-                {
-                    su.HasError = true;
-                    log.LogEvent("Process exits with error: " + strError, ImageType.Error);
-                }
+                string strError = WindowUtil.GetErrorText(Proc.ExitCode);
+                if (!Su.WasAborted)
+                    {
+                        Su.HasError = true;
+                        log.LogEvent("Process exits with error: " + strError, ImageType.Error);
+                    }
                 else
                     log.LogEvent("Process exits with error: " + strError);
             }
 
             if (secondRunNeeded())
             {
-                bFirstPass = false;
-                su.HasError = false;
+                BFirstPass = false;
+                Su.HasError = false;
                 start();
             }
             else
             {
-                su.Status = "Finalizing...";
-                su.IsComplete = true;
+                Su.Status = "Finalizing...";
+                Su.IsComplete = true;
                 doExitConfig();
-                StatusUpdate(su);
+                StatusUpdate(Su);
             }
 
             bWaitForExit = false;
@@ -174,27 +208,27 @@ namespace MeGUI
 
             this.log = log;
             TJob job = (TJob)job2;
-            this.job = job;
-
-            if (!executable.ToLowerInvariant().Equals("cmd.exe"))
+            this.Job = job;
+            
+            if (!Executable.ToLowerInvariant().Equals("cmd.exe"))
             {
                 // This enables relative paths, etc
-                if (!File.Exists(executable))
-                    executable = Path.Combine(System.Windows.Forms.Application.StartupPath, executable);
-                Util.ensureExists(executable);
+                if (!File.Exists(Executable))
+                    Executable = Path.Combine(System.Windows.Forms.Application.StartupPath, Executable);
+                    Util.ensureExists(Executable);
             }
-
-            this.su = su;
+            
+            this.Su = su;
             checkJobIO();
         }
 
         public void start()
         {
-            proc = new Process();
+            Proc = new Process();
             ProcessStartInfo pstart = new ProcessStartInfo();
-            pstart.FileName = executable;
+            pstart.FileName = Executable;
             pstart.Arguments = Commandline;
-            if (bCommandLine)
+            if (BCommandLine)
             {
                 pstart.RedirectStandardOutput = true;
                 pstart.RedirectStandardError = true;
@@ -202,22 +236,19 @@ namespace MeGUI
             }
             pstart.WindowStyle = ProcessWindowStyle.Minimized;
             pstart.CreateNoWindow = true;
-            proc.StartInfo = pstart;
-            proc.EnableRaisingEvents = true;
-            proc.Exited += new EventHandler(proc_Exited);
+            Proc.StartInfo = pstart;
+            Proc.EnableRaisingEvents = true;
+            Proc.Exited += new EventHandler(proc_Exited);
             bWaitForExit = false;
             log.LogValue("Job command line", '"' + pstart.FileName + "\" " + pstart.Arguments);
 
             try
             {
-                bool started = proc.Start();
-                if (bFirstPass)
-                    su.ResetTime();
-                isProcessing = true;
+                Proc.Start();
                 log.LogEvent("Process started");
-                stdoutLog = log.Info(string.Format("[{0:G}] {1}", DateTime.Now, "Standard output stream"));
+                StdoutLog = log.Info(string.Format("[{0:G}] {1}", DateTime.Now, "Standard output stream"));
                 stderrLog = log.Info(string.Format("[{0:G}] {1}", DateTime.Now, "Standard error stream"));
-                if (bCommandLine)
+                if (BCommandLine)
                 {
                     readFromStdErrThread = new Thread(new ThreadStart(readStdErr));
                     readFromStdOutThread = new Thread(new ThreadStart(readStdOut));
@@ -229,13 +260,13 @@ namespace MeGUI
                 if (hideProcess)
                 {
                     // try to hide the main window
-                    while (!proc.HasExited && !WindowUtil.GetIsWindowVisible(proc.MainWindowHandle))
+                    while (!Proc.HasExited && !WindowUtil.GetIsWindowVisible(Proc.MainWindowHandle))
                         MeGUI.core.util.Util.Wait(100);
-                    if (!proc.HasExited)
-                        WindowUtil.HideWindow(proc.MainWindowHandle);
+                    if (!Proc.HasExited)
+                        WindowUtil.HideWindow(Proc.MainWindowHandle);
                 }
-
-                WorkerPriority.GetJobPriority(job, out WorkerPriorityType oPriority, out bool lowIOPriority);
+                
+                WorkerPriority.GetJobPriority(Job, out WorkerPriorityType oPriority, out bool lowIOPriority);
                 this.changePriority(oPriority);
             }
             catch (Exception e)
@@ -248,24 +279,24 @@ namespace MeGUI
         {
             try
             {
-                if (proc == null || proc.HasExited)
+                if (Proc == null || Proc.HasExited)
                     return;
 
                 bWaitForExit = true;
                 mre.Set(); // if it's paused, then unpause
-                su.WasAborted = true;
-                if (proc.StartInfo.FileName.ToLowerInvariant().Equals("cmd.exe"))
+                Su.WasAborted = true;
+                if (Proc.StartInfo.FileName.ToLowerInvariant().Equals("cmd.exe"))
                 {
-                    foreach (Process oProc in OSInfo.GetChildProcesses(proc))
+                    foreach (Process oProc in OSInfo.GetChildProcesses(Proc))
                     {
                         if (!oProc.ProcessName.ToLowerInvariant().Equals("conhost"))
                             try { OSInfo.KillProcess(oProc); } catch { }
                     }
                 }
-                proc.Kill();
+                Proc.Kill();
                 while (bWaitForExit) // wait until the process has terminated without locking the GUI
                     MeGUI.core.util.Util.Wait(100);
-                proc.WaitForExit();
+                Proc.WaitForExit();
                 return;
             }
             catch (Exception e)
@@ -276,7 +307,7 @@ namespace MeGUI
 
         public bool pause()
         {
-            bool bResult = OSInfo.SuspendProcess(proc);
+            bool bResult = OSInfo.SuspendProcess(Proc);
             if (!mre.Reset() || !bResult)
                 return false;
             return true;
@@ -284,7 +315,7 @@ namespace MeGUI
 
         public bool resume()
         {
-            bool bResult = OSInfo.ResumeProcess(proc);
+            bool bResult = OSInfo.ResumeProcess(Proc);
             if (!mre.Set() || !bResult)
                 return false;
             return true;
@@ -292,7 +323,7 @@ namespace MeGUI
 
         public bool isRunning()
         {
-            return (proc != null && !proc.HasExited);
+            return(Proc != null && !Proc.HasExited);
         }
 
         public void changePriority(WorkerPriorityType priority)
@@ -302,8 +333,8 @@ namespace MeGUI
 
             try
             {
-                WorkerPriority.GetJobPriority(job, out WorkerPriorityType oPriority, out bool lowIOPriority);
-                OSInfo.SetProcessPriority(proc, priority, lowIOPriority, iMinimumChildProcessCount);
+                WorkerPriority.GetJobPriority(Job, out WorkerPriorityType oPriority, out bool lowIOPriority);
+                OSInfo.SetProcessPriority(Proc, priority, lowIOPriority, IMinimumChildProcessCount);
                 return;
             }
             catch (Exception e) // process could not be running anymore
@@ -317,7 +348,7 @@ namespace MeGUI
         protected virtual void readStream(StreamReader sr, ManualResetEvent rEvent, StreamType str)
         {
             string line;
-            if (proc != null)
+            if (Proc != null && sr != null && rEvent != null)
             {
                 try
                 {
@@ -340,7 +371,7 @@ namespace MeGUI
             StreamReader sr;
             try
             {
-                sr = proc.StandardOutput;
+                sr = Proc.StandardOutput;
             }
             catch (Exception e)
             {
@@ -356,7 +387,7 @@ namespace MeGUI
             StreamReader sr;
             try
             {
-                sr = proc.StandardError;
+                sr = Proc.StandardError;
             }
             catch (Exception e)
             {
@@ -369,36 +400,26 @@ namespace MeGUI
 
         public virtual void ProcessLine(string line, StreamType stream, ImageType oType)
         {
-            if (String.IsNullOrEmpty(line.Trim()))
+            if(String.IsNullOrEmpty(line) || String.IsNullOrEmpty(line.Trim()))
                 return;
 
             byte[] bytes = System.Text.Encoding.GetEncoding(0).GetBytes(line);
             line = System.Text.Encoding.UTF8.GetString(bytes);
 
             if (stream == StreamType.Stdout)
-                stdoutLog.LogEvent(line, oType);
+                StdoutLog.LogEvent(line, oType);
             if (stream == StreamType.Stderr)
                 stderrLog.LogEvent(line, oType);
 
             if (oType == ImageType.Error)
-                su.HasError = true;
+                Su.HasError = true;
         }
 
         #endregion
         #region status updates
         public event JobProcessingStatusUpdateCallback StatusUpdate;
-        protected void RunStatusCycle()
-        {
-            while (isRunning())
-            {
-                su.CurrentFileSize = FileSize.Of2(job.Output);
-                doStatusCycleOverrides();
-                su.FillValues();
-                if (StatusUpdate != null && proc != null && !proc.HasExited)
-                    StatusUpdate(su);
-                MeGUI.core.util.Util.Wait(1000);
-            }
-        }
+        protected virtual void RunStatusCycle()
+        { }
 
         protected virtual void doStatusCycleOverrides()
         { }

@@ -43,11 +43,11 @@ namespace MeGUI
         public VobSubIndexer()
         {
             UpdateCacher.CheckPackage("vsrip");
-            executable = MainForm.Instance.Settings.VobSubRipper.Path;
-            bCommandLine = false;
+            Executable = MainForm.Instance.Settings.VobSubRipper.Path;
+            BCommandLine = false;
 
             // success exit code is 2
-            this.arrSuccessCodes = new System.Collections.Generic.List<int>() { 2 };
+            this.ArrSuccessCodes = new System.Collections.Generic.List<int>() { 2 };
         }
 
         #region IJobProcessor Members
@@ -56,11 +56,11 @@ namespace MeGUI
             // independent of the iteration write the subtitles first
             writeSubtitles();
 
-            if (job.ExtractForcedTracks && base.bFirstPass && !su.HasError && !su.WasAborted)
+            if (Job.ExtractForcedTracks && base.BFirstPass && !Su.HasError && !Su.WasAborted)
             {
-                base.bSecondPassNeeded = true;
+                base.BSecondPassNeeded = true;
                 generateConfigFile();
-                su.Status = "Demuxing forced subtitles...";
+                Su.Status = "Demuxing forced subtitles...";
             }
 
             return base.secondRunNeeded();
@@ -79,33 +79,33 @@ namespace MeGUI
             base.checkJobIO();
             generateConfigFile();
             Util.ensureExists(configFile);
-            job.FilesToDelete.Add(configFile);
-            job.FilesToDelete.Add(Path.ChangeExtension(job.Input, ".chunks"));
+            Job.FilesToDelete.Add(configFile);
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Input, ".chunks"));
 
             // delete CC streams
-            string strForcedFile = Path.Combine(Path.GetDirectoryName(job.Output), Path.GetFileNameWithoutExtension(job.Output) + "_forced.idx");
+            string strForcedFile = Path.Combine(Path.GetDirectoryName(Job.Output), Path.GetFileNameWithoutExtension(Job.Output) + "_forced.idx");
 
-            job.FilesToDelete.Add(Path.ChangeExtension(job.Output, ".cc.raw"));
-            job.FilesToDelete.Add(Path.ChangeExtension(job.Output, ".cc.srt"));
-            job.FilesToDelete.Add(Path.ChangeExtension(job.Output, ".cc.utf16be.srt"));
-            job.FilesToDelete.Add(Path.ChangeExtension(job.Output, ".cc.utf16le.srt"));
-            job.FilesToDelete.Add(Path.ChangeExtension(job.Output, ".cc.utf8.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Output, ".cc.raw"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Output, ".cc.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Output, ".cc.utf16be.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Output, ".cc.utf16le.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Output, ".cc.utf8.srt"));
             
-            job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.raw"));
-            job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.srt"));
-            job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.utf16be.srt"));
-            job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.utf16le.srt"));
-            job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.utf8.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.raw"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.utf16be.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.utf16le.srt"));
+            Job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".cc.utf8.srt"));
 
-            if (!job.SingleFileExport)
+            if (!Job.SingleFileExport)
             {
-                job.FilesToDelete.Add(job.Output);
-                job.FilesToDelete.Add(Path.ChangeExtension(job.Output, ".sub"));
-                job.FilesToDelete.Add(strForcedFile);
-                job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".sub"));
+                Job.FilesToDelete.Add(Job.Output);
+                Job.FilesToDelete.Add(Path.ChangeExtension(Job.Output, ".sub"));
+                Job.FilesToDelete.Add(strForcedFile);
+                Job.FilesToDelete.Add(Path.ChangeExtension(strForcedFile, ".sub"));
             }
 
-            su.Status = "Demuxing subtitles...";
+            Su.Status = "Demuxing subtitles...";
         }
 
         protected override bool hideProcess
@@ -122,29 +122,29 @@ namespace MeGUI
         {
             // create the configuration script
             StringBuilder script = new StringBuilder();
-            script.AppendLine(job.Input);
-            script.AppendLine(FileUtil.GetPathWithoutExtension(job.Output) + (base.bSecondPassNeeded ? "_forced" : String.Empty));
-            script.AppendLine(job.PGC.ToString());
-            if (job.Angle > 1)
-                script.AppendLine(job.Angle.ToString());
+            script.AppendLine(Job.Input);
+            script.AppendLine(FileUtil.GetPathWithoutExtension(Job.Output) + (base.BSecondPassNeeded ? "_forced" : String.Empty));
+            script.AppendLine(Job.PGC.ToString());
+            if (Job.Angle > 1)
+                script.AppendLine(Job.Angle.ToString());
             else
                 script.AppendLine("1");
-            if (!job.IndexAllTracks)
+            if (!Job.IndexAllTracks)
             {
-                foreach (int id in job.TrackIDs)
+                foreach (int id in Job.TrackIDs)
                     script.Append(id + " ");
                 script.AppendLine();
             }
             else
                 script.AppendLine("ALL"); //process everything and strip down later
-            if (base.bSecondPassNeeded)
+            if (base.BSecondPassNeeded)
                 script.AppendLine("FORCEDONLY");
             script.AppendLine("RESETTIME");
             script.AppendLine("CLOSEIGNOREERRORS");
             script.AppendLine("CLOSE");
 
             // write the script to a temp file
-            configFile = Path.ChangeExtension(job.Output, ".vobsub");
+            configFile = Path.ChangeExtension(Job.Output, ".vobsub");
             FileUtil.ensureDirectoryExists(Path.GetDirectoryName(configFile));
             using (StreamWriter output = new StreamWriter(configFile, false, Encoding.Default))
                 output.Write(script.ToString());
@@ -157,8 +157,8 @@ namespace MeGUI
         /// </summary>
         private void writeSubtitles()
         {
-            string strInputFile = job.Output;
-            if (!base.bFirstPass)
+            string strInputFile = Job.Output;
+            if (!base.BFirstPass)
             {
                 strInputFile = Path.Combine(Path.GetDirectoryName(strInputFile), Path.GetFileNameWithoutExtension(strInputFile) + "_forced.idx");
                 string strSUBFile = Path.ChangeExtension(strInputFile, ".sub");
@@ -168,17 +168,17 @@ namespace MeGUI
                 if (f == null || f.Length == 0)
                 {
                     log.LogEvent("no forced subtitles found");
-                    job.FilesToDelete.Add(strInputFile);
-                    job.FilesToDelete.Add(strSUBFile);
+                    Job.FilesToDelete.Add(strInputFile);
+                    Job.FilesToDelete.Add(strSUBFile);
                     return;
                 }
             }
 
-            if (job.SingleFileExport || !File.Exists(strInputFile))
+            if (Job.SingleFileExport || !File.Exists(strInputFile))
                 return;
 
             // multiple output files have to be generated based on the single input file
-            su.Status = "Generating files...";
+            Su.Status = "Generating files...";
 
             string line;
             string strLanguage = string.Empty;
@@ -232,9 +232,9 @@ namespace MeGUI
 
                             // check if the track found in the input file is selected to be demuxed
                             bool bFound = false;
-                            if (!job.IndexAllTracks)
+                            if (!Job.IndexAllTracks)
                             {
-                                foreach (int id in job.TrackIDs)
+                                foreach (int id in Job.TrackIDs)
                                 {
                                     if (index == id)
                                         bFound = true;
@@ -242,11 +242,11 @@ namespace MeGUI
                             }
 
                             // export if found or if all tracks should be demuxed
-                            if ((bFound && bFirstPass) || (bFound && !bFirstPass && bContentFound) || (job.IndexAllTracks && bContentFound))
+                            if ((bFound && BFirstPass) || (bFound && !BFirstPass && bContentFound) || (Job.IndexAllTracks && bContentFound))
                             {
                                 // create output file
-                                string outputFile = Path.Combine(Path.GetDirectoryName(job.Output), 
-                                    Path.GetFileNameWithoutExtension(job.Output)) + "_" + index + "_" + strLanguage + (!base.bFirstPass ? "_forced" : string.Empty) + ".idx";
+                                string outputFile = Path.Combine(Path.GetDirectoryName(Job.Output), 
+                                    Path.GetFileNameWithoutExtension(Job.Output)) + "_" + index + "_" + strLanguage + (!base.BFirstPass ? "_forced" : string.Empty) + ".idx";
                                 using (StreamWriter output = new StreamWriter(outputFile))
                                     output.WriteLine(sbIndex.ToString());
 

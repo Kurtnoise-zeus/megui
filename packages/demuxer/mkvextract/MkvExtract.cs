@@ -41,12 +41,12 @@ namespace MeGUI
         public MkvExtract(string executablePath)
         {
             UpdateCacher.CheckPackage("mkvmerge");
-            this.executable = executablePath;
+            this.Executable = executablePath;
 
             // Exit code 0 = everything was OK
             // Exit code 1 = there were non-fatal warnings
             // Exit code 2 = there was a fatal error
-            this.arrSuccessCodes.Add(1);
+            this.ArrSuccessCodes.Add(1);
         }
 
         #region line processing
@@ -76,8 +76,8 @@ namespace MeGUI
         {
             if (line.StartsWith("Progress: ")) //status update
             {
-                su.PercentageDoneExact = getPercentage(line);
-                su.Status = "Extracting Tracks...";
+                Su.PercentageCurrent = getPercentage(line);
+                Su.Status = "Extracting Tracks...";
                 return;
             }
 
@@ -98,8 +98,8 @@ namespace MeGUI
                 StringBuilder sb = new StringBuilder();
 
                 // verify track IDs
-                MediaInfoFile oFile = new MediaInfoFile(job.Input, ref log);
-                foreach (TrackInfo oTrack in job.MkvTracks)
+                MediaInfoFile oFile = new MediaInfoFile(Job.Input, ref log);
+                foreach (TrackInfo oTrack in Job.MkvTracks)
                 {
                     if (oTrack.TrackType == TrackType.Audio)
                     {
@@ -128,14 +128,14 @@ namespace MeGUI
                 }
 
                 // Input File
-                sb.Append("\"" + job.Input + "\"");
+                sb.Append("\"" + Job.Input + "\"");
 
                 // Tracks to extract
-                if (job.MkvTracks.Count > 0)
+                if (Job.MkvTracks.Count > 0)
                 {
                     sb.Append(" tracks");
                     ArrayList trackID = new ArrayList();
-                    foreach (TrackInfo oTrack in job.MkvTracks)
+                    foreach (TrackInfo oTrack in Job.MkvTracks)
                     {
                         // Extract only audio/subtitle/video tracks
                         if (oTrack.TrackType == TrackType.Unknown)
@@ -145,24 +145,25 @@ namespace MeGUI
                         if (trackID.Contains(oTrack.MMGTrackID))
                             continue;
 
-                        sb.Append(" " + oTrack.MMGTrackID + ":\"" + job.OutputPath + "\\" + oTrack.DemuxFileName + "\"");
+                        sb.Append(" " + oTrack.MMGTrackID + ":\"" + Job.OutputPath + "\\" + oTrack.DemuxFileName + "\"");
                         trackID.Add(oTrack.MMGTrackID);
                     }
                 }
 
-                if (job.Attachments.Count > 0)
+                if (Job.Attachments.Count > 0)
                 {
                     sb.Append(" attachments");
                     int i = 1;
-                    foreach (string strFileName in job.Attachments)
+                    foreach (string strFileName in Job.Attachments)
                         sb.Append(" " + i++ + ":\"" + strFileName + "\"");
                 }
 
-                if (!String.IsNullOrEmpty(job.TimeStampFile))
-                    sb.Append(" timestamps_v2 " + oFile.VideoInfo.Track.MMGTrackID + ":\"" + job.TimeStampFile + "\"");
+                if (!String.IsNullOrEmpty(Job.TimeStampFile))
+                    sb.Append(" timestamps_v2 " + oFile.VideoInfo.Track.MMGTrackID + ":\"" + Job.TimeStampFile + "\"");
 
                 sb.Append(" --ui-language en");
 
+                oFile.Dispose();
                 return sb.ToString();
             }
         }

@@ -44,7 +44,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "XviDEncoder");
             : base()
         {
             UpdateCacher.CheckPackage("xvid_encraw");
-            executable = exePath;
+            Executable = exePath;
         }
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
@@ -73,7 +73,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "XviDEncoder");
             get
             {
                 SetAVSKeys();
-                return genCommandline(job.Input, job.Output, job.DAR, job.Settings as xvidSettings, hres, vres, fps_n, fps_d, job.Zones, base.log);
+                return genCommandline(Job.Input, Job.Output, Job.DAR, Job.Settings as xvidSettings, Hres, Vres, Job.Zones, base.log);
             }
         }
 
@@ -214,7 +214,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "XviDEncoder");
                 log.LogEvent("Temporary Xvid registry entries have been removed", ImageType.Information);
         }
 
-        public static string genCommandline(string input, string output, Dar? d, xvidSettings xs, int hres, int vres, int fps_n, int fps_d, Zone[] zones, LogItem log)
+        public static string genCommandline(string input, string output, Dar? d, xvidSettings xs, int hres, int vres, Zone[] zones, LogItem log)
         {
             StringBuilder sb = new StringBuilder();
             CultureInfo ci = new CultureInfo("en-us");

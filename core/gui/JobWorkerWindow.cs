@@ -74,13 +74,12 @@ namespace MeGUI.core.gui
     /// 
     /// ProcessingThreads can run in several modes, enumerated 
     /// </summary>
-    public class JobWorker
+    public class JobWorker : IDisposable
     {
         private IJobProcessor currentProcessor;
         private TaggedJob currentJob; // the job being processed at the moment
         private ProgressWindow pw;
         private MainForm mainForm;
-        private decimal progress;
         private LogItem log;
 
         public event EventHandler WorkerFinishedJobs;
@@ -93,6 +92,23 @@ namespace MeGUI.core.gui
             pw.Suspend += new SuspendCallback(Pw_Suspend);
             pw.PriorityChanged += new PriorityChangedCallback(Pw_PriorityChanged);
             pw.CreateControl();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                pw.Dispose();
+                currentProcessor.Dispose();
+            }
+            // free native resources
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #region process window opening and closing
@@ -154,7 +170,12 @@ namespace MeGUI.core.gui
         #region public interface
         public decimal Progress
         {
-            get { return progress; }
+            get
+            {
+                if (currentJob == null || currentJob.Su == null)
+                    return 0;
+                return currentJob.Su.PercentageEstimated;
+            }
         }
 
         public string StatusString
@@ -169,7 +190,7 @@ namespace MeGUI.core.gui
                     return "postponed (another worker is processing an audio job)";
                 string _status = "running"; 
                 if (currentJob != null)
-                    _status += string.Format(" {0} ({1:P2})", currentJob.Name, progress/100M);
+                    _status += string.Format(new System.Globalization.CultureInfo("en-US"), " {0} ({1:P2})", currentJob.Name, (currentJob.Su != null ? currentJob.Su.PercentageEstimated / 100M : 0));
                 if (mode == JobWorkerMode.CloseOnLocalListCompleted)
                     _status += " (delete worker after current job)";
                 else if (status == JobWorkerStatus.Stopping)
@@ -242,7 +263,7 @@ namespace MeGUI.core.gui
         /// <returns>true if a blocked job is running, false if not</returns>
         public bool IsRunningBlockedJob(WorkerSettings oSettings)
         {
-            if ((status != JobWorkerStatus.Running && status != JobWorkerStatus.Stopping) || currentJob == null)
+            if (oSettings == null || (status != JobWorkerStatus.Running && status != JobWorkerStatus.Stopping) || currentJob == null)
                 return false;
 
             return oSettings.IsBlockedJob(currentJob.Job);
@@ -308,27 +329,16 @@ namespace MeGUI.core.gui
 
             foreach (TaggedJob j in mainForm.Jobs.GlobalJobQueue.JobList)
                 if (j.OwningWorker != null && j.OwningWorker.Equals(Name))
-                    mainForm.Jobs.UnassignJob(j);
+                    JobControl.UnassignJob(j);
 
             mainForm.Jobs.ShutDown(this);
         }
         #endregion
 
-        internal void GUIDeleteJob(TaggedJob j)
-        {
-            mainForm.Jobs.DeleteJob(j);
-        }
-
         #region gui updates
         private void RefreshAll()
         {
-            UpdateProgress();
             mainForm.Jobs.RefreshStatus();
-        }
-
-        private void UpdateProgress()
-        {
-            mainForm.Jobs.UpdateProgress(this.Name);
         }
         #endregion
 
@@ -389,12 +399,12 @@ namespace MeGUI.core.gui
         /// </summary>
         /// <param name="job">Job to fill with info</param>
         /// <param name="su">StatusUpdate with info</param>
-        private void copyInfoIntoJob(TaggedJob job, StatusUpdate su)
+        private static void copyInfoIntoJob(TaggedJob job, StatusUpdate su)
         {
             Debug.Assert(su.IsComplete);
 
             job.End = DateTime.Now;
-            job.EncodingSpeed = su.ProcessingSpeed;
+            job.EncodingSpeed = su.OverallSpeed;
 
             if (su.WasAborted)
                 job.Status = JobStatus.ABORTED;
@@ -415,32 +425,7 @@ namespace MeGUI.core.gui
         private void UpdateGUIStatus(StatusUpdate su)
         {
             if (su.IsComplete)
-            {
                 JobFinished(su);
-                return;
-            }
-
-            // job is not complete yet
-            try
-            {
-                if (pw.IsHandleCreated && pw.Visible) // the window is there, send the update to the window
-                {
-                    TaggedJob job = mainForm.Jobs.ByName(su.JobName);
-                    su.JobStatus = job.Status;
-                    if (job.Status != JobStatus.PAUSED)
-                        pw.BeginInvoke(new UpdateStatusCallback(pw.UpdateStatus), su);
-                }
-            }
-            catch (Exception e)
-            {
-                mainForm.Log.LogValue("Error trying to update status while a job is running", e, ImageType.Warning);
-            }
-
-            if (su.PercentageDoneExact > 100)
-                progress = 100;
-            else
-                progress = su.PercentageDoneExact ?? 0;
-            UpdateProgress();
         }
 
         private void JobFinished(StatusUpdate su)
@@ -452,7 +437,6 @@ namespace MeGUI.core.gui
                 JobStartInfo JobInfo = JobStartInfo.JOB_STARTED;
 
                 copyInfoIntoJob(job, su);
-                progress = 0;
                 HideProcessWindow();
 
                 // Postprocessing
@@ -476,7 +460,7 @@ namespace MeGUI.core.gui
                 if (!jobFailed && mainForm.Settings.WorkerRemoveJob)
                     mainForm.Jobs.RemoveCompletedJob(job);
                 else
-                    mainForm.Jobs.SaveJob(job, mainForm.MeGUIPath);
+                    JobControl.SaveJob(job, mainForm.MeGUIPath);
 
                 if (job.Status == JobStatus.ABORTED)
                 {
@@ -524,13 +508,6 @@ namespace MeGUI.core.gui
             t.Start();
         }
 
-        public enum ExceptionType { UserSkip, Error };
-        public class JobStartException : MeGUIException
-        {
-            public ExceptionType type;
-            public JobStartException(string reason, ExceptionType type) : base(reason) { this.type = type; }
-        }
-
         /// <summary>
         /// starts the job provided as parameters
         /// </summary>
@@ -540,18 +517,22 @@ namespace MeGUI.core.gui
         {
             try
             {
-                log = mainForm.Log.Info(string.Format("Log for {0} ({1}, {2} -> {3})", job.Name, job.Job.EncodingMode, job.InputFileName, job.OutputFileName));
+                log = mainForm.Log.Info(string.Format(new System.Globalization.CultureInfo("en-US"), "Log for {0} ({1}, {2} -> {3})", job.Name, job.Job.EncodingMode, job.InputFileName, job.OutputFileName));
                 log.LogEvent("Started handling job");
                 log.Expand();
 
-                //Check to see if output file already exists before encoding.
-                if (File.Exists(job.Job.Output) &&
-                    (!Path.GetExtension(job.Job.Output).Equals(".lwi") && !Path.GetExtension(job.Job.Output).Equals(".ffindex") &&
-                    !Path.GetExtension(job.Job.Output).Equals(".d2v") &&
-                    !Path.GetExtension(job.Job.Output).Equals(".dgi")) && !mainForm.DialogManager.overwriteJobOutput(job.Job.Output))
-                    throw new JobStartException("File exists and the user doesn't want to overwrite", ExceptionType.UserSkip);
-
-                // Get IJobProcessor
+                // check to see if output file already exists before encoding
+                if (File.Exists(job.Job.Output))
+                {
+                    if ((!Path.GetExtension(job.Job.Output).Equals(".lwi") && !Path.GetExtension(job.Job.Output).Equals(".ffindex") &&
+                        !Path.GetExtension(job.Job.Output).Equals(".d2v") &&
+                        !Path.GetExtension(job.Job.Output).Equals(".dgi")) && !mainForm.DialogManager.overwriteJobOutput(job.Job.Output))
+                        throw new JobStartException("File exists and the user doesn't want to overwrite", ExceptionType.UserSkip);
+                    
+                    FileUtil.DeleteFile(job.Job.Output, log);
+                }
+                
+                // get IJobProcessor
                 currentProcessor = GetProcessor(job.Job);
                 if (currentProcessor == null)
                     throw new JobStartException("No processor could be found", ExceptionType.Error);
@@ -562,7 +543,9 @@ namespace MeGUI.core.gui
                 // Setup
                 try
                 {
-                    currentProcessor.setup(job.Job, new StatusUpdate(job.Name), log);
+                    job.Su = new StatusUpdate(job.Name, job.Job.Output);
+                    currentProcessor.setup(job.Job, job.Su, log);
+                    pw.SetStatusUpdate(job.Su);
                 }
                 catch (JobRunException e)
                 {
@@ -604,7 +587,7 @@ namespace MeGUI.core.gui
             {
                 this.HideProcessWindow();
                 log.LogValue("Error starting job", e);
-                if (e.type == ExceptionType.Error)
+                if (e.EType == ExceptionType.Error)
                     job.Status = JobStatus.ERROR;
                 else // ExceptionType.UserSkip
                     job.Status = JobStatus.SKIP;
@@ -624,7 +607,7 @@ namespace MeGUI.core.gui
         private TaggedJob GetNextAvailableJob()
         {
             TaggedJob oJob = null;
-            lock (mainForm.Jobs.ResourceLock)
+            lock (JobControl.ResourceLock)
             {
                 foreach (TaggedJob job in mainForm.Jobs.GlobalJobQueue.JobList)
                 {
@@ -634,7 +617,7 @@ namespace MeGUI.core.gui
 
                     if (job.Status == JobStatus.WAITING &&                                  // only process waiting jobs
                         (job.OwningWorker == null || job.OwningWorker.Equals(this.Name)) && // only process unassigned jobs or jobs which are assigned to the current worker
-                        mainForm.Jobs.AreDependenciesMet(job) &&                            // check if all job dependencies are fullfilled
+                        JobControl.AreDependenciesMet(job) &&                            // check if all job dependencies are fullfilled
                         (mainForm.Jobs.CanNewJobBeStarted(job.Job) || bIsTemporaryWorker))  // check if a blocking encoding is already in process - always process if temporary worker
                     {
                         job.Status = JobStatus.PROCESSING;                                  // mark job as in processing so that no other worker can fetch it
@@ -790,5 +773,18 @@ namespace MeGUI.core.gui
         {
             get { return (pw != null && pw.Visible); }
         }
+    }
+
+    public enum ExceptionType { UserSkip, Error };
+    public class JobStartException : MeGUIException
+    {
+        private ExceptionType type;
+
+        public JobStartException() : base("MeGUIException") { this.EType = ExceptionType.Error; }
+        public JobStartException(string reason) : base(reason) { this.EType = ExceptionType.Error; }
+        public JobStartException(string reason, Exception innerException) : base(reason, innerException) { this.EType = ExceptionType.Error; }
+        public JobStartException(string reason, ExceptionType type) : base(reason) { this.EType = type; }
+
+        public ExceptionType EType { get => type; set => type = value; }
     }
 }

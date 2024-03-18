@@ -40,7 +40,7 @@ namespace MeGUI
         public MP4FpsMod()
         {
             UpdateCacher.CheckPackage("mp4box");
-            executable = Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.Mp4Box.Path), @"mp4fpsmod\mp4fpsmod.exe");
+            Executable = Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.Mp4Box.Path), @"mp4fpsmod\mp4fpsmod.exe");
         }
 
         #region IJobProcessor Members
@@ -48,8 +48,8 @@ namespace MeGUI
         {
             get
             {
-                su.Status = "Applying timecodes...";
-                return "-i -t \"" + job.TimeStampFile + "\" -x \"" + job.Input + "\"";
+                Su.Status = "Applying timecodes...";
+                return "-i -t \"" + Job.TimeStampFile + "\" -x \"" + Job.Input + "\"";
             }
         }
         #endregion

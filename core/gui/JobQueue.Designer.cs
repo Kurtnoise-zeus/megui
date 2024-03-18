@@ -321,7 +321,7 @@ namespace MeGUI.core.gui
             // 
             // fpsColumn
             // 
-            this.fpsColumn.Text = "FPS";
+            this.fpsColumn.Text = "Speed";
             // 
             // queueListView
             // 

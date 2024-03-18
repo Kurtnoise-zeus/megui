@@ -41,7 +41,6 @@ namespace MeGUI
 
         #region OneClick properties
         Dictionary<int, string> audioFiles;
-        private AVCLevels al = new AVCLevels();
         private bool finished = false;
         private bool interlaced = false;
         private DeinterlaceFilter[] filters;
@@ -60,19 +59,17 @@ namespace MeGUI
 
             try
             {
-                log.LogEvent("Processing thread started");
-                su.Status = "Preprocessing...   ***PLEASE WAIT***";
-                su.ResetTime();
+                Su.Status = "Preprocessing...   ***PLEASE WAIT***";
 
                 List<string> arrAudioFilesDelete = new List<string>();
                 audioFiles = new Dictionary<int, string>();
                 List<AudioTrackInfo> arrAudioTracks = new List<AudioTrackInfo>();
                 List<AudioJob> arrAudioJobs = new List<AudioJob>();
                 List<MuxStream> arrMuxStreams = new List<MuxStream>();
-                FileUtil.ensureDirectoryExists(job.PostprocessingProperties.WorkingDirectory);
+                FileUtil.ensureDirectoryExists(Job.PostprocessingProperties.WorkingDirectory);
 
                 // audio handling
-                foreach (OneClickAudioTrack oAudioTrack in job.PostprocessingProperties.AudioTracks)
+                foreach (OneClickAudioTrack oAudioTrack in Job.PostprocessingProperties.AudioTracks)
                 {
                     if (IsJobStopped())
                         return;
@@ -81,36 +78,39 @@ namespace MeGUI
                     {
                         if (oAudioTrack.AudioTrackInfo.ExtractMKVTrack)
                         {
-                            if (job.PostprocessingProperties.ApplyDelayCorrection && File.Exists(job.PostprocessingProperties.IntermediateMKVFile))
+                            if (Job.PostprocessingProperties.ApplyDelayCorrection && File.Exists(Job.PostprocessingProperties.IntermediateMKVFile))
                             {
-                                MediaInfoFile oFile = new MediaInfoFile(job.PostprocessingProperties.IntermediateMKVFile, ref log);
-                                bool bFound = false;
-                                foreach (AudioTrackInfo oAudioInfo in oFile.AudioInfo.Tracks)
+                                using (MediaInfoFile oFile = new MediaInfoFile(Job.PostprocessingProperties.IntermediateMKVFile, ref log))
                                 {
-                                    if (oAudioInfo.MMGTrackID == oAudioTrack.AudioTrackInfo.MMGTrackID)
-                                        bFound = true;
-                                }
-                                int mmgTrackID = 0;
-                                if (!bFound)
-                                    mmgTrackID = oFile.AudioInfo.Tracks[oAudioTrack.AudioTrackInfo.TrackIndex].MMGTrackID;
-                                else
-                                    mmgTrackID = oAudioTrack.AudioTrackInfo.MMGTrackID;
-                                foreach (AudioTrackInfo oAudioInfo in oFile.AudioInfo.Tracks)
-                                {
-                                    if (oAudioInfo.MMGTrackID == mmgTrackID)
+                                    bool bFound = false;
+                                    foreach (AudioTrackInfo oAudioInfo in oFile.AudioInfo.Tracks)
                                     {
-                                        if (oAudioTrack.DirectMuxAudio != null)
-                                            oAudioTrack.DirectMuxAudio.delay = oAudioInfo.Delay;
-                                        if (oAudioTrack.AudioJob != null)
-                                            oAudioTrack.AudioJob.Delay = oAudioInfo.Delay;
-                                        break;
+                                        if (oAudioInfo.MMGTrackID == oAudioTrack.AudioTrackInfo.MMGTrackID)
+                                            bFound = true;
+                                    }
+
+                                    int mmgTrackID = 0;
+                                    if (!bFound)
+                                        mmgTrackID = oFile.AudioInfo.Tracks[oAudioTrack.AudioTrackInfo.TrackIndex].MMGTrackID;
+                                    else
+                                        mmgTrackID = oAudioTrack.AudioTrackInfo.MMGTrackID;
+                                    foreach (AudioTrackInfo oAudioInfo in oFile.AudioInfo.Tracks)
+                                    {
+                                        if (oAudioInfo.MMGTrackID == mmgTrackID)
+                                        {
+                                            if (oAudioTrack.DirectMuxAudio != null)
+                                                oAudioTrack.DirectMuxAudio.delay = oAudioInfo.Delay;
+                                            if (oAudioTrack.AudioJob != null)
+                                                oAudioTrack.AudioJob.Delay = oAudioInfo.Delay;
+                                            break;
+                                        }
                                     }
                                 }
                             }
                             if (!audioFiles.ContainsKey(oAudioTrack.AudioTrackInfo.TrackID))
                             {
-                                audioFiles.Add(oAudioTrack.AudioTrackInfo.TrackID, job.PostprocessingProperties.WorkingDirectory + "\\" + oAudioTrack.AudioTrackInfo.DemuxFileName);
-                                arrAudioFilesDelete.Add(job.PostprocessingProperties.WorkingDirectory + "\\" + oAudioTrack.AudioTrackInfo.DemuxFileName);
+                                audioFiles.Add(oAudioTrack.AudioTrackInfo.TrackID, Job.PostprocessingProperties.WorkingDirectory + "\\" + oAudioTrack.AudioTrackInfo.DemuxFileName);
+                                arrAudioFilesDelete.Add(Job.PostprocessingProperties.WorkingDirectory + "\\" + oAudioTrack.AudioTrackInfo.DemuxFileName);
                             }
                         }
                         else
@@ -118,36 +118,36 @@ namespace MeGUI
                     }
                     if (oAudioTrack.AudioJob != null)
                     {
-                        if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.NONE
+                        if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.NONE
                             && String.IsNullOrEmpty(oAudioTrack.AudioJob.Input))
-                            oAudioTrack.AudioJob.Input = job.Input;
+                            oAudioTrack.AudioJob.Input = Job.Input;
                         arrAudioJobs.Add(oAudioTrack.AudioJob);
                     }
                     if (oAudioTrack.DirectMuxAudio != null)
                         arrMuxStreams.Add(oAudioTrack.DirectMuxAudio);
                 }
-                if (audioFiles.Count == 0 && !job.PostprocessingProperties.Eac3toDemux
-                    && job.PostprocessingProperties.IndexType != FileIndexerWindow.IndexType.NONE
-                    && job.PostprocessingProperties.IndexType != FileIndexerWindow.IndexType.AVISOURCE)
+                if (audioFiles.Count == 0 && !Job.PostprocessingProperties.Eac3toDemux
+                    && Job.PostprocessingProperties.IndexType != FileIndexerWindow.IndexType.NONE
+                    && Job.PostprocessingProperties.IndexType != FileIndexerWindow.IndexType.AVISOURCE)
                 {
 
-                    if ((job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGI || job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGM)
-                        && File.Exists(Path.ChangeExtension(job.IndexFile, ".log")))
+                    if ((Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGI || Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGM)
+                        && File.Exists(Path.ChangeExtension(Job.IndexFile, ".log")))
                     {
-                        job.PostprocessingProperties.FilesToDelete.Add(Path.ChangeExtension(job.IndexFile, ".log"));
-                        audioFiles = AudioUtil.GetAllDemuxedAudioFromDGI(arrAudioTracks, out arrAudioFilesDelete, job.IndexFile, log);
+                        Job.PostprocessingProperties.FilesToDelete.Add(Path.ChangeExtension(Job.IndexFile, ".log"));
+                        audioFiles = AudioUtil.GetAllDemuxedAudioFromDGI(arrAudioTracks, out arrAudioFilesDelete, Job.IndexFile, log);
                     }
                     else
-                        audioFiles = VideoUtil.getAllDemuxedAudio(arrAudioTracks, new List<AudioTrackInfo>(), out arrAudioFilesDelete, job.IndexFile, log);
+                        audioFiles = VideoUtil.getAllDemuxedAudio(arrAudioTracks, new List<AudioTrackInfo>(), out arrAudioFilesDelete, Job.IndexFile, log);
                 }
 
                 FillInAudioInformation(ref arrAudioJobs, arrMuxStreams);
 
-                if (!String.IsNullOrEmpty(job.PostprocessingProperties.VideoFileToMux))
+                if (!String.IsNullOrEmpty(Job.PostprocessingProperties.VideoFileToMux))
                     log.LogEvent("Don't encode video: True");
                 else
-                    log.LogEvent("Desired size: " + job.PostprocessingProperties.OutputSize);
-                log.LogEvent("Split size: " + job.PostprocessingProperties.Splitting);
+                    log.LogEvent("Desired size: " + Job.PostprocessingProperties.OutputSize);
+                log.LogEvent("Split size: " + Job.PostprocessingProperties.Splitting);
 
                 if (IsJobStopped())
                     return;
@@ -155,17 +155,17 @@ namespace MeGUI
                 // video file handling
                 string avsFile = String.Empty;
                 VideoStream myVideo = new VideoStream();
-                VideoCodecSettings videoSettings = job.PostprocessingProperties.VideoSettings;
-                if (String.IsNullOrEmpty(job.PostprocessingProperties.VideoFileToMux))
+                VideoCodecSettings videoSettings = Job.PostprocessingProperties.VideoSettings;
+                if (String.IsNullOrEmpty(Job.PostprocessingProperties.VideoFileToMux))
                 {
                     //Open the video
                     try
                     {
-                        avsFile = CreateAVSFile(job.IndexFile, job.Input, job.PostprocessingProperties.DAR,
-                        job.PostprocessingProperties.HorizontalOutputResolution, log,
-                        job.PostprocessingProperties.AvsSettings, job.PostprocessingProperties.AutoDeinterlace, videoSettings,
-                        job.PostprocessingProperties.AutoCrop, job.PostprocessingProperties.KeepInputResolution,
-                        job.PostprocessingProperties.UseChaptersMarks);
+                        avsFile = CreateAVSFile(Job.IndexFile, Job.Input, Job.PostprocessingProperties.DAR,
+                        Job.PostprocessingProperties.HorizontalOutputResolution, log,
+                        Job.PostprocessingProperties.AvsSettings, Job.PostprocessingProperties.AutoDeinterlace, videoSettings,
+                        Job.PostprocessingProperties.AutoCrop, Job.PostprocessingProperties.KeepInputResolution,
+                        Job.PostprocessingProperties.UseChaptersMarks);
                     }
                     catch (Exception ex)
                     {
@@ -181,7 +181,7 @@ namespace MeGUI
                         JobUtil.GetInputProperties(avsFile, out ulong frameCount, out double frameRate);
 
                         myVideo.Input = avsFile;
-                        myVideo.Output = Path.Combine(job.PostprocessingProperties.WorkingDirectory, Path.GetFileNameWithoutExtension(job.Input) + "_Video");
+                        myVideo.Output = Path.Combine(Job.PostprocessingProperties.WorkingDirectory, Path.GetFileNameWithoutExtension(Job.Input) + "_Video");
                         myVideo.NumberOfFrames = frameCount;
                         myVideo.Framerate = (decimal)frameRate;
                         myVideo.VideoType = new MuxableType((new VideoEncoderProvider().GetSupportedOutput(videoSettings.EncoderType))[0], videoSettings.Codec);
@@ -192,44 +192,46 @@ namespace MeGUI
                 }
                 else
                 {
-                    myVideo.DAR = job.PostprocessingProperties.ForcedDAR;
-                    myVideo.Output = job.PostprocessingProperties.VideoFileToMux;
-                    MediaInfoFile oInfo = new MediaInfoFile(myVideo.Output, ref log);
-                    if (Path.GetExtension(job.PostprocessingProperties.VideoFileToMux).Equals(".unknown") && !String.IsNullOrEmpty(oInfo.ContainerFileTypeString))
+                    myVideo.DAR = Job.PostprocessingProperties.ForcedDAR;
+                    myVideo.Output = Job.PostprocessingProperties.VideoFileToMux;
+                    using (MediaInfoFile oInfo = new MediaInfoFile(myVideo.Output, ref log))
                     {
-                        job.PostprocessingProperties.VideoFileToMux = Path.ChangeExtension(job.PostprocessingProperties.VideoFileToMux, oInfo.ContainerFileTypeString.ToLowerInvariant());
-                        File.Move(myVideo.Output, job.PostprocessingProperties.VideoFileToMux);
-                        myVideo.Output = job.PostprocessingProperties.VideoFileToMux;
-                        job.PostprocessingProperties.FilesToDelete.Add(myVideo.Output);
-                    }
+                        if (Path.GetExtension(Job.PostprocessingProperties.VideoFileToMux).Equals(".unknown") && !String.IsNullOrEmpty(oInfo.ContainerFileTypeString))
+                        {
+                            Job.PostprocessingProperties.VideoFileToMux = Path.ChangeExtension(Job.PostprocessingProperties.VideoFileToMux, oInfo.ContainerFileTypeString.ToLowerInvariant());
+                            File.Move(myVideo.Output, Job.PostprocessingProperties.VideoFileToMux);
+                            myVideo.Output = Job.PostprocessingProperties.VideoFileToMux;
+                            Job.PostprocessingProperties.FilesToDelete.Add(myVideo.Output);
+                        }
 
-                    myVideo.Settings = videoSettings;
-                    myVideo.Framerate = (decimal)oInfo.VideoInfo.FPS;
-                    myVideo.NumberOfFrames = oInfo.VideoInfo.FrameCount;
+                        myVideo.Settings = videoSettings;
+                        myVideo.Framerate = (decimal)oInfo.VideoInfo.FPS;
+                        myVideo.NumberOfFrames = oInfo.VideoInfo.FrameCount;
+                    }
                 }
 
                 if (IsJobStopped())
                     return;
 
                 intermediateFiles.Add(avsFile);
-                intermediateFiles.Add(job.IndexFile);
+                intermediateFiles.Add(Job.IndexFile);
                 intermediateFiles.AddRange(audioFiles.Values);
                 foreach (string file in arrAudioFilesDelete)
                     intermediateFiles.Add(file);
-                intermediateFiles.Add(Path.ChangeExtension(job.Input, ".log"));
-                foreach (string file in job.PostprocessingProperties.FilesToDelete)
+                intermediateFiles.Add(Path.ChangeExtension(Job.Input, ".log"));
+                foreach (string file in Job.PostprocessingProperties.FilesToDelete)
                     intermediateFiles.Add(file);
 
                 // subtitle handling
                 List<MuxStream> subtitles = new List<MuxStream>();
-                if (job.PostprocessingProperties.SubtitleTracks.Count > 0)
+                if (Job.PostprocessingProperties.SubtitleTracks.Count > 0)
                 {
-                    foreach (OneClickStream oTrack in job.PostprocessingProperties.SubtitleTracks)
+                    foreach (OneClickStream oTrack in Job.PostprocessingProperties.SubtitleTracks)
                     {
                         if (oTrack.TrackInfo.ExtractMKVTrack)
                         {
                             //demuxed MKV
-                            string trackFile = Path.GetDirectoryName(job.IndexFile) + "\\" + oTrack.TrackInfo.DemuxFileName;
+                            string trackFile = Path.GetDirectoryName(Job.IndexFile) + "\\" + oTrack.TrackInfo.DemuxFileName;
                             if (File.Exists(trackFile))
                             {
                                 intermediateFiles.Add(trackFile);
@@ -260,8 +262,6 @@ namespace MeGUI
                             }
                             if (File.Exists(strDemuxFile))
                             {
-                                string strTrackName = oTrack.Name;
-
                                 // check if a forced stream is available
                                 string strForcedFile = Path.Combine(Path.GetDirectoryName(strDemuxFile), Path.GetFileNameWithoutExtension(strDemuxFile) + "_forced.idx");
                                 if (File.Exists(strForcedFile))
@@ -282,19 +282,19 @@ namespace MeGUI
                     return;
                     
                 if (!bError)
-                    c = VideoUtil.GenerateJobSeries(myVideo, job.PostprocessingProperties.FinalOutput, arrAudioJobs.ToArray(), 
-                        subtitles.ToArray(), job.PostprocessingProperties.Attachments, job.PostprocessingProperties.TimeStampFile,
-                        job.PostprocessingProperties.ChapterInfo, job.PostprocessingProperties.OutputSize,
-                        job.PostprocessingProperties.Splitting, job.PostprocessingProperties.Container,
-                        job.PostprocessingProperties.PrerenderJob, arrMuxStreams.ToArray(),
-                        log, job.PostprocessingProperties.DeviceOutputType, null, job.PostprocessingProperties.VideoFileToMux, 
-                        job.PostprocessingProperties.AudioTracks.ToArray(), true);
+                    c = VideoUtil.GenerateJobSeries(myVideo, Job.PostprocessingProperties.FinalOutput, arrAudioJobs.ToArray(), 
+                        subtitles.ToArray(), Job.PostprocessingProperties.Attachments, Job.PostprocessingProperties.TimeStampFile,
+                        Job.PostprocessingProperties.ChapterInfo, Job.PostprocessingProperties.OutputSize,
+                        Job.PostprocessingProperties.Splitting, Job.PostprocessingProperties.Container,
+                        Job.PostprocessingProperties.PrerenderJob, arrMuxStreams.ToArray(),
+                        log, Job.PostprocessingProperties.DeviceOutputType, null, Job.PostprocessingProperties.VideoFileToMux, 
+                        Job.PostprocessingProperties.AudioTracks.ToArray(), true);
 
-                if (c != null && !String.IsNullOrEmpty(job.PostprocessingProperties.TimeStampFile) &&
+                if (c != null && !String.IsNullOrEmpty(Job.PostprocessingProperties.TimeStampFile) &&
                     c.Jobs[c.Jobs.Length - 1].Job is MuxJob && (c.Jobs[c.Jobs.Length - 1].Job as MuxJob).MuxType == MuxerType.MP4BOX)
                 {
                     // last job is a mp4box job and vfr timecode data has to be applied
-                    MP4FpsModJob mp4FpsMod = new MP4FpsModJob(((MuxJob)c.Jobs[c.Jobs.Length - 1].Job).Output, job.PostprocessingProperties.TimeStampFile);
+                    MP4FpsModJob mp4FpsMod = new MP4FpsModJob(((MuxJob)c.Jobs[c.Jobs.Length - 1].Job).Output, Job.PostprocessingProperties.TimeStampFile);
                     c = new SequentialChain(c, new SequentialChain(mp4FpsMod));
                 }   
             }
@@ -307,21 +307,21 @@ namespace MeGUI
             if (c == null || bError)
             {
                 log.Error("Job creation aborted");
-                su.HasError = true;
+                Su.HasError = true;
             }
 
             // add cleanup job also in case of an error
-            c = CleanupJob.AddAfter(c, intermediateFiles, job.PostprocessingProperties.FinalOutput);
+            c = CleanupJob.AddAfter(c, intermediateFiles, Job.PostprocessingProperties.FinalOutput);
             MainForm.Instance.Jobs.AddJobsWithDependencies(c, false);
 
             // batch processing other input files if necessary
-            if (job.PostprocessingProperties.FilesToProcess.Count > 0)
+            if (Job.PostprocessingProperties.FilesToProcess.Count > 0)
             {
                 OneClickWindow ocw = new OneClickWindow();
-                ocw.setBatchProcessing(job.PostprocessingProperties.FilesToProcess, job.PostprocessingProperties.OneClickSetting);
+                ocw.setBatchProcessing(Job.PostprocessingProperties.FilesToProcess, Job.PostprocessingProperties.OneClickSetting);
             }
 
-            su.IsComplete = true;
+            Su.IsComplete = true;
         }
 
         private void FillInAudioInformation(ref List<AudioJob> arrAudioJobs, List<MuxStream> arrMuxStreams)
@@ -417,42 +417,51 @@ namespace MeGUI
             if (keepInputResolution && avsSettings.Mod16Method != mod16Method.nonMod16)
                 avsSettings.Mod16Method = mod16Method.nonMod16;
 
-            // open index file to retrieve information
-            if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGI)
+            try
             {
-                iMediaFile = new dgiFile(indexFile);
-                oPossibleSource = PossibleSources.dgi;
+                // open index file to retrieve information
+                if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGI)
+                {
+                    iMediaFile = new dgiFile(indexFile);
+                    oPossibleSource = PossibleSources.dgi;
+                }
+                else if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.D2V)
+                {
+                    iMediaFile = new d2vFile(indexFile);
+                    oPossibleSource = PossibleSources.d2v;
+                }
+                else if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGM)
+                {
+                    iMediaFile = new dgmFile(indexFile);
+                    oPossibleSource = PossibleSources.dgm;
+                }
+                else if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.FFMS)
+                {
+                    iMediaFile = new ffmsFile(inputFile, indexFile);
+                    oPossibleSource = PossibleSources.ffindex;
+                }
+                else if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.LSMASH)
+                {
+                    iMediaFile = new lsmashFile(inputFile, indexFile);
+                    oPossibleSource = PossibleSources.lsmash;
+                }
+                else if (Job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.AVISOURCE)
+                {
+                    string tempAvs = "AVISource(\"" + inputFile + "\", audio=false)" + VideoUtil.getAssumeFPS(0, inputFile);
+                    iMediaFile = AvsFile.ParseScript(tempAvs, true);
+                    oPossibleSource = PossibleSources.avisource;
+                }
+                else
+                {
+                    iMediaFile = AvsFile.OpenScriptFile(inputFile, true);
+                    oPossibleSource = PossibleSources.avs;
+                }
             }
-            else if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.D2V)
+            catch (Exception ex)
             {
-                iMediaFile = new d2vFile(indexFile);
-                oPossibleSource = PossibleSources.d2v;
-            }
-            else if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.DGM)
-            {
-                iMediaFile = new dgmFile(indexFile);
-                oPossibleSource = PossibleSources.dgm;
-            }
-            else if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.FFMS)
-            {
-                iMediaFile = new ffmsFile(inputFile, indexFile);
-                oPossibleSource = PossibleSources.ffindex;
-            }
-            else if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.LSMASH)
-            {
-                iMediaFile = new lsmashFile(inputFile, indexFile);
-                oPossibleSource = PossibleSources.lsmash;
-            }
-            else if (job.PostprocessingProperties.IndexType == FileIndexerWindow.IndexType.AVISOURCE)
-            {
-                string tempAvs = "AVISource(\"" + inputFile + "\", audio=false)" + VideoUtil.getAssumeFPS(0, inputFile);
-                iMediaFile = AvsFile.ParseScript(tempAvs, true);
-                oPossibleSource = PossibleSources.avisource;
-            }
-            else
-            {
-                iMediaFile = AvsFile.OpenScriptFile(inputFile, true);
-                oPossibleSource = PossibleSources.avs;
+                log.LogValue("An error occurred creating the AVS file", ex, ImageType.Error);
+                iMediaFile.Dispose();
+                return "";
             }
             reader = iMediaFile.GetVideoReader();
             
@@ -573,7 +582,7 @@ namespace MeGUI
             _log.LogValue("Automatic deinterlacing", autoDeint);
             if (autoDeint)
             {
-                su.Status = "Automatic deinterlacing...   ***PLEASE WAIT***";
+                Su.Status = "Automatic deinterlacing...   ***PLEASE WAIT***";
                 string d2vPath = indexFile;
                 _sourceDetector = new SourceDetector(inputLine, d2vPath, avsSettings.PreferAnimeDeinterlace, inputFrameCount,
                     Thread.CurrentThread.Priority,
@@ -597,7 +606,7 @@ namespace MeGUI
             if (IsJobStopped())
                 return "";
 
-            su.Status = "Finalizing preprocessing...   ***PLEASE WAIT***";
+            Su.Status = "Finalizing preprocessing...   ***PLEASE WAIT***";
 
             // get final input filter line
             inputLine = ScriptServer.GetInputLine(
@@ -658,7 +667,7 @@ namespace MeGUI
             _log.LogValue("Generated AviSynth script", newScript);
             string strOutputAVSFile;
             if (String.IsNullOrEmpty(indexFile))
-                strOutputAVSFile = Path.ChangeExtension(Path.Combine(job.PostprocessingProperties.WorkingDirectory, Path.GetFileName(inputFile)), ".avs");
+                strOutputAVSFile = Path.ChangeExtension(Path.Combine(Job.PostprocessingProperties.WorkingDirectory, Path.GetFileName(inputFile)), ".avs");
             else
                 strOutputAVSFile = Path.ChangeExtension(indexFile, ".avs");
 
@@ -688,14 +697,14 @@ namespace MeGUI
                 return "";
 
             // create qpf file if necessary and possible 
-            if (job.PostprocessingProperties.ChapterInfo.HasChapters && useChaptersMarks && settings != null && settings is x264Settings)
+            if (Job.PostprocessingProperties.ChapterInfo.HasChapters && useChaptersMarks && settings != null && settings is x264Settings)
             {
                 fps = (double)fps_n / fps_d;
                 string strChapterFile = Path.ChangeExtension(strOutputAVSFile, ".qpf");
-                job.PostprocessingProperties.ChapterInfo.ChangeFps(fps);
-                if (job.PostprocessingProperties.ChapterInfo.SaveQpfile(strChapterFile))
+                Job.PostprocessingProperties.ChapterInfo.ChangeFps(fps);
+                if (Job.PostprocessingProperties.ChapterInfo.SaveQpfile(strChapterFile))
                 {
-                    job.PostprocessingProperties.FilesToDelete.Add(strChapterFile);
+                    Job.PostprocessingProperties.FilesToDelete.Add(strChapterFile);
                     _log.LogValue("qpf file created", strChapterFile);
                     x264Settings xs = (x264Settings)settings;
                     xs.UseQPFile = true;
@@ -704,10 +713,10 @@ namespace MeGUI
             }
 
             // check if a timestamp file has to be used
-            if (!String.IsNullOrEmpty(job.PostprocessingProperties.TimeStampFile) && settings != null && settings is x264Settings)
+            if (!String.IsNullOrEmpty(Job.PostprocessingProperties.TimeStampFile) && settings != null && settings is x264Settings)
             {
                 x264Settings xs = (x264Settings)settings;
-                xs.TCFile = job.PostprocessingProperties.TimeStampFile;
+                xs.TCFile = Job.PostprocessingProperties.TimeStampFile;
             }
 
             return strOutputAVSFile;
@@ -731,15 +740,23 @@ namespace MeGUI
             }
             else
             {
-                LogItem oSourceLog = log.LogValue("Source detection", info.analysisResult);
-                if (info.sourceType == SourceType.NOT_ENOUGH_SECTIONS || info.sourceType == SourceType.UNKNOWN)
+                if (info == null)
                 {
-                    oSourceLog.LogEvent("Source detection failed: Could not find enough useful sections to determine source type for " + job.Input, ImageType.Warning);
-                    filters = new DeinterlaceFilter[] { new DeinterlaceFilter("Error", "#Not enough useful sections for source detection. Doing no processing") };
+                    log.Error("Source detection result is null");
+                    interlaced = false;
                 }
                 else
-                    this.filters = ScriptServer.GetDeinterlacers(info).ToArray();
-                interlaced = (info.sourceType != SourceType.PROGRESSIVE);
+                {
+                    LogItem oSourceLog = log.LogValue("Source detection", info.analysisResult);
+                    if (info.sourceType == SourceType.NOT_ENOUGH_SECTIONS || info.sourceType == SourceType.UNKNOWN)
+                    {
+                        oSourceLog.LogEvent("Source detection failed: Could not find enough useful sections to determine source type for " + Job.Input, ImageType.Warning);
+                        filters = new DeinterlaceFilter[] { new DeinterlaceFilter("Error", "#Not enough useful sections for source detection. Doing no processing") };
+                    }
+                    else
+                        this.filters = ScriptServer.GetDeinterlacers(info).ToArray();
+                        interlaced = (info.sourceType != SourceType.PROGRESSIVE);
+                }
             }
             finished = true;
         }
@@ -749,10 +766,10 @@ namespace MeGUI
             try
             {
                 decimal n = (decimal)amountDone / (decimal)total;
-                if (n * 100M < su.PercentageDoneExact)
-                    su.ResetTime();
-                su.PercentageDoneExact = n * 100M;
-                su.FillValues();
+                if (n * 100M < Su.PercentageCurrent)
+                    Su.ResetTime();
+                Su.PercentageCurrent = n * 100M;
+                Su.FillValues();
             }
             catch (Exception) { } // If we get any errors, just ignore -- it's only a cosmetic thing.
         }
@@ -778,7 +795,7 @@ namespace MeGUI
             bool bResult = true;
             if (_sourceDetector != null)
                 bResult = _sourceDetector.Pause();
-            if (mre.Reset() && bResult)
+            if (Mre.Reset() && bResult)
                 return true;
             return false;
         }
@@ -788,7 +805,7 @@ namespace MeGUI
             bool bResult = true;
             if (_sourceDetector != null)
                 bResult = _sourceDetector.Resume();
-            if (mre.Set() && bResult)
+            if (Mre.Set() && bResult)
                 return true;
             return false;
         }
