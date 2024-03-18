@@ -109,7 +109,7 @@ namespace MeGUI
             string strMeGUILogPath = Path.GetDirectoryName(Application.ExecutablePath) + @"\logs";
             FileUtil.ensureDirectoryExists(strMeGUILogPath);
             strLogFile = strMeGUILogPath + @"\logfile-" + DateTime.Now.ToString("yy'-'MM'-'dd'_'HH'-'mm'-'ss") + ".log";
-            FileUtil.WriteToFile(strLogFile, "Preliminary log file only. During closing of MeGUI the well formed log file will be written.\r\n\r\n", false);
+            FileUtil.WriteToFile(strLogFile, "Preliminary log file only. During closing of MeGUI the well formed log file will be written.\r\n\r\n", false, false);
             Instance = this;
             constructMeGUIInfo();
             InitializeComponent();
@@ -159,6 +159,8 @@ namespace MeGUI
                 this.Location = new Point(iScreenWidth - this.Size.Width, this.Location.Y);
 
             GetChangeLog();
+            
+            DeleteSourceDetectorLogFiles();
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -239,6 +241,14 @@ namespace MeGUI
             {
                 txtChangeLog.Text = "Changelog cannot be displayed: " + ex.Message;
             }
+        }
+
+        private static void DeleteSourceDetectorLogFiles()
+        {
+            DirectoryInfo fi = new DirectoryInfo(Path.GetDirectoryName(Application.ExecutablePath));
+            FileInfo[] files = fi.GetFiles("*interlace-*.log", SearchOption.TopDirectoryOnly);
+            foreach (FileInfo f in files)
+                FileUtil.DeleteFile(f.FullName, null);
         }
 
         #region GUI properties
@@ -511,7 +521,7 @@ namespace MeGUI
         public void saveLog()
         {
             string text = Log.ToString();
-            FileUtil.WriteToFile(strLogFile, text, false);
+            FileUtil.WriteToFile(strLogFile, text, false, true);
         }
 
         private void exitMeGUIToolStripMenuItem_Click(object sender, EventArgs e)

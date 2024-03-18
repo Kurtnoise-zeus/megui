@@ -1210,7 +1210,7 @@ namespace MeGUI.core.util
         }
 
         private static object _locker = new object();
-        public static void WriteToFile(string fileName, string text, bool append)
+        public static void WriteToFile(string fileName, string text, bool append, bool bRaiseError)
         {
             try
             {
@@ -1224,7 +1224,8 @@ namespace MeGUI.core.util
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Error writing file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (bRaiseError)
+                    MessageBox.Show(e.Message, "Error writing file", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

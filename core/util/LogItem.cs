@@ -221,7 +221,7 @@ namespace MeGUI.core.util
         {
             StringBuilder res = new StringBuilder();
             res.AppendFormat("{0}[{1}] {2}{3}", dashes(iLevel), Type, Text, Environment.NewLine);
-            FileUtil.WriteToFile(MainForm.Instance.LogFile, res.ToString(), true);
+            FileUtil.WriteToFile(MainForm.Instance.LogFile, res.ToString(), true, false);
         }
 
         private static string dashes(int number)
