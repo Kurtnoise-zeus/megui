@@ -1,3 +1,4 @@
+2934 [Muxer]                improved the forced subtitle track name generation
 2933 [Main]                 improved OS detection
 2932 [Progress Window]      improved number formatting
 2931 [Logger]               improved error handling

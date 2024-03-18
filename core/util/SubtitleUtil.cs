@@ -25,7 +25,7 @@ namespace MeGUI
     /// <summary>
     /// SubtitleUtil is used to perform various subtitle tasks
     /// </summary>
-    public class SubtitleUtil
+    public static class SubtitleUtil
     {
         /// <summary>
         /// Adds or removes the forced track name specified in the global settings
@@ -39,15 +39,20 @@ namespace MeGUI
             if (String.IsNullOrEmpty(strForceName))
                 return strTrackName;
 
-            if (bForced && !strTrackName.EndsWith(strForceName))
+            if (strTrackName == null)
+                strTrackName = string.Empty;
+            
+            if (bForced)
             {
+                if (strTrackName.ToLowerInvariant().EndsWith(strForceName.ToLowerInvariant()))
+                    strTrackName = strTrackName.Substring(0, strTrackName.Length - strForceName.Length).TrimEnd();
                 if (!String.IsNullOrEmpty(strTrackName) && !strTrackName.EndsWith(" "))
                     strTrackName += " ";
                 strTrackName += strForceName;
             }
-            else if (!bForced && strTrackName.EndsWith(strForceName))
+            else if (!bForced && strTrackName.ToLowerInvariant().EndsWith(strForceName.ToLowerInvariant()))
             {
-                strTrackName = (strTrackName.Substring(0, strTrackName.Length - strForceName.Length)).TrimEnd();
+                strTrackName = strTrackName.Substring(0, strTrackName.Length - strForceName.Length).TrimEnd();
             }
             return strTrackName;
         }
