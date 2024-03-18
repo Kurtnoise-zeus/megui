@@ -21,8 +21,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>MeGUI</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>MeGUI.MainForm</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -177,6 +176,7 @@
     <Content Include="gpl.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Icon.png" />
     <Content Include="lib_x64\7z.dll" Condition=" '$(Platform)' == 'x64' ">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -306,6 +306,12 @@
     </Compile>
     <Compile Include="core\gui\messageboxex\MessageBoxExForm.Designer.cs">
       <DependentUpon>MessageBoxExForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="core\gui\SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="core\gui\SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="core\gui\VideoPlayer.Designer.cs">
       <DependentUpon>VideoPlayer.cs</DependentUpon>
@@ -891,6 +897,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="core\gui\messageboxex\MessageBoxExForm.resx">
       <DependentUpon>MessageBoxExForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="core\gui\SplashScreen.resx">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="packages\audio\fdkaac\FDKAACConfigurationPanel.resx">
       <DependentUpon>FDKAACConfigurationPanel.cs</DependentUpon>
