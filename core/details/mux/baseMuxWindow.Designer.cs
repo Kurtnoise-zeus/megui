@@ -132,11 +132,11 @@ namespace MeGUI
             // 
             this.tableLayoutPanel2.AutoSize = true;
             this.tableLayoutPanel2.ColumnCount = 5;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 65F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.99329F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.00671F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tableLayoutPanel2.Controls.Add(this.videoInputLabel, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.videoName, 3, 1);
             this.tableLayoutPanel2.Controls.Add(this.fps, 1, 1);
@@ -157,31 +157,32 @@ namespace MeGUI
             // 
             this.videoInputLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.videoInputLabel.AutoSize = true;
-            this.videoInputLabel.Location = new System.Drawing.Point(3, 11);
+            this.videoInputLabel.Location = new System.Drawing.Point(3, 4);
             this.videoInputLabel.Name = "videoInputLabel";
-            this.videoInputLabel.Size = new System.Drawing.Size(62, 13);
+            this.videoInputLabel.Size = new System.Drawing.Size(36, 26);
             this.videoInputLabel.TabIndex = 0;
             this.videoInputLabel.Text = "Video Input";
             // 
             // videoName
             // 
             this.videoName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.videoName.Location = new System.Drawing.Point(245, 42);
+            this.videoName.Location = new System.Drawing.Point(248, 42);
+            this.videoName.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.videoName.MaxLength = 100;
             this.videoName.Name = "videoName";
-            this.videoName.Size = new System.Drawing.Size(139, 21);
+            this.videoName.Size = new System.Drawing.Size(149, 21);
             this.videoName.TabIndex = 5;
             // 
             // fps
             // 
             this.fps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.fps.Location = new System.Drawing.Point(71, 38);
+            this.fps.Location = new System.Drawing.Point(68, 38);
             this.fps.MaximumSize = new System.Drawing.Size(1000, 29);
             this.fps.MinimumSize = new System.Drawing.Size(64, 29);
             this.fps.Name = "fps";
             this.fps.NullString = "Not set";
             this.fps.SelectedIndex = 0;
-            this.fps.Size = new System.Drawing.Size(134, 29);
+            this.fps.Size = new System.Drawing.Size(140, 29);
             this.fps.TabIndex = 3;
             this.fps.SelectionChanged += new MeGUI.StringChanged(this.fps_SelectionChanged);
             // 
@@ -189,7 +190,7 @@ namespace MeGUI
             // 
             this.videoNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.videoNameLabel.AutoSize = true;
-            this.videoNameLabel.Location = new System.Drawing.Point(208, 46);
+            this.videoNameLabel.Location = new System.Drawing.Point(211, 46);
             this.videoNameLabel.Margin = new System.Windows.Forms.Padding(0);
             this.videoNameLabel.Name = "videoNameLabel";
             this.videoNameLabel.Size = new System.Drawing.Size(34, 13);
@@ -204,7 +205,7 @@ namespace MeGUI
             this.vInput.Location = new System.Drawing.Point(71, 6);
             this.vInput.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
             this.vInput.Name = "vInput";
-            this.vInput.Size = new System.Drawing.Size(355, 23);
+            this.vInput.Size = new System.Drawing.Size(358, 23);
             this.vInput.TabIndex = 1;
             this.vInput.FileSelected += new MeGUI.FileBarEventHandler(this.vInput_FileSelected);
             // 
@@ -221,9 +222,9 @@ namespace MeGUI
             // removeVideoTrack
             // 
             this.removeVideoTrack.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.removeVideoTrack.Location = new System.Drawing.Point(397, 41);
+            this.removeVideoTrack.Location = new System.Drawing.Point(400, 42);
             this.removeVideoTrack.Name = "removeVideoTrack";
-            this.removeVideoTrack.Size = new System.Drawing.Size(24, 23);
+            this.removeVideoTrack.Size = new System.Drawing.Size(26, 20);
             this.removeVideoTrack.TabIndex = 39;
             this.removeVideoTrack.Text = "X";
             this.removeVideoTrack.Click += new System.EventHandler(this.removeVideoTrack_Click);
@@ -245,9 +246,9 @@ namespace MeGUI
             // deleteChapterFile
             // 
             this.deleteChapterFile.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.deleteChapterFile.Location = new System.Drawing.Point(410, 17);
+            this.deleteChapterFile.Location = new System.Drawing.Point(408, 18);
             this.deleteChapterFile.Name = "deleteChapterFile";
-            this.deleteChapterFile.Size = new System.Drawing.Size(24, 23);
+            this.deleteChapterFile.Size = new System.Drawing.Size(26, 21);
             this.deleteChapterFile.TabIndex = 40;
             this.deleteChapterFile.Text = "X";
             this.deleteChapterFile.Click += new System.EventHandler(this.deleteChapterFile_Click);
@@ -377,6 +378,7 @@ namespace MeGUI
             this.output.SaveMode = true;
             this.output.Size = new System.Drawing.Size(344, 23);
             this.output.TabIndex = 1;
+            this.output.FileSelected += new MeGUI.FileBarEventHandler(this.output_FileSelected);
             this.output.Click += new System.EventHandler(this.output_Click);
             // 
             // cbType
@@ -574,7 +576,7 @@ namespace MeGUI
             this.helpButton1.Location = new System.Drawing.Point(12, 565);
             this.helpButton1.Margin = new System.Windows.Forms.Padding(12, 9, 12, 9);
             this.helpButton1.Name = "helpButton1";
-            this.helpButton1.Size = new System.Drawing.Size(38, 23);
+            this.helpButton1.Size = new System.Drawing.Size(29, 23);
             this.helpButton1.TabIndex = 8;
             // 
             // chkCloseOnQueue

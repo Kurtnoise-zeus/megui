@@ -24,6 +24,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using MeGUI.core.util;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace MeGUI
 {
@@ -129,36 +130,51 @@ namespace MeGUI
             set { filterIndex = value; }
         }
 
+        private string folderPath = null;
+        /// <summary>
+        /// Sets the intial folder 
+        /// </summary>
+        /// <returns></returns>
+        public void SetInitialFolder(string strPath)
+        {
+            folderPath = strPath;
+        }
+
         #endregion
 
         private void openButton_Click(object sender, EventArgs e)
         {
             if (folderMode)
             {
-                FolderBrowserDialog dialog = new FolderBrowserDialog();
-                if (dialog.ShowDialog() == DialogResult.OK)
-                    SetFilename(dialog.SelectedPath);
+                using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                {
+                    if (!String.IsNullOrEmpty(folderPath))
+                        dialog.SelectedPath = folderPath;
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                        SetFilename(dialog.SelectedPath);
+                }
             }
             else
             {
-                FileDialog dialog = saveMode ?
-                    (FileDialog)new SaveFileDialog() :
-                    (FileDialog)new OpenFileDialog();
-
-                dialog.Filter = filter;
-                dialog.FilterIndex = filterIndex;
-                dialog.Title = title;
-                if (!string.IsNullOrEmpty(Filename))
+                using (FileDialog dialog = saveMode ? (FileDialog)new SaveFileDialog() : (FileDialog)new OpenFileDialog())
                 {
-                    try
+                    if (!String.IsNullOrEmpty(folderPath))
+                        dialog.InitialDirectory = folderPath;
+                        dialog.Filter = filter;
+                        dialog.FilterIndex = filterIndex;
+                        dialog.Title = title;
+                    if (!string.IsNullOrEmpty(Filename))
                     {
-                        dialog.InitialDirectory = Path.GetDirectoryName(Filename);
-                        dialog.FileName = Path.GetFileName(Filename);
+                        try
+                        { 
+                            dialog.InitialDirectory = Path.GetDirectoryName(Filename);
+                            dialog.FileName = Path.GetFileName(Filename);
+                        }
+                        catch { }
                     }
-                    catch { }
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                        SetFilename(dialog.FileName);
                 }
-                if (dialog.ShowDialog() == DialogResult.OK)
-                    SetFilename(dialog.FileName);
             }
         }
 

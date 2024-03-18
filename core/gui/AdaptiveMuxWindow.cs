@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using MeGUI.core.details;
 using MeGUI.core.details.mux;
 using MeGUI.core.util;
+using MeGUI.Properties;
 
 namespace MeGUI
 {
@@ -37,10 +38,10 @@ namespace MeGUI
         private AudioEncoderType[] knownAudioTypes;
         private ContainerType lastSelectedContainerType = null;
 
-        public AdaptiveMuxWindow(): base(MainForm.Instance, null)
+        public AdaptiveMuxWindow() : base(null)
         {
             InitializeComponent();
-            muxProvider = mainForm.MuxProvider;
+            muxProvider = MainForm.Instance.MuxProvider;
 
             audioTracks[0].Filter = VideoUtil.GenerateCombinedFilter(ContainerManager.AudioTypes.ValuesArray);
             subtitleTracks[0].Filter = VideoUtil.GenerateCombinedFilter(ContainerManager.SubtitleTypes.ValuesArray);
@@ -53,17 +54,17 @@ namespace MeGUI
             base.muxButton.Click += new System.EventHandler(this.muxButton_Click);
         }
 
-        protected override void fileUpdated()
+        protected override void FileUpdated()
         {
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
-        protected override void upDeviceTypes()
+        protected override void UpDeviceTypes()
         {
-            updateDeviceTypes();
+            UpdateDeviceTypes();
         }
 
-        private void getTypes(out AudioEncoderType[] aCodec, out MuxableType[] audioTypes, out MuxableType[] subtitleTypes)
+        private void GetTypes(out AudioEncoderType[] aCodec, out MuxableType[] audioTypes, out MuxableType[] subtitleTypes)
         {
             List<MuxableType> audioTypesList = new List<MuxableType>();
             List<MuxableType> subTypesList = new List<MuxableType>();
@@ -101,14 +102,14 @@ namespace MeGUI
         }
 
 
-        protected override void checkIO()
+        protected override void CheckIO()
         {
-            base.checkIO();
+            base.CheckIO();
             if (!(cbContainer.SelectedItem is ContainerType))
                 muxButton.DialogResult = DialogResult.None;
         }
 
-        private void updateDeviceTypes()
+        private void UpdateDeviceTypes()
         {
             if (cbContainer.SelectedItem is ContainerType && lastSelectedContainerType == cbContainer.SelectedItem as ContainerType)
                 return;
@@ -149,11 +150,11 @@ namespace MeGUI
             this.cbType.Items.Add("Standard");
             this.cbType.Items.AddRange(supportedOutputDeviceTypes.ToArray());
 
-            if (cbContainer.SelectedItem.ToString().Equals(mainForm.Settings.AedSettings.Container))
+            if (cbContainer.SelectedItem.ToString().Equals(MainForm.Instance.Settings.AedSettings.Container))
             {
                 foreach (object o in cbType.Items) // I know this is ugly, but using the DeviceOutputType doesn't work unless we're switching to manual serialization
                 {
-                    if (o.ToString().Equals(mainForm.Settings.AedSettings.DeviceOutputType))
+                    if (o.ToString().Equals(MainForm.Instance.Settings.AedSettings.DeviceOutputType))
                     {
                         cbType.SelectedItem = o;
                         break;
@@ -164,7 +165,7 @@ namespace MeGUI
                 this.cbType.SelectedIndex = 0;
         }
 
-        private void updatePossibleContainers()
+        private void UpdatePossibleContainers()
         {
             MuxableType videoType;
             if (minimizedMode)
@@ -179,10 +180,7 @@ namespace MeGUI
                 }
             }
 
-            MuxableType[] audioTypes;
-            MuxableType[] subTypes;
-            AudioEncoderType[] audioCodecs;
-            getTypes(out audioCodecs, out audioTypes, out subTypes);
+            GetTypes(out AudioEncoderType[] audioCodecs, out MuxableType[] audioTypes, out MuxableType[] subTypes);
 
             List<MuxableType> allTypes = new List<MuxableType>();
             if (videoType != null)
@@ -219,22 +217,19 @@ namespace MeGUI
                 if (minimizedMode)
                     throw new Exception("Jobs property not accessible in minimized mode");
                 
-                VideoStream myVideo = new VideoStream();
-                myVideo.Input = "";
-                myVideo.Output = vInput.Filename;
-                myVideo.NumberOfFrames = 1000; // Just a guess, since we have no way of actually knowing
-                myVideo.VideoType = VideoUtil.guessVideoMuxableType(vInput.Filename, true);
-                myVideo.Settings = new x264Settings();
+                VideoStream myVideo = new VideoStream
+                {
+                    Input = "",
+                    Output = vInput.Filename,
+                    NumberOfFrames = 1000, // Just a guess, since we have no way of actually knowing
+                    VideoType = VideoUtil.guessVideoMuxableType(vInput.Filename, true),
+                    Settings = new x264Settings()
+                };
                 myVideo.Settings.NbBframes = 0;
                 myVideo.Settings.VideoName = this.videoName.Text;
 
-                MuxableType[] audioTypes;
-                MuxableType[] subtitleTypes;
-                AudioEncoderType[] audioCodecs;
-                MuxStream[] audioStreams, subtitleStreams;
-                getTypes(out audioCodecs, out audioTypes, out subtitleTypes);
-                ChapterInfo chapterInfo;
-                getAdditionalStreams(out audioStreams, out subtitleStreams, out chapterInfo);
+                GetTypes(out _, out MuxableType[] audioTypes, out MuxableType[] subtitleTypes);
+                GetAdditionalStreams(out MuxStream[] audioStreams, out MuxStream[] subtitleStreams, out ChapterInfo chapterInfo);
 
                 FileSize? splitSize = splitting.Value;
 
@@ -265,7 +260,7 @@ namespace MeGUI
         public void setMinimizedMode(string videoInput, string videoName, VideoEncoderType videoType, double framerate, MuxStream[] audioStreams, AudioEncoderType[] audioTypes, string output,
             FileSize? splitSize, ContainerType cft)
         {
-            base.setConfig(videoInput, videoName, (decimal)framerate, audioStreams, new MuxStream[0], new ChapterInfo(), output, splitSize, null, null);
+            base.SetConfig(videoInput, videoName, (decimal)framerate, audioStreams, Array.Empty<MuxStream>(), new ChapterInfo(), output, splitSize, null, null);
 
             minimizedMode = true;
             knownVideoType = videoType;
@@ -274,23 +269,26 @@ namespace MeGUI
             // disable controls where required
             videoGroupbox.Enabled = false;
 
-            for (int i = 0; i < audioStreams.Length; ++i)
-                audioTracks[i].SetAutoEncodeMode();
+            if (audioStreams != null)
+            {
+                for (int i = 0; i < audioStreams.Length; ++i)
+                    audioTracks[i].SetAutoEncodeMode();
+            }
 
             this.output.Filename = output;
             this.splitting.Value = splitSize;
             this.muxButton.Text = "Go";
-            updatePossibleContainers();
+            UpdatePossibleContainers();
             if (this.cbContainer.Items.Contains(cft))
                 cbContainer.SelectedItem = cft;
-            checkIO();
+            CheckIO();
         }
 
         public void getAdditionalStreams(out MuxStream[] audio, out MuxStream[] subtitles, out ChapterInfo chapters, out string output, out ContainerType cot)
         {
             cot = (cbContainer.SelectedItem as ContainerType);
             output = this.output.Filename;
-            base.getAdditionalStreams(out audio, out subtitles, out chapters);
+            base.GetAdditionalStreams(out audio, out subtitles, out chapters);
         }
 
         protected virtual void muxButton_Click(object sender, System.EventArgs e)
@@ -335,7 +333,7 @@ namespace MeGUI
                         MessageBox.Show("No mux job created as input and output are the same", "Nothing to mux", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                         return;
                     }
-                    mainForm.Jobs.AddJobsWithDependencies(oJobs, true);
+                    MainForm.Instance.Jobs.AddJobsWithDependencies(oJobs, true);
                     if (chkCloseOnQueue.Checked)
                         this.Close();
                     else

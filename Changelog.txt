@@ -1,3 +1,4 @@
+2935 [Muxer]                remember last accessed folder independant for the input folders and the output folder
 2934 [Muxer]                improved the forced subtitle track name generation
 2933 [Main]                 improved OS detection
 2932 [Progress Window]      improved number formatting

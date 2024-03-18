@@ -38,9 +38,7 @@ namespace MeGUI
                 return null;
 
             MuxJob m = (MuxJob)j;
-            MuxWindow w = new MuxWindow(
-                MainForm.Instance.MuxProvider.GetMuxer(m.MuxType), 
-                MainForm.Instance);
+            MuxWindow w = new MuxWindow(MainForm.Instance.MuxProvider.GetMuxer(m.MuxType));
 
             w.Job = m;
             if (w.ShowDialog() == DialogResult.OK)
@@ -49,10 +47,13 @@ namespace MeGUI
                 return m;
         }
 
-        public MuxWindow(IMuxing muxer, MainForm mainForm)
-            : base(mainForm, muxer)
+        public MuxWindow(IMuxing muxer) : base(muxer)
         {
             InitializeComponent();
+            
+            if (muxer == null)
+                return;
+            
             this.muxer = muxer;
             if (muxer.GetSupportedAudioTypes().Count == 0)
                 audio.Enabled = false;
@@ -100,7 +101,7 @@ namespace MeGUI
             this.cbType.SelectedIndex = 0;
             foreach (object o in cbType.Items) // I know this is ugly, but using the DeviceOutputType doesn't work unless we're switching to manual serialization
             {
-                if (o.ToString().Equals(mainForm.Settings.AedSettings.DeviceOutputType))
+                if (o.ToString().Equals(MainForm.Instance.Settings.AedSettings.DeviceOutputType))
                 {
                     cbType.SelectedItem = o;
                     break;
@@ -142,7 +143,7 @@ namespace MeGUI
                 else
                 {
                     MuxJob job = this.Job;
-                    mainForm.Jobs.AddJobsToQueue(job);
+                    MainForm.Instance.Jobs.AddJobsToQueue(job);
                     if (chkCloseOnQueue.Checked)
                         this.Close();
                     else
@@ -151,12 +152,10 @@ namespace MeGUI
             }
         }
 
-        protected virtual MuxJob generateMuxJob()
+        protected virtual MuxJob GenerateMuxJob()
         {
             MuxJob job = new MuxJob();
-            ChapterInfo chapters;
-            MuxStream[] aStreams, sStreams;
-            getAdditionalStreams(out aStreams, out sStreams, out chapters);
+            GetAdditionalStreams(out MuxStream[] aStreams, out MuxStream[] sStreams, out ChapterInfo chapters);
 
             job.Settings.AudioStreams.AddRange(aStreams);
             job.Settings.SubtitleStreams.AddRange(sStreams);
@@ -175,7 +174,7 @@ namespace MeGUI
 
             job.Output = job.Settings.MuxedOutput;
             job.MuxType = muxer.MuxerType;
-            job.ContainerType = getContainerType(job.Settings.MuxedOutput);
+            job.ContainerType = GetContainerType(job.Settings.MuxedOutput);
             job.Settings.Framerate = fps.Value;
             
             Debug.Assert(!splitting.Value.HasValue || splitting.Value.Value >= new FileSize(Unit.MB, 1));
@@ -185,22 +184,23 @@ namespace MeGUI
 
         public MuxJob Job
         {
-            get { return generateMuxJob(); }
+            get { return GenerateMuxJob(); }
             set
             {
-                setConfig(value.Settings.VideoInput, value.Settings.VideoName, value.Settings.MuxedInput, value.Settings.Framerate,
+                if (value != null)
+                    SetConfig(value.Settings.VideoInput, value.Settings.VideoName, value.Settings.MuxedInput, value.Settings.Framerate,
                     value.Settings.AudioStreams.ToArray(), value.Settings.SubtitleStreams.ToArray(),
                     value.Settings.ChapterInfo, value.Settings.MuxedOutput, value.Settings.SplitSize,
                     value.Settings.DAR, value.Settings.DeviceType);
             }
         }
 
-        private void setConfig(string videoInput, string videoName, string muxedInput, decimal? framerate, MuxStream[] audioStreams,
+        private void SetConfig(string videoInput, string videoName, string muxedInput, decimal? framerate, MuxStream[] audioStreams,
             MuxStream[] subtitleStreams, ChapterInfo chapterInfo, string output, FileSize? splitSize, Dar? dar, string deviceType)
         {
-            base.setConfig(videoInput, videoName, framerate, audioStreams, subtitleStreams, chapterInfo, output, splitSize, dar, deviceType);
+            base.SetConfig(videoInput, videoName, framerate, audioStreams, subtitleStreams, chapterInfo, output, splitSize, dar, deviceType);
             this.muxedInput.Filename = muxedInput;
-            this.checkIO();
+            this.CheckIO();
         }
 
         protected override void ChangeOutputExtension()
@@ -213,7 +213,7 @@ namespace MeGUI
             output.Filename = Path.ChangeExtension(output.Filename, muxer.GetSupportedContainerOutputTypes()[0].Extension);
         }
 
-        private ContainerType getContainerType(string outputFilename)
+        private ContainerType GetContainerType(string outputFilename)
         {
             Debug.Assert(outputFilename != null);
             foreach (ContainerType t in muxer.GetSupportedContainerOutputTypes())
@@ -225,10 +225,10 @@ namespace MeGUI
             return null;
         }
 
-        protected override bool isFPSRequired()
+        protected override bool IsFPSRequired()
         {
             if (vInput.Filename.Length > 0)
-                return base.isFPSRequired();
+                return base.IsFPSRequired();
             else if (muxedInput.Filename.Length > 0)
                 return false;
             else
@@ -237,8 +237,8 @@ namespace MeGUI
 
         private void muxedInput_FileSelected(FileBar sender, FileBarEventArgs args)
         {
-            checkIO();
-            fileUpdated();
+            CheckIO();
+            FileUpdated();
         }
     }
 }

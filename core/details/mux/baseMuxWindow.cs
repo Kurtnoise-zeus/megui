@@ -40,8 +40,6 @@ namespace MeGUI
         protected List<MuxStreamControl> subtitleTracks;
         protected Dar? dar;
         protected string audioFilter, videoInputFilter, subtitleFilter, chaptersFilter, outputFilter;
-        protected MainForm mainForm;
-        private MeGUISettings settings;
         private MuxProvider muxProvider;
         protected IMuxing muxer;
         #endregion
@@ -51,23 +49,31 @@ namespace MeGUI
         {
             InitializeComponent();
 
-            audioTracks = new List<MuxStreamControl>();
-            audioTracks.Add(muxStreamControl2);
-            subtitleTracks = new List<MuxStreamControl>();
-            subtitleTracks.Add(muxStreamControl1);
+            audioTracks = new List<MuxStreamControl>
+            {
+                muxStreamControl2
+            };
+            subtitleTracks = new List<MuxStreamControl>
+            {
+                muxStreamControl1
+            };
 
             splitting.MinimumFileSize = new FileSize(Unit.MB, 1);
             subtitleTracks[0].input.FileSelected += new MeGUI.FileBarEventHandler(this.Subtitle_FileSelected);
             audioTracks[0].input.FileSelected += new MeGUI.FileBarEventHandler(this.Audio_FileSelected);
+
+            vInput.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+            muxStreamControl1.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+            muxStreamControl2.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+            chapters.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+            output.SetInitialFolder(MainForm.Instance.Settings.MuxOutputPath);
         }
 
-        public baseMuxWindow(MainForm mainForm, IMuxing muxer) : this()
+        public baseMuxWindow(IMuxing muxer) : this()
         {
-            this.mainForm = mainForm;
-            this.settings = mainForm.Settings;
             this.muxer = muxer;
 
-            muxProvider = mainForm.MuxProvider;
+            muxProvider = MainForm.Instance.MuxProvider;
             cbType.Items.Add("Standard");
             cbType.Items.AddRange(muxProvider.GetSupportedDevices((ContainerType)cbContainer.SelectedItem).ToArray());
             cbType.SelectedIndex = 0;
@@ -88,7 +94,7 @@ namespace MeGUI
         /// <param name="splitSize">split size of the output</param>
         /// <param name="dar">the DAR of the file</param>
         /// <param name="deviceType">the device type (e.g. for AVI, M2TS, MP4)</param>
-        public void setConfig(string videoInput, string videoName, decimal? framerate, MuxStream[] audioStreams, MuxStream[] subtitleStreams, ChapterInfo chapterInfo, string output, FileSize? splitSize, Dar? dar, string deviceType)
+        public void SetConfig(string videoInput, string videoName, decimal? framerate, MuxStream[] audioStreams, MuxStream[] subtitleStreams, ChapterInfo chapterInfo, string output, FileSize? splitSize, Dar? dar, string deviceType)
         {
             this.dar = dar;
             vInput.Filename = videoInput;
@@ -96,31 +102,39 @@ namespace MeGUI
             this.videoName.Text = videoName;
 
             int index = 0;
-            foreach (MuxStream stream in audioStreams)
+            if (audioStreams != null)
             {
-                if (audioTracks.Count == index)
-                    AudioAddTrack();
-                audioTracks[index].Stream = stream;
-                index++;
+                foreach (MuxStream stream in audioStreams)
+                {
+                    if (audioTracks.Count == index)
+                        AudioAddTrack();
+                    audioTracks[index].Stream = stream;
+                    index++;
+                }
             }
 
             index = 0;
-            foreach (MuxStream stream in subtitleStreams)
+            if (subtitleStreams != null)
             {
-                if (subtitleTracks.Count == index)
-                    SubtitleAddTrack();
-                subtitleTracks[index].Stream = stream;
-                index++;
+                foreach (MuxStream stream in subtitleStreams)
+                {
+                    if (subtitleTracks.Count == index)
+                        SubtitleAddTrack();
+                    subtitleTracks[index].Stream = stream;
+                    index++;
+                }
             }
-
-            chapters.Filename = chapterInfo.SourceFilePath;
+            
+            if (chapterInfo != null)
+                chapters.Filename = chapterInfo.SourceFilePath;
             this.output.Filename = output;
             this.splitting.Value = splitSize;
             this.muxButton.Text = "Update";
             this.chkCloseOnQueue.Visible = false;
             this.cbType.Text = deviceType;
-            checkIO();
+            CheckIO();
         }
+
         /// <summary>
         /// gets the additionally configured stream configuration from this window
         /// this method is used when the muxwindow is created from the AutoEncodeWindow in order to configure audio languages
@@ -129,28 +143,33 @@ namespace MeGUI
         /// <param name="aStreams">the configured audio streams(language assignments)</param>
         /// <param name="sStreams">the newly added subtitle streams</param>
         /// <param name="chapterInfo">the ChapterInfo</param>
-        public void getAdditionalStreams(out MuxStream[] aStreams, out MuxStream[] sStreams, out ChapterInfo chapterInfo)
+        public void GetAdditionalStreams(out MuxStream[] aStreams, out MuxStream[] sStreams, out ChapterInfo chapterInfo)
         {
-            aStreams = getStreams(audioTracks);
-            sStreams = getStreams(subtitleTracks);
+            aStreams = GetStreams(audioTracks);
+            sStreams = GetStreams(subtitleTracks);
             chapterInfo = new ChapterInfo();
             if (chapters.Filename.StartsWith("<"))
             {
-                MediaInfoFile oInfo = new MediaInfoFile(vInput.Filename);
-                chapterInfo = oInfo.ChapterInfo;
+                using (MediaInfoFile oInfo = new MediaInfoFile(vInput.Filename))
+                    chapterInfo = oInfo.ChapterInfo;
             }
             else if (File.Exists(chapters.Filename))
             {
                 chapterInfo.LoadFile(chapters.Filename);
                 if (chapterInfo.FramesPerSecond == 0)
                 {
-                    MediaInfoFile oInfo = new MediaInfoFile(vInput.Filename);
-                    chapterInfo.FramesPerSecond = oInfo.VideoInfo.FPS;
+                    if (!fps.Value.HasValue)
+                    {
+                        using (MediaInfoFile oInfo = new MediaInfoFile(vInput.Filename))
+                            chapterInfo.FramesPerSecond = oInfo.VideoInfo.FPS;
+                    }
+                    else
+                        chapterInfo.FramesPerSecond = (double)fps.Value.Value;
                 }
             }
         }
 
-        private MuxStream[] getStreams(List<MuxStreamControl> controls)
+        private static MuxStream[] GetStreams(List<MuxStreamControl> controls)
         {
             List<MuxStream> streams = new List<MuxStream>();
             foreach (MuxStreamControl t in controls)
@@ -164,6 +183,9 @@ namespace MeGUI
         #region helper method
         protected virtual void Subtitle_FileSelected(object sender, System.EventArgs e)
         {
+            if (sender != null)
+                MainForm.Instance.Settings.MuxInputPath = Path.GetDirectoryName(((FileBar)sender).Filename);
+            
             foreach (MuxStreamControl oTrack in subtitleTracks)
             {
                 if (String.IsNullOrEmpty(oTrack.input.Filename))
@@ -171,8 +193,12 @@ namespace MeGUI
             }
             SubtitleAddTrack();
         }
+
         protected virtual void Audio_FileSelected(object sender, System.EventArgs e)
         {
+            if (sender != null)
+                MainForm.Instance.Settings.MuxInputPath = Path.GetDirectoryName(((FileBar)sender).Filename);
+            
             foreach (MuxStreamControl oTrack in audioTracks)
             {
                 if (String.IsNullOrEmpty(oTrack.input.Filename))
@@ -180,7 +206,7 @@ namespace MeGUI
             }
             AudioAddTrack();
         }
-        protected virtual void checkIO()
+        protected virtual void CheckIO()
         {
             if (string.IsNullOrEmpty(vInput.Filename))
             {
@@ -197,7 +223,7 @@ namespace MeGUI
                 muxButton.DialogResult = DialogResult.None;
                 return;
             }
-            else if (fps.Value == null && isFPSRequired())
+            else if (fps.Value == null && IsFPSRequired())
             {
                 muxButton.DialogResult = DialogResult.None;
                 return;
@@ -208,7 +234,7 @@ namespace MeGUI
 
         protected void chkDefaultStream_CheckedChanged(object sender, EventArgs e)
         {
-            if (((CheckBox)sender).Checked == false)
+            if (sender == null || ((CheckBox)sender).Checked == false)
                 return;
 
             foreach (MuxStreamControl oTrack in subtitleTracks)
@@ -224,7 +250,7 @@ namespace MeGUI
                 e.Handled = true;
         }
         #endregion
-        protected virtual bool isFPSRequired()
+        protected virtual bool IsFPSRequired()
         {
             try
             {
@@ -241,24 +267,35 @@ namespace MeGUI
         #region button event handlers
         private void vInput_FileSelected(FileBar sender, FileBarEventArgs args)
         {
-            MediaInfoFile oInfo = new MediaInfoFile(vInput.Filename);
-            fps.Value = (decimal)oInfo.VideoInfo.FPS;
+            using (MediaInfoFile oInfo = new MediaInfoFile(vInput.Filename))
+            {
+                fps.Value = (decimal)oInfo.VideoInfo.FPS;
+                
+                if (string.IsNullOrEmpty(output.Filename))
+                    ChooseOutputFilename();
+                
+                if (String.IsNullOrEmpty(chapters.Filename) && oInfo.HasChapters)
+                    chapters.Filename = "<internal chapters>";
+            }
+            
+            MainForm.Instance.Settings.MuxInputPath = Path.GetDirectoryName(vInput.Filename);
+            
+            FileUpdated();
+            CheckIO();
+        }
 
-            if (string.IsNullOrEmpty(output.Filename))
-                chooseOutputFilename();
-
-            if (String.IsNullOrEmpty(chapters.Filename) && oInfo.HasChapters)
-                chapters.Filename = "<internal chapters>";
-
-            fileUpdated();
-            checkIO();
+        private void output_FileSelected(FileBar sender, FileBarEventArgs args)
+        {
+            MainForm.Instance.Settings.MuxOutputPath = Path.GetDirectoryName(output.Filename);
         }
 
         protected virtual void ChangeOutputExtension() { }
 
-        private void chooseOutputFilename()
+        private void ChooseOutputFilename()
         {
-            string projectPath = FileUtil.GetOutputFolder(vInput.Filename);
+            string projectPath = MainForm.Instance.Settings.MuxOutputPath;
+            if (String.IsNullOrEmpty(projectPath))
+                projectPath = FileUtil.GetOutputFolder(vInput.Filename);
             string fileNameNoPath = Path.GetFileName(vInput.Filename);
             output.Filename = FileUtil.AddToFileName(Path.Combine(projectPath, fileNameNoPath), "-muxed");
             ChangeOutputExtension();
@@ -266,16 +303,18 @@ namespace MeGUI
 
         private void chapters_FileSelected(FileBar sender, FileBarEventArgs args)
         {
+            MainForm.Instance.Settings.MuxInputPath = Path.GetDirectoryName(chapters.Filename);
+            
             if (!File.Exists(chapters.Filename))
             {
-                fileUpdated();
+                FileUpdated();
                 return;
             }
 
             ChapterInfo oChapter = new ChapterInfo();
             if (!oChapter.LoadFile(chapters.Filename))
                 MessageBox.Show("The selected file is not a valid chapter file", "Invalid Chapter File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            fileUpdated();
+            FileUpdated();
         }
         #endregion
         #region language dropdowns
@@ -283,11 +322,11 @@ namespace MeGUI
         #region other events
         private void fps_SelectionChanged(object sender, string val)
         {
-            checkIO();
+            CheckIO();
         }
         #endregion
-        protected virtual void fileUpdated() { }
-        protected virtual void upDeviceTypes() { }
+        protected virtual void FileUpdated() { }
+        protected virtual void UpDeviceTypes() { }
 
 
         #region adding / removing tracks
@@ -298,17 +337,22 @@ namespace MeGUI
 
         protected void AudioAddTrack()
         {
-            TabPage p = new TabPage("Audio " + (audioTracks.Count + 1));
-            p.UseVisualStyleBackColor = audio.TabPages[0].UseVisualStyleBackColor;
-            p.Padding = audio.TabPages[0].Padding;
-
-            MuxStreamControl a = new MuxStreamControl();
-            a.Dock = audioTracks[0].Dock;
-            a.Padding = audioTracks[0].Padding;
-            a.ShowDelay = audioTracks[0].ShowDelay;
-            a.Filter = audioTracks[0].Filter;
+            TabPage p = new TabPage("Audio " + (audioTracks.Count + 1))
+            {
+                UseVisualStyleBackColor = audio.TabPages[0].UseVisualStyleBackColor,
+                Padding = audio.TabPages[0].Padding
+            };
+            
+            MuxStreamControl a = new MuxStreamControl
+            {
+                Dock = audioTracks[0].Dock,
+                Padding = audioTracks[0].Padding,
+                ShowDelay = audioTracks[0].ShowDelay,
+                Filter = audioTracks[0].Filter
+            };
             a.FileUpdated += muxStreamControl2_FileUpdated;
             a.input.FileSelected += new MeGUI.FileBarEventHandler(this.Audio_FileSelected);
+            a.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
 
             audio.TabPages.Add(p);
             p.Controls.Add(a);
@@ -333,20 +377,25 @@ namespace MeGUI
 
         protected void SubtitleAddTrack()
         {
-            TabPage p = new TabPage("Subtitle " + (subtitleTracks.Count + 1));
-            p.UseVisualStyleBackColor = subtitles.TabPages[0].UseVisualStyleBackColor;
-            p.Padding = subtitles.TabPages[0].Padding;
-
-            MuxStreamControl a = new MuxStreamControl();
-            a.Dock = subtitleTracks[0].Dock;
-            a.Padding = subtitleTracks[0].Padding;
-            a.ShowDelay = subtitleTracks[0].ShowDelay;
-            a.ShowDefaultSubtitleStream = subtitleTracks[0].ShowDefaultSubtitleStream;
-            a.ShowForceSubtitleStream = subtitleTracks[0].ShowForceSubtitleStream;
+            TabPage p = new TabPage("Subtitle " + (subtitleTracks.Count + 1))
+            {
+                UseVisualStyleBackColor = subtitles.TabPages[0].UseVisualStyleBackColor,
+                Padding = subtitles.TabPages[0].Padding
+            };
+            
+            MuxStreamControl a = new MuxStreamControl
+            {
+                Dock = subtitleTracks[0].Dock,
+                Padding = subtitleTracks[0].Padding,
+                ShowDelay = subtitleTracks[0].ShowDelay,
+                ShowDefaultSubtitleStream = subtitleTracks[0].ShowDefaultSubtitleStream,
+                ShowForceSubtitleStream = subtitleTracks[0].ShowForceSubtitleStream
+            };
             a.chkDefaultStream.CheckedChanged += new System.EventHandler(this.chkDefaultStream_CheckedChanged);
             a.input.FileSelected += new MeGUI.FileBarEventHandler(this.Subtitle_FileSelected);
             a.Filter = subtitleTracks[0].Filter;
             a.FileUpdated += muxStreamControl1_FileUpdated;
+            a.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
 
             subtitles.TabPages.Add(p);
             p.Controls.Add(a);
@@ -377,12 +426,12 @@ namespace MeGUI
 
         private void muxStreamControl1_FileUpdated(object sender, EventArgs e)
         {
-            fileUpdated();
+            FileUpdated();
         }
 
         private void muxStreamControl2_FileUpdated(object sender, EventArgs e)
         {
-            fileUpdated();
+            FileUpdated();
         }
 
         private void deleteChapterFile_Click(object sender, EventArgs e)
@@ -392,14 +441,14 @@ namespace MeGUI
 
         private void cbContainer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            upDeviceTypes();
+            UpDeviceTypes();
             UpdateChapterBox();
         }
 
         private void output_Click(object sender, EventArgs e)
         {
-            checkIO();
-            fileUpdated();
+            CheckIO();
+            FileUpdated();
         }
 
         private void removeVideoTrack_Click(object sender, EventArgs e)

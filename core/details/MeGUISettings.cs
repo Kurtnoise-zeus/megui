@@ -61,7 +61,7 @@ namespace MeGUI
                        defaultLanguage1, defaultLanguage2, afterEncodingCommand, videoExtension, audioExtension,
                        strEac3toLastFolderPath, strEac3toLastFilePath, strEac3toLastDestinationPath, tempDirMP4,
                        fdkAacPath, httpproxyaddress, httpproxyport, httpproxyuid, httpproxypwd, defaultOutputDir,
-                       appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString;
+                       appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString, muxInputPath, muxOutputPath;
         private bool autoForceFilm, autoOpenScript, bUseQAAC, bUseDGIndexNV, bUseDGIndexIM, bInput8Bit,
                      overwriteStats, keep2of3passOutput, autoUpdate, deleteIntermediateFiles, workerAutoStart,
                      deleteAbortedOutput, openProgressWindow, bEac3toAutoSelectStreams, bUseFDKAac, bVobSubberKeepAll,
@@ -220,6 +220,8 @@ namespace MeGUI
             ResetWorkerPriority();
             version = "";
             standbySetting = StandbySettings.DisableSystemStandby;
+            muxInputPath = null;
+            muxOutputPath = null;
         }
 
         #region properties
@@ -427,6 +429,18 @@ namespace MeGUI
         {
             get { return version; }
             set { version = value; }
+        }
+
+        public string MuxInputPath
+        {
+            get { return muxInputPath; }
+            set { muxInputPath = value; }
+        }
+
+        public string MuxOutputPath
+        {
+            get { return muxOutputPath; }
+            set { muxOutputPath = value; }
         }
 
         public string Eac3toLastFolderPath

@@ -572,7 +572,7 @@ namespace MeGUI
         {
             if ((!(sender is System.Windows.Forms.MenuItem)) || (!((sender as MenuItem).Tag is IMuxing)))
                 return;
-            MuxWindow mw = new MuxWindow((IMuxing)((sender as MenuItem).Tag), this);
+            MuxWindow mw = new MuxWindow((IMuxing)((sender as MenuItem).Tag));
             mw.Show();
         }
 
