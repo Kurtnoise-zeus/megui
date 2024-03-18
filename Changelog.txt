@@ -1,3 +1,4 @@
+2932 [Progress Window]      improved number formatting
 2931 [Logger]               improved error handling
      [Main]                 delete orphaned source detector log files at startup
 2930 [Progress Window]      improved the job progress window in several ways. major ones are:

@@ -361,9 +361,9 @@ namespace MeGUI
                     _timeRemaining = new TimeSpan((long)(((decimal)100 - _percentEstimated) * ((decimal)1 / dProgressPerTick)));
                     
                     if (_frame.HasValue && _totalTime.HasValue)
-                        _processingSpeedCurrent = ((_totalTime.Value.Ticks / (100 / (dProgressPerTick))) * (decimal)_fps.Value).ToString("0.00") + " FPS";
+                        _processingSpeedCurrent = Util.ToString(_totalTime.Value.Ticks / (100 / dProgressPerTick) * (decimal)_fps.Value, false) + " FPS";
                     else if (_totalTime.HasValue)
-                        _processingSpeedCurrent = (_totalTime.Value.Ticks / (100 / (dProgressPerTick))).ToString("0.00") + "x";
+                        _processingSpeedCurrent = Util.ToString(_totalTime.Value.Ticks / (100 / dProgressPerTick), false) + "x";
                     else
                         _processingSpeedCurrent = Util.ToString(dProgressPerTick * 600000000, false) + " PPM";
                 }

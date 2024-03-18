@@ -235,8 +235,10 @@ namespace MeGUI.core.util
         /// <returns></returns>
         public static string ToString(decimal? d, bool bNoDecimalPlaces)
         {
-            if (!d.HasValue) return null;
-            if (bNoDecimalPlaces)
+            if (!d.HasValue)
+                return null;
+            
+            if (bNoDecimalPlaces || d.Value >= 100)
                 return d.Value.ToString("0");
             else
                 return d.Value.ToString("0.00");
