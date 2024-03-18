@@ -27,6 +27,7 @@ using MeGUI.core.details;
 using MeGUI.core.plugins.interfaces;
 using MeGUI.core.util;
 using MeGUI.packages.tools.calculator;
+using MeGUI.Properties;
 
 namespace MeGUI
 {
@@ -66,7 +67,7 @@ namespace MeGUI
         /// if there is no muxer that can deliver any container for the video / audio combination, we can abort right away
         /// </summary>
         /// <returns>true if the given video/audio combination can be muxed to at least a single container, false if not</returns>
-        public bool init()
+        public bool Init()
         {
             List<AudioEncoderType> aTypes = new List<AudioEncoderType>();
             AudioEncoderType[] audioTypes;
@@ -196,7 +197,7 @@ namespace MeGUI
 		/// </summary>
 		/// <param name="encodable">encodeable audio streams</param>
 		/// <param name="muxable">muxable Audio Streams with the path filled out and a blank language</param>
-        private void separateEncodableAndMuxableAudioStreams(out AudioJob[] encodable, out MuxStream[] muxable, out AudioEncoderType[] muxTypes)
+        private void SeparateEncodableAndMuxableAudioStreams(out AudioJob[] encodable, out MuxStream[] muxable, out AudioEncoderType[] muxTypes)
 		{
 			encodable = AudioUtil.getConfiguredAudioJobs(audioStreams.ToArray()); // discards improperly configured ones
 			// the rest of the job is all encodeable
@@ -215,7 +216,7 @@ namespace MeGUI
 		/// <summary>
 		/// sets the projected video bitrate field in the GUI
 		/// </summary>
-        private void setVideoBitrate()
+        private void SetVideoBitrate()
         {
             try
             {
@@ -236,11 +237,11 @@ namespace MeGUI
         private CalcData GetCalcData()
         {
             CalcData data = new CalcData((long)videoStream.NumberOfFrames, videoStream.Framerate, (ContainerType)container.SelectedItem,
-                videoStream.Settings.Codec, videoStream.Settings.NbBframes > 0, getAudioStreamsForBitrate());
+                videoStream.Settings.Codec, videoStream.Settings.NbBframes > 0, GetAudioStreamsForBitrate());
             return data;
         }
 
-        private AudioBitrateCalculationStream[] getAudioStreamsForBitrate()
+        private AudioBitrateCalculationStream[] GetAudioStreamsForBitrate()
         {
             List<AudioBitrateCalculationStream> streams = new List<AudioBitrateCalculationStream>();
             foreach (AudioJob s in audioStreams)
@@ -251,7 +252,7 @@ namespace MeGUI
 		/// <summary>
 		/// sets the size of the output given the desired bitrate
 		/// </summary>
-		private void setTargetSize()
+		private void SetTargetSize()
 		{
 			try
             {
@@ -267,31 +268,6 @@ namespace MeGUI
                 targetSize.Value = null;
 			}
 		}
-		#region audio
-        /// <summary>
-        /// sets the projected audio size for all audio streams that use CBR mode
-        /// </summary>
-        private void setAudioSize()
-        {
-            long[] sizes = new long[this.audioStreams.Count];
-            int index = 0;
-            foreach (AudioJob stream in this.audioStreams)
-            {
-                if (!string.IsNullOrEmpty(stream.Output)) // if we don't have the video length or the audio is not fully configured we can give up now
-                {
-                    long bytesPerSecond = 0;
-                    if (stream.BitrateMode == BitrateManagementMode.CBR)
-                    {
-                        bytesPerSecond = stream.Settings.Bitrate * 1000 / 8;
-                    }
-                    double lengthInSeconds = (double)this.videoStream.NumberOfFrames / (double)this.videoStream.Framerate;
-                    long sizeInBytes = (long)(lengthInSeconds * bytesPerSecond);
-                    this.audioStreams[index].SizeBytes = sizeInBytes;
-                    index++;
-                }
-            }
-        }
-		#endregion
 		#endregion
 		#region button events
 		/// <summary>
@@ -322,11 +298,8 @@ namespace MeGUI
 
             log.LogValue("Split Size", splitSize);
 
-            MuxStream[] audio;
-            AudioJob[] aStreams;
-            AudioEncoderType[] muxTypes;
-			separateEncodableAndMuxableAudioStreams(out aStreams, out audio, out muxTypes);
-			MuxStream[] subtitles = new MuxStream[0];
+            SeparateEncodableAndMuxableAudioStreams(out AudioJob[] aStreams, out MuxStream[] audio, out AudioEncoderType[] muxTypes);
+            MuxStream[] subtitles = Array.Empty<MuxStream>();
             ChapterInfo chapters = new ChapterInfo();
 			string videoInput = vInfo.VideoInput;
             string videoOutput = vInfo.VideoOutput;
@@ -343,15 +316,21 @@ namespace MeGUI
 
             if (addSubsNChapters.Checked)
 			{
-                AdaptiveMuxWindow amw = new AdaptiveMuxWindow();
-                amw.setMinimizedMode(videoOutput, "", videoStream.Settings.EncoderType, JobUtil.getFramerate(videoInput), audio,
-                    muxTypes, muxedOutput, splitSize, cot);
-                if (amw.ShowDialog() == DialogResult.OK)
-                    amw.getAdditionalStreams(out audio, out subtitles, out chapters, out muxedOutput, out cot);
-                else // user aborted, abort the whole process
-                    return;
+                using (AdaptiveMuxWindow amw = new AdaptiveMuxWindow())
+                {
+                    amw.setMinimizedMode(videoOutput, "", videoStream.Settings.EncoderType, JobUtil.getFramerate(videoInput), audio, muxTypes, muxedOutput, splitSize, cot);
+                    if (amw.ShowDialog() == DialogResult.OK)
+                        amw.getAdditionalStreams(out audio, out subtitles, out chapters, out muxedOutput, out cot);
+                    else // user aborted, abort the whole process
+                        return;
+                }
             }
-            removeStreamsToBeEncoded(ref audio, aStreams);
+            
+            // prepare the jobs and streams
+            RemoveStreamsToBeEncoded(ref audio, aStreams);
+            SetTemporaryOutputPath(ref videoStream, ref aStreams);
+            
+            // create the jobs
             MainForm.Instance.Jobs.AddJobsWithDependencies(VideoUtil.GenerateJobSeries(videoStream, muxedOutput, aStreams, subtitles, new List<string>(), String.Empty, chapters,
                 desiredSize, splitSize, cot, prerender, audio, log, device.Text, vInfo.Zones, null, null, false), true);
             this.Close();
@@ -362,7 +341,7 @@ namespace MeGUI
         /// </summary>
         /// <param name="audio">All files to be muxed (including the ones which will be encoded first)</param>
         /// <param name="aStreams">All files being encoded (these will be removed from the audio array)</param>
-        private void removeStreamsToBeEncoded(ref MuxStream[] audio, AudioJob[] aStreams)
+        private static void RemoveStreamsToBeEncoded(ref MuxStream[] audio, AudioJob[] aStreams)
         {
             List<MuxStream> newAudio = new List<MuxStream>();
             foreach (MuxStream stream in audio)
@@ -385,9 +364,34 @@ namespace MeGUI
             }
             audio = newAudio.ToArray();
         }
-		#endregion
-		#region event helper methods
-		private void textField_KeyPress(object sender, KeyPressEventArgs e)
+		
+        /// <summary>
+        /// Sets a random temporary outout path to avoid that those intermediate files will be wrongly reused 
+        /// </summary>
+        /// <param name="vStream"></param>
+        /// <param name="aStreams"></param>
+        private static void SetTemporaryOutputPath(ref VideoStream vStream, ref AudioJob[] aStreams)
+        {
+            vStream.Output = GetTemporaryOutputPath(vStream.Output);
+            foreach (AudioJob aJob in aStreams)
+                aJob.Output = GetTemporaryOutputPath(aJob.Output);
+        }
+
+        /// <summary>
+        /// Generates the random path
+        /// </summary>
+        /// <param name="strPath">the non-random path</param>
+        /// <returns>the new random path</returns>
+        private static string GetTemporaryOutputPath(string strPath)
+        {
+            string newName = Path.GetFileNameWithoutExtension(strPath) + "_" + Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(strPath);
+            return Path.Combine(Path.GetDirectoryName(strPath), newName);        
+        }
+
+#endregion
+
+        #region event helper methods
+        private void textField_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			if (! char.IsDigit(e.KeyChar) && (int)Keys.Back != (int)e.KeyChar)
 				e.Handled = true;
@@ -396,14 +400,14 @@ namespace MeGUI
 		private void containerOverhead_ValueChanged(object sender, System.EventArgs e)
 		{
 			if (isBitrateMode)
-				this.setVideoBitrate();
+				this.SetVideoBitrate();
 			else
-				this.setTargetSize();
+				this.SetTargetSize();
 		}
 		private void projectedBitrate_TextChanged(object sender, System.EventArgs e)
 		{
 			if (!this.isBitrateMode)
-				this.setTargetSize();
+				this.SetTargetSize();
 		}
 
 
@@ -436,7 +440,7 @@ namespace MeGUI
         private void targetSize_SelectionChanged(object sender, string val)
         {
             if (isBitrateMode)
-                this.setVideoBitrate();
+                this.SetVideoBitrate();
         }
     }
     public class AutoEncodeTool : ITool
@@ -450,8 +454,11 @@ namespace MeGUI
 
         public void Run(MainForm info)
         {
+            if (info == null)
+                return;
+            
             // normal video verification
-            string error = null;
+            string error;
             if ((error = info.Video.verifyVideoSettings()) != null)
             {
                 MessageBox.Show(error, "Unsupported video configuration", MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -479,20 +486,23 @@ namespace MeGUI
             bool cont = JobUtil.GetFinalZoneConfiguration(vSettings, info.Video.Info.IntroEndFrame, info.Video.Info.CreditsStartFrame, ref zones, (int)frameCount);
             if (cont)
             {
-                VideoStream myVideo = new VideoStream();
-                myVideo.Input = info.Video.Info.VideoInput;
-                myVideo.Output = info.Video.Info.VideoOutput;
-                myVideo.NumberOfFrames = frameCount;
-                myVideo.Framerate = (decimal)frameRate;
-                myVideo.VideoType = info.Video.CurrentMuxableVideoType;
-                myVideo.Settings = vSettings;
+                VideoStream myVideo = new VideoStream
+                {
+                    Input = info.Video.Info.VideoInput,
+                    Output = info.Video.Info.VideoOutput,
+                    NumberOfFrames = frameCount,
+                    Framerate = (decimal)frameRate,
+                    VideoType = info.Video.CurrentMuxableVideoType,
+                    Settings = vSettings
+                };
                 
+
                 VideoInfo vInfo = info.Video.Info.Clone(); // so we don't modify the data on the main form
                 vInfo.Zones = zones;
 
                 using (AutoEncodeWindow aew = new AutoEncodeWindow(myVideo, info.Audio.AudioStreams, info.Video.PrerenderJob, vInfo))
                 {
-                    if (aew.init())
+                    if (aew.Init())
                     {
                         aew.ShowDialog();
                     }

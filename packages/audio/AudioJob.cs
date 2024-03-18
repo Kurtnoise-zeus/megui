@@ -31,12 +31,12 @@ namespace MeGUI
 	/// holds all the parameters relevant for aac encoding in besweet
 	/// </summary>
 	public class AudioJob : Job
-	{
-        public string CutFile;
-		public AudioCodecSettings Settings;
-        public int Delay;
-        public string Language;
-        public string Name;
+    {
+        private string cutFile;
+        private AudioCodecSettings settings;
+        private int delay;
+        private string language;
+        private string name;
 
         public AudioJob() : this(null, null, null, null, 0, null, null) { }
 
@@ -49,8 +49,6 @@ namespace MeGUI
             Language = strLanguage;
             Name = strName;
         }
-
-        public long SizeBytes;
 
         public MuxableType ToMuxableType()
         {
@@ -88,6 +86,10 @@ namespace MeGUI
             }
         }
 
-        public BitrateManagementMode BitrateMode;
+        public string CutFile { get => cutFile; set => cutFile = value; }
+        public AudioCodecSettings Settings { get => settings; set => settings = value; }
+        public int Delay { get => delay; set => delay = value; }
+        public string Language { get => language; set => language = value; }
+        public string Name { get => name; set => name = value; }
     }
 }
