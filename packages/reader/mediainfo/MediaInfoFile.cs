@@ -32,13 +32,6 @@ using MeGUI.packages.tools.hdbdextractor;
 
 namespace MeGUI
 {
-    public class MediaInfoException : Exception
-    {
-        public MediaInfoException(Exception e)
-        : base("Media info error: " + e.Message, e)
-        {}
-    }
-
     public class MediaInfoFileFactory : IMediaFileFactory
     {
         #region IMediaFileFactory Members
@@ -95,8 +88,15 @@ namespace MeGUI
         private Eac3toInfo _Eac3toInfo;
         private LogItem _Log;
         private List<string> _attachments;
+        private bool _mediaInfoOK = false;
         #endregion
+
         #region properties
+        public bool MediaInfoOK
+        {
+            get { return _mediaInfoOK; }
+        }
+
         public AudioInformation AudioInfo
         {
             get { return _AudioInfo; }
@@ -143,17 +143,20 @@ namespace MeGUI
 
         public MediaInfoFile(string file, ref LogItem oLog, int iPGCNumber, int iAngleNumber)
         {
-            GetSourceInformation(file, oLog, iPGCNumber, iAngleNumber, true);
+            if (!String.IsNullOrEmpty(file))
+                _mediaInfoOK = GetSourceInformation(file, oLog, iPGCNumber, iAngleNumber, true);
         }
 
         public MediaInfoFile(string file, bool bGetIndexFileData)
         {
-            GetSourceInformation(file, null, 1, 0, bGetIndexFileData);
+            if (!String.IsNullOrEmpty(file))
+                _mediaInfoOK = GetSourceInformation(file, null, 1, 0, bGetIndexFileData);
         }
 
         public MediaInfoFile(string file, int iPGCNumber, int iAngleNumber)
         {
-            GetSourceInformation(file, null, iPGCNumber, iAngleNumber, true);
+            if (!String.IsNullOrEmpty(file))
+                _mediaInfoOK = GetSourceInformation(file, null, iPGCNumber, iAngleNumber, true);
         }
 
         /// <summary>
@@ -161,7 +164,7 @@ namespace MeGUI
         /// </summary>
         /// <param name="file">the file to be analyzed</param>
         /// <param name="oLog">the log item</param>
-        private void GetSourceInformation(string file, LogItem oLog, int iPGCNumber, int iAngleNumber, bool bGetIndexFileData)
+        private bool GetSourceInformation(string file, LogItem oLog, int iPGCNumber, int iAngleNumber, bool bGetIndexFileData)
         {
             if (file.Contains("|"))
                 file = file.Split('|')[0];
@@ -195,7 +198,7 @@ namespace MeGUI
                         oLog.LogEvent("File: " + _file);
                         oLog.LogEvent("The file cannot be opened", ImageType.Warning);
                     }  
-                    return;
+                    return false;
                 }
 
                 // if an index file is used extract the real file name
@@ -203,7 +206,7 @@ namespace MeGUI
                     Path.GetExtension(file).ToLowerInvariant().Equals(".dgi"))
                 {
                     if (!bGetIndexFileData)
-                        return;
+                        return false;
 
                     using (StreamReader sr = new StreamReader(file, Encoding.Default))
                     {
@@ -254,7 +257,7 @@ namespace MeGUI
                 else if (Path.GetExtension(file).ToLowerInvariant().Equals(".lwi"))
                 {
                     if (!bGetIndexFileData)
-                        return;
+                        return false;
 
                     using (StreamReader sr = new StreamReader(file, Encoding.Default))
                     {
@@ -278,7 +281,7 @@ namespace MeGUI
                     // ignore .BUP (DVD) files
                     if (oLog != null)
                         infoLog.LogEvent("The file is not supported", ImageType.Warning);
-                    return;
+                    return false;
                 }
 
                 // get basic media information
@@ -304,20 +307,30 @@ namespace MeGUI
                     info = new MediaInfo(file);
                 }));
                 processMediaInfo.Start();
-                while (processMediaInfo.ThreadState == ThreadState.Running || processMediaInfo.ThreadState == ThreadState.WaitSleepJoin)
+                
+                DateTime startTime = DateTime.Now;
+                while (startTime.AddMinutes(1) > DateTime.Now
+                    && (processMediaInfo.ThreadState == ThreadState.Running || processMediaInfo.ThreadState == ThreadState.WaitSleepJoin))
                     MeGUI.core.util.Util.Wait(100);
 
                 if (info == null || !info.OpenSuccess)
                 {
+                    string errorText = "The file cannot be opened";
+                    if (processMediaInfo.ThreadState == ThreadState.Running)
+                    {
+                        processMediaInfo.Abort();
+                        errorText = "The file cannot be opened as MediaInfo does not respond.";
+                    }
+                    
                     if (oLog != null)
                         infoLog.LogEvent("The file cannot be opened", ImageType.Warning);
                     else
                     {
                         oLog = MainForm.Instance.Log.Info("MediaInfo");
                         oLog.LogEvent("File: " + _file);
-                        oLog.LogEvent("The file cannot be opened", ImageType.Warning);
+                        oLog.LogEvent(errorText, ImageType.Warning);
                     }
-                    return;
+                    return false;
                 }
 
                 CorrectSourceInformation(ref info, file, infoLog, iPGCNumber, iAngleNumber);
@@ -598,12 +611,14 @@ namespace MeGUI
                 if (oLog == null)
                     oLog = MainForm.Instance.Log.Info("MediaInfo");
                 oLog.LogValue("MediaInfo - Unhandled Error", ex, ImageType.Error);
+                return false;
             }
             finally
             {
                 if (info != null)
                     info.Dispose();
             }
+            return true;
         }
 
         private string getLanguage(string languageISO, string language, ref LogItem oLog, bool bFullProcess, bool bVideoTrack)
@@ -1594,12 +1609,13 @@ namespace MeGUI
             get { return false; }
         }
 
+        private static object lockObject = new object();
         public IVideoReader GetVideoReader()
         {
             if (!VideoInfo.HasVideo || !CanReadVideo)
                 throw new Exception("Can't read the video stream");
             if (videoSourceFile == null || videoReader == null)
-                lock (this)
+                lock (lockObject)
                 {
                     if (videoSourceFile == null)
                     {

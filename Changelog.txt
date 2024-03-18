@@ -1,3 +1,4 @@
+2939 [MediaInfo]            continue if a file cannot be read within 5 minutes. Bug #960
 2938 [AutoEncode]           use random intermediate file names to avoid issues with interfering jobs. Bug #934
 2937 [Video Encoder]        fixed not applying the proper bitrate for desired file sizes. Bug #976 (regression of 2930)
 2936 [Main]                 added startup splash screen

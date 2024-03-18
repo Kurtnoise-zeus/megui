@@ -22,6 +22,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Management;
+using System.Net.Mail;
 using System.Text;
 using System.Windows.Forms;
 
@@ -73,14 +75,18 @@ namespace MeGUI
 
         private void initTabs()
         {
-            audioTracks = new List<OneClickStreamControl>();
-            audioTracks.Add(oneClickAudioStreamControl1);
+            audioTracks = new List<OneClickStreamControl>
+            {
+                oneClickAudioStreamControl1
+            };
             oneClickAudioStreamControl1.StandardStreams = new object[] { "None" };
             oneClickAudioStreamControl1.SelectedStreamIndex = 0;
             oneClickAudioStreamControl1.Filter = VideoUtil.GenerateCombinedFilter(ContainerManager.AudioTypes.ValuesArray);
 
-            subtitleTracks = new List<OneClickStreamControl>();
-            subtitleTracks.Add(oneClickSubtitleStreamControl1);
+            subtitleTracks = new List<OneClickStreamControl>
+            {
+                oneClickSubtitleStreamControl1
+            };
             oneClickSubtitleStreamControl1.StandardStreams = new object[] { "None" };
             oneClickSubtitleStreamControl1.SelectedStreamIndex = 0;
             oneClickSubtitleStreamControl1.Filter = VideoUtil.GenerateCombinedFilter(ContainerManager.SubtitleTypes.ValuesArray);
@@ -292,7 +298,7 @@ namespace MeGUI
                     if (FileUtil.RegExMatch(fileName, @"_\d{1,2}\z", false))
                         fileName = fileName.Substring(0, fileName.LastIndexOf('_') + 1);
                     else
-                        fileName = fileName + "_";
+                        fileName += "_";
                     fileName = filePrefix + fileName + iPGCNumber;
                     if (_videoInputInfo.VideoInfo.AngleNumber > 0)
                         fileName += "_" + _videoInputInfo.VideoInfo.AngleNumber;
@@ -439,7 +445,10 @@ namespace MeGUI
         public void setInputData(MediaInfoFile iFile, List<OneClickFilesToProcess> arrFilesToProcess)
         {
             if (iFile == null)
+            {
+                setOpenFailure(false);
                 return;
+            }
 
             beingCalled++;
             if (!bAutomatedProcessing && arrFilesToProcess.Count > 0)
@@ -940,10 +949,12 @@ namespace MeGUI
                     if (!_oSettings.DisableIntermediateMKV && _videoInputInfo.MuxableToMKV())
                     {
                         // create job
-                        MuxJob mJob = new MuxJob();
-                        mJob.MuxType = MuxerType.MKVMERGE;
-                        mJob.Input = dpp.VideoInput;
-                        mJob.Output = Path.Combine(dpp.WorkingDirectory, Path.GetFileNameWithoutExtension(dpp.VideoInput) + ".mkv"); ;
+                        MuxJob mJob = new MuxJob
+                        {
+                            MuxType = MuxerType.MKVMERGE,
+                            Input = dpp.VideoInput,
+                            Output = Path.Combine(dpp.WorkingDirectory, Path.GetFileNameWithoutExtension(dpp.VideoInput) + ".mkv")
+                        };
                         mJob.Settings.MuxAll = true;
                         mJob.Settings.MuxedInput = mJob.Input;
                         mJob.Settings.MuxedOutput = mJob.Output;
@@ -1121,13 +1132,15 @@ namespace MeGUI
                     strName = oStream.Name;
                     strLanguage = oStream.Language;
                     aInput = oStreamControl.SelectedFile;
-                    MediaInfoFile oInfo = new MediaInfoFile(aInput, ref _oLog);
-                    if (oInfo.AudioInfo.Tracks.Count > 0)
+                    using (MediaInfoFile oInfo = new MediaInfoFile(aInput, ref _oLog))
                     {
-                        oAudioTrackInfo = oInfo.AudioInfo.Tracks[0];
-                        oStream.TrackInfo = oAudioTrackInfo;
-                        oStream.Language = strLanguage;
-                        oStream.Name = strName;
+                        if (oInfo.AudioInfo.Tracks.Count > 0)
+                        {
+                            oAudioTrackInfo = oInfo.AudioInfo.Tracks[0];
+                            oStream.TrackInfo = oAudioTrackInfo;
+                            oStream.Language = strLanguage;
+                            oStream.Name = strName;
+                        }
                     }
                 }
 
@@ -1392,9 +1405,11 @@ namespace MeGUI
             // either because a track has to be extracted or that attachments MKV --> MKV are to be extracted & included
             if (oExtractMKVTrack.Count > 0 || dpp.Attachments.Count > 0 || !String.IsNullOrEmpty(dpp.TimeStampFile))
             {
-                MkvExtractJob extractJob = new MkvExtractJob(String.IsNullOrEmpty(dpp.IntermediateMKVFile) ? dpp.VideoInput : dpp.IntermediateMKVFile, dpp.WorkingDirectory, oExtractMKVTrack);
-                extractJob.Attachments = dpp.Attachments;
-                extractJob.TimeStampFile = dpp.TimeStampFile;
+                MkvExtractJob extractJob = new MkvExtractJob(String.IsNullOrEmpty(dpp.IntermediateMKVFile) ? dpp.VideoInput : dpp.IntermediateMKVFile, dpp.WorkingDirectory, oExtractMKVTrack)
+                {
+                    Attachments = dpp.Attachments,
+                    TimeStampFile = dpp.TimeStampFile
+                };
                 prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(extractJob));
                 if (dpp.ApplyDelayCorrection)
                     _oLog.LogEvent("Audio delay will be detected later as an intermediate MKV file is beeing used");
@@ -1406,13 +1421,11 @@ namespace MeGUI
             // add audio job to chain if required
             prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(audioJobs));
 
-            JobChain finalJobChain = null;
+            JobChain finalJobChain;
             if (dpp.IndexType == FileIndexerWindow.IndexType.D2V)
-            {   
-                string indexFile = string.Empty;
-                IndexJob job = null;
-                indexFile = Path.Combine(dpp.WorkingDirectory, Path.GetFileNameWithoutExtension(output.Filename) + ".d2v");
-                job = new D2VIndexJob(dpp.VideoInput, indexFile, 2, arrAudioTrackInfo, false, false);
+            {
+                string indexFile = Path.Combine(dpp.WorkingDirectory, Path.GetFileNameWithoutExtension(output.Filename) + ".d2v");
+                IndexJob job = new D2VIndexJob(dpp.VideoInput, indexFile, 2, arrAudioTrackInfo, false, false);
                 OneClickPostProcessingJob ocJob = new OneClickPostProcessingJob(dpp.VideoInput, indexFile, dpp);
                 finalJobChain = new SequentialChain(prepareJobs, new SequentialChain(job), new SequentialChain(ocJob));
             }
@@ -1421,7 +1434,7 @@ namespace MeGUI
                 dpp.IndexType == FileIndexerWindow.IndexType.FFMS ||
                 dpp.IndexType == FileIndexerWindow.IndexType.LSMASH)
             {
-                string indexFile = string.Empty;
+                string indexFile;
                 if (dpp.IndexType == FileIndexerWindow.IndexType.DGI || dpp.IndexType == FileIndexerWindow.IndexType.DGM)
                     indexFile = Path.Combine(dpp.WorkingDirectory, Path.GetFileNameWithoutExtension(output.Filename) + ".dgi");
                 else if (dpp.IndexType == FileIndexerWindow.IndexType.LSMASH)
@@ -1430,7 +1443,7 @@ namespace MeGUI
                     indexFile = Path.Combine(dpp.WorkingDirectory, Path.GetFileName(dpp.VideoInput) + ".ffindex");
                 OneClickPostProcessingJob ocJob = new OneClickPostProcessingJob(dpp.VideoInput, indexFile, dpp);
 
-                IndexJob job = null;
+                IndexJob job;
                 if (inputContainer == ContainerType.MKV)
                 {
                     if (dpp.IndexType == FileIndexerWindow.IndexType.DGI)
@@ -1712,17 +1725,21 @@ namespace MeGUI
         {
             beingCalled++;
 
-            TabPage p = new TabPage("Subtitle " + (iSelectedSubtitleTabPage + 1));
-            p.UseVisualStyleBackColor = subtitlesTab.TabPages[0].UseVisualStyleBackColor;
-            p.Padding = subtitlesTab.TabPages[0].Padding;
-
-            OneClickStreamControl a = new OneClickStreamControl();
-            a.TrackNumber = subtitleTracks.Count + 1;
-            a.Dock = subtitleTracks[0].Dock;
-            a.Padding = subtitleTracks[0].Padding;
-            a.ShowDelay = subtitleTracks[0].ShowDelay;
-            a.ShowDefaultStream = subtitleTracks[0].ShowDefaultStream;
-            a.ShowForceStream = subtitleTracks[0].ShowForceStream;
+            TabPage p = new TabPage("Subtitle " + (iSelectedSubtitleTabPage + 1))
+            {
+                UseVisualStyleBackColor = subtitlesTab.TabPages[0].UseVisualStyleBackColor,
+                Padding = subtitlesTab.TabPages[0].Padding
+            };
+            
+            OneClickStreamControl a = new OneClickStreamControl
+            {
+                TrackNumber = subtitleTracks.Count + 1,
+                Dock = subtitleTracks[0].Dock,
+                Padding = subtitleTracks[0].Padding,
+                ShowDelay = subtitleTracks[0].ShowDelay,
+                ShowDefaultStream = subtitleTracks[0].ShowDefaultStream,
+                ShowForceStream = subtitleTracks[0].ShowForceStream
+            };
             a.chkDefaultStream.CheckedChanged += new System.EventHandler(this.chkDefaultStream_CheckedChanged);
             a.SomethingChanged += new EventHandler(audio1_SomethingChanged);
             a.Filter = subtitleTracks[0].Filter;
@@ -1761,6 +1778,7 @@ namespace MeGUI
 
             if (bChangeFocus)
                 subtitlesTab.SelectedTab = p;
+            p.Dispose();
 
             beingCalled--;
             updatePossibleContainers();
@@ -1850,12 +1868,14 @@ namespace MeGUI
         private void SubtitleResetTrack(List<OneClickStream> arrSubtitleTrackInfo, OneClickSettings settings)
         {
             // generate track names
-            List<object> trackNames = new List<object>();
-            trackNames.Add("None");
+            List<object> trackNames = new List<object>
+            {
+                "None"
+            };
             foreach (object o in arrSubtitleTrackInfo)
                 trackNames.Add(o);
             subtitleTracks[0].StandardStreams = trackNames.ToArray();
-            subtitleTracks[0].CustomStreams = new object[0];
+            subtitleTracks[0].CustomStreams = Array.Empty<object>();
             subtitleTracks[0].SelectedStreamIndex = 0;
 
             // delete all tracks beside the first one and the last two
@@ -1937,18 +1957,22 @@ namespace MeGUI
         {
             beingCalled++;
 
-            TabPage p = new TabPage("Audio " + (iSelectedAudioTabPage + 1));
-            p.UseVisualStyleBackColor = audioTab.TabPages[0].UseVisualStyleBackColor;
-            p.Padding = audioTab.TabPages[0].Padding;
-
-            OneClickStreamControl a = new OneClickStreamControl();
-            a.TrackNumber = audioTracks.Count + 1;
-            a.Dock = audioTracks[0].Dock;
-            a.Padding = audioTracks[0].Padding;
-            a.ShowDelay = audioTracks[0].ShowDelay;
-            a.ShowDefaultStream = audioTracks[0].ShowDefaultStream;
-            a.ShowForceStream = audioTracks[0].ShowForceStream;
-            a.Filter = audioTracks[0].Filter;
+            TabPage p = new TabPage("Audio " + (iSelectedAudioTabPage + 1))
+            {
+                UseVisualStyleBackColor = audioTab.TabPages[0].UseVisualStyleBackColor,
+                Padding = audioTab.TabPages[0].Padding
+            };
+            
+            OneClickStreamControl a = new OneClickStreamControl
+            {
+                TrackNumber = audioTracks.Count + 1,
+                Dock = audioTracks[0].Dock,
+                Padding = audioTracks[0].Padding,
+                ShowDelay = audioTracks[0].ShowDelay,
+                ShowDefaultStream = audioTracks[0].ShowDefaultStream,
+                ShowForceStream = audioTracks[0].ShowForceStream,
+                Filter = audioTracks[0].Filter
+            };
             a.FileUpdated += oneClickAudioStreamControl_FileUpdated;
 
             // clone the streams
@@ -1990,6 +2014,7 @@ namespace MeGUI
 
             if (bChangeFocus)
                 audioTab.SelectedTab = p;
+            p.Dispose();
 
             beingCalled--;
             updatePossibleContainers();
@@ -2081,12 +2106,14 @@ namespace MeGUI
         private void AudioResetTrack(List<OneClickStream> arrAudioTrackInfo, OneClickSettings settings)
         {
             // generate track names
-            List<object> trackNames = new List<object>();
-            trackNames.Add("None");
+            List<object> trackNames = new List<object>
+            {
+                "None"
+            };
             foreach (OneClickStream o in arrAudioTrackInfo)
                 trackNames.Add(o);
             audioTracks[0].StandardStreams = trackNames.ToArray();
-            audioTracks[0].CustomStreams = new object[0];
+            audioTracks[0].CustomStreams = Array.Empty<object>();
             audioTracks[0].SelectedStreamIndex = 0;
 
             // delete all tracks beside the first one and the last two
@@ -2265,7 +2292,7 @@ namespace MeGUI
         /// <param name="bIsStandardTrack">true if standard = inlcuded track, false if external/dedicated file</param>
         /// <param name="inputContainer">the input container type</param>
         /// <returns>true if do not encode is possible</returns>
-        private bool isDontEncodeAudioPossible(MediaInfoFile iFile, bool bIsStandardTrack, ContainerType inputContainer)
+        private static bool isDontEncodeAudioPossible(MediaInfoFile iFile, bool bIsStandardTrack, ContainerType inputContainer)
         {
             // external files can be remuxed
             if (!bIsStandardTrack)
