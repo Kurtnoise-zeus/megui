@@ -983,7 +983,7 @@ namespace MeGUI
             PackageSystem.MuxerProviders.Register(new MKVMergeMuxerProvider());
             PackageSystem.MuxerProviders.Register(new MP4BoxMuxerProvider());
 
-            PackageSystem.Tools.Register(new MeGUI.packages.tools.cutter.CutterTool());
+            PackageSystem.Tools.Register(new MeGUI.packages.tools.cutter.Cutter.CutterTool());
             PackageSystem.Tools.Register(new AviSynthWindowTool());
             PackageSystem.Tools.Register(new AutoEncodeTool());
             PackageSystem.Tools.Register(new CQMEditorTool());

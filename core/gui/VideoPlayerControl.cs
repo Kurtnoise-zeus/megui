@@ -22,7 +22,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-using Timer=System.Threading.Timer;
+using Timer = System.Threading.Timer;
 
 namespace MeGUI.core.gui
 {
@@ -31,7 +31,7 @@ namespace MeGUI.core.gui
         public VideoPlayerControl()
         {
             InitializeComponent();
-            playTimer = new Timer(playNextFrame);
+            playTimer = new Timer(PlayNextFrame);
         }
 
         //ensures that UnloadVideo only returns if the reader is not used by other threads any more
@@ -41,9 +41,9 @@ namespace MeGUI.core.gui
         public event EventHandler PositionChanged;
         public void OnPositionChanged()
         {
-            if (PositionChanged != null)
-                PositionChanged(this, new EventArgs());
+            PositionChanged?.Invoke(this, new EventArgs());
         }
+
         private object positionLock = new object();
         
         private bool OffsetPosition(int offset, bool update)
@@ -54,12 +54,13 @@ namespace MeGUI.core.gui
             lock (positionLock)
             {
                 //Position property ensures that position does not get out of bounds
-                success = setPositionInternal(position + offset);
+                success = SetPositionInternal(position + offset);
             }
 
             InvokeOnPositionChanged();
 
-            if(update) UpdateVideo();
+            if(update) 
+                UpdateVideo();
 
             return success;
         }
@@ -69,7 +70,7 @@ namespace MeGUI.core.gui
             return OffsetPosition(offset, true);
         }
 
-        private bool setPositionInternal(int value)
+        private bool SetPositionInternal(int value)
         {
             int max = FrameCount - 1;
 
@@ -112,7 +113,7 @@ namespace MeGUI.core.gui
         /// <param name="nWidth"></param>
         /// <param name="nHeight"></param>
         /// <returns>A resized bitmap (needs disposal)</returns>
-        private Bitmap resizeBitmap(Bitmap b, int nWidth, int nHeight)
+        private Bitmap ResizeBitmap(Bitmap b, int nWidth, int nHeight)
         {
             float factorX = nWidth / (float)b.Width;
             float factorY = nHeight / (float)b.Height;
@@ -125,81 +126,24 @@ namespace MeGUI.core.gui
             using (Graphics g = Graphics.FromImage(result))
             {
                 //apply cropping
-                Region reg = new Region();
-                reg.MakeInfinite();
-                reg.Exclude(dst);
-                g.FillRegion(Brushes.White, reg);
+                using (Region reg = new Region())
+                {
+                    reg.MakeInfinite();
+                    reg.Exclude(dst);
+                    g.FillRegion(Brushes.White, reg);
+                }
 
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
-//                g.DrawImage(b, 0, 0, nWidth, nHeight);
+                //g.DrawImage(b, 0, 0, nWidth, nHeight);
                 g.DrawImage(b, dst, src, GraphicsUnit.Pixel);
 
-                if(DisplayActualFramerate)
+                if (DisplayActualFramerate)
                 {
                     g.DrawString(ActualFramerate.ToString("0.00 fps"), Font, Brushes.Green, 0, 0);
                 }
             }
             return result;
         }
-
-        //Is no done by resize Bitmap
-        ///// <summary>
-        ///// crops the image given as a reference by the values that were previously transmitted
-        ///// </summary>
-        ///// <param name="b">the image to where the cropping has to be applied</param>
-        //private unsafe void cropImage(Bitmap b)
-        //{
-        //    BitmapData image = b.LockBits(new Rectangle(0, 0, b.Width, b.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-        //    byte* pointer = (byte*)image.Scan0.ToPointer();
-        //    byte* pixel;
-        //    int stride = image.Stride;
-        //    byte white = (byte)Color.White.R;
-
-        //    pixel = pointer;
-        //    int width = b.Width;
-        //    int height = b.Height;
-        //    int width3 = 3 * width;
-        //    int left3 = 3 * cropMargin.Left;
-        //    int right3 = 3 * cropMargin.Right;
-
-        //    int lineGap = stride - width3;
-        //    int centerJump = width3 - left3 - right3;
-        //    for (int j = 0; j < cropMargin.Top; j++)
-        //    {
-        //        for (int i = 0; i < width3; i++)
-        //        {
-        //            *pixel = white;
-        //            pixel++;
-        //        }
-        //        pixel += lineGap;
-        //    }
-        //    int heightb = height - cropMargin.Bottom;
-        //    for (int j = cropMargin.Top; j < heightb; j++)
-        //    {
-        //        for (int i = 0; i < left3; i++)
-        //        {
-        //            *pixel = white;
-        //            pixel++;
-        //        }
-        //        pixel += centerJump;
-        //        for (int i = 0; i < right3; i++)
-        //        {
-        //            *pixel = white;
-        //            pixel++;
-        //        }
-        //        pixel += lineGap;
-        //    }
-        //    for (int j = b.Height - cropMargin.Bottom; j < height; j++)
-        //    {
-        //        for (int i = 0; i < width3; i++)
-        //        {
-        //            *pixel = white;
-        //            pixel++;
-        //        }
-        //        pixel += lineGap;
-        //    }
-        //    b.UnlockBits(image);
-        //}
         #endregion
 
         #region Video Playback
@@ -213,7 +157,7 @@ namespace MeGUI.core.gui
         /// has the advantage that the playback will be smoother if the frames
         /// take long to render.
         /// </summary>
-        private void playNextFrame(object state)
+        private void PlayNextFrame(object state)
         {
             try
             {
@@ -250,17 +194,19 @@ namespace MeGUI.core.gui
         //is set to trigger the rendering of the current frame
         private readonly AutoResetEvent renderEvent = new AutoResetEvent(false);
 
-        private void renderThreadLoop()
+        private void RenderThreadLoop()
         {
             int framesPlayed = 0;
             DateTime start = DateTime.Now;
+            Bitmap finalBitmap = null;
+
             do
             {
                 DateTime end = DateTime.Now;
                 TimeSpan renderTime = end - start;
 
                 //do not update current framerate more often than 200ms
-                if(renderTime.Milliseconds > 200 && framesPlayed > 0)
+                if (renderTime.Milliseconds > 200 && framesPlayed > 0)
                 {
                     //average results
                     actualFramerate = 0.9d * actualFramerate + 0.1d * (TimeSpan.TicksPerSecond / (double)renderTime.Ticks) * framesPlayed;
@@ -270,18 +216,17 @@ namespace MeGUI.core.gui
 
                 if (WaitHandle.WaitAny(new WaitHandle[] { nextFrameEvent, renderEvent }) == 0)
                 {
-                    if (!OffsetPosition(1, false)) 
+                    if (!OffsetPosition(1, false))
                         Stop();
-                    else 
+                    else
                         InvokeOnPositionChanged();
                 }
 
-                Bitmap finalBitmap;
                 int pos = position;
 
                 try
                 {
-                    using (Bitmap b = getFrame(pos))
+                    using (Bitmap b = GetFrame(pos))
                     {
                         if (b == null)
                             continue;
@@ -289,7 +234,13 @@ namespace MeGUI.core.gui
                         //if (cropMargin != Padding.Empty) // only crop when necessary            
                         //    cropImage(b);
 
-                        finalBitmap = resizeBitmap(b, videoPreview.Width, videoPreview.Height);
+                        finalBitmap = ResizeBitmap(b, videoPreview.Width, videoPreview.Height);
+                    }
+
+                    using (videoPreview.Image) // get rid of previous bitmap
+                    {
+                        //do the actual rendering on GUI thread
+                        Invoke((SimpleDelegate)(delegate { videoPreview.Image = finalBitmap; }));
                     }
                 }
                 catch (Exception ex)
@@ -306,20 +257,16 @@ namespace MeGUI.core.gui
 
                     break;
                 }
-                
-                using(videoPreview.Image) // get rid of previous bitmap
-                {
-                    //do the actual rendering on GUI thread
-                    Invoke((SimpleDelegate)(delegate { videoPreview.Image = finalBitmap; }));
-                }
-                //Console.WriteLine("Frame {0} updated", pos);
 
                 //needed for fps display
                 framesPlayed++;
+
             } while (!IsDisposed);
+
+            finalBitmap?.Dispose();
         }
 
-        private Bitmap getFrame(int pos)
+        private Bitmap GetFrame(int pos)
         {
             readerWriterLock.AcquireReaderLock(Timeout.Infinite);
             try
@@ -348,7 +295,7 @@ namespace MeGUI.core.gui
             playTimer.Change(0, (int)(1000d / (Framerate * SpeedUp)));
             isPlaying = true;
 
-            actualFramerate = Framerate*SpeedUp;
+            actualFramerate = Framerate * SpeedUp;
         }
 
         /// <summary>
@@ -424,8 +371,10 @@ namespace MeGUI.core.gui
             initalized = true;
 
             //Thread for video playing
-            renderThread = new Thread(renderThreadLoop);
-            renderThread.Name = "Render Thread";
+            renderThread = new Thread(RenderThreadLoop)
+            {
+                Name = "Render Thread"
+            };
             renderThread.Start();
         }
         #endregion
@@ -440,7 +389,7 @@ namespace MeGUI.core.gui
             }
             set
             {
-                if (setPositionInternal(value))
+                if (SetPositionInternal(value))
                 {
                     UpdateVideo();
                     InvokeOnPositionChanged();
@@ -466,11 +415,13 @@ namespace MeGUI.core.gui
             }
             set
             {
-                if(value <= 0) throw new ArgumentOutOfRangeException("value", "FPS cannot be zero or lower");
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(value), "FPS cannot be zero or lower");
                 framerate = value;
 
                 //Restart video to adjust playback speed for new framerate value
-                if(isPlaying) Play();
+                if (isPlaying)
+                    Play();
             }
         }
 
@@ -560,15 +511,18 @@ namespace MeGUI.core.gui
         protected override void Dispose(bool disposing)
         {
             Stop();
+
             playTimer.Dispose();
+
             if (renderThread != null)
             {
                 renderThread.Abort();
                 renderThread.Join();
             }
 
-            if (videoPreview.Image != null)
-                videoPreview.Image.Dispose(); // get rid of bitmap
+            videoPreview.Image?.Dispose(); // get rid of bitmap
+            nextFrameEvent.Dispose();
+            renderEvent.Dispose();
 
             if (disposing && (components != null))
             {

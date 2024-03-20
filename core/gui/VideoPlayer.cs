@@ -21,6 +21,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using MeGUI.core.gui;
@@ -62,7 +63,6 @@ namespace MeGUI
         private bool bOriginalSize;
         private string totalTime;
         private string currentTime;
-        private MainForm mainForm = MainForm.Instance;
         private string strFileName; // the video file name
         private bool bInlineAVS;
 
@@ -71,13 +71,13 @@ namespace MeGUI
 		public VideoPlayer()
 		{
 			InitializeComponent();
-            this.Resize += new EventHandler(formResized);
+            this.Resize += new EventHandler(FormResized);
 
             formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing));
             buttonPanelMinWidth = (int)((showPAR.Location.X + showPAR.Size.Width));
 
             zoomFactor = 100;
-            setZoomButtons();
+            SetZoomButtons();
             sizeLock = false;
 		}
 
@@ -100,9 +100,9 @@ namespace MeGUI
 		/// <param name="path">path of the video file to be loaded</param>
 		/// <param name="type">type of window</param>
 		/// <returns>true if the video could be opened, false if not</returns>
-        public bool loadVideo(MainForm mainForm, string path, PREVIEWTYPE type, bool hasAR)
+        public bool LoadVideo(string path, PREVIEWTYPE type, bool hasAR)
         {
-            return loadVideo(mainForm, path, type, hasAR, false, -1, false);
+            return LoadVideo(path, type, hasAR, false, -1, false);
         }
 
         /// <summary>
@@ -114,17 +114,16 @@ namespace MeGUI
         /// <param name="inlineAvs">true if path contain not filename but avsynth script to be parsed</param>
         /// <param name="startFrame">Select a specific frame to start off with or -1 for middle of video</param>
 		/// <returns>true if the video could be opened, false if not</returns>
-        public bool loadVideo(MainForm mainForm, string path, PREVIEWTYPE type, bool hasAR, bool inlineAvs, int startFrame, bool originalSize)
+        public bool LoadVideo(string path, PREVIEWTYPE type, bool hasAR, bool inlineAvs, int startFrame, bool originalSize)
 		{
             videoPreview.UnloadVideo();
             bInlineAVS = inlineAvs;
             strFileName = path;
             bOriginalSize = originalSize;
 
-            lock (this)
+            lock (_locker)
             {
-                if (file != null)
-                    file.Dispose();
+                file?.Dispose();
             }
 
             try
@@ -136,7 +135,7 @@ namespace MeGUI
                 }
                 else
                 {
-                    file = mainForm.MediaFileFactory.Open(path);
+                    file = MainForm.Instance.MediaFileFactory.Open(path);
                     if (file == null)
                         throw new Exception("The video stream cannot be opened");
                     btnReloadVideo.Enabled = true;
@@ -170,32 +169,32 @@ namespace MeGUI
                 this.hasAR = hasAR;
                 zoomMaxWidth = 0;
                 SetMaxZoomWidth();
-                doInitialAdjustment();
-                int iStart = 0;
+                DoInitialAdjustment();
+                int iStart;
                 if (startFrame >= 0)
                     iStart = startFrame;
                 else
                     iStart = reader.FrameCount / 2;
                 videoPreview.LoadVideo(reader, file.VideoInfo.FPS, iStart);
-                setTitleText();
+                SetTitleText();
 				return true;
 			}
 			return false;
 		}
 
+        private readonly object _locker = new object();
         /// <summary>
         /// reloads the video, sets up the proper window size and enables / disables the GUI buttons depending on the
         /// preview type set
         /// </summary>
         /// <returns>true if the video could be opened, false if not</returns>
-        public bool reloadVideo()
+        public bool ReloadVideo()
         {
             videoPreview.UnloadVideo();
 
-            lock (this)
+            lock (_locker)
             {
-                if (file != null)
-                    file.Dispose();
+                file?.Dispose();
             }
 
             try
@@ -206,7 +205,7 @@ namespace MeGUI
                 }
                 else
                 {
-                    file = mainForm.MediaFileFactory.Open(strFileName);
+                    file = MainForm.Instance.MediaFileFactory.Open(strFileName);
                     if (file == null)
                         throw new Exception("The video stream cannot be opened");
                 }
@@ -236,14 +235,14 @@ namespace MeGUI
                 this.positionSlider.Maximum = reader.FrameCount - 1;
                 this.positionSlider.TickFrequency = this.positionSlider.Maximum / 20;
                 SetMaxZoomWidth();
-                doInitialAdjustment();
-                int iStart = 0;
+                DoInitialAdjustment();
+                int iStart;
                 if (positionSlider.Value >= 0 && positionSlider.Value <= reader.FrameCount)
                     iStart = positionSlider.Value;
                 else
                     iStart = reader.FrameCount / 2;
                 videoPreview.LoadVideo(reader, file.VideoInfo.FPS, iStart);
-                setTitleText();
+                SetTitleText();
                 return true;
             }
             return false;
@@ -270,7 +269,7 @@ namespace MeGUI
             bOriginalSize = true;
             zoomWidth = (int)file.VideoInfo.Width;
             zoomFactor = (int)((double)zoomWidth / zoomMaxWidth * 100.0);
-            setZoomButtons();
+            SetZoomButtons();
             resize(zoomWidth, showPAR.Checked);
         }
 
@@ -295,12 +294,12 @@ namespace MeGUI
             bOriginalSize = false;
             zoomWidth = zoomMaxWidth;
             zoomFactor = 100;
-            setZoomButtons();
+            SetZoomButtons();
             SetMaxZoomWidth();
             resize(zoomWidth, showPAR.Checked);
         }
 
-        private void setZoomButtons()
+        private void SetZoomButtons()
         {
             if (zoomFactor >= 100)
             {
@@ -335,7 +334,7 @@ namespace MeGUI
                 zoomFactor += zoomFactorStepSize;
                 if (zoomFactor > 100)
                     zoomFactor = 100;
-                setZoomButtons();
+                SetZoomButtons();
                 zoomWidth = (int)(zoomMaxWidth * zoomFactor / 100);
                 resize(zoomWidth, showPAR.Checked);
             }
@@ -364,7 +363,7 @@ namespace MeGUI
                 }
                 else
                     zoomFactor += zoomFactorStepSize;
-                setZoomButtons();
+                SetZoomButtons();
             }
         }
 
@@ -384,7 +383,7 @@ namespace MeGUI
                 Dar d = new Dar(file.VideoInfo.Width, file.VideoInfo.Height);
                 if (showPAR.Checked) d = arChooser.Value ?? d;
 
-                int height = 0;
+                int height;
                 if ((int)file.VideoInfo.Width > iScreenWidth)
                 {
                     zoomMaxWidth = iScreenWidth;
@@ -414,7 +413,8 @@ namespace MeGUI
             {
                 zoomWidth = (int)(zoomMaxWidth * zoomFactor / 100);
                 Dar d = new Dar(file.VideoInfo.Width, file.VideoInfo.Height);
-                if (showPAR.Checked) d = arChooser.Value ?? d;
+                if (showPAR.Checked)
+                    d = arChooser.Value ?? d;
                 int height = (int)Math.Round((decimal)zoomWidth / d.AR);
                 videoWindowWidth = zoomWidth;
                 videoWindowHeight = (int)height;
@@ -427,7 +427,7 @@ namespace MeGUI
                     originalSizeButton_Click(null, null);
         }
 
-        private void doInitialAdjustment()
+        private void DoInitialAdjustment()
         {
             switch (this.viewerType)
             {
@@ -463,7 +463,7 @@ namespace MeGUI
 		/// <summary>
 		/// adjusts the size of the GUI to match the source video
 		/// </summary>
-		private void adjustSize()
+		private void AdjustSize()
 		{
             if (!hasAR)
             {
@@ -475,7 +475,7 @@ namespace MeGUI
             // resize main window
             sizeLock = true;
             int iMainHeight = this.videoWindowHeight + formHeightDelta;
-            int iMainWidth = this.videoWindowWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + 2;
+            int iMainWidth = this.videoWindowWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
             if (bOriginalSize)
             {
                 Size oSizeScreen = Screen.GetWorkingArea(this).Size;
@@ -505,7 +505,7 @@ namespace MeGUI
             ResumeLayout();
         }
 
-        private void formResized(object sender, EventArgs e)
+        private void FormResized(object sender, EventArgs e)
         {
             if (!sizeLock)
             {
@@ -532,13 +532,12 @@ namespace MeGUI
 		{
             if (!this.AllowClose)
             {
-                e.Cancel = true;
-                return;
+                if (e != null)
+                    e.Cancel = true; return;
             }
 
             this.Visible = false;
-            if (file != null)
-                file.Dispose();
+            file?.Dispose();
 			base.OnClosing(e);
 		}
 		#endregion
@@ -558,7 +557,7 @@ namespace MeGUI
 		/// <summary>
 		/// sets the text in the title bar in function of the position, credits and zone settings
 		/// </summary>
-		private void setTitleText()
+		private void SetTitleText()
 		{
             totalTime = Util.converFrameNumberToTimecode(this.positionSlider.Maximum + 1, file.VideoInfo.FPS);
             currentTime = Util.converFrameNumberToTimecode(this.positionSlider.Value, file.VideoInfo.FPS);
@@ -575,7 +574,7 @@ namespace MeGUI
 				this.Text += " Intro end: " + this.introEndFrame;
 			if (this.creditsStartFrame > -1)
 				this.Text += " Credits start: " + this.creditsStartFrame;
-            if (mainForm.Settings.AddTimePosition)
+            if (MainForm.Instance.Settings.AddTimePosition)
                 this.Text += "   -   " + currentTime + "/" + totalTime;
 		}
 		#endregion
@@ -632,7 +631,7 @@ namespace MeGUI
 			if (this.playButton.Text.Equals("Play"))
 			{
 				this.playButton.Text = "Stop";
-                videoPreview.EnsureCorrectPlaybackSpeed = mainForm.Settings.EnsureCorrectPlaybackSpeed;
+                videoPreview.EnsureCorrectPlaybackSpeed = MainForm.Instance.Settings.EnsureCorrectPlaybackSpeed;
                 videoPreview.Play();
 			}
 			else
@@ -671,9 +670,8 @@ namespace MeGUI
 		/// <param name="e"></param>
 		private void creditsStartButton_Click(object sender, System.EventArgs e)
 		{
-			if (IntroCreditsFrameSet != null)
-                IntroCreditsFrameSet(CurrentFrame, true);
-		}
+            IntroCreditsFrameSet?.Invoke(CurrentFrame, true);
+        }
 
 		/// <summary>
 		/// fires an event indicating that the intro end position has been set
@@ -682,9 +680,8 @@ namespace MeGUI
 		/// <param name="e"></param>
 		private void introEndButton_Click(object sender, System.EventArgs e)
 		{
-			if (IntroCreditsFrameSet != null)
-                IntroCreditsFrameSet(CurrentFrame, false);
-		}
+            IntroCreditsFrameSet?.Invoke(CurrentFrame, false);
+        }
 		#endregion
 
 		#region zones
@@ -731,7 +728,7 @@ namespace MeGUI
 					ZoneSet(this.zoneStart, this.zoneEnd);
                     zoneStart = -1;
                     zoneEnd = -1;
-					setTitleText();
+					SetTitleText();
 				}
 				else
 					MessageBox.Show("The end of a zone must be after its start", "Invalid zone configuration", MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -739,11 +736,8 @@ namespace MeGUI
 		}
 		private void chapterButton_Click(object sender, System.EventArgs e)
 		{
-			if (ChapterSet != null)
-			{
-                ChapterSet(CurrentFrame);
-			}
-		}
+            ChapterSet?.Invoke(CurrentFrame);
+        }
 		#endregion
 
 		#region context menu
@@ -824,7 +818,7 @@ namespace MeGUI
 			set 
 			{
 				creditsStartFrame = value;
-				setTitleText();
+				SetTitleText();
 			}
 		}
 
@@ -837,7 +831,7 @@ namespace MeGUI
 			set 
 			{
 				introEndFrame = value;
-				setTitleText();
+				SetTitleText();
 			}
 		}
 
@@ -851,7 +845,7 @@ namespace MeGUI
 			{
 				zoneStart = value;
                 //positionSlider_Scroll(null, null);
-                setTitleText();
+                SetTitleText();
 			}
 		}
 
@@ -864,7 +858,7 @@ namespace MeGUI
 			set
 			{
 				zoneEnd = value;
-				setTitleText();
+				SetTitleText();
 			}
 		}
 
@@ -895,13 +889,14 @@ namespace MeGUI
         {
             zoomWidth = targetWidth;
             Dar d = new Dar(file.VideoInfo.Width, file.VideoInfo.Height);
-            if (PAR) d = arChooser.Value ?? d;
+            if (PAR)
+                d = arChooser.Value ?? d;
 
             int height = (int)Math.Round((decimal)targetWidth / d.AR);
             videoWindowWidth = targetWidth;
             videoWindowHeight = height;
             sizeLock = true;
-            adjustSize();
+            AdjustSize();
             VideoPlayer_Shown(null, null);
             sizeLock = false;
         }
@@ -914,11 +909,10 @@ namespace MeGUI
 
         private void goToFrameButton_Click(object sender, EventArgs e)
         {
-            decimal val;
             bool bTopMost = this.TopMost;
             this.TopMost = false;
             if (NumberChooser.ShowDialog("Enter a frame number:", "Go to frame",
-                0, positionSlider.Minimum, positionSlider.Maximum, positionSlider.Value, 1, out val)
+                0, positionSlider.Minimum, positionSlider.Maximum, positionSlider.Value, 1, out decimal val)
                 == DialogResult.OK)
             {
                 positionSlider.Value = (int)val;
@@ -950,7 +944,7 @@ namespace MeGUI
             if (videoPreview.Position > -1)
             {
                 positionSlider.Value = videoPreview.Position;
-                setTitleText();
+                SetTitleText();
             }
             else
                 this.Text = "Error in AviSynth script";
@@ -963,7 +957,7 @@ namespace MeGUI
 				this.playButton.Text = "Play";
                 videoPreview.Stop();
 			}
-            reloadVideo();
+            ReloadVideo();
             positionSlider.Focus();
         }
 

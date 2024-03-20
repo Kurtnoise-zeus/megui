@@ -491,7 +491,7 @@ namespace MeGUI
             if (player == null)
 				player = new VideoPlayer();
 
-			if (player.loadVideo(MainForm.Instance, videoInput, PREVIEWTYPE.CHAPTERS, false))
+			if (player.LoadVideo(videoInput, PREVIEWTYPE.CHAPTERS, false))
 			{
 				player.Closed += new EventHandler(player_Closed);
 				player.ChapterSet += new ChapterSetCallback(player_ChapterSet);

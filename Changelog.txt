@@ -1,5 +1,6 @@
+2941 [VidepPlayer]          fixed window size to show everything independant of DPI values
 2940 [Options]              renamed "Show video preview after AviSynth script selection" to "Automatically open video preview"
-     [VideoPlayer]          if that option is disabled the video preview will not show up automatically anywhere
+     [VideoPlayer]          if that option is disabled the video preview will not show up automatically anywhere. Feature request #689
 2939 [MediaInfo]            continue if a file cannot be read within 5 minutes. Bug #960
 2938 [AutoEncode]           use random intermediate file names to avoid issues with interfering jobs. Bug #934
 2937 [Video Encoder]        fixed not applying the proper bitrate for desired file sizes. Bug #976 (regression of 2930)

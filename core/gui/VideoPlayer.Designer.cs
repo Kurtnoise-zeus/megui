@@ -90,9 +90,9 @@ namespace MeGUI
             // 
             // goToFrameButton
             // 
-            goToFrameButton.Location = new System.Drawing.Point(4, 73);
+            goToFrameButton.Location = new System.Drawing.Point(4, 75);
             goToFrameButton.Name = "goToFrameButton";
-            goToFrameButton.Size = new System.Drawing.Size(82, 18);
+            goToFrameButton.Size = new System.Drawing.Size(82, 20);
             goToFrameButton.TabIndex = 13;
             goToFrameButton.Text = "Go to frame";
             goToFrameButton.Click += new System.EventHandler(this.goToFrameButton_Click);
@@ -142,7 +142,7 @@ namespace MeGUI
             // 
             this.playButton.Location = new System.Drawing.Point(50, 49);
             this.playButton.Name = "playButton";
-            this.playButton.Size = new System.Drawing.Size(40, 18);
+            this.playButton.Size = new System.Drawing.Size(40, 20);
             this.playButton.TabIndex = 4;
             this.playButton.Text = "Play";
             this.defaultToolTip.SetToolTip(this.playButton, "play");
@@ -152,7 +152,7 @@ namespace MeGUI
             // 
             this.nextFrameButton.Location = new System.Drawing.Point(120, 49);
             this.nextFrameButton.Name = "nextFrameButton";
-            this.nextFrameButton.Size = new System.Drawing.Size(16, 18);
+            this.nextFrameButton.Size = new System.Drawing.Size(16, 20);
             this.nextFrameButton.TabIndex = 6;
             this.nextFrameButton.Text = ">";
             this.defaultToolTip.SetToolTip(this.nextFrameButton, "Advance by 1 frame");
@@ -174,7 +174,7 @@ namespace MeGUI
             // 
             this.ffButton.Location = new System.Drawing.Point(90, 49);
             this.ffButton.Name = "ffButton";
-            this.ffButton.Size = new System.Drawing.Size(30, 18);
+            this.ffButton.Size = new System.Drawing.Size(30, 20);
             this.ffButton.TabIndex = 5;
             this.ffButton.Text = ">>";
             this.defaultToolTip.SetToolTip(this.ffButton, "Advance 25 frames");
@@ -184,7 +184,7 @@ namespace MeGUI
             // 
             this.fwdButton.Location = new System.Drawing.Point(20, 49);
             this.fwdButton.Name = "fwdButton";
-            this.fwdButton.Size = new System.Drawing.Size(30, 18);
+            this.fwdButton.Size = new System.Drawing.Size(30, 20);
             this.fwdButton.TabIndex = 3;
             this.fwdButton.Text = "<<";
             this.defaultToolTip.SetToolTip(this.fwdButton, "Go back 25 frames");
@@ -193,9 +193,9 @@ namespace MeGUI
             // creditsStartButton
             // 
             this.creditsStartButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.creditsStartButton.Location = new System.Drawing.Point(380, 73);
+            this.creditsStartButton.Location = new System.Drawing.Point(380, 75);
             this.creditsStartButton.Name = "creditsStartButton";
-            this.creditsStartButton.Size = new System.Drawing.Size(44, 18);
+            this.creditsStartButton.Size = new System.Drawing.Size(44, 20);
             this.creditsStartButton.TabIndex = 20;
             this.creditsStartButton.Text = "Credits";
             this.defaultToolTip.SetToolTip(this.creditsStartButton, "Set the frame where the credits start");
@@ -226,18 +226,18 @@ namespace MeGUI
             this.buttonPanel.Location = new System.Drawing.Point(1, 225);
             this.buttonPanel.Margin = new System.Windows.Forms.Padding(0);
             this.buttonPanel.Name = "buttonPanel";
-            this.buttonPanel.Size = new System.Drawing.Size(500, 97);
+            this.buttonPanel.Size = new System.Drawing.Size(500, 118);
             this.buttonPanel.TabIndex = 8;
             // 
             // positionSlider
             // 
             this.positionSlider.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.positionSlider.LargeChange = 1000;
-            this.positionSlider.Location = new System.Drawing.Point(0, 3);
+            this.positionSlider.Location = new System.Drawing.Point(0, 0);
             this.positionSlider.Margin = new System.Windows.Forms.Padding(0);
             this.positionSlider.Minimum = -1;
             this.positionSlider.Name = "positionSlider";
-            this.positionSlider.Size = new System.Drawing.Size(500, 45);
+            this.positionSlider.Size = new System.Drawing.Size(495, 45);
             this.positionSlider.TabIndex = 1;
             this.positionSlider.TickFrequency = 1500;
             this.positionSlider.TickStyle = System.Windows.Forms.TickStyle.Both;
@@ -248,7 +248,7 @@ namespace MeGUI
             // 
             this.btnFitScreen.Location = new System.Drawing.Point(189, 49);
             this.btnFitScreen.Name = "btnFitScreen";
-            this.btnFitScreen.Size = new System.Drawing.Size(26, 19);
+            this.btnFitScreen.Size = new System.Drawing.Size(26, 20);
             this.btnFitScreen.TabIndex = 9;
             this.btnFitScreen.Text = "Fit";
             this.defaultToolTip.SetToolTip(this.btnFitScreen, "resets the zoom to the maximum screen size");
@@ -257,9 +257,9 @@ namespace MeGUI
             // 
             // btnReloadVideo
             // 
-            this.btnReloadVideo.Location = new System.Drawing.Point(90, 73);
+            this.btnReloadVideo.Location = new System.Drawing.Point(90, 75);
             this.btnReloadVideo.Name = "btnReloadVideo";
-            this.btnReloadVideo.Size = new System.Drawing.Size(79, 18);
+            this.btnReloadVideo.Size = new System.Drawing.Size(79, 20);
             this.btnReloadVideo.TabIndex = 14;
             this.btnReloadVideo.Text = "Reload Video";
             this.defaultToolTip.SetToolTip(this.btnReloadVideo, "Reload the video file");
@@ -269,7 +269,7 @@ namespace MeGUI
             // 
             this.zoomOutButton.Location = new System.Drawing.Point(215, 49);
             this.zoomOutButton.Name = "zoomOutButton";
-            this.zoomOutButton.Size = new System.Drawing.Size(17, 19);
+            this.zoomOutButton.Size = new System.Drawing.Size(17, 20);
             this.zoomOutButton.TabIndex = 10;
             this.zoomOutButton.Text = "-";
             this.defaultToolTip.SetToolTip(this.zoomOutButton, "zoom out");
@@ -280,7 +280,7 @@ namespace MeGUI
             // 
             this.zoomInButton.Location = new System.Drawing.Point(145, 49);
             this.zoomInButton.Name = "zoomInButton";
-            this.zoomInButton.Size = new System.Drawing.Size(14, 19);
+            this.zoomInButton.Size = new System.Drawing.Size(14, 20);
             this.zoomInButton.TabIndex = 7;
             this.zoomInButton.Text = "+";
             this.defaultToolTip.SetToolTip(this.zoomInButton, "zoom in");
@@ -302,7 +302,7 @@ namespace MeGUI
             // 
             this.originalSizeButton.Location = new System.Drawing.Point(159, 49);
             this.originalSizeButton.Name = "originalSizeButton";
-            this.originalSizeButton.Size = new System.Drawing.Size(30, 19);
+            this.originalSizeButton.Size = new System.Drawing.Size(30, 20);
             this.originalSizeButton.TabIndex = 8;
             this.originalSizeButton.Text = "1:1";
             this.defaultToolTip.SetToolTip(this.originalSizeButton, "displays the original video size");
@@ -310,9 +310,9 @@ namespace MeGUI
             // 
             // introEndButton
             // 
-            this.introEndButton.Location = new System.Drawing.Point(338, 73);
+            this.introEndButton.Location = new System.Drawing.Point(338, 75);
             this.introEndButton.Name = "introEndButton";
-            this.introEndButton.Size = new System.Drawing.Size(38, 18);
+            this.introEndButton.Size = new System.Drawing.Size(38, 20);
             this.introEndButton.TabIndex = 18;
             this.introEndButton.Text = "Intro";
             this.defaultToolTip.SetToolTip(this.introEndButton, "Set the frame where the intro ends");
@@ -320,9 +320,9 @@ namespace MeGUI
             // 
             // zoneStartButton
             // 
-            this.zoneStartButton.Location = new System.Drawing.Point(172, 73);
+            this.zoneStartButton.Location = new System.Drawing.Point(172, 75);
             this.zoneStartButton.Name = "zoneStartButton";
-            this.zoneStartButton.Size = new System.Drawing.Size(64, 18);
+            this.zoneStartButton.Size = new System.Drawing.Size(64, 20);
             this.zoneStartButton.TabIndex = 15;
             this.zoneStartButton.Text = "Zone Start";
             this.defaultToolTip.SetToolTip(this.zoneStartButton, "Sets the start frame of a new zone");
@@ -330,9 +330,9 @@ namespace MeGUI
             // 
             // setZoneButton
             // 
-            this.setZoneButton.Location = new System.Drawing.Point(306, 73);
+            this.setZoneButton.Location = new System.Drawing.Point(306, 75);
             this.setZoneButton.Name = "setZoneButton";
-            this.setZoneButton.Size = new System.Drawing.Size(30, 18);
+            this.setZoneButton.Size = new System.Drawing.Size(30, 20);
             this.setZoneButton.TabIndex = 17;
             this.setZoneButton.Text = "Set";
             this.defaultToolTip.SetToolTip(this.setZoneButton, "Adds the zone to the codec configuration");
@@ -340,9 +340,9 @@ namespace MeGUI
             // 
             // zoneEndButton
             // 
-            this.zoneEndButton.Location = new System.Drawing.Point(239, 73);
+            this.zoneEndButton.Location = new System.Drawing.Point(239, 75);
             this.zoneEndButton.Name = "zoneEndButton";
-            this.zoneEndButton.Size = new System.Drawing.Size(64, 18);
+            this.zoneEndButton.Size = new System.Drawing.Size(64, 20);
             this.zoneEndButton.TabIndex = 16;
             this.zoneEndButton.Text = "Zone End";
             this.defaultToolTip.SetToolTip(this.zoneEndButton, "Sets the end frame of a new zone");
@@ -351,9 +351,9 @@ namespace MeGUI
             // chapterButton
             // 
             this.chapterButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.chapterButton.Location = new System.Drawing.Point(338, 73);
+            this.chapterButton.Location = new System.Drawing.Point(338, 75);
             this.chapterButton.Name = "chapterButton";
-            this.chapterButton.Size = new System.Drawing.Size(72, 18);
+            this.chapterButton.Size = new System.Drawing.Size(72, 20);
             this.chapterButton.TabIndex = 19;
             this.chapterButton.Text = "Set Chapter";
             this.defaultToolTip.SetToolTip(this.chapterButton, "Sets the end frame of a new zone");
@@ -401,7 +401,7 @@ namespace MeGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(518, 327);
+            this.ClientSize = new System.Drawing.Size(518, 352);
             this.Controls.Add(this.videoPanel);
             this.Controls.Add(this.buttonPanel);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

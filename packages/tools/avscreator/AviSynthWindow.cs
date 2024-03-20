@@ -215,7 +215,7 @@ namespace MeGUI
             if (player == null || player.IsDisposed) 
                 player = new VideoPlayer();
 
-			if (player.loadVideo(mainForm, avisynthScript.Text, PREVIEWTYPE.REGULAR, false, true, player.CurrentFrame, true))
+			if (player.LoadVideo(avisynthScript.Text, PREVIEWTYPE.REGULAR, false, true, player.CurrentFrame, true))
 			{
 				player.disableIntroAndCredits();
                 reader = player.Reader;
@@ -795,7 +795,7 @@ namespace MeGUI
             else
                 iCurrentFrame = player.CurrentFrame;
             this.isPreviewMode = false;
-            if (player.loadVideo(mainForm, originalScript, PREVIEWTYPE.REGULAR, false, originalInlineAvs, iCurrentFrame, true))
+            if (player.LoadVideo(originalScript, PREVIEWTYPE.REGULAR, false, originalInlineAvs, iCurrentFrame, true))
             {
                 reader = player.Reader;
                 SendCropValues();
