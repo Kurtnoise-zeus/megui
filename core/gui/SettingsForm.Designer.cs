@@ -235,18 +235,17 @@ namespace MeGUI
             // command
             // 
             this.command.Enabled = false;
-            this.command.Location = new System.Drawing.Point(11, 43);
+            this.command.Location = new System.Drawing.Point(10, 64);
             this.command.Name = "command";
-            this.command.Size = new System.Drawing.Size(96, 17);
+            this.command.Size = new System.Drawing.Size(247, 21);
             this.command.TabIndex = 3;
             // 
             // runCommand
             // 
             this.runCommand.AutoSize = true;
-            this.runCommand.Location = new System.Drawing.Point(16, 64);
-            this.runCommand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.runCommand.Location = new System.Drawing.Point(11, 43);
             this.runCommand.Name = "runCommand";
-            this.runCommand.Size = new System.Drawing.Size(147, 25);
+            this.runCommand.Size = new System.Drawing.Size(96, 17);
             this.runCommand.TabIndex = 2;
             this.runCommand.Text = "Run command:";
             this.runCommand.UseVisualStyleBackColor = true;
@@ -388,9 +387,9 @@ namespace MeGUI
             // 
             // cbUseIncludedAviSynth
             // 
-            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(377, 27);
+            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(13, 27);
             this.cbUseIncludedAviSynth.Name = "cbUseIncludedAviSynth";
-            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(144, 17);
+            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(203, 17);
             this.cbUseIncludedAviSynth.TabIndex = 22;
             this.cbUseIncludedAviSynth.Text = "Always use the included AviSynth";
             this.cbUseIncludedAviSynth.CheckedChanged += new System.EventHandler(this.cbUseIncludedAviSynth_CheckedChanged);
@@ -399,10 +398,9 @@ namespace MeGUI
             // 
             this.cbUseITUValues.Checked = true;
             this.cbUseITUValues.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbUseITUValues.Location = new System.Drawing.Point(566, 40);
-            this.cbUseITUValues.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbUseITUValues.Location = new System.Drawing.Point(377, 27);
             this.cbUseITUValues.Name = "cbUseITUValues";
-            this.cbUseITUValues.Size = new System.Drawing.Size(216, 26);
+            this.cbUseITUValues.Size = new System.Drawing.Size(144, 17);
             this.cbUseITUValues.TabIndex = 20;
             this.cbUseITUValues.Text = "Use ITU Aspect Ratio";
             // 
@@ -414,8 +412,7 @@ namespace MeGUI
             0,
             0,
             196608});
-            this.acceptableFPSError.Location = new System.Drawing.Point(566, 228);
-            this.acceptableFPSError.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.acceptableFPSError.Location = new System.Drawing.Point(377, 152);
             this.acceptableFPSError.Maximum = new decimal(new int[] {
             5,
             0,
@@ -490,10 +487,9 @@ namespace MeGUI
             // 
             this.deleteAbortedOutput.Checked = true;
             this.deleteAbortedOutput.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.deleteAbortedOutput.Location = new System.Drawing.Point(20, 75);
-            this.deleteAbortedOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deleteAbortedOutput.Location = new System.Drawing.Point(13, 50);
             this.deleteAbortedOutput.Name = "deleteAbortedOutput";
-            this.deleteAbortedOutput.Size = new System.Drawing.Size(276, 26);
+            this.deleteAbortedOutput.Size = new System.Drawing.Size(184, 17);
             this.deleteAbortedOutput.TabIndex = 12;
             this.deleteAbortedOutput.Text = "Delete output of aborted jobs";
             // 
