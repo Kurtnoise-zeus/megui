@@ -1,3 +1,4 @@
+2944 [L-SMASH Indexer]      fixed if a non-default lwi file is used, it was created twice and not always deleted. Bug #978 (regression of 2915)
 2943 [HD Streams Extractor] high DPI adjustments
 2942 [OneClick]             fixed not able to add/remove tracks manually. Bug #977 (regression of 2939)
 2941 [VidepPlayer]          fixed window size to show everything independant of DPI values
