@@ -64,22 +64,24 @@ namespace MeGUI
 
             lblAspectError.Size = new System.Drawing.Size(MainForm.Instance.Settings.DPIRescale(75), MainForm.Instance.Settings.DPIRescale(21));
 
-            this.controlsToDisable = new List<Control>();
-            this.controlsToDisable.Add(reopenOriginal);
-            this.controlsToDisable.Add(filtersGroupbox);
-            this.controlsToDisable.Add(deinterlacingGroupBox);
-            this.controlsToDisable.Add(mpegOptGroupBox);
-            this.controlsToDisable.Add(aviOptGroupBox);
-            this.controlsToDisable.Add(resNCropGroupbox);
-            this.controlsToDisable.Add(previewAvsButton);
-            this.controlsToDisable.Add(saveButton);
-            this.controlsToDisable.Add(arChooser);
-            this.controlsToDisable.Add(inputDARLabel);
-            this.controlsToDisable.Add(signalAR);
-            this.controlsToDisable.Add(avisynthScript);
-            this.controlsToDisable.Add(openDLLButton);
-            this.controlsToDisable.Add(dgOptions);
-            enableControls(false);
+            this.controlsToDisable = new List<Control>
+            {
+                reopenOriginal,
+                filtersGroupbox,
+                deinterlacingGroupBox,
+                mpegOptGroupBox,
+                aviOptGroupBox,
+                resNCropGroupbox,
+                previewAvsButton,
+                saveButton,
+                arChooser,
+                inputDARLabel,
+                signalAR,
+                avisynthScript,
+                openDLLButton,
+                dgOptions
+            };
+            EnableControls(false);
 
             this.resizeFilterType.Items.Clear();
             this.resizeFilterType.DataSource = ScriptServer.ListOfResizeFilterType;
@@ -141,7 +143,7 @@ namespace MeGUI
             input.FilterIndex = 4;
 
             eventsOn = true;
-            updateEverything(true, true, resize.Checked);
+            UpdateEverything(true, true, resize.Checked);
 		}
 
         void ProfileChanged(object sender, EventArgs e)
@@ -156,25 +158,29 @@ namespace MeGUI
 		/// <param name="videoInput">the DGIndex script to be loaded</param>
 		public AviSynthWindow(MainForm mainForm, string videoInput) : this(mainForm)
 		{
+            if (String.IsNullOrEmpty(videoInput))
+            return;
+            
             scriptRefresh--;
-            openVideoSource(videoInput, null);
-            updateEverything(true, true, resize.Checked);
+            OpenVideoSource(videoInput, null);
+            UpdateEverything(true, true, resize.Checked);
 		}
 
         public AviSynthWindow(MainForm mainForm, string videoInput, string indexFile)
             : this(mainForm)
         {
+            if (String.IsNullOrEmpty(videoInput))
+                return;
+            
             scriptRefresh--;
-            openVideoSource(videoInput, indexFile);
-            updateEverything(true, true, resize.Checked);
+            OpenVideoSource(videoInput, indexFile);
+            UpdateEverything(true, true, resize.Checked);
         }
 
 		protected override void OnClosing(CancelEventArgs e)
 		{
-            if (player != null)
-				player.Close();
-            if (detector != null)
-                detector.Stop();
+            player?.Close();
+            detector?.Stop();
             detector = null;
 			base.OnClosing (e);
 		}
@@ -184,8 +190,8 @@ namespace MeGUI
         private void input_FileSelected(FileBar sender, FileBarEventArgs args)
         {
             scriptRefresh--;
-            openVideoSource(input.Filename, null);
-            updateEverything(true, true, resize.Checked);
+            OpenVideoSource(input.Filename, null);
+            UpdateEverything(true, true, resize.Checked);
 		}
 
 		private void openDLLButton_Click(object sender, System.EventArgs e)
@@ -214,7 +220,7 @@ namespace MeGUI
 				player.disableIntroAndCredits();
                 reader = player.Reader;
                 isPreviewMode = true;
-                sendCropValues();
+                SendCropValues();
                 if (this.Visible)
                     player.Show();
                 player.SetScreenSize();
@@ -227,19 +233,18 @@ namespace MeGUI
         private void saveButton_Click(object sender, System.EventArgs e)
 		{
             string fileName = videoOutput.Filename;
-            writeScript(fileName);
+            WriteScript(fileName);
 			if (onSaveLoadScript.Checked)
 			{
-                if(player != null)
-				    player.Close();
-				this.Close();
+                player?.Close();
+                this.Close();
                 OpenScript(fileName, null);
             }
 		}
 		#endregion
 
 		#region script generation
-		private string generateScript()
+		private string GenerateScript()
 		{			
 			string inputLine = "#input";
 			string deinterlaceLines = "#deinterlace";
@@ -283,7 +288,7 @@ namespace MeGUI
                 newScript = string.Format("# Set DAR in encoder to {0} : {1}. The following line is for automatic signalling\r\nglobal MeGUI_darx = {0}\r\nglobal MeGUI_dary = {1}\r\n",
                     suggestedDar.Value.X, suggestedDar.Value.Y) + newScript;
 
-            if (this.SubtitlesPath.Text != "")
+            if (!string.IsNullOrEmpty(this.SubtitlesPath.Text))
             {
                 newScript += "\r\nLoadPlugin(\"" + Path.Combine(MainForm.Instance.Settings.AvisynthPluginsPath, "VSFilter.dll") + "\")";
                 if (cbCharset.Enabled)
@@ -307,8 +312,6 @@ namespace MeGUI
         private decimal _tempNvHorizontalResolution, _tempNvVerticalResolution;
         private string GetInputLine()
         {
-            double fps = (double)fpsBox.Value;
-
             if (_tempInputFileName != this.input.Filename || _tempInputIndexFile != this.indexFile || _tempDeinterlacer != deinterlace.Checked || _tempResize != resize.Checked ||
                 _tempInputSourceType != sourceType || _tempColourCorrect != colourCorrect.Checked || _tempMpeg2Deblocking != mpeg2Deblocking.Checked ||
                 _tempFlipVertical != flipVertical.Checked || _tempFPS != (double)fpsBox.Value || _tempDSS2 != dss2.Checked || _tempNvDeint != nvDeInt.Checked ||
@@ -358,7 +361,7 @@ namespace MeGUI
             return (AviSynthSettings)avsProfile.SelectedProfile.BaseSettings;
         }
 
-		private void showScript(bool bForce)
+		private void ShowScript(bool bForce)
 		{
             if (bForce)
                 scriptRefresh++;
@@ -366,7 +369,7 @@ namespace MeGUI
                 return;
 
             string oldScript = avisynthScript.Text;
-            avisynthScript.Text = this.generateScript();
+            avisynthScript.Text = this.GenerateScript();
             if (!oldScript.Equals(avisynthScript.Text))
                 chAutoPreview_CheckedChanged(null, null);
 		}
@@ -377,7 +380,7 @@ namespace MeGUI
         /// Opens a video source using the correct method based on the extension of the file name
         /// </summary>
         /// <param name="videoInput"></param>
-        private void openVideoSource(string videoInput, string indexFileTemp)
+        private void OpenVideoSource(string videoInput, string indexFileTemp)
         {
             string ext, projectPath, fileNameNoPath;
 
@@ -401,33 +404,33 @@ namespace MeGUI
                 case ".avs":
                     sourceType = PossibleSources.avs;
                     videoOutput.Filename = Path.Combine(projectPath, Path.GetFileNameWithoutExtension(fileNameNoPath) + "_new.avs"); // to avoid overwritten
-                    openAVSScript(videoInput);
+                    OpenAVSScript(videoInput);
                     break;           
                 case ".d2v":
                     sourceType = PossibleSources.d2v;
-                    openVideo(videoInput);
+                    OpenVideo(videoInput);
                     break;
                 case ".dgi":
                     if (FileIndexerWindow.isDGMFile(videoInput))
                         sourceType = PossibleSources.dgm;
                     else
                         sourceType = PossibleSources.dgi;
-                    openVideo(videoInput); 
+                    OpenVideo(videoInput); 
                     break;
                 case ".ffindex":
                     sourceType = PossibleSources.ffindex;
                     if (videoInput.ToLowerInvariant().EndsWith(".ffindex"))
-                        openVideo(videoInput.Substring(0, videoInput.Length - 8));
+                        OpenVideo(videoInput.Substring(0, videoInput.Length - 8));
                     else
-                        openVideo(videoInput);
+                        OpenVideo(videoInput);
                     break;
                 case ".lwi":
                     sourceType = PossibleSources.lsmash;
-                    openVideo(videoInput);
+                    OpenVideo(videoInput);
                     break;
                 case ".vdr":
                     sourceType = PossibleSources.vdr;
-                    openVDubFrameServer(videoInput);
+                    OpenVDubFrameServer(videoInput);
                     break;
                 default:
                     if (File.Exists(videoInput + ".dgi") || File.Exists(Path.ChangeExtension(videoInput, "dgi")))
@@ -437,27 +440,27 @@ namespace MeGUI
                         else
                             sourceType = PossibleSources.dgi;
                         if (File.Exists(videoInput + ".dgi"))
-                            openVideo(videoInput + ".dgi");
+                            OpenVideo(videoInput + ".dgi");
                         else
-                            openVideo(Path.ChangeExtension(videoInput, "dgi"));
+                            OpenVideo(Path.ChangeExtension(videoInput, "dgi"));
                     }
                     else if (File.Exists(videoInput + ".d2v") || File.Exists(Path.ChangeExtension(videoInput, "d2v")))
                     {
                         sourceType = PossibleSources.d2v;
                         if (File.Exists(videoInput + ".d2v"))
-                            openVideo(videoInput);
+                            OpenVideo(videoInput);
                         else
-                            openVideo(Path.ChangeExtension(videoInput, "d2v"));
+                            OpenVideo(Path.ChangeExtension(videoInput, "d2v"));
                     }
                     else if (File.Exists(videoInput + ".lwi"))
                     {
                         sourceType = PossibleSources.lsmash;
-                        openVideo(videoInput);
+                        OpenVideo(videoInput);
                     }
                     else if (File.Exists(videoInput + ".ffindex"))
                     {
                         sourceType = PossibleSources.ffindex;
-                        openVideo(videoInput);
+                        OpenVideo(videoInput);
                     }
                     else
                     {
@@ -478,11 +481,11 @@ namespace MeGUI
                                 break;
                             case 2:
                                 sourceType = PossibleSources.avisource;
-                                openDirectShow(videoInput);
+                                OpenDirectShow(videoInput);
                                 break;
                             case 3:
                                 sourceType = PossibleSources.directShow;
-                                openDirectShow(videoInput);
+                                OpenDirectShow(videoInput);
                                 break;
                             default:
                                 MessageBox.Show("Unable to render the file.\r\nYou probably don't have the correct filters installed.", "DirectShow Error", MessageBoxButtons.OK);
@@ -491,14 +494,14 @@ namespace MeGUI
                     }
                     break;
             }
-            setSourceInterface();
+            SetSourceInterface();
         }
 		
         /// <summary>
 		/// writes the AviSynth script currently shown in the GUI to the given path
 		/// </summary>
 		/// <param name="path">path and name of the AviSynth script to be written</param>
-		private void writeScript(string path)
+		private void WriteScript(string path)
 		{
 			try
 			{
@@ -517,7 +520,7 @@ namespace MeGUI
         /// <summary>
         /// Set the correct states of the interface elements that are only valid for certain inputs
         /// </summary>
-        private void setSourceInterface()
+        private void SetSourceInterface()
         {
             switch (this.sourceType)
             {            
@@ -598,7 +601,7 @@ namespace MeGUI
         /// <summary>
         /// check whether or not it's an NV file compatible (for DGxNV tools)
         /// </summary>
-        private void checkNVCompatibleFile(string input)
+        private void CheckNVCompatibleFile(string input)
         {
             bool flag = false;
             using (StreamReader sr = new StreamReader(input))
@@ -690,7 +693,7 @@ namespace MeGUI
         /// The avs is being used in order to allow more preview flexibility later.
         /// </summary>
         /// <param name="fileName">Input video file</param>     
-        private void openDirectShow(string fileName)
+        private void OpenDirectShow(string fileName)
         {
             if (!File.Exists(fileName))
             {
@@ -708,9 +711,11 @@ namespace MeGUI
                 string frameRateString = null;
                 try
                 {
-                    MediaInfoFile info = new MediaInfoFile(fileName);
-                    if (info.VideoInfo.HasVideo && info.VideoInfo.FPS > 0)
-                        frameRateString = info.VideoInfo.FPS.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    using (MediaInfoFile info = new MediaInfoFile(fileName))
+                    {
+                        if (info.VideoInfo.HasVideo && info.VideoInfo.FPS > 0)
+                            frameRateString = info.VideoInfo.FPS.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
                 }
                 catch (Exception)
                 { }
@@ -726,10 +731,9 @@ namespace MeGUI
                     tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path), @"plugins\directshowsource.dll") + "\")\r\n" + tempAvs;
                 if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
                     tempAvs += "\r\nConvertBits(8)";
-            } 
-            if (file != null)
-                file.Dispose();
-            openVideo(tempAvs, fileName, true);
+            }
+            file?.Dispose();
+            OpenVideo(tempAvs, fileName, true);
 
         }
         
@@ -737,31 +741,31 @@ namespace MeGUI
         /// Create a temporary avs to wrap the frameserver file then open it as for any other avs
         /// </summary>
         /// <param name="fileName">Name of the .vdr file</param>
-        private void openVDubFrameServer(string fileName)
+        private void OpenVDubFrameServer(string fileName)
         {
             if (!File.Exists(fileName))
             {
                 MessageBox.Show(fileName + " could not be found","File Not Found",MessageBoxButtons.OK);
                 return;
             }
-            openVideo("AviSource(\"" + fileName + ", audio=false\")\r\n", fileName, true);
+            OpenVideo("AviSource(\"" + fileName + ", audio=false\")\r\n", fileName, true);
         }
 
         /// <summary>
         /// Create a temporary avs to wrap the frameserver file then open it as for any other avs
         /// </summary>
         /// <param name="fileName">Name of the avs script</param>
-        private void openAVSScript(string fileName)
+        private void OpenAVSScript(string fileName)
         {
             if (!File.Exists(fileName))
             {
                 MessageBox.Show(fileName + " could not be found", "File Not Found", MessageBoxButtons.OK);
                 return;
             }
-            openVideo("Import(\"" + fileName + "\")\r\n", fileName, true);
+            OpenVideo("Import(\"" + fileName + "\")\r\n", fileName, true);
         }
 
-        private void enableControls(bool enable)
+        private void EnableControls(bool enable)
         {
             foreach (Control ctrl in this.controlsToDisable)
                 ctrl.Enabled = enable;
@@ -775,15 +779,15 @@ namespace MeGUI
                 deinterlace.Enabled = true;
         }
 
-        private void openVideo(string videoInput)
+        private void OpenVideo(string videoInput)
         {
             if (String.IsNullOrEmpty(indexFile))
-                openVideo(videoInput, videoInput, false);
+                OpenVideo(videoInput, videoInput, false);
             else
-                openVideo(videoInput + "|" + indexFile, videoInput, false);
+                OpenVideo(videoInput + "|" + indexFile, videoInput, false);
         }
 
-        private bool showOriginal()
+        private bool ShowOriginal()
         {
             int iCurrentFrame = -1;
             if (player == null || player.IsDisposed)
@@ -794,7 +798,7 @@ namespace MeGUI
             if (player.loadVideo(mainForm, originalScript, PREVIEWTYPE.REGULAR, false, originalInlineAvs, iCurrentFrame, true))
             {
                 reader = player.Reader;
-                sendCropValues();
+                SendCropValues();
                 if (this.Visible)
                     player.Show();
                 player.SetScreenSize();
@@ -815,22 +819,42 @@ namespace MeGUI
 		/// opens a given script
 		/// </summary>
 		/// <param name="videoInput">the script to be opened</param>
-		private void openVideo(string videoInputScript, string strSourceFileName, bool inlineAvs)
+		private void OpenVideo(string videoInputScript, string strSourceFileName, bool inlineAvs)
 		{
 			this.crop.Checked = false;
             this.input.Filename = "";
             this.originalScript = videoInputScript;
             this.originalInlineAvs = inlineAvs;
-            if (player != null)
-                player.Dispose();
-            bool videoLoaded = showOriginal();
-            enableControls(videoLoaded);
+            player?.Dispose();
+            
+            bool videoLoaded = false;
+            if (MainForm.Instance.Settings.AutoOpenScript)
+            {
+                videoLoaded = ShowOriginal();
+                if (videoLoaded)
+                {
+                    file = player.File;
+                    reader = player.Reader;
+                }
+            }
+            else
+                {
+                    using (MediaInfoFile x = new MediaInfoFile(strSourceFileName))
+                    {
+                        videoLoaded = x.MediaInfoOK;
+                        if (x.MediaInfoOK)
+                        {
+                            file = x;
+                            reader = null;
+                        }
+                    }
+                }
+            
+            EnableControls(videoLoaded);
             if (videoLoaded)
             {
                 eventsOn = false;
                 this.input.Filename = strSourceFileName;
-                file = player.File;
-                reader = player.Reader;
                 this.fpsBox.Value = (decimal)file.VideoInfo.FPS;
                 if (file.VideoInfo.FPS.Equals(25.0)) // disable ivtc for pal sources
                     this.tvTypeLabel.Text = "PAL";
@@ -844,10 +868,10 @@ namespace MeGUI
                     verticalResolution.Maximum = file.VideoInfo.Height;
                 verticalResolution.Value = file.VideoInfo.Height;
 
-                if (File.Exists(strSourceFileName))
+                if (File.Exists(strSourceFileName) && MainForm.Instance.Settings.AutoOpenScript)
                 {
-                    MediaInfoFile oInfo = new MediaInfoFile(strSourceFileName);
-                    arChooser.Value = oInfo.VideoInfo.DAR;
+                    using (MediaInfoFile oInfo = new MediaInfoFile(strSourceFileName))
+                        arChooser.Value = oInfo.VideoInfo.DAR;
                 }
                 else
                     arChooser.Value = file.VideoInfo.DAR;
@@ -858,7 +882,7 @@ namespace MeGUI
             }
 		}
 
-        private void calcAspectError()
+        private void CalcAspectError()
         {
             if (file == null)
             {
@@ -887,7 +911,7 @@ namespace MeGUI
 		#endregion
 
 		#region updown
-		private void changeNumericUpDownColor(NumericUpDown oControl, bool bMarkRed)
+		private static void ChangeNumericUpDownColor(NumericUpDown oControl, bool bMarkRed)
         {
             if (oControl.Enabled)
             {
@@ -907,7 +931,7 @@ namespace MeGUI
             }
         }
 
-		private void sendCropValues()
+		private void SendCropValues()
 		{
             if (player == null || !player.Visible)
                 return;
@@ -932,7 +956,7 @@ namespace MeGUI
 				deinterlaceType.Enabled = false;
 
             if (sender != null && e != null)
-			    showScript(false);
+			    ShowScript(false);
 		}
 
 		private void noiseFilter_CheckedChanged(object sender, EventArgs e)
@@ -945,7 +969,7 @@ namespace MeGUI
 				this.noiseFilterType.Enabled = false;
 
             if (sender != null && e != null)
-			    showScript(false);
+			    ShowScript(false);
 		}
 
 		#endregion
@@ -972,14 +996,14 @@ namespace MeGUI
                 CropValues final = Autocrop.autocrop(reader);
                 Invoke(new MethodInvoker(delegate
                 {
-                    setCropValues(final);
+                    SetCropValues(final);
                 }));
             }));
             t.IsBackground = true;
             t.Start();
 		}
 
-        private void setCropValues(CropValues cropValues)
+        private void SetCropValues(CropValues cropValues)
         {
             this.Cursor = System.Windows.Forms.Cursors.Default;
             bool error = (cropValues.left < 0);
@@ -993,7 +1017,7 @@ namespace MeGUI
                 if (!crop.Checked)
                     crop.Checked = true;
                 eventsOn = true;
-                updateEverything(true, false, false);
+                UpdateEverything(true, false, false);
             }
             else
                 MessageBox.Show("I'm afraid I was unable to find more than 5 frames that have matching crop values");
@@ -1029,7 +1053,7 @@ namespace MeGUI
                     horizontalResolution.Maximum = verticalResolution.Maximum = 9999;
                 this.modValueBox.SelectedIndex = (int)value.ModValue;
                 eventsOn = true;
-                updateEverything(true, false, value.Resize);
+                UpdateEverything(true, false, value.Resize);
 			}
         }
         
@@ -1208,7 +1232,7 @@ namespace MeGUI
                 deinterlace.Enabled = true;
 
             if (sender != null && e != null)
-                showScript(false);
+                ShowScript(false);
         }
 
         private void reopenOriginal_Click(object sender, EventArgs e)
@@ -1218,7 +1242,7 @@ namespace MeGUI
             if (chAutoPreview.Checked)
                 chAutoPreview.Checked = false;
             else
-                showOriginal();
+                ShowOriginal();
             reopenOriginal.Enabled = true;
             reopenOriginal.Text = "Re-open original video player";
         }
@@ -1228,7 +1252,7 @@ namespace MeGUI
             if (chAutoPreview.Checked)
                 previewButton_Click(null, null);
             else if (this.isPreviewMode == true)
-                showOriginal();
+                ShowOriginal();
         }
 
         private void nvDeInt_CheckedChanged(object sender, EventArgs e)
@@ -1238,13 +1262,13 @@ namespace MeGUI
             else 
                 cbNvDeInt.Enabled = false;
             if (sender != null && e != null)
-                showScript(false);
+                ShowScript(false);
         }
 
         private void nvDeInt_Click(object sender, EventArgs e)
         {
             // just to be sure
-            checkNVCompatibleFile(input.Filename);
+            CheckNVCompatibleFile(input.Filename);
         }
 
         private void openSubtitlesButton_Click(object sender, EventArgs e)
@@ -1262,7 +1286,7 @@ namespace MeGUI
                 MessageBox.Show("The subtitles you have chosen were already added...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             
             if (sender != null && e != null)
-                showScript(false);
+                ShowScript(false);
         }
 
         private string CharsetValue()
@@ -1298,37 +1322,37 @@ namespace MeGUI
             return c;
         }
 
-        private void inputDARChanged(object sender, string val)
+        private void InputDARChanged(object sender, string val)
         {
-            updateEverything(sender != null, false, false);
+            UpdateEverything(sender != null, false, false);
         }
 
-        private void updateEverything(object sender, EventArgs e)
+        private void UpdateEverything(object sender, EventArgs e)
         {
-            updateEverything(sender != null, false, false);
+            UpdateEverything(sender != null, false, false);
         }
 
-        private void updateEverything(bool bShowScript, bool bForceScript, bool bResizeEnabled)
-        {
+        private void UpdateEverything(bool bShowScript, bool bForceScript, bool bResizeEnabled)
+{
             if (!eventsOn)
                 return;
             eventsOn = false;
 
             // update events may be triggered
-            setModType();
-            setCrop();
-            setOutputResolution(bResizeEnabled);
+            SetModType();
+            SetCrop();
+            SetOutputResolution(bResizeEnabled);
 
             // no update events triggered
-            calcAspectError();
-            checkControls();
+            CalcAspectError();
+            CheckControls();
             
             if (bShowScript)
-                showScript(bForceScript);
+                ShowScript(bForceScript);
             eventsOn = true;
         }
 
-        private void setModType()
+        private void SetModType()
         {
             if (!bAllowUpsizing && file != null)
             {
@@ -1382,7 +1406,7 @@ namespace MeGUI
                 modValueBox.Enabled = false;
         }
 
-        private void setCrop()
+        private void SetCrop()
         {
             if (crop.Checked)
             {
@@ -1390,7 +1414,7 @@ namespace MeGUI
                 this.cropTop.Enabled = true;
                 this.cropRight.Enabled = true;
                 this.cropBottom.Enabled = true;
-                sendCropValues();
+                SendCropValues();
             }
             else
             {
@@ -1435,10 +1459,10 @@ namespace MeGUI
         private void deleteSubtitle_Click(object sender, EventArgs e)
         {
             SubtitlesPath.Text = null;
-            showScript(false);
+            ShowScript(false);
         }
 
-        private void setOutputResolution(bool bResizeEnabled)
+        private void SetOutputResolution(bool bResizeEnabled)
         {
             if (resize.Checked)
             {
@@ -1463,13 +1487,12 @@ namespace MeGUI
             if (!resize.Checked && !((!bAllowUpsizing || bResizeEnabled) && (int)file.VideoInfo.Width - Cropping.left - Cropping.right < outputWidth))
                 outputWidth = (int)file.VideoInfo.Width - Cropping.left - Cropping.right;
 
-            CropValues paddingValues;
             CropValues cropValues = Cropping.Clone();
 
             bool resizeEnabled = resize.Checked;
             Resolution.GetResolution((int)file.VideoInfo.Width, (int)file.VideoInfo.Height, arChooser.RealValue,
                 ref cropValues, crop.Checked, mod, ref resizeEnabled, bAllowUpsizing, signalAR, suggestResolution.Checked, 
-                this.GetProfileSettings().AcceptableAspectError, null, 0, ref outputWidth, ref outputHeight, out paddingValues, out suggestedDar, null);
+                this.GetProfileSettings().AcceptableAspectError, null, 0, ref outputWidth, ref outputHeight, out _, out suggestedDar, null);
             
             if (!resize.Checked && !suggestResolution.Checked) // just to make sure
                 outputHeight = (int)file.VideoInfo.Height - Cropping.top - Cropping.bottom;
@@ -1493,23 +1516,23 @@ namespace MeGUI
                 verticalResolution.Enabled = resize.Checked;
         }
 
-        private void checkControls()
+        private void CheckControls()
         {
             if (resize.Checked && file != null && (int)file.VideoInfo.Height - Cropping.top - Cropping.bottom < verticalResolution.Value)
-                changeNumericUpDownColor(verticalResolution, true);
+                ChangeNumericUpDownColor(verticalResolution, true);
             else
-                changeNumericUpDownColor(verticalResolution, false);
+                ChangeNumericUpDownColor(verticalResolution, false);
 
             if (resize.Checked && file != null && (int)file.VideoInfo.Width - Cropping.left - Cropping.right < horizontalResolution.Value)
-                changeNumericUpDownColor(horizontalResolution, true);
+                ChangeNumericUpDownColor(horizontalResolution, true);
             else
-                changeNumericUpDownColor(horizontalResolution, false);
+                ChangeNumericUpDownColor(horizontalResolution, false);
         }
 
-        private void refreshScript(object sender, EventArgs e)
+        private void RefreshScript(object sender, EventArgs e)
         {
             if (sender != null && e != null)
-                showScript(false);
+                ShowScript(false);
         }
 
         private void AviSynthWindow_Shown(object sender, EventArgs e)
@@ -1521,9 +1544,9 @@ namespace MeGUI
         private void resize_CheckedChanged(object sender, EventArgs e)
         {
             if (sender != null && e != null && resize.Checked)
-                updateEverything(sender != null, false, true);
+                UpdateEverything(sender != null, false, true);
             else
-                updateEverything(sender != null, false, false);
+                UpdateEverything(sender != null, false, false);
         }
     }
     public delegate void OpenScriptCallback(string avisynthScript, MediaInfoFile oInfo);
@@ -1543,9 +1566,9 @@ namespace MeGUI
 
         public void Run(MainForm info)
         {
-            info.ClosePlayer();
-            AviSynthWindow asw = new AviSynthWindow(info);
-            asw.OpenScript += new OpenScriptCallback(info.Video.openVideoFile);
+            MainForm.Instance.ClosePlayer();
+            AviSynthWindow asw = new AviSynthWindow(MainForm.Instance);
+            asw.OpenScript += new OpenScriptCallback(MainForm.Instance.Video.openVideoFile);
             asw.Show();
         }
 

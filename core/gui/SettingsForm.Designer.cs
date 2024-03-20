@@ -59,6 +59,8 @@ namespace MeGUI
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.otherGroupBox = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cbStandbySettings = new System.Windows.Forms.ComboBox();
             this.chkDirectShowSource = new System.Windows.Forms.CheckBox();
             this.chkDebugInformation = new System.Windows.Forms.CheckBox();
             this.lblMinimumLength = new System.Windows.Forms.Label();
@@ -166,8 +168,6 @@ namespace MeGUI
             this.videoExtLabel = new System.Windows.Forms.Label();
             this.autoEncodeDefaultsButton = new System.Windows.Forms.Button();
             this.toolTipHelp = new System.Windows.Forms.ToolTip(this.components);
-            this.cbStandbySettings = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.targetSizeSCBox1 = new MeGUI.core.gui.TargetSizeSCBox();
             this.defaultOutputDir = new MeGUI.FileBar();
@@ -214,11 +214,9 @@ namespace MeGUI
             groupBox1.Controls.Add(this.runCommand);
             groupBox1.Controls.Add(this.shutdown);
             groupBox1.Controls.Add(this.donothing);
-            groupBox1.Location = new System.Drawing.Point(6, 280);
-            groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            groupBox1.Location = new System.Drawing.Point(4, 187);
             groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            groupBox1.Size = new System.Drawing.Size(394, 142);
+            groupBox1.Size = new System.Drawing.Size(263, 95);
             groupBox1.TabIndex = 2;
             groupBox1.TabStop = false;
             groupBox1.Text = " After encoding ";
@@ -226,10 +224,9 @@ namespace MeGUI
             // rbCloseMeGUI
             // 
             this.rbCloseMeGUI.AutoSize = true;
-            this.rbCloseMeGUI.Location = new System.Drawing.Point(201, 64);
-            this.rbCloseMeGUI.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rbCloseMeGUI.Location = new System.Drawing.Point(134, 43);
             this.rbCloseMeGUI.Name = "rbCloseMeGUI";
-            this.rbCloseMeGUI.Size = new System.Drawing.Size(128, 25);
+            this.rbCloseMeGUI.Size = new System.Drawing.Size(84, 17);
             this.rbCloseMeGUI.TabIndex = 4;
             this.rbCloseMeGUI.TabStop = true;
             this.rbCloseMeGUI.Text = "close MeGUI";
@@ -238,10 +235,9 @@ namespace MeGUI
             // command
             // 
             this.command.Enabled = false;
-            this.command.Location = new System.Drawing.Point(15, 96);
-            this.command.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.command.Location = new System.Drawing.Point(11, 43);
             this.command.Name = "command";
-            this.command.Size = new System.Drawing.Size(368, 27);
+            this.command.Size = new System.Drawing.Size(96, 17);
             this.command.TabIndex = 3;
             // 
             // runCommand
@@ -259,10 +255,9 @@ namespace MeGUI
             // shutdown
             // 
             this.shutdown.AutoSize = true;
-            this.shutdown.Location = new System.Drawing.Point(201, 30);
-            this.shutdown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.shutdown.Location = new System.Drawing.Point(134, 20);
             this.shutdown.Name = "shutdown";
-            this.shutdown.Size = new System.Drawing.Size(108, 25);
+            this.shutdown.Size = new System.Drawing.Size(73, 17);
             this.shutdown.TabIndex = 1;
             this.shutdown.Text = "Shutdown";
             this.shutdown.UseVisualStyleBackColor = true;
@@ -271,10 +266,9 @@ namespace MeGUI
             // 
             this.donothing.AutoSize = true;
             this.donothing.Checked = true;
-            this.donothing.Location = new System.Drawing.Point(16, 30);
-            this.donothing.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.donothing.Location = new System.Drawing.Point(11, 20);
             this.donothing.Name = "donothing";
-            this.donothing.Size = new System.Drawing.Size(116, 25);
+            this.donothing.Size = new System.Drawing.Size(77, 17);
             this.donothing.TabIndex = 0;
             this.donothing.TabStop = true;
             this.donothing.Text = "Do nothing";
@@ -284,10 +278,9 @@ namespace MeGUI
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(710, 627);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveButton.Location = new System.Drawing.Point(473, 418);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(72, 34);
+            this.saveButton.Size = new System.Drawing.Size(48, 23);
             this.saveButton.TabIndex = 2;
             this.saveButton.Text = "Save";
             // 
@@ -295,10 +288,9 @@ namespace MeGUI
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(816, 627);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cancelButton.Location = new System.Drawing.Point(544, 418);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(72, 34);
+            this.cancelButton.Size = new System.Drawing.Size(48, 23);
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             // 
@@ -320,23 +312,39 @@ namespace MeGUI
             this.otherGroupBox.Controls.Add(this.deleteIntermediateFiles);
             this.otherGroupBox.Controls.Add(this.deleteAbortedOutput);
             this.otherGroupBox.Controls.Add(this.openScript);
-            this.otherGroupBox.Location = new System.Drawing.Point(3, 9);
-            this.otherGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.otherGroupBox.Location = new System.Drawing.Point(2, 6);
             this.otherGroupBox.Name = "otherGroupBox";
-            this.otherGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.otherGroupBox.Size = new System.Drawing.Size(868, 412);
+            this.otherGroupBox.Size = new System.Drawing.Size(579, 275);
             this.otherGroupBox.TabIndex = 1;
             this.otherGroupBox.TabStop = false;
             this.otherGroupBox.Tag = "";
             this.otherGroupBox.Text = " Main Settings ";
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(170, 119);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(107, 13);
+            this.label7.TabIndex = 28;
+            this.label7.Text = "while a job is running";
+            // 
+            // cbStandbySettings
+            // 
+            this.cbStandbySettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStandbySettings.FormattingEnabled = true;
+            this.cbStandbySettings.Location = new System.Drawing.Point(12, 117);
+            this.cbStandbySettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbStandbySettings.Name = "cbStandbySettings";
+            this.cbStandbySettings.Size = new System.Drawing.Size(155, 21);
+            this.cbStandbySettings.TabIndex = 27;
             // 
             // chkDirectShowSource
             // 
             this.chkDirectShowSource.AutoSize = true;
-            this.chkDirectShowSource.Location = new System.Drawing.Point(18, 144);
-            this.chkDirectShowSource.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkDirectShowSource.Location = new System.Drawing.Point(12, 96);
             this.chkDirectShowSource.Name = "chkDirectShowSource";
-            this.chkDirectShowSource.Size = new System.Drawing.Size(429, 25);
+            this.chkDirectShowSource.Size = new System.Drawing.Size(278, 17);
             this.chkDirectShowSource.TabIndex = 26;
             this.chkDirectShowSource.Text = "Enable DirectShowSource() in the AVS Script Creator";
             // 
@@ -345,34 +353,31 @@ namespace MeGUI
             this.chkDebugInformation.AutoSize = true;
             this.chkDebugInformation.Checked = true;
             this.chkDebugInformation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDebugInformation.Location = new System.Drawing.Point(566, 144);
-            this.chkDebugInformation.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkDebugInformation.Location = new System.Drawing.Point(377, 96);
             this.chkDebugInformation.Name = "chkDebugInformation";
-            this.chkDebugInformation.Size = new System.Drawing.Size(201, 25);
+            this.chkDebugInformation.Size = new System.Drawing.Size(133, 17);
             this.chkDebugInformation.TabIndex = 25;
             this.chkDebugInformation.Text = "Log debug information";
             // 
             // lblMinimumLength
             // 
             this.lblMinimumLength.AutoSize = true;
-            this.lblMinimumLength.Location = new System.Drawing.Point(14, 272);
-            this.lblMinimumLength.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblMinimumLength.Location = new System.Drawing.Point(9, 181);
             this.lblMinimumLength.Name = "lblMinimumLength";
-            this.lblMinimumLength.Size = new System.Drawing.Size(398, 21);
+            this.lblMinimumLength.Size = new System.Drawing.Size(255, 13);
             this.lblMinimumLength.TabIndex = 24;
             this.lblMinimumLength.Text = "Title Selector:  show only if longer than (in seconds)";
             // 
             // minimumTitleLength
             // 
-            this.minimumTitleLength.Location = new System.Drawing.Point(566, 268);
-            this.minimumTitleLength.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.minimumTitleLength.Location = new System.Drawing.Point(377, 179);
             this.minimumTitleLength.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
             this.minimumTitleLength.Name = "minimumTitleLength";
-            this.minimumTitleLength.Size = new System.Drawing.Size(98, 27);
+            this.minimumTitleLength.Size = new System.Drawing.Size(65, 21);
             this.minimumTitleLength.TabIndex = 23;
             this.minimumTitleLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.minimumTitleLength.Value = new decimal(new int[] {
@@ -383,10 +388,9 @@ namespace MeGUI
             // 
             // cbUseIncludedAviSynth
             // 
-            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(20, 40);
-            this.cbUseIncludedAviSynth.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(377, 27);
             this.cbUseIncludedAviSynth.Name = "cbUseIncludedAviSynth";
-            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(304, 26);
+            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(144, 17);
             this.cbUseIncludedAviSynth.TabIndex = 22;
             this.cbUseIncludedAviSynth.Text = "Always use the included AviSynth";
             this.cbUseIncludedAviSynth.CheckedChanged += new System.EventHandler(this.cbUseIncludedAviSynth_CheckedChanged);
@@ -423,7 +427,7 @@ namespace MeGUI
             0,
             196608});
             this.acceptableFPSError.Name = "acceptableFPSError";
-            this.acceptableFPSError.Size = new System.Drawing.Size(98, 27);
+            this.acceptableFPSError.Size = new System.Drawing.Size(65, 21);
             this.acceptableFPSError.TabIndex = 7;
             this.acceptableFPSError.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.acceptableFPSError.Value = new decimal(new int[] {
@@ -436,19 +440,17 @@ namespace MeGUI
             // 
             this.label15.AutoSize = true;
             this.label15.BackColor = System.Drawing.Color.Transparent;
-            this.label15.Location = new System.Drawing.Point(14, 231);
-            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Location = new System.Drawing.Point(9, 154);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(379, 21);
+            this.label15.Size = new System.Drawing.Size(245, 13);
             this.label15.TabIndex = 6;
             this.label15.Text = "Acceptable FPS rounding error (bitrate calculator)";
             // 
             // resetDialogs
             // 
-            this.resetDialogs.Location = new System.Drawing.Point(20, 345);
-            this.resetDialogs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.resetDialogs.Location = new System.Drawing.Point(13, 230);
             this.resetDialogs.Name = "resetDialogs";
-            this.resetDialogs.Size = new System.Drawing.Size(231, 32);
+            this.resetDialogs.Size = new System.Drawing.Size(154, 21);
             this.resetDialogs.TabIndex = 16;
             this.resetDialogs.Text = "Reset All Dialogs";
             this.resetDialogs.UseVisualStyleBackColor = true;
@@ -456,10 +458,9 @@ namespace MeGUI
             // 
             // configSourceDetector
             // 
-            this.configSourceDetector.Location = new System.Drawing.Point(566, 345);
-            this.configSourceDetector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.configSourceDetector.Location = new System.Drawing.Point(377, 230);
             this.configSourceDetector.Name = "configSourceDetector";
-            this.configSourceDetector.Size = new System.Drawing.Size(231, 32);
+            this.configSourceDetector.Size = new System.Drawing.Size(154, 21);
             this.configSourceDetector.TabIndex = 17;
             this.configSourceDetector.Text = "Configure Source Detector";
             this.configSourceDetector.UseVisualStyleBackColor = true;
@@ -469,10 +470,9 @@ namespace MeGUI
             // 
             this.openProgressWindow.Checked = true;
             this.openProgressWindow.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.openProgressWindow.Location = new System.Drawing.Point(566, 110);
-            this.openProgressWindow.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.openProgressWindow.Location = new System.Drawing.Point(377, 73);
             this.openProgressWindow.Name = "openProgressWindow";
-            this.openProgressWindow.Size = new System.Drawing.Size(216, 26);
+            this.openProgressWindow.Size = new System.Drawing.Size(144, 17);
             this.openProgressWindow.TabIndex = 15;
             this.openProgressWindow.Text = "Show progress window";
             // 
@@ -480,10 +480,9 @@ namespace MeGUI
             // 
             this.deleteIntermediateFiles.Checked = true;
             this.deleteIntermediateFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.deleteIntermediateFiles.Location = new System.Drawing.Point(566, 75);
-            this.deleteIntermediateFiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deleteIntermediateFiles.Location = new System.Drawing.Point(377, 50);
             this.deleteIntermediateFiles.Name = "deleteIntermediateFiles";
-            this.deleteIntermediateFiles.Size = new System.Drawing.Size(228, 26);
+            this.deleteIntermediateFiles.Size = new System.Drawing.Size(152, 17);
             this.deleteIntermediateFiles.TabIndex = 13;
             this.deleteIntermediateFiles.Text = "Delete intermediate files";
             // 
@@ -502,12 +501,11 @@ namespace MeGUI
             // 
             this.openScript.Checked = true;
             this.openScript.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.openScript.Location = new System.Drawing.Point(18, 110);
-            this.openScript.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.openScript.Location = new System.Drawing.Point(12, 73);
             this.openScript.Name = "openScript";
-            this.openScript.Size = new System.Drawing.Size(416, 26);
+            this.openScript.Size = new System.Drawing.Size(277, 17);
             this.openScript.TabIndex = 10;
-            this.openScript.Text = "Show video preview after AviSynth script selection";
+            this.openScript.Text = "Automatically open video preview";
             // 
             // tabControl1
             // 
@@ -517,10 +515,9 @@ namespace MeGUI
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(896, 620);
+            this.tabControl1.Size = new System.Drawing.Size(597, 413);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -528,11 +525,10 @@ namespace MeGUI
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.gbDefaultOutput);
             this.tabPage1.Controls.Add(this.otherGroupBox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 30);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPage1.Size = new System.Drawing.Size(888, 586);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Size = new System.Drawing.Size(589, 387);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -541,11 +537,9 @@ namespace MeGUI
             // 
             this.groupBox3.Controls.Add(this.defaultLanguage2);
             this.groupBox3.Controls.Add(this.defaultLanguage1);
-            this.groupBox3.Location = new System.Drawing.Point(3, 430);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Location = new System.Drawing.Point(2, 287);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox3.Size = new System.Drawing.Size(300, 138);
+            this.groupBox3.Size = new System.Drawing.Size(200, 92);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = " Default Languages ";
@@ -553,20 +547,18 @@ namespace MeGUI
             // defaultLanguage2
             // 
             this.defaultLanguage2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.defaultLanguage2.Location = new System.Drawing.Point(18, 84);
-            this.defaultLanguage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.defaultLanguage2.Location = new System.Drawing.Point(12, 56);
             this.defaultLanguage2.Name = "defaultLanguage2";
-            this.defaultLanguage2.Size = new System.Drawing.Size(271, 29);
+            this.defaultLanguage2.Size = new System.Drawing.Size(182, 21);
             this.defaultLanguage2.Sorted = true;
             this.defaultLanguage2.TabIndex = 7;
             // 
             // defaultLanguage1
             // 
             this.defaultLanguage1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.defaultLanguage1.Location = new System.Drawing.Point(20, 44);
-            this.defaultLanguage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.defaultLanguage1.Location = new System.Drawing.Point(13, 29);
             this.defaultLanguage1.Name = "defaultLanguage1";
-            this.defaultLanguage1.Size = new System.Drawing.Size(270, 29);
+            this.defaultLanguage1.Size = new System.Drawing.Size(181, 21);
             this.defaultLanguage1.Sorted = true;
             this.defaultLanguage1.TabIndex = 2;
             // 
@@ -576,11 +568,9 @@ namespace MeGUI
             this.gbDefaultOutput.Controls.Add(this.btnClearOutputDirecoty);
             this.gbDefaultOutput.Controls.Add(this.clearDefaultOutputDir);
             this.gbDefaultOutput.Controls.Add(this.defaultOutputDir);
-            this.gbDefaultOutput.Location = new System.Drawing.Point(312, 430);
-            this.gbDefaultOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbDefaultOutput.Location = new System.Drawing.Point(208, 287);
             this.gbDefaultOutput.Name = "gbDefaultOutput";
-            this.gbDefaultOutput.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.gbDefaultOutput.Size = new System.Drawing.Size(560, 138);
+            this.gbDefaultOutput.Size = new System.Drawing.Size(373, 92);
             this.gbDefaultOutput.TabIndex = 7;
             this.gbDefaultOutput.TabStop = false;
             this.gbDefaultOutput.Text = " Default Output Directory + Custom File Size Values ";
@@ -588,20 +578,18 @@ namespace MeGUI
             // btnClearOutputDirecoty
             // 
             this.btnClearOutputDirecoty.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnClearOutputDirecoty.Location = new System.Drawing.Point(513, 40);
-            this.btnClearOutputDirecoty.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnClearOutputDirecoty.Location = new System.Drawing.Point(342, 27);
             this.btnClearOutputDirecoty.Name = "btnClearOutputDirecoty";
-            this.btnClearOutputDirecoty.Size = new System.Drawing.Size(38, 34);
+            this.btnClearOutputDirecoty.Size = new System.Drawing.Size(25, 23);
             this.btnClearOutputDirecoty.TabIndex = 43;
             this.btnClearOutputDirecoty.Text = "x";
             this.btnClearOutputDirecoty.Click += new System.EventHandler(this.btnClearOutputDirecoty_Click);
             // 
             // clearDefaultOutputDir
             // 
-            this.clearDefaultOutputDir.Location = new System.Drawing.Point(645, 44);
-            this.clearDefaultOutputDir.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.clearDefaultOutputDir.Location = new System.Drawing.Point(430, 29);
             this.clearDefaultOutputDir.Name = "clearDefaultOutputDir";
-            this.clearDefaultOutputDir.Size = new System.Drawing.Size(36, 39);
+            this.clearDefaultOutputDir.Size = new System.Drawing.Size(24, 26);
             this.clearDefaultOutputDir.TabIndex = 41;
             this.clearDefaultOutputDir.Text = "x";
             this.clearDefaultOutputDir.Click += new System.EventHandler(this.clearDefaultOutputDir_Click);
@@ -614,10 +602,9 @@ namespace MeGUI
             this.tabPage3.Controls.Add(this.autoUpdateGroupBox);
             this.tabPage3.Controls.Add(this.outputExtensions);
             this.tabPage3.Controls.Add(this.autoModeGroupbox);
-            this.tabPage3.Location = new System.Drawing.Point(4, 30);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(888, 586);
+            this.tabPage3.Size = new System.Drawing.Size(589, 387);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Extended";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -634,11 +621,9 @@ namespace MeGUI
             this.groupBox2.Controls.Add(this.label20);
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.label18);
-            this.groupBox2.Location = new System.Drawing.Point(410, 364);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Location = new System.Drawing.Point(273, 243);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox2.Size = new System.Drawing.Size(462, 202);
+            this.groupBox2.Size = new System.Drawing.Size(308, 135);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = " Auto Update Http Proxy ";
@@ -646,10 +631,9 @@ namespace MeGUI
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 42);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(8, 28);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 21);
+            this.label1.Size = new System.Drawing.Size(29, 13);
             this.label1.TabIndex = 10;
             this.label1.Text = "Use:";
             // 
@@ -662,87 +646,78 @@ namespace MeGUI
             "System Proxy",
             "Custom Proxy",
             "Custom Proxy With Login"});
-            this.cbHttpProxyMode.Location = new System.Drawing.Point(82, 38);
-            this.cbHttpProxyMode.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbHttpProxyMode.Location = new System.Drawing.Point(55, 25);
             this.cbHttpProxyMode.Name = "cbHttpProxyMode";
-            this.cbHttpProxyMode.Size = new System.Drawing.Size(266, 29);
+            this.cbHttpProxyMode.Size = new System.Drawing.Size(179, 21);
             this.cbHttpProxyMode.TabIndex = 9;
             this.cbHttpProxyMode.SelectedIndexChanged += new System.EventHandler(this.cbHttpProxyMode_SelectedIndexChanged);
             // 
             // txt_httpproxyport
             // 
             this.txt_httpproxyport.Enabled = false;
-            this.txt_httpproxyport.Location = new System.Drawing.Point(286, 78);
-            this.txt_httpproxyport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_httpproxyport.Location = new System.Drawing.Point(191, 52);
             this.txt_httpproxyport.Name = "txt_httpproxyport";
-            this.txt_httpproxyport.Size = new System.Drawing.Size(62, 27);
+            this.txt_httpproxyport.Size = new System.Drawing.Size(43, 21);
             this.txt_httpproxyport.TabIndex = 6;
             // 
             // txt_httpproxypwd
             // 
             this.txt_httpproxypwd.Enabled = false;
-            this.txt_httpproxypwd.Location = new System.Drawing.Point(82, 159);
-            this.txt_httpproxypwd.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_httpproxypwd.Location = new System.Drawing.Point(55, 106);
             this.txt_httpproxypwd.Name = "txt_httpproxypwd";
             this.txt_httpproxypwd.PasswordChar = '*';
-            this.txt_httpproxypwd.Size = new System.Drawing.Size(266, 27);
+            this.txt_httpproxypwd.Size = new System.Drawing.Size(179, 21);
             this.txt_httpproxypwd.TabIndex = 8;
             // 
             // txt_httpproxyuid
             // 
             this.txt_httpproxyuid.Enabled = false;
-            this.txt_httpproxyuid.Location = new System.Drawing.Point(82, 118);
-            this.txt_httpproxyuid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_httpproxyuid.Location = new System.Drawing.Point(55, 79);
             this.txt_httpproxyuid.Name = "txt_httpproxyuid";
-            this.txt_httpproxyuid.Size = new System.Drawing.Size(266, 27);
+            this.txt_httpproxyuid.Size = new System.Drawing.Size(179, 21);
             this.txt_httpproxyuid.TabIndex = 7;
             // 
             // txt_httpproxyaddress
             // 
             this.txt_httpproxyaddress.Enabled = false;
-            this.txt_httpproxyaddress.Location = new System.Drawing.Point(82, 78);
-            this.txt_httpproxyaddress.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_httpproxyaddress.Location = new System.Drawing.Point(55, 52);
             this.txt_httpproxyaddress.Name = "txt_httpproxyaddress";
-            this.txt_httpproxyaddress.Size = new System.Drawing.Size(152, 27);
+            this.txt_httpproxyaddress.Size = new System.Drawing.Size(103, 21);
             this.txt_httpproxyaddress.TabIndex = 5;
             // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(9, 164);
-            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label21.Location = new System.Drawing.Point(6, 109);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(47, 21);
+            this.label21.Size = new System.Drawing.Size(31, 13);
             this.label21.TabIndex = 4;
             this.label21.Text = "Pwd:";
             // 
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(9, 123);
-            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label20.Location = new System.Drawing.Point(6, 82);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(55, 21);
+            this.label20.Size = new System.Drawing.Size(36, 13);
             this.label20.TabIndex = 3;
             this.label20.Text = "Login:";
             // 
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(246, 82);
-            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label19.Location = new System.Drawing.Point(164, 55);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(46, 21);
+            this.label19.Size = new System.Drawing.Size(31, 13);
             this.label19.TabIndex = 2;
             this.label19.Text = "Port:";
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(9, 82);
-            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label18.Location = new System.Drawing.Point(6, 55);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(63, 21);
+            this.label18.Size = new System.Drawing.Size(43, 13);
             this.label18.TabIndex = 1;
             this.label18.Text = "Server:";
             // 
@@ -751,11 +726,9 @@ namespace MeGUI
             this.gbVideoPreview.Controls.Add(this.chkEnsureCorrectPlaybackSpeed);
             this.gbVideoPreview.Controls.Add(this.cbAddTimePos);
             this.gbVideoPreview.Controls.Add(this.chAlwaysOnTop);
-            this.gbVideoPreview.Location = new System.Drawing.Point(6, 432);
-            this.gbVideoPreview.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gbVideoPreview.Location = new System.Drawing.Point(4, 288);
             this.gbVideoPreview.Name = "gbVideoPreview";
-            this.gbVideoPreview.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.gbVideoPreview.Size = new System.Drawing.Size(394, 135);
+            this.gbVideoPreview.Size = new System.Drawing.Size(263, 90);
             this.gbVideoPreview.TabIndex = 4;
             this.gbVideoPreview.TabStop = false;
             this.gbVideoPreview.Text = " Video Preview ";
@@ -763,10 +736,9 @@ namespace MeGUI
             // chkEnsureCorrectPlaybackSpeed
             // 
             this.chkEnsureCorrectPlaybackSpeed.AutoSize = true;
-            this.chkEnsureCorrectPlaybackSpeed.Location = new System.Drawing.Point(12, 94);
-            this.chkEnsureCorrectPlaybackSpeed.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkEnsureCorrectPlaybackSpeed.Location = new System.Drawing.Point(8, 63);
             this.chkEnsureCorrectPlaybackSpeed.Name = "chkEnsureCorrectPlaybackSpeed";
-            this.chkEnsureCorrectPlaybackSpeed.Size = new System.Drawing.Size(262, 25);
+            this.chkEnsureCorrectPlaybackSpeed.Size = new System.Drawing.Size(173, 17);
             this.chkEnsureCorrectPlaybackSpeed.TabIndex = 2;
             this.chkEnsureCorrectPlaybackSpeed.Text = "Ensure correct playback speed";
             this.chkEnsureCorrectPlaybackSpeed.UseVisualStyleBackColor = true;
@@ -774,10 +746,9 @@ namespace MeGUI
             // cbAddTimePos
             // 
             this.cbAddTimePos.AutoSize = true;
-            this.cbAddTimePos.Location = new System.Drawing.Point(12, 60);
-            this.cbAddTimePos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbAddTimePos.Location = new System.Drawing.Point(8, 40);
             this.cbAddTimePos.Name = "cbAddTimePos";
-            this.cbAddTimePos.Size = new System.Drawing.Size(170, 25);
+            this.cbAddTimePos.Size = new System.Drawing.Size(110, 17);
             this.cbAddTimePos.TabIndex = 1;
             this.cbAddTimePos.Text = "Add Time Position";
             this.cbAddTimePos.UseVisualStyleBackColor = true;
@@ -785,10 +756,9 @@ namespace MeGUI
             // chAlwaysOnTop
             // 
             this.chAlwaysOnTop.AutoSize = true;
-            this.chAlwaysOnTop.Location = new System.Drawing.Point(12, 26);
-            this.chAlwaysOnTop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chAlwaysOnTop.Location = new System.Drawing.Point(8, 17);
             this.chAlwaysOnTop.Name = "chAlwaysOnTop";
-            this.chAlwaysOnTop.Size = new System.Drawing.Size(260, 25);
+            this.chAlwaysOnTop.Size = new System.Drawing.Size(169, 17);
             this.chAlwaysOnTop.TabIndex = 0;
             this.chAlwaysOnTop.Text = "Set the Form \"Always on Top\"";
             this.chAlwaysOnTop.UseVisualStyleBackColor = true;
@@ -799,11 +769,9 @@ namespace MeGUI
             this.autoUpdateGroupBox.Controls.Add(this.backupfiles);
             this.autoUpdateGroupBox.Controls.Add(this.configureServersButton);
             this.autoUpdateGroupBox.Controls.Add(this.useAutoUpdateCheckbox);
-            this.autoUpdateGroupBox.Location = new System.Drawing.Point(410, 156);
-            this.autoUpdateGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoUpdateGroupBox.Location = new System.Drawing.Point(273, 104);
             this.autoUpdateGroupBox.Name = "autoUpdateGroupBox";
-            this.autoUpdateGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.autoUpdateGroupBox.Size = new System.Drawing.Size(462, 200);
+            this.autoUpdateGroupBox.Size = new System.Drawing.Size(308, 133);
             this.autoUpdateGroupBox.TabIndex = 3;
             this.autoUpdateGroupBox.TabStop = false;
             this.autoUpdateGroupBox.Text = " Auto Update ";
@@ -816,20 +784,18 @@ namespace MeGUI
             "Use stable update server",
             "Use development update server",
             "Use custom update server"});
-            this.cbAutoUpdateServerSubList.Location = new System.Drawing.Point(14, 70);
-            this.cbAutoUpdateServerSubList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbAutoUpdateServerSubList.Location = new System.Drawing.Point(9, 47);
             this.cbAutoUpdateServerSubList.Name = "cbAutoUpdateServerSubList";
-            this.cbAutoUpdateServerSubList.Size = new System.Drawing.Size(336, 29);
+            this.cbAutoUpdateServerSubList.Size = new System.Drawing.Size(225, 21);
             this.cbAutoUpdateServerSubList.TabIndex = 5;
             this.cbAutoUpdateServerSubList.SelectedIndexChanged += new System.EventHandler(this.cbAutoUpdateServerSubList_SelectedIndexChanged);
             // 
             // backupfiles
             // 
             this.backupfiles.AutoSize = true;
-            this.backupfiles.Location = new System.Drawing.Point(14, 154);
-            this.backupfiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.backupfiles.Location = new System.Drawing.Point(9, 103);
             this.backupfiles.Name = "backupfiles";
-            this.backupfiles.Size = new System.Drawing.Size(285, 25);
+            this.backupfiles.Size = new System.Drawing.Size(187, 17);
             this.backupfiles.TabIndex = 4;
             this.backupfiles.Text = "Always backup files when needed";
             this.backupfiles.UseVisualStyleBackColor = true;
@@ -839,10 +805,9 @@ namespace MeGUI
             // 
             this.configureServersButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.configureServersButton.Enabled = false;
-            this.configureServersButton.Location = new System.Drawing.Point(14, 111);
-            this.configureServersButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.configureServersButton.Location = new System.Drawing.Point(9, 74);
             this.configureServersButton.Name = "configureServersButton";
-            this.configureServersButton.Size = new System.Drawing.Size(338, 34);
+            this.configureServersButton.Size = new System.Drawing.Size(225, 23);
             this.configureServersButton.TabIndex = 1;
             this.configureServersButton.Text = "Configure custom servers...";
             this.configureServersButton.UseVisualStyleBackColor = true;
@@ -851,10 +816,9 @@ namespace MeGUI
             // useAutoUpdateCheckbox
             // 
             this.useAutoUpdateCheckbox.AutoSize = true;
-            this.useAutoUpdateCheckbox.Location = new System.Drawing.Point(14, 33);
-            this.useAutoUpdateCheckbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.useAutoUpdateCheckbox.Location = new System.Drawing.Point(9, 22);
             this.useAutoUpdateCheckbox.Name = "useAutoUpdateCheckbox";
-            this.useAutoUpdateCheckbox.Size = new System.Drawing.Size(157, 25);
+            this.useAutoUpdateCheckbox.Size = new System.Drawing.Size(105, 17);
             this.useAutoUpdateCheckbox.TabIndex = 0;
             this.useAutoUpdateCheckbox.Text = "Use AutoUpdate";
             this.useAutoUpdateCheckbox.UseVisualStyleBackColor = true;
@@ -865,49 +829,43 @@ namespace MeGUI
             this.outputExtensions.Controls.Add(this.label11);
             this.outputExtensions.Controls.Add(this.label12);
             this.outputExtensions.Controls.Add(this.audioExtension);
-            this.outputExtensions.Location = new System.Drawing.Point(4, 156);
-            this.outputExtensions.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.outputExtensions.Location = new System.Drawing.Point(3, 104);
             this.outputExtensions.Name = "outputExtensions";
-            this.outputExtensions.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.outputExtensions.Size = new System.Drawing.Size(396, 116);
+            this.outputExtensions.Size = new System.Drawing.Size(264, 77);
             this.outputExtensions.TabIndex = 1;
             this.outputExtensions.TabStop = false;
             this.outputExtensions.Text = " Optional output extensions ";
             // 
             // videoExtension
             // 
-            this.videoExtension.Location = new System.Drawing.Point(16, 30);
-            this.videoExtension.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.videoExtension.Location = new System.Drawing.Point(11, 20);
             this.videoExtension.Name = "videoExtension";
-            this.videoExtension.Size = new System.Drawing.Size(271, 27);
+            this.videoExtension.Size = new System.Drawing.Size(182, 21);
             this.videoExtension.TabIndex = 0;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(298, 75);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Location = new System.Drawing.Point(199, 50);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(52, 21);
+            this.label11.Size = new System.Drawing.Size(34, 13);
             this.label11.TabIndex = 3;
             this.label11.Text = "Audio";
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(298, 34);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Location = new System.Drawing.Point(199, 23);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(51, 21);
+            this.label12.Size = new System.Drawing.Size(33, 13);
             this.label12.TabIndex = 1;
             this.label12.Text = "Video";
             // 
             // audioExtension
             // 
-            this.audioExtension.Location = new System.Drawing.Point(16, 72);
-            this.audioExtension.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.audioExtension.Location = new System.Drawing.Point(11, 48);
             this.audioExtension.Name = "audioExtension";
-            this.audioExtension.Size = new System.Drawing.Size(271, 27);
+            this.audioExtension.Size = new System.Drawing.Size(182, 21);
             this.audioExtension.TabIndex = 2;
             // 
             // autoModeGroupbox
@@ -917,11 +875,9 @@ namespace MeGUI
             this.autoModeGroupbox.Controls.Add(this.keep2ndPassOutput);
             this.autoModeGroupbox.Controls.Add(this.label13);
             this.autoModeGroupbox.Controls.Add(this.nbPasses);
-            this.autoModeGroupbox.Location = new System.Drawing.Point(6, 4);
-            this.autoModeGroupbox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoModeGroupbox.Location = new System.Drawing.Point(4, 3);
             this.autoModeGroupbox.Name = "autoModeGroupbox";
-            this.autoModeGroupbox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.autoModeGroupbox.Size = new System.Drawing.Size(866, 142);
+            this.autoModeGroupbox.Size = new System.Drawing.Size(577, 95);
             this.autoModeGroupbox.TabIndex = 0;
             this.autoModeGroupbox.TabStop = false;
             this.autoModeGroupbox.Text = " Automated Encoding ";
@@ -930,10 +886,9 @@ namespace MeGUI
             // 
             this.configAutoEncodeDefaults.AutoSize = true;
             this.configAutoEncodeDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.configAutoEncodeDefaults.Location = new System.Drawing.Point(21, 70);
-            this.configAutoEncodeDefaults.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.configAutoEncodeDefaults.Location = new System.Drawing.Point(14, 47);
             this.configAutoEncodeDefaults.Name = "configAutoEncodeDefaults";
-            this.configAutoEncodeDefaults.Size = new System.Drawing.Size(263, 31);
+            this.configAutoEncodeDefaults.Size = new System.Drawing.Size(179, 23);
             this.configAutoEncodeDefaults.TabIndex = 5;
             this.configAutoEncodeDefaults.Text = "Configure AutoEncode defaults...";
             this.configAutoEncodeDefaults.UseVisualStyleBackColor = true;
@@ -944,10 +899,9 @@ namespace MeGUI
             this.keep2ndPassLogFile.AutoSize = true;
             this.keep2ndPassLogFile.Checked = true;
             this.keep2ndPassLogFile.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.keep2ndPassLogFile.Location = new System.Drawing.Point(417, 32);
-            this.keep2ndPassLogFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.keep2ndPassLogFile.Location = new System.Drawing.Point(278, 21);
             this.keep2ndPassLogFile.Name = "keep2ndPassLogFile";
-            this.keep2ndPassLogFile.Size = new System.Drawing.Size(269, 25);
+            this.keep2ndPassLogFile.Size = new System.Drawing.Size(176, 17);
             this.keep2ndPassLogFile.TabIndex = 4;
             this.keep2ndPassLogFile.Text = "Overwrite Stats File in 3rd pass";
             this.keep2ndPassLogFile.UseVisualStyleBackColor = true;
@@ -957,10 +911,9 @@ namespace MeGUI
             this.keep2ndPassOutput.AutoSize = true;
             this.keep2ndPassOutput.Checked = true;
             this.keep2ndPassOutput.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.keep2ndPassOutput.Location = new System.Drawing.Point(417, 76);
-            this.keep2ndPassOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.keep2ndPassOutput.Location = new System.Drawing.Point(278, 51);
             this.keep2ndPassOutput.Name = "keep2ndPassOutput";
-            this.keep2ndPassOutput.Size = new System.Drawing.Size(317, 25);
+            this.keep2ndPassOutput.Size = new System.Drawing.Size(207, 17);
             this.keep2ndPassOutput.TabIndex = 3;
             this.keep2ndPassOutput.Text = "Keep 2nd pass Output in 3 pass mode";
             this.keep2ndPassOutput.UseVisualStyleBackColor = true;
@@ -968,17 +921,15 @@ namespace MeGUI
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(16, 33);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Location = new System.Drawing.Point(11, 22);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(143, 21);
+            this.label13.Size = new System.Drawing.Size(93, 13);
             this.label13.TabIndex = 0;
             this.label13.Text = "Number of passes";
             // 
             // nbPasses
             // 
-            this.nbPasses.Location = new System.Drawing.Point(176, 30);
-            this.nbPasses.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.nbPasses.Location = new System.Drawing.Point(117, 20);
             this.nbPasses.Maximum = new decimal(new int[] {
             3,
             0,
@@ -990,7 +941,7 @@ namespace MeGUI
             0,
             0});
             this.nbPasses.Name = "nbPasses";
-            this.nbPasses.Size = new System.Drawing.Size(60, 27);
+            this.nbPasses.Size = new System.Drawing.Size(40, 21);
             this.nbPasses.TabIndex = 1;
             this.nbPasses.Value = new decimal(new int[] {
             2,
@@ -1004,11 +955,10 @@ namespace MeGUI
             this.tabPage4.Controls.Add(this.groupBox10);
             this.tabPage4.Controls.Add(this.groupBox9);
             this.tabPage4.Controls.Add(this.groupBox8);
-            this.tabPage4.Location = new System.Drawing.Point(4, 30);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPage4.Size = new System.Drawing.Size(888, 586);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage4.Size = new System.Drawing.Size(589, 387);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Worker/Job/Queue";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1020,11 +970,9 @@ namespace MeGUI
             this.groupBox11.Controls.Add(this.cbAutoStartOnStartup);
             this.groupBox11.Controls.Add(this.workerMaximumCount);
             this.groupBox11.Controls.Add(this.label6);
-            this.groupBox11.Location = new System.Drawing.Point(378, 465);
-            this.groupBox11.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox11.Location = new System.Drawing.Point(252, 310);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox11.Size = new System.Drawing.Size(494, 106);
+            this.groupBox11.Size = new System.Drawing.Size(329, 71);
             this.groupBox11.TabIndex = 12;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = " global worker settings ";
@@ -1034,10 +982,9 @@ namespace MeGUI
             this.cbRemoveJob.AutoSize = true;
             this.cbRemoveJob.Checked = true;
             this.cbRemoveJob.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbRemoveJob.Location = new System.Drawing.Point(267, 64);
-            this.cbRemoveJob.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbRemoveJob.Location = new System.Drawing.Point(178, 43);
             this.cbRemoveJob.Name = "cbRemoveJob";
-            this.cbRemoveJob.Size = new System.Drawing.Size(209, 25);
+            this.cbRemoveJob.Size = new System.Drawing.Size(137, 17);
             this.cbRemoveJob.TabIndex = 22;
             this.cbRemoveJob.Text = "remove completed jobs";
             this.cbRemoveJob.CheckedChanged += new System.EventHandler(this.CbRemoveJob_CheckedChanged);
@@ -1047,10 +994,9 @@ namespace MeGUI
             this.cbAutoStart.AutoSize = true;
             this.cbAutoStart.Checked = true;
             this.cbAutoStart.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbAutoStart.Location = new System.Drawing.Point(267, 28);
-            this.cbAutoStart.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbAutoStart.Location = new System.Drawing.Point(178, 19);
             this.cbAutoStart.Name = "cbAutoStart";
-            this.cbAutoStart.Size = new System.Drawing.Size(182, 25);
+            this.cbAutoStart.Size = new System.Drawing.Size(121, 17);
             this.cbAutoStart.TabIndex = 21;
             this.cbAutoStart.Text = "auto-start new jobs";
             this.cbAutoStart.CheckedChanged += new System.EventHandler(this.CbAutoStart_CheckedChanged);
@@ -1058,10 +1004,9 @@ namespace MeGUI
             // cbAutoStartOnStartup
             // 
             this.cbAutoStartOnStartup.AutoSize = true;
-            this.cbAutoStartOnStartup.Location = new System.Drawing.Point(9, 28);
-            this.cbAutoStartOnStartup.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbAutoStartOnStartup.Location = new System.Drawing.Point(6, 19);
             this.cbAutoStartOnStartup.Name = "cbAutoStartOnStartup";
-            this.cbAutoStartOnStartup.Size = new System.Drawing.Size(258, 25);
+            this.cbAutoStartOnStartup.Size = new System.Drawing.Size(170, 17);
             this.cbAutoStartOnStartup.TabIndex = 20;
             this.cbAutoStartOnStartup.Text = "auto-start on application start";
             this.cbAutoStartOnStartup.UseVisualStyleBackColor = true;
@@ -1069,8 +1014,7 @@ namespace MeGUI
             // 
             // workerMaximumCount
             // 
-            this.workerMaximumCount.Location = new System.Drawing.Point(184, 62);
-            this.workerMaximumCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workerMaximumCount.Location = new System.Drawing.Point(123, 41);
             this.workerMaximumCount.Maximum = new decimal(new int[] {
             99,
             0,
@@ -1082,7 +1026,7 @@ namespace MeGUI
             0,
             0});
             this.workerMaximumCount.Name = "workerMaximumCount";
-            this.workerMaximumCount.Size = new System.Drawing.Size(51, 27);
+            this.workerMaximumCount.Size = new System.Drawing.Size(34, 21);
             this.workerMaximumCount.TabIndex = 7;
             this.workerMaximumCount.Value = new decimal(new int[] {
             2,
@@ -1094,10 +1038,9 @@ namespace MeGUI
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 66);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(6, 44);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(183, 21);
+            this.label6.Size = new System.Drawing.Size(115, 13);
             this.label6.TabIndex = 9;
             this.label6.Text = "maximum parallel jobs:";
             // 
@@ -1109,11 +1052,9 @@ namespace MeGUI
             this.groupBox10.Controls.Add(this.cbIOPriority);
             this.groupBox10.Controls.Add(this.cbProcessPriority);
             this.groupBox10.Controls.Add(this.cbJobType);
-            this.groupBox10.Location = new System.Drawing.Point(378, 348);
-            this.groupBox10.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox10.Location = new System.Drawing.Point(252, 232);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox10.Size = new System.Drawing.Size(492, 108);
+            this.groupBox10.Size = new System.Drawing.Size(328, 72);
             this.groupBox10.TabIndex = 11;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = " worker priority ";
@@ -1121,30 +1062,27 @@ namespace MeGUI
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(164, 30);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(109, 20);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(124, 21);
+            this.label5.Size = new System.Drawing.Size(81, 13);
             this.label5.TabIndex = 19;
             this.label5.Text = "Process Priority";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(322, 30);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(215, 20);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(92, 21);
+            this.label4.Size = new System.Drawing.Size(60, 13);
             this.label4.TabIndex = 18;
             this.label4.Text = "I/O Priority";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 30);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(3, 20);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(76, 21);
+            this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 17;
             this.label3.Text = "Job Type";
             // 
@@ -1155,10 +1093,9 @@ namespace MeGUI
             this.cbIOPriority.Items.AddRange(new object[] {
             "low",
             "normal"});
-            this.cbIOPriority.Location = new System.Drawing.Point(327, 60);
-            this.cbIOPriority.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbIOPriority.Location = new System.Drawing.Point(218, 40);
             this.cbIOPriority.Name = "cbIOPriority";
-            this.cbIOPriority.Size = new System.Drawing.Size(148, 29);
+            this.cbIOPriority.Size = new System.Drawing.Size(100, 21);
             this.cbIOPriority.TabIndex = 16;
             this.cbIOPriority.SelectedIndexChanged += new System.EventHandler(this.CbIOPriority_SelectedIndexChanged);
             // 
@@ -1171,10 +1108,9 @@ namespace MeGUI
             "below normal",
             "normal",
             "above normal"});
-            this.cbProcessPriority.Location = new System.Drawing.Point(168, 60);
-            this.cbProcessPriority.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbProcessPriority.Location = new System.Drawing.Point(112, 40);
             this.cbProcessPriority.Name = "cbProcessPriority";
-            this.cbProcessPriority.Size = new System.Drawing.Size(148, 29);
+            this.cbProcessPriority.Size = new System.Drawing.Size(100, 21);
             this.cbProcessPriority.TabIndex = 15;
             this.cbProcessPriority.SelectedIndexChanged += new System.EventHandler(this.CbProcessPriority_SelectedIndexChanged);
             // 
@@ -1182,10 +1118,9 @@ namespace MeGUI
             // 
             this.cbJobType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbJobType.FormattingEnabled = true;
-            this.cbJobType.Location = new System.Drawing.Point(9, 60);
-            this.cbJobType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbJobType.Location = new System.Drawing.Point(6, 40);
             this.cbJobType.Name = "cbJobType";
-            this.cbJobType.Size = new System.Drawing.Size(148, 29);
+            this.cbJobType.Size = new System.Drawing.Size(100, 21);
             this.cbJobType.TabIndex = 14;
             this.cbJobType.SelectedIndexChanged += new System.EventHandler(this.CbJobType_SelectedIndexChanged);
             // 
@@ -1195,11 +1130,9 @@ namespace MeGUI
             this.groupBox9.Controls.Add(this.btnAddSettings);
             this.groupBox9.Controls.Add(this.label2);
             this.groupBox9.Controls.Add(this.workerJobsListBox);
-            this.groupBox9.Location = new System.Drawing.Point(10, 348);
-            this.groupBox9.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox9.Location = new System.Drawing.Point(7, 232);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox9.Size = new System.Drawing.Size(358, 224);
+            this.groupBox9.Size = new System.Drawing.Size(239, 149);
             this.groupBox9.TabIndex = 10;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = " worker rule ";
@@ -1208,8 +1141,7 @@ namespace MeGUI
             // 
             this.numericUpDown1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown1.Location = new System.Drawing.Point(240, 118);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.numericUpDown1.Location = new System.Drawing.Point(160, 79);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             99,
             0,
@@ -1221,7 +1153,7 @@ namespace MeGUI
             0,
             0});
             this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(51, 27);
+            this.numericUpDown1.Size = new System.Drawing.Size(34, 21);
             this.numericUpDown1.TabIndex = 4;
             this.numericUpDown1.Value = new decimal(new int[] {
             1,
@@ -1231,10 +1163,9 @@ namespace MeGUI
             // 
             // btnAddSettings
             // 
-            this.btnAddSettings.Location = new System.Drawing.Point(9, 174);
-            this.btnAddSettings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAddSettings.Location = new System.Drawing.Point(6, 116);
             this.btnAddSettings.Name = "btnAddSettings";
-            this.btnAddSettings.Size = new System.Drawing.Size(340, 34);
+            this.btnAddSettings.Size = new System.Drawing.Size(227, 23);
             this.btnAddSettings.TabIndex = 2;
             this.btnAddSettings.Text = "add rule set";
             this.btnAddSettings.UseVisualStyleBackColor = true;
@@ -1246,20 +1177,18 @@ namespace MeGUI
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(180, 34);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(120, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(170, 116);
+            this.label2.Size = new System.Drawing.Size(113, 77);
             this.label2.TabIndex = 5;
             this.label2.Text = "maximum parallel jobs of the selected job(s):";
             // 
             // workerJobsListBox
             // 
             this.workerJobsListBox.FormattingEnabled = true;
-            this.workerJobsListBox.Location = new System.Drawing.Point(9, 24);
-            this.workerJobsListBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workerJobsListBox.Location = new System.Drawing.Point(6, 16);
             this.workerJobsListBox.Name = "workerJobsListBox";
-            this.workerJobsListBox.Size = new System.Drawing.Size(160, 124);
+            this.workerJobsListBox.Size = new System.Drawing.Size(108, 84);
             this.workerJobsListBox.TabIndex = 1;
             // 
             // groupBox8
@@ -1269,21 +1198,18 @@ namespace MeGUI
             this.groupBox8.Controls.Add(this.btnDeleteSettings);
             this.groupBox8.Controls.Add(this.btnResetSettings);
             this.groupBox8.Controls.Add(this.workerSettingsListBox);
-            this.groupBox8.Location = new System.Drawing.Point(10, 4);
-            this.groupBox8.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox8.Location = new System.Drawing.Point(7, 3);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox8.Size = new System.Drawing.Size(861, 334);
+            this.groupBox8.Size = new System.Drawing.Size(574, 223);
             this.groupBox8.TabIndex = 9;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = " worker rule set - defines how many jobs of specific types can run in parallel";
             // 
             // btnDeleteSettings
             // 
-            this.btnDeleteSettings.Location = new System.Drawing.Point(9, 291);
-            this.btnDeleteSettings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnDeleteSettings.Location = new System.Drawing.Point(6, 194);
             this.btnDeleteSettings.Name = "btnDeleteSettings";
-            this.btnDeleteSettings.Size = new System.Drawing.Size(340, 34);
+            this.btnDeleteSettings.Size = new System.Drawing.Size(227, 23);
             this.btnDeleteSettings.TabIndex = 3;
             this.btnDeleteSettings.Text = "remove rule set";
             this.btnDeleteSettings.UseVisualStyleBackColor = true;
@@ -1291,10 +1217,9 @@ namespace MeGUI
             // 
             // btnResetSettings
             // 
-            this.btnResetSettings.Location = new System.Drawing.Point(531, 291);
-            this.btnResetSettings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnResetSettings.Location = new System.Drawing.Point(354, 194);
             this.btnResetSettings.Name = "btnResetSettings";
-            this.btnResetSettings.Size = new System.Drawing.Size(321, 34);
+            this.btnResetSettings.Size = new System.Drawing.Size(214, 23);
             this.btnResetSettings.TabIndex = 10;
             this.btnResetSettings.Text = "load default worker settings";
             this.btnResetSettings.UseVisualStyleBackColor = true;
@@ -1305,10 +1230,9 @@ namespace MeGUI
             this.workerSettingsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.workerSettingsListBox.ItemHeight = 21;
-            this.workerSettingsListBox.Location = new System.Drawing.Point(9, 28);
-            this.workerSettingsListBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workerSettingsListBox.Location = new System.Drawing.Point(6, 19);
             this.workerSettingsListBox.Name = "workerSettingsListBox";
-            this.workerSettingsListBox.Size = new System.Drawing.Size(841, 235);
+            this.workerSettingsListBox.Size = new System.Drawing.Size(562, 147);
             this.workerSettingsListBox.TabIndex = 1;
             this.workerSettingsListBox.SelectedIndexChanged += new System.EventHandler(this.WorkerSettingsListBox_SelectedIndexChanged);
             // 
@@ -1319,11 +1243,10 @@ namespace MeGUI
             this.tabPage2.Controls.Add(this.groupBox5);
             this.tabPage2.Controls.Add(this.groupBox4);
             this.tabPage2.Controls.Add(this.vobGroupBox);
-            this.tabPage2.Location = new System.Drawing.Point(4, 30);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabPage2.Size = new System.Drawing.Size(888, 586);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Size = new System.Drawing.Size(589, 387);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "External Programs";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1333,11 +1256,9 @@ namespace MeGUI
             this.groupBox7.Controls.Add(this.useFDKAac);
             this.groupBox7.Controls.Add(this.lblFDK);
             this.groupBox7.Controls.Add(this.fdkaacLocation);
-            this.groupBox7.Location = new System.Drawing.Point(6, 98);
-            this.groupBox7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox7.Location = new System.Drawing.Point(4, 65);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox7.Size = new System.Drawing.Size(866, 76);
+            this.groupBox7.Size = new System.Drawing.Size(577, 51);
             this.groupBox7.TabIndex = 47;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "                                   ";
@@ -1345,10 +1266,9 @@ namespace MeGUI
             // useFDKAac
             // 
             this.useFDKAac.AutoSize = true;
-            this.useFDKAac.Location = new System.Drawing.Point(18, -2);
-            this.useFDKAac.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.useFDKAac.Location = new System.Drawing.Point(12, -1);
             this.useFDKAac.Name = "useFDKAac";
-            this.useFDKAac.Size = new System.Drawing.Size(160, 25);
+            this.useFDKAac.Size = new System.Drawing.Size(105, 17);
             this.useFDKAac.TabIndex = 46;
             this.useFDKAac.Text = "Enable FDK-AAC";
             this.useFDKAac.UseVisualStyleBackColor = true;
@@ -1358,10 +1278,9 @@ namespace MeGUI
             // 
             this.lblFDK.AutoSize = true;
             this.lblFDK.Enabled = false;
-            this.lblFDK.Location = new System.Drawing.Point(16, 36);
-            this.lblFDK.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblFDK.Location = new System.Drawing.Point(11, 24);
             this.lblFDK.Name = "lblFDK";
-            this.lblFDK.Size = new System.Drawing.Size(72, 21);
+            this.lblFDK.Size = new System.Drawing.Size(47, 13);
             this.lblFDK.TabIndex = 45;
             this.lblFDK.Text = "Location";
             // 
@@ -1375,11 +1294,9 @@ namespace MeGUI
             this.groupBox6.Controls.Add(this.txtForcedName);
             this.groupBox6.Controls.Add(this.lblffmsThreads);
             this.groupBox6.Controls.Add(this.ffmsThreads);
-            this.groupBox6.Location = new System.Drawing.Point(6, 396);
-            this.groupBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox6.Location = new System.Drawing.Point(4, 264);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox6.Size = new System.Drawing.Size(866, 176);
+            this.groupBox6.Size = new System.Drawing.Size(577, 117);
             this.groupBox6.TabIndex = 33;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Misc ";
@@ -1389,10 +1306,9 @@ namespace MeGUI
             this.chkInput8Bit.AutoSize = true;
             this.chkInput8Bit.Checked = true;
             this.chkInput8Bit.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkInput8Bit.Location = new System.Drawing.Point(16, 64);
-            this.chkInput8Bit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkInput8Bit.Location = new System.Drawing.Point(11, 43);
             this.chkInput8Bit.Name = "chkInput8Bit";
-            this.chkInput8Bit.Size = new System.Drawing.Size(233, 25);
+            this.chkInput8Bit.Size = new System.Drawing.Size(152, 17);
             this.chkInput8Bit.TabIndex = 52;
             this.chkInput8Bit.Text = "Restrict input filter to 8 bit";
             this.chkInput8Bit.UseVisualStyleBackColor = true;
@@ -1402,10 +1318,9 @@ namespace MeGUI
             this.chk64Bit.AutoSize = true;
             this.chk64Bit.Checked = true;
             this.chk64Bit.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk64Bit.Location = new System.Drawing.Point(338, 64);
-            this.chk64Bit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chk64Bit.Location = new System.Drawing.Point(225, 43);
             this.chk64Bit.Name = "chk64Bit";
-            this.chk64Bit.Size = new System.Drawing.Size(215, 25);
+            this.chk64Bit.Size = new System.Drawing.Size(141, 17);
             this.chk64Bit.TabIndex = 51;
             this.chk64Bit.Text = "Use x64 tools if possible";
             this.chk64Bit.UseVisualStyleBackColor = true;
@@ -1415,10 +1330,9 @@ namespace MeGUI
             this.chx264ExternalMuxer.AutoSize = true;
             this.chx264ExternalMuxer.Checked = true;
             this.chx264ExternalMuxer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chx264ExternalMuxer.Location = new System.Drawing.Point(338, 30);
-            this.chx264ExternalMuxer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chx264ExternalMuxer.Location = new System.Drawing.Point(225, 20);
             this.chx264ExternalMuxer.Name = "chx264ExternalMuxer";
-            this.chx264ExternalMuxer.Size = new System.Drawing.Size(287, 25);
+            this.chx264ExternalMuxer.Size = new System.Drawing.Size(190, 17);
             this.chx264ExternalMuxer.TabIndex = 49;
             this.chx264ExternalMuxer.Text = "x264: use external muxer for MKV";
             this.chx264ExternalMuxer.UseVisualStyleBackColor = true;
@@ -1426,10 +1340,9 @@ namespace MeGUI
             // useQAAC
             // 
             this.useQAAC.AutoSize = true;
-            this.useQAAC.Location = new System.Drawing.Point(18, 30);
-            this.useQAAC.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.useQAAC.Location = new System.Drawing.Point(12, 20);
             this.useQAAC.Name = "useQAAC";
-            this.useQAAC.Size = new System.Drawing.Size(135, 25);
+            this.useQAAC.Size = new System.Drawing.Size(90, 17);
             this.useQAAC.TabIndex = 48;
             this.useQAAC.Text = "Enable QAAC";
             this.useQAAC.UseVisualStyleBackColor = true;
@@ -1438,36 +1351,33 @@ namespace MeGUI
             // lblForcedName
             // 
             this.lblForcedName.AutoSize = true;
-            this.lblForcedName.Location = new System.Drawing.Point(16, 141);
-            this.lblForcedName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lblForcedName.Location = new System.Drawing.Point(11, 94);
+            this.lblForcedName.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.lblForcedName.Name = "lblForcedName";
-            this.lblForcedName.Size = new System.Drawing.Size(251, 21);
+            this.lblForcedName.Size = new System.Drawing.Size(164, 13);
             this.lblForcedName.TabIndex = 33;
             this.lblForcedName.Text = "Add text to forced track names: ";
             this.lblForcedName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // txtForcedName
             // 
-            this.txtForcedName.Location = new System.Drawing.Point(338, 136);
-            this.txtForcedName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtForcedName.Location = new System.Drawing.Point(225, 91);
             this.txtForcedName.Name = "txtForcedName";
-            this.txtForcedName.Size = new System.Drawing.Size(430, 27);
+            this.txtForcedName.Size = new System.Drawing.Size(288, 21);
             this.txtForcedName.TabIndex = 32;
             // 
             // lblffmsThreads
             // 
             this.lblffmsThreads.AutoSize = true;
-            this.lblffmsThreads.Location = new System.Drawing.Point(16, 99);
-            this.lblffmsThreads.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblffmsThreads.Location = new System.Drawing.Point(11, 66);
             this.lblffmsThreads.Name = "lblffmsThreads";
-            this.lblffmsThreads.Size = new System.Drawing.Size(161, 21);
+            this.lblffmsThreads.Size = new System.Drawing.Size(106, 13);
             this.lblffmsThreads.TabIndex = 31;
             this.lblffmsThreads.Text = "FFMS Thread Count:";
             // 
             // ffmsThreads
             // 
-            this.ffmsThreads.Location = new System.Drawing.Point(184, 96);
-            this.ffmsThreads.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ffmsThreads.Location = new System.Drawing.Point(123, 64);
             this.ffmsThreads.Maximum = new decimal(new int[] {
             1,
             0,
@@ -1479,7 +1389,7 @@ namespace MeGUI
             0,
             -2147483648});
             this.ffmsThreads.Name = "ffmsThreads";
-            this.ffmsThreads.Size = new System.Drawing.Size(57, 27);
+            this.ffmsThreads.Size = new System.Drawing.Size(38, 21);
             this.ffmsThreads.TabIndex = 30;
             this.ffmsThreads.Value = new decimal(new int[] {
             1,
@@ -1492,11 +1402,9 @@ namespace MeGUI
             this.groupBox5.Controls.Add(this.useNeroAacEnc);
             this.groupBox5.Controls.Add(this.lblNero);
             this.groupBox5.Controls.Add(this.neroaacencLocation);
-            this.groupBox5.Location = new System.Drawing.Point(6, 12);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox5.Location = new System.Drawing.Point(4, 8);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox5.Size = new System.Drawing.Size(866, 76);
+            this.groupBox5.Size = new System.Drawing.Size(577, 51);
             this.groupBox5.TabIndex = 32;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "                                        ";
@@ -1504,10 +1412,9 @@ namespace MeGUI
             // useNeroAacEnc
             // 
             this.useNeroAacEnc.AutoSize = true;
-            this.useNeroAacEnc.Location = new System.Drawing.Point(18, -2);
-            this.useNeroAacEnc.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.useNeroAacEnc.Location = new System.Drawing.Point(12, -1);
             this.useNeroAacEnc.Name = "useNeroAacEnc";
-            this.useNeroAacEnc.Size = new System.Drawing.Size(181, 25);
+            this.useNeroAacEnc.Size = new System.Drawing.Size(119, 17);
             this.useNeroAacEnc.TabIndex = 46;
             this.useNeroAacEnc.Text = "Enable NeroAacEnc";
             this.useNeroAacEnc.UseVisualStyleBackColor = true;
@@ -1517,10 +1424,9 @@ namespace MeGUI
             // 
             this.lblNero.AutoSize = true;
             this.lblNero.Enabled = false;
-            this.lblNero.Location = new System.Drawing.Point(16, 36);
-            this.lblNero.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblNero.Location = new System.Drawing.Point(11, 24);
             this.lblNero.Name = "lblNero";
-            this.lblNero.Size = new System.Drawing.Size(72, 21);
+            this.lblNero.Size = new System.Drawing.Size(47, 13);
             this.lblNero.TabIndex = 45;
             this.lblNero.Text = "Location";
             // 
@@ -1528,21 +1434,18 @@ namespace MeGUI
             // 
             this.groupBox4.Controls.Add(this.btnClearMP4TempDirectory);
             this.groupBox4.Controls.Add(this.tempDirMP4);
-            this.groupBox4.Location = new System.Drawing.Point(4, 306);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Location = new System.Drawing.Point(3, 204);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.groupBox4.Size = new System.Drawing.Size(867, 81);
+            this.groupBox4.Size = new System.Drawing.Size(578, 54);
             this.groupBox4.TabIndex = 31;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Temp Directory for MP4 Muxer";
             // 
             // btnClearMP4TempDirectory
             // 
-            this.btnClearMP4TempDirectory.Location = new System.Drawing.Point(820, 30);
-            this.btnClearMP4TempDirectory.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnClearMP4TempDirectory.Location = new System.Drawing.Point(547, 20);
             this.btnClearMP4TempDirectory.Name = "btnClearMP4TempDirectory";
-            this.btnClearMP4TempDirectory.Size = new System.Drawing.Size(38, 34);
+            this.btnClearMP4TempDirectory.Size = new System.Drawing.Size(25, 23);
             this.btnClearMP4TempDirectory.TabIndex = 42;
             this.btnClearMP4TempDirectory.Text = "x";
             this.btnClearMP4TempDirectory.Click += new System.EventHandler(this.btnClearMP4TempDirectory_Click);
@@ -1554,11 +1457,9 @@ namespace MeGUI
             this.vobGroupBox.Controls.Add(this.cbAutoLoadDG);
             this.vobGroupBox.Controls.Add(this.forceFilmPercentage);
             this.vobGroupBox.Controls.Add(this.autoForceFilm);
-            this.vobGroupBox.Location = new System.Drawing.Point(6, 183);
-            this.vobGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.vobGroupBox.Location = new System.Drawing.Point(4, 122);
             this.vobGroupBox.Name = "vobGroupBox";
-            this.vobGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.vobGroupBox.Size = new System.Drawing.Size(866, 114);
+            this.vobGroupBox.Size = new System.Drawing.Size(577, 76);
             this.vobGroupBox.TabIndex = 29;
             this.vobGroupBox.TabStop = false;
             this.vobGroupBox.Text = " DGIndex Tools";
@@ -1566,10 +1467,9 @@ namespace MeGUI
             // useDGIndexIM
             // 
             this.useDGIndexIM.AutoSize = true;
-            this.useDGIndexIM.Location = new System.Drawing.Point(18, 70);
-            this.useDGIndexIM.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.useDGIndexIM.Location = new System.Drawing.Point(12, 47);
             this.useDGIndexIM.Name = "useDGIndexIM";
-            this.useDGIndexIM.Size = new System.Drawing.Size(174, 25);
+            this.useDGIndexIM.Size = new System.Drawing.Size(115, 17);
             this.useDGIndexIM.TabIndex = 48;
             this.useDGIndexIM.Text = "Enable DGIndexIM";
             this.useDGIndexIM.UseVisualStyleBackColor = true;
@@ -1578,10 +1478,9 @@ namespace MeGUI
             // useDGIndexNV
             // 
             this.useDGIndexNV.AutoSize = true;
-            this.useDGIndexNV.Location = new System.Drawing.Point(18, 36);
-            this.useDGIndexNV.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.useDGIndexNV.Location = new System.Drawing.Point(12, 24);
             this.useDGIndexNV.Name = "useDGIndexNV";
-            this.useDGIndexNV.Size = new System.Drawing.Size(176, 25);
+            this.useDGIndexNV.Size = new System.Drawing.Size(116, 17);
             this.useDGIndexNV.TabIndex = 47;
             this.useDGIndexNV.Text = "Enable DGIndexNV";
             this.useDGIndexNV.UseVisualStyleBackColor = true;
@@ -1590,20 +1489,18 @@ namespace MeGUI
             // cbAutoLoadDG
             // 
             this.cbAutoLoadDG.AutoSize = true;
-            this.cbAutoLoadDG.Location = new System.Drawing.Point(338, 76);
-            this.cbAutoLoadDG.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbAutoLoadDG.Location = new System.Drawing.Point(225, 51);
             this.cbAutoLoadDG.Name = "cbAutoLoadDG";
-            this.cbAutoLoadDG.Size = new System.Drawing.Size(276, 25);
+            this.cbAutoLoadDG.Size = new System.Drawing.Size(179, 17);
             this.cbAutoLoadDG.TabIndex = 7;
             this.cbAutoLoadDG.Text = "autoload VOB files incrementally";
             this.cbAutoLoadDG.UseVisualStyleBackColor = true;
             // 
             // forceFilmPercentage
             // 
-            this.forceFilmPercentage.Location = new System.Drawing.Point(588, 34);
-            this.forceFilmPercentage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.forceFilmPercentage.Location = new System.Drawing.Point(392, 23);
             this.forceFilmPercentage.Name = "forceFilmPercentage";
-            this.forceFilmPercentage.Size = new System.Drawing.Size(60, 27);
+            this.forceFilmPercentage.Size = new System.Drawing.Size(40, 21);
             this.forceFilmPercentage.TabIndex = 3;
             this.forceFilmPercentage.Value = new decimal(new int[] {
             95,
@@ -1614,10 +1511,9 @@ namespace MeGUI
             // autoForceFilm
             // 
             this.autoForceFilm.AutoSize = true;
-            this.autoForceFilm.Location = new System.Drawing.Point(338, 36);
-            this.autoForceFilm.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoForceFilm.Location = new System.Drawing.Point(225, 24);
             this.autoForceFilm.Name = "autoForceFilm";
-            this.autoForceFilm.Size = new System.Drawing.Size(248, 25);
+            this.autoForceFilm.Size = new System.Drawing.Size(161, 17);
             this.autoForceFilm.TabIndex = 2;
             this.autoForceFilm.Text = "Auto Force Film at (percent)";
             // 
@@ -1656,47 +1552,29 @@ namespace MeGUI
             this.toolTipHelp.ReshowDelay = 100;
             this.toolTipHelp.ShowAlways = true;
             // 
-            // cbStandbySettings
-            // 
-            this.cbStandbySettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbStandbySettings.FormattingEnabled = true;
-            this.cbStandbySettings.Location = new System.Drawing.Point(18, 176);
-            this.cbStandbySettings.Name = "cbStandbySettings";
-            this.cbStandbySettings.Size = new System.Drawing.Size(231, 29);
-            this.cbStandbySettings.TabIndex = 27;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(255, 179);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(168, 21);
-            this.label7.TabIndex = 28;
-            this.label7.Text = "while a job is running";
-            // 
             // helpButton1
             // 
             this.helpButton1.ArticleName = "Settings";
             this.helpButton1.AutoSize = true;
             this.helpButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.helpButton1.Location = new System.Drawing.Point(6, 627);
-            this.helpButton1.Margin = new System.Windows.Forms.Padding(6);
+            this.helpButton1.Location = new System.Drawing.Point(4, 418);
+            this.helpButton1.Margin = new System.Windows.Forms.Padding(4);
             this.helpButton1.Name = "helpButton1";
-            this.helpButton1.Size = new System.Drawing.Size(53, 31);
+            this.helpButton1.Size = new System.Drawing.Size(38, 23);
             this.helpButton1.TabIndex = 1;
             // 
             // targetSizeSCBox1
             // 
             this.targetSizeSCBox1.CustomSizes = new MeGUI.core.util.FileSize[0];
-            this.targetSizeSCBox1.Location = new System.Drawing.Point(12, 84);
-            this.targetSizeSCBox1.Margin = new System.Windows.Forms.Padding(6);
-            this.targetSizeSCBox1.MaximumSize = new System.Drawing.Size(1500, 42);
-            this.targetSizeSCBox1.MinimumSize = new System.Drawing.Size(96, 42);
+            this.targetSizeSCBox1.Location = new System.Drawing.Point(8, 56);
+            this.targetSizeSCBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.targetSizeSCBox1.MaximumSize = new System.Drawing.Size(1000, 28);
+            this.targetSizeSCBox1.MinimumSize = new System.Drawing.Size(64, 28);
             this.targetSizeSCBox1.Name = "targetSizeSCBox1";
             this.targetSizeSCBox1.NullString = "Modify custom file size values";
             this.targetSizeSCBox1.SaveCustomValues = true;
             this.targetSizeSCBox1.SelectedIndex = 0;
-            this.targetSizeSCBox1.Size = new System.Drawing.Size(494, 42);
+            this.targetSizeSCBox1.Size = new System.Drawing.Size(329, 28);
             this.targetSizeSCBox1.TabIndex = 44;
             // 
             // defaultOutputDir
@@ -1704,10 +1582,10 @@ namespace MeGUI
             this.defaultOutputDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.defaultOutputDir.Filename = "";
             this.defaultOutputDir.FolderMode = true;
-            this.defaultOutputDir.Location = new System.Drawing.Point(12, 40);
-            this.defaultOutputDir.Margin = new System.Windows.Forms.Padding(6);
+            this.defaultOutputDir.Location = new System.Drawing.Point(8, 27);
+            this.defaultOutputDir.Margin = new System.Windows.Forms.Padding(4);
             this.defaultOutputDir.Name = "defaultOutputDir";
-            this.defaultOutputDir.Size = new System.Drawing.Size(494, 34);
+            this.defaultOutputDir.Size = new System.Drawing.Size(329, 23);
             this.defaultOutputDir.TabIndex = 40;
             // 
             // fdkaacLocation
@@ -1717,10 +1595,10 @@ namespace MeGUI
             this.fdkaacLocation.Enabled = false;
             this.fdkaacLocation.Filename = "";
             this.fdkaacLocation.Filter = "FDKAAC|fdkaac.exe";
-            this.fdkaacLocation.Location = new System.Drawing.Point(96, 30);
-            this.fdkaacLocation.Margin = new System.Windows.Forms.Padding(6);
+            this.fdkaacLocation.Location = new System.Drawing.Point(64, 20);
+            this.fdkaacLocation.Margin = new System.Windows.Forms.Padding(4);
             this.fdkaacLocation.Name = "fdkaacLocation";
-            this.fdkaacLocation.Size = new System.Drawing.Size(764, 34);
+            this.fdkaacLocation.Size = new System.Drawing.Size(509, 23);
             this.fdkaacLocation.TabIndex = 44;
             // 
             // neroaacencLocation
@@ -1730,10 +1608,10 @@ namespace MeGUI
             this.neroaacencLocation.Enabled = false;
             this.neroaacencLocation.Filename = "";
             this.neroaacencLocation.Filter = "NeroAacEnc|neroaacenc.exe";
-            this.neroaacencLocation.Location = new System.Drawing.Point(96, 30);
-            this.neroaacencLocation.Margin = new System.Windows.Forms.Padding(6);
+            this.neroaacencLocation.Location = new System.Drawing.Point(64, 20);
+            this.neroaacencLocation.Margin = new System.Windows.Forms.Padding(4);
             this.neroaacencLocation.Name = "neroaacencLocation";
-            this.neroaacencLocation.Size = new System.Drawing.Size(764, 34);
+            this.neroaacencLocation.Size = new System.Drawing.Size(509, 23);
             this.neroaacencLocation.TabIndex = 44;
             // 
             // tempDirMP4
@@ -1742,18 +1620,18 @@ namespace MeGUI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tempDirMP4.Filename = "";
             this.tempDirMP4.FolderMode = true;
-            this.tempDirMP4.Location = new System.Drawing.Point(18, 30);
-            this.tempDirMP4.Margin = new System.Windows.Forms.Padding(6);
+            this.tempDirMP4.Location = new System.Drawing.Point(12, 20);
+            this.tempDirMP4.Margin = new System.Windows.Forms.Padding(4);
             this.tempDirMP4.Name = "tempDirMP4";
-            this.tempDirMP4.Size = new System.Drawing.Size(794, 34);
+            this.tempDirMP4.Size = new System.Drawing.Size(529, 23);
             this.tempDirMP4.TabIndex = 41;
             this.tempDirMP4.FileSelected += new MeGUI.FileBarEventHandler(this.tempDirMP4_FileSelected);
             // 
             // SettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(896, 669);
+            this.ClientSize = new System.Drawing.Size(597, 446);
             this.Controls.Add(this.helpButton1);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.cancelButton);
@@ -1761,7 +1639,6 @@ namespace MeGUI
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SettingsForm";

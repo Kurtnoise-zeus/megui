@@ -309,7 +309,7 @@ namespace MeGUI
                 processMediaInfo.Start();
                 
                 DateTime startTime = DateTime.Now;
-                while (startTime.AddMinutes(1) > DateTime.Now
+                while (startTime.AddMinutes(5) > DateTime.Now
                     && (processMediaInfo.ThreadState == ThreadState.Running || processMediaInfo.ThreadState == ThreadState.WaitSleepJoin))
                     MeGUI.core.util.Util.Wait(100);
 

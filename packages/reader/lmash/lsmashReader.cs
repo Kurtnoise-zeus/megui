@@ -75,7 +75,7 @@ namespace MeGUI
         public lsmashFile(string fileName, string indexFile)
         {
             MediaInfoFile oInfo = null;
-            reader = AvsFile.ParseScript(VideoUtil.getLSMASHVideoInputLine(fileName, indexFile, 0, ref oInfo), true);
+            reader = AvsFile.ParseScript(VideoUtil.GetLSMASHVideoInputLine(fileName, indexFile, 0, ref oInfo), true);
             info = reader.VideoInfo.Clone();
             if (oInfo != null)
                 info.DAR = oInfo.VideoInfo.DAR;

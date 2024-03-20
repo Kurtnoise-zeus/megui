@@ -267,7 +267,7 @@ namespace MeGUI
             this.modValueBox.Name = "modValueBox";
             this.modValueBox.Size = new System.Drawing.Size(75, 21);
             this.modValueBox.TabIndex = 11;
-            this.modValueBox.SelectedIndexChanged += new System.EventHandler(this.updateEverything);
+            this.modValueBox.SelectedIndexChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // chAutoPreview
             // 
@@ -288,7 +288,7 @@ namespace MeGUI
             this.signalAR.Size = new System.Drawing.Size(190, 17);
             this.signalAR.TabIndex = 11;
             this.signalAR.Text = "Clever (TM) anamorphic encoding:";
-            this.signalAR.CheckedChanged += new System.EventHandler(this.updateEverything);
+            this.signalAR.CheckedChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // mod16Box
             // 
@@ -305,7 +305,7 @@ namespace MeGUI
             this.mod16Box.Name = "mod16Box";
             this.mod16Box.Size = new System.Drawing.Size(222, 21);
             this.mod16Box.TabIndex = 19;
-            this.mod16Box.SelectedIndexChanged += new System.EventHandler(this.updateEverything);
+            this.mod16Box.SelectedIndexChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // resize
             // 
@@ -330,7 +330,7 @@ namespace MeGUI
             this.suggestResolution.Size = new System.Drawing.Size(118, 17);
             this.suggestResolution.TabIndex = 8;
             this.suggestResolution.Text = "Suggest Resolution";
-            this.suggestResolution.CheckedChanged += new System.EventHandler(this.updateEverything);
+            this.suggestResolution.CheckedChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // cropLeft
             // 
@@ -349,7 +349,7 @@ namespace MeGUI
             this.cropLeft.Name = "cropLeft";
             this.cropLeft.Size = new System.Drawing.Size(48, 21);
             this.cropLeft.TabIndex = 7;
-            this.cropLeft.ValueChanged += new System.EventHandler(this.updateEverything);
+            this.cropLeft.ValueChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // cropRight
             // 
@@ -368,7 +368,7 @@ namespace MeGUI
             this.cropRight.Name = "cropRight";
             this.cropRight.Size = new System.Drawing.Size(48, 21);
             this.cropRight.TabIndex = 6;
-            this.cropRight.ValueChanged += new System.EventHandler(this.updateEverything);
+            this.cropRight.ValueChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // cropBottom
             // 
@@ -387,7 +387,7 @@ namespace MeGUI
             this.cropBottom.Name = "cropBottom";
             this.cropBottom.Size = new System.Drawing.Size(48, 21);
             this.cropBottom.TabIndex = 5;
-            this.cropBottom.ValueChanged += new System.EventHandler(this.updateEverything);
+            this.cropBottom.ValueChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // cropTop
             // 
@@ -406,7 +406,7 @@ namespace MeGUI
             this.cropTop.Name = "cropTop";
             this.cropTop.Size = new System.Drawing.Size(48, 21);
             this.cropTop.TabIndex = 4;
-            this.cropTop.ValueChanged += new System.EventHandler(this.updateEverything);
+            this.cropTop.ValueChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // autoCropButton
             // 
@@ -424,7 +424,7 @@ namespace MeGUI
             this.crop.Size = new System.Drawing.Size(97, 42);
             this.crop.TabIndex = 2;
             this.crop.Text = "Crop";
-            this.crop.CheckedChanged += new System.EventHandler(this.updateEverything);
+            this.crop.CheckedChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // verticalResolution
             // 
@@ -443,7 +443,7 @@ namespace MeGUI
             this.verticalResolution.Name = "verticalResolution";
             this.verticalResolution.Size = new System.Drawing.Size(48, 21);
             this.verticalResolution.TabIndex = 1;
-            this.verticalResolution.ValueChanged += new System.EventHandler(this.updateEverything);
+            this.verticalResolution.ValueChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // horizontalResolution
             // 
@@ -461,7 +461,7 @@ namespace MeGUI
             this.horizontalResolution.Name = "horizontalResolution";
             this.horizontalResolution.Size = new System.Drawing.Size(48, 21);
             this.horizontalResolution.TabIndex = 0;
-            this.horizontalResolution.ValueChanged += new System.EventHandler(this.updateEverything);
+            this.horizontalResolution.ValueChanged += new System.EventHandler(this.UpdateEverything);
             // 
             // tabControl1
             // 
@@ -574,7 +574,7 @@ namespace MeGUI
             this.arChooser.SelectedIndex = 0;
             this.arChooser.Size = new System.Drawing.Size(214, 29);
             this.arChooser.TabIndex = 21;
-            this.arChooser.SelectionChanged += new MeGUI.StringChanged(this.inputDARChanged);
+            this.arChooser.SelectionChanged += new MeGUI.StringChanged(this.InputDARChanged);
             // 
             // reopenOriginal
             // 
@@ -705,7 +705,7 @@ namespace MeGUI
             this.cbCharset.Name = "cbCharset";
             this.cbCharset.Size = new System.Drawing.Size(239, 21);
             this.cbCharset.TabIndex = 12;
-            this.cbCharset.SelectedIndexChanged += new System.EventHandler(this.refreshScript);
+            this.cbCharset.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // label8
             // 
@@ -768,7 +768,7 @@ namespace MeGUI
             this.colourCorrect.Size = new System.Drawing.Size(111, 17);
             this.colourCorrect.TabIndex = 9;
             this.colourCorrect.Text = "Colour Correction";
-            this.colourCorrect.CheckedChanged += new System.EventHandler(this.refreshScript);
+            this.colourCorrect.CheckedChanged += new System.EventHandler(this.RefreshScript);
             // 
             // mpeg2Deblocking
             // 
@@ -777,7 +777,7 @@ namespace MeGUI
             this.mpeg2Deblocking.Size = new System.Drawing.Size(124, 17);
             this.mpeg2Deblocking.TabIndex = 8;
             this.mpeg2Deblocking.Text = "Mpeg2 Deblocking";
-            this.mpeg2Deblocking.CheckedChanged += new System.EventHandler(this.refreshScript);
+            this.mpeg2Deblocking.CheckedChanged += new System.EventHandler(this.RefreshScript);
             // 
             // tabPage2
             // 
@@ -814,7 +814,7 @@ namespace MeGUI
             this.dss2.TabIndex = 4;
             this.dss2.Text = "Prefer DSSource2 over DSSource";
             this.dss2.UseVisualStyleBackColor = true;
-            this.dss2.CheckedChanged += new System.EventHandler(this.refreshScript);
+            this.dss2.CheckedChanged += new System.EventHandler(this.RefreshScript);
             // 
             // fpsBox
             // 
@@ -840,7 +840,7 @@ namespace MeGUI
             0,
             0,
             196608});
-            this.fpsBox.ValueChanged += new System.EventHandler(this.refreshScript);
+            this.fpsBox.ValueChanged += new System.EventHandler(this.RefreshScript);
             // 
             // fpsLabel
             // 
@@ -857,7 +857,7 @@ namespace MeGUI
             this.flipVertical.Size = new System.Drawing.Size(90, 17);
             this.flipVertical.TabIndex = 0;
             this.flipVertical.Text = "Vertical Flip";
-            this.flipVertical.CheckedChanged += new System.EventHandler(this.refreshScript);
+            this.flipVertical.CheckedChanged += new System.EventHandler(this.RefreshScript);
             // 
             // tabPage3
             // 
@@ -892,7 +892,7 @@ namespace MeGUI
             this.nvResize.TabIndex = 2;
             this.nvResize.Text = "Nvidia Crop && Resize";
             this.nvResize.UseVisualStyleBackColor = true;
-            this.nvResize.CheckedChanged += new System.EventHandler(this.refreshScript);
+            this.nvResize.CheckedChanged += new System.EventHandler(this.RefreshScript);
             this.nvResize.Click += new System.EventHandler(this.nvDeInt_Click);
             // 
             // cbNvDeInt
@@ -906,7 +906,7 @@ namespace MeGUI
             this.cbNvDeInt.Name = "cbNvDeInt";
             this.cbNvDeInt.Size = new System.Drawing.Size(265, 21);
             this.cbNvDeInt.TabIndex = 1;
-            this.cbNvDeInt.SelectedIndexChanged += new System.EventHandler(this.refreshScript);
+            this.cbNvDeInt.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // nvDeInt
             // 
@@ -1040,7 +1040,7 @@ namespace MeGUI
             this.deinterlaceType.Name = "deinterlaceType";
             this.deinterlaceType.Size = new System.Drawing.Size(239, 21);
             this.deinterlaceType.TabIndex = 4;
-            this.deinterlaceType.SelectedIndexChanged += new System.EventHandler(this.refreshScript);
+            this.deinterlaceType.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // filtersGroupbox
             // 
@@ -1068,7 +1068,7 @@ namespace MeGUI
             this.noiseFilterType.Name = "noiseFilterType";
             this.noiseFilterType.Size = new System.Drawing.Size(239, 21);
             this.noiseFilterType.TabIndex = 5;
-            this.noiseFilterType.SelectedIndexChanged += new System.EventHandler(this.refreshScript);
+            this.noiseFilterType.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // noiseFilter
             // 
@@ -1088,7 +1088,7 @@ namespace MeGUI
             this.resizeFilterType.Name = "resizeFilterType";
             this.resizeFilterType.Size = new System.Drawing.Size(239, 21);
             this.resizeFilterType.TabIndex = 1;
-            this.resizeFilterType.SelectedIndexChanged += new System.EventHandler(this.refreshScript);
+            this.resizeFilterType.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // resizeFilterLabel
             // 

@@ -146,10 +146,10 @@ namespace MeGUI.core.details.mux
             subtitleLanguage.SelectedIndex = -1;
             subName.Text = "";
             audioDelay.Value = 0;
-            raiseEvent();
+            RaiseEvent();
         }
 
-        private void raiseEvent()
+        private void RaiseEvent()
         {
             if (FileUpdated != null)
                 FileUpdated(this, new EventArgs());
@@ -174,7 +174,7 @@ namespace MeGUI.core.details.mux
                     SetLanguage(LanguageSelectionContainer.LookupISOCode(subTracks[0].Name));
             }
 
-            raiseEvent();
+            RaiseEvent();
         }
 
         private void chkForceStream_CheckedChanged(object sender, EventArgs e)

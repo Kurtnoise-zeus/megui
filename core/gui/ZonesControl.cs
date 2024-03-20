@@ -19,11 +19,7 @@
 // ****************************************************************************
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace MeGUI
@@ -36,24 +32,12 @@ namespace MeGUI
         {
             this.introEndFrame = 0;
             this.creditsStartFrame = 0;
-            zones = new Zone[0];
+            zones = Array.Empty<Zone>();
             input = "";
             InitializeComponent();
         }
-        private MainForm mainForm;
-
-        public MainForm MainForm
-        {
-            get { return mainForm; }
-            set { mainForm = value; }
-        }
 
         #region variables
-        private void updateGUI()
-        {
-            if (UpdateGUIEvent != null)
-                UpdateGUIEvent();
-        }
         public event UpdateConfigGUI UpdateGUIEvent;
         private Zone[] zones;
         private string input;
@@ -61,6 +45,11 @@ namespace MeGUI
         private int introEndFrame, creditsStartFrame;
         #endregion
         #region handlers
+        private void UpdateGUI()
+        {
+            UpdateGUIEvent?.Invoke();
+        }
+
         private void zoneMode_SelectedIndexChanged(object sender, System.EventArgs e)
         {
             if (zoneMode.SelectedIndex == 0) // quantizer
@@ -96,26 +85,31 @@ namespace MeGUI
                     index++;
                 }
                 zones = newZones;
-                showZones(zones);
-                updateGUI();
+                ShowZones(zones);
+                UpdateGUI();
             }
         }
 
         private void clearZonesButton_Click(object sender, System.EventArgs e)
         {
             this.zoneListView.Items.Clear();
-            this.zones = new Zone[0];
-            updateGUI();
+            this.zones = Array.Empty<Zone>();
+            UpdateGUI();
         }
+
         private void addZoneButton_Click(object sender, System.EventArgs e)
         {
-            if (startFrame.Text.Equals("") || endFrame.Text.Equals(""))
+            if (string.IsNullOrEmpty(startFrame.Text) || string.IsNullOrEmpty(endFrame.Text))
+            {
                 MessageBox.Show("You must specify both start and end frame", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            }
             else
             {
-                Zone zone = new Zone();
-                zone.startFrame = Int32.Parse(startFrame.Text);
-                zone.endFrame = Int32.Parse(endFrame.Text);
+                Zone zone = new Zone
+                {
+                    startFrame = Int32.Parse(startFrame.Text),
+                    endFrame = Int32.Parse(endFrame.Text)
+                };
                 if (zone.endFrame <= zone.startFrame)
                 {
                     MessageBox.Show("The end frame must be larger than the start frame", "Invalid zone configuration", MessageBoxButtons.OK, MessageBoxIcon.Stop);
@@ -161,23 +155,26 @@ namespace MeGUI
                 if (!iterationAborted)
                 {
                     zones = newZones;
-                    this.showZones(zones);
+                    this.ShowZones(zones);
                 }
-                updateGUI();
+                UpdateGUI();
             }
         }
+
         /// <summary>
         /// shows the zones given as argument in the GUI
         /// first clears the listview of any items, then add one item after the other
         /// </summary>
         /// <param name="zones">the zones to be displayed</param>
-        private void showZones(Zone[] zones)
+        private void ShowZones(Zone[] zones)
         {
             this.zoneListView.Items.Clear();
             foreach (Zone z in zones)
             {
-                ListViewItem item = new ListViewItem(new string[] { z.startFrame.ToString(), z.endFrame.ToString(), z.mode.ToString(), z.modifier.ToString() });
-                item.Tag = z;
+                ListViewItem item = new ListViewItem(new string[] { z.startFrame.ToString(), z.endFrame.ToString(), z.mode.ToString(), z.modifier.ToString() })
+                {
+                    Tag = z
+                };
                 zoneListView.Items.Add(item);
             }
         }
@@ -206,8 +203,10 @@ namespace MeGUI
             {
                 ListViewItem item = zoneListView.SelectedItems[0];
                 Zone zone = (Zone)item.Tag;
-                if (startFrame.Text.Equals("") || endFrame.Text.Equals(""))
+                if (string.IsNullOrEmpty(startFrame.Text) || string.IsNullOrEmpty(endFrame.Text))
+                {
                     MessageBox.Show("You must specify both start and end frame", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
                 else
                 {
                     zone.startFrame = Int32.Parse(startFrame.Text);
@@ -223,8 +222,8 @@ namespace MeGUI
                         zone.mode = ZONEMODE.Weight;
                     zone.modifier = zoneModifier.Value;
                     zones[item.Index] = zone;
-                    this.showZones(zones);
-                    updateGUI();
+                    this.ShowZones(zones);
+                    UpdateGUI();
                 }
             }
         }
@@ -242,6 +241,7 @@ namespace MeGUI
             endFrame.Text = end.ToString();
             addZoneButton_Click(null, null);
         }
+
         /// <summary>
         /// handler for the WindowClosed event
         /// sets the player back to null so that the next time preview is pressed
@@ -253,12 +253,12 @@ namespace MeGUI
         }
         private void showVideoButton_Click(object sender, System.EventArgs e)
         {
-            if (!this.input.Equals(""))
+            if (!string.IsNullOrEmpty(this.input))
             {
                 if (player == null)
                 {
                     player = new VideoPlayer();
-                    bool videoLoaded = player.loadVideo(mainForm, input, PREVIEWTYPE.ZONES, false);
+                    bool videoLoaded = player.loadVideo(MainForm.Instance, input, PREVIEWTYPE.ZONES, false);
                     if (videoLoaded)
                     {
                         player.ZoneSet += new ZoneSetCallback(player_ZoneSet);
@@ -281,11 +281,11 @@ namespace MeGUI
                 }
                 else // no zone has been selected.. but if start and / or end frame have been configured show them in the preview
                 {
-                    if (!startFrame.Text.Equals(""))
+                    if (!string.IsNullOrEmpty(startFrame.Text))
                     {
                         player.ZoneStart = Int32.Parse(startFrame.Text);
                     }
-                    if (!endFrame.Text.Equals(""))
+                    if (!string.IsNullOrEmpty(endFrame.Text))
                     {
                         player.ZoneEnd = Int32.Parse(endFrame.Text);
                     }
@@ -320,7 +320,7 @@ namespace MeGUI
         public Zone[] Zones
         {
             get { return zones; }
-            set { zones = value; showZones(zones); }
+            set { zones = value; ShowZones(zones); }
         }
         /// <summary>
         /// Sets the input video file, used for previewing
@@ -332,10 +332,9 @@ namespace MeGUI
         }
         #endregion
 
-        public void closePlayer()
+        public void ClosePlayer()
         {
-            if (player != null)
-                player.Close();
+            player?.Close();
         }
 
         private void ZonesControl_Load(object sender, EventArgs e)

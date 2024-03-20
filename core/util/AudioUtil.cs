@@ -29,7 +29,7 @@ namespace MeGUI
     /// <summary>
     /// AudioUtil is used to perform various audio related tasks
     /// </summary>
-    public class AudioUtil
+    public static class AudioUtil
     {
         /// <summary>
         /// returns all audio streams that can be encoded or muxed
@@ -38,6 +38,9 @@ namespace MeGUI
         public static AudioJob[] getConfiguredAudioJobs(AudioJob[] audioStreams)
         {
             List<AudioJob> list = new List<AudioJob>();
+            if (audioStreams == null)
+                return list.ToArray();
+            
             foreach (AudioJob stream in audioStreams)
             {
                 if (String.IsNullOrEmpty(stream.Input))
@@ -56,10 +59,9 @@ namespace MeGUI
             try
             {
                 strErrorText = String.Empty;
-                using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
-                    using (AviSynthClip a = env.ParseScript(strAVSScript))
-                        if (a.ChannelsCount == 0)
-                            return false;
+                using (AviSynthClip a = AviSynthScriptEnvironment.ParseScript(strAVSScript))
+                if (a.ChannelsCount == 0)
+                    return false;
                 return true;
             }
             catch (Exception ex)
@@ -75,10 +77,9 @@ namespace MeGUI
             {
                 if (!Path.GetExtension(strAVSScript).ToLowerInvariant().Equals(".avs"))
                     return false;
-                using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
-                    using (AviSynthClip a = env.OpenScriptFile(strAVSScript))
-                        if (!a.HasAudio)
-                            return false;
+                using (AviSynthClip a = AviSynthScriptEnvironment.OpenScriptFile(strAVSScript))
+                if (!a.HasAudio)
+                    return false;
                 return true;
             }
             catch
@@ -93,9 +94,8 @@ namespace MeGUI
             {
                 if (!Path.GetExtension(strAVSScript).ToLowerInvariant().Equals(".avs"))
                     return 0;
-                using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
-                    using (AviSynthClip a = env.OpenScriptFile(strAVSScript))
-                        return a.ChannelsCount;
+                using (AviSynthClip a = AviSynthScriptEnvironment.OpenScriptFile(strAVSScript))
+                    return a.ChannelsCount;
             }
             catch
             {
@@ -206,13 +206,12 @@ namespace MeGUI
             {
                 if (audioFilesDemuxed.ContainsKey(audioTracks[counter].TrackID))
                 {
-                    string strFile;
-                    audioFilesDemuxed.TryGetValue(audioTracks[counter].TrackID, out strFile);
+                    audioFilesDemuxed.TryGetValue(audioTracks[counter].TrackID, out string strFile);
                     audioFiles.Add(audioTracks[counter].TrackID, strFile);
                     arrDeleteFiles.Remove(strFile);
                 }
-                else if (log != null)
-                    log.LogEvent("Audio track not found: " + audioTracks[counter].TrackID, ImageType.Error);
+                else
+                    log?.LogEvent("Audio track not found: " + audioTracks[counter].TrackID, ImageType.Error);
             }
 
             return audioFiles;

@@ -202,7 +202,7 @@ namespace MeGUI
                     break;
                 case PossibleSources.lsmash:
                     MediaInfoFile oInfo = null;
-                    inputLine = VideoUtil.getLSMASHVideoInputLine(input, indexFile, fps, ref oInfo);
+                    inputLine = VideoUtil.GetLSMASHVideoInputLine(input, indexFile, fps, ref oInfo);
                     if (oInfo != null)
                         oInfo.Dispose();
                     break;

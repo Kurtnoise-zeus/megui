@@ -49,10 +49,10 @@ namespace MeGUI
 	public enum AudioSampleType:int
 	{
         Unknown=0,
-		INT8  = 1,
-		INT16 = 2, 
-		INT24 = 4,    // Int24 is a very stupid thing to code, but it's supported by some hardware.
-		INT32 = 8,
+        INT8 = 1,
+        INT16 = 2,
+        INT24 = 4,    // Int24 is a very stupid thing to code, but it's supported by some hardware.
+        INT32 = 8,
 		FLOAT = 16
 	};
 
@@ -62,27 +62,27 @@ namespace MeGUI
 		{
         }
 
-        public AviSynthClip OpenScriptFile(string filePath)
+        public static AviSynthClip OpenScriptFile(string filePath)
         {
             return new AviSynthClip("Import", filePath, false, true);
         }
 
-        public AviSynthClip OpenScriptFile(string filePath, bool bRequireRGB24)
+        public static AviSynthClip OpenScriptFile(string filePath, bool bRequireRGB24)
         {
             return new AviSynthClip("Import", filePath, bRequireRGB24, true);
         }
 
-        public AviSynthClip ParseScript(string script)
+        public static AviSynthClip ParseScript(string script)
         {
             return new AviSynthClip("Eval", script, false, true);
         }
 
-        public AviSynthClip ParseScript(string script, bool bRequireRGB24)
+        public static AviSynthClip ParseScript(string script, bool bRequireRGB24)
         {
             return new AviSynthClip("Eval", script, bRequireRGB24, true);
         }
 
-        public AviSynthClip ParseScript(string script, bool bRequireRGB24, bool runInThread)
+        public static AviSynthClip ParseScript(string script, bool bRequireRGB24, bool runInThread)
         {
             return new AviSynthClip("Eval", script, bRequireRGB24, runInThread);
         }
@@ -249,7 +249,7 @@ namespace MeGUI
         #endregion
 #endif
 
-        private string getLastError()
+        private string GetLastError()
         {
             const int errlen = 1024;
             StringBuilder sb = new StringBuilder(errlen);
@@ -442,7 +442,7 @@ namespace MeGUI
                 AccessCounter(false);
             }
             if (res < 0)
-                throw new AviSynthException(getLastError());
+                throw new AviSynthException(GetLastError());
             return (0 == res) ? v : defaultValue;
         }
 
@@ -452,7 +452,10 @@ namespace MeGUI
             {
                 AccessCounter(true);
                 if (0 != dimzon_avs_getaframe(_avs, addr, offset, count))
-                    throw new AviSynthException(getLastError());
+                {
+                    AccessCounter(false);
+                    throw new AviSynthException(GetLastError());
+                }
                 AccessCounter(false);
             }
         }
@@ -463,7 +466,10 @@ namespace MeGUI
             {
                 AccessCounter(true);
                 if (0 != dimzon_avs_getvframe(_avs, addr, stride, frame))
-                    throw new AviSynthException(getLastError());
+                {
+                    AccessCounter(false);
+                    throw new AviSynthException(GetLastError());
+                }
                 AccessCounter(false);
             }
         }
@@ -549,7 +555,7 @@ namespace MeGUI
                     }
                     catch (Exception ex)
                     {
-                        oLog.LogValue("Error", ex.Message, core.util.ImageType.Error, false);
+                        oLog?.LogValue("Error", ex.Message, core.util.ImageType.Error, false);
                     }
                 }
 
@@ -560,7 +566,7 @@ namespace MeGUI
             }
             catch (Exception ex)
             {
-                oLog.LogValue("Error", ex.Message, core.util.ImageType.Error, false);
+                oLog?.LogValue("Error", ex.Message, core.util.ImageType.Error, false);
             }
 
             return iStartResult;
@@ -605,7 +611,7 @@ namespace MeGUI
             {
                 string err = string.Empty;
                 if (_avs != IntPtr.Zero)
-                    err = getLastError();
+                    err = GetLastError();
                 else
                     err = strErrorMessage;
                 Dispose(false);
@@ -631,7 +637,7 @@ namespace MeGUI
             // wait till the avs object is not used anymore
             while (_countAccess > 0)
                 MeGUI.core.util.Util.Wait(100);
-            dimzon_avs_destroy(ref _avs);
+           _ = dimzon_avs_destroy(ref _avs);
             if (_avs != IntPtr.Zero)
                 CloseHandle(_avs);
             _avs = IntPtr.Zero;

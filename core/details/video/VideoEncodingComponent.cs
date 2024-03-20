@@ -33,12 +33,10 @@ namespace MeGUI
         #region video info
         private VideoInfo info; 
         private VideoPlayer player; // window that shows a preview of the video
-        private MediaInfoFile oInfo;
         private VideoEncoderProvider videoEncoderProvider = new VideoEncoderProvider();
 
-        private void initVideoInfo()
+        private void InitVideoInfo()
         {
-            oInfo = null;
             info = new VideoInfo();
             info.VideoInputChanged += new StringChanged(delegate(object _, string val)
             {
@@ -49,6 +47,7 @@ namespace MeGUI
                 videoOutput.Filename = val;
             });
         }
+
         public VideoInfo Info
         {
             get
@@ -56,6 +55,7 @@ namespace MeGUI
                 return info;
             }
         }
+
         public string FileType
         {
             get
@@ -80,23 +80,26 @@ namespace MeGUI
 	
         public VideoEncodingComponent()
         {
-            initVideoInfo();
+            InitVideoInfo();
             InitializeComponent();
             if (MainForm.Instance != null)  // Fix to allow VS2008 designer to load Form1
                 videoProfile.Manager = MainForm.Instance.Profiles;
         }
         #endregion
+
         #region extra properties
         public string VideoInput
         {
             get { return info.VideoInput; }
             set { info.VideoInput = value; }
         }
+
         public string VideoOutput
         {
             get { return info.VideoOutput; }
             set { info.VideoOutput = value; }
         }
+
         public VideoType CurrentVideoOutputType
         {
             get { return this.fileType.SelectedItem as VideoType; }
@@ -107,6 +110,7 @@ namespace MeGUI
             set { addPrerenderJob.Checked = value; }
         }
         #endregion
+
         #region event handlers
         private void videoInput_FileSelected(FileBar sender, FileBarEventArgs args)
         {
@@ -128,7 +132,7 @@ namespace MeGUI
         /// with the scriptname
         /// </summary>
         /// <param name="fileName">the AviSynth script to be opened</param>
-        private void openAvisynthScript(string fileName)
+        private void OpenAvisynthScript(string fileName)
         {
             if (this.player != null) // make sure only one preview window is open at all times
                 player.Close();
@@ -150,15 +154,17 @@ namespace MeGUI
 
         private void VideoInput_DoubleClick(object sender, System.EventArgs e)
         {
-            if (!VideoInput.Equals(""))
+            if (!string.IsNullOrEmpty(VideoInput))
             {
-                this.openAvisynthScript(VideoInput);
+                this.OpenAvisynthScript(VideoInput);
                 if (info.CreditsStartFrame > -1)
                     this.player.CreditsStart = info.CreditsStartFrame;
                 if (info.IntroEndFrame > -1)
                     this.player.IntroEnd = info.IntroEndFrame;
             }
-            else MessageBox.Show("Load an avisynth script first...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("Load an avisynth script first...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
 
         private void queueVideoButton_Click(object sender, System.EventArgs e)
@@ -186,7 +192,7 @@ namespace MeGUI
                     videoOutput = Path.ChangeExtension(videoOutput, "m4v");
             }
 
-            JobUtil.GetInputProperties(info.VideoInput, out ulong frameCount, out double frameRate);
+            JobUtil.GetInputProperties(info.VideoInput, out ulong frameCount, out _);
 
             JobChain prepareJobs = JobUtil.AddVideoJobs(info.VideoInput, videoOutput, this.CurrentSettings.Clone(),
                 info.IntroEndFrame, info.CreditsStartFrame, info.DAR, PrerenderJob, info.Zones, (int)frameCount);
@@ -196,8 +202,10 @@ namespace MeGUI
                 && (!vSettings.SettingsID.Equals("x264") || !fileType.Text.Equals("MKV") || MainForm.Instance.Settings.UseExternalMuxerX264))
             {
                 // create mux job
-                MuxJob mJob = new MuxJob();
-                mJob.Input = videoOutput;
+                MuxJob mJob = new MuxJob
+                {
+                    Input = videoOutput
+                };
 
                 if (vSettings.SettingsID.Equals("XviD"))
                 {
@@ -241,7 +249,7 @@ namespace MeGUI
         /// <summary>
         /// enables / disables output fields depending on the codec configuration
         /// </summary>
-        private void updateIOConfig()
+        private void UpdateIOConfig()
         {
             VideoCodecSettings.VideoEncodingMode encodingMode = CurrentSettings.VideoEncodingType;
             if (encodingMode == VideoCodecSettings.VideoEncodingMode.twopass1 
@@ -274,7 +282,7 @@ namespace MeGUI
             }
 
             // test for valid output filename (not needed if just doing 1st pass)
-            if (!isFirstPass())
+            if (!IsFirstPass())
             {
                 fileErr = MainForm.verifyOutputFile(this.VideoOutput);
                 if (fileErr != null)
@@ -302,27 +310,29 @@ namespace MeGUI
         public void openVideoFile(string fileName, MediaInfoFile oNewInfo)
         {
             if (oNewInfo == null)
-                oInfo = new MediaInfoFile(fileName);
+            {
+                using (MediaInfoFile oInfo = new MediaInfoFile(fileName))
+                    info.DAR = oInfo.VideoInfo.DAR;
+            }
             else
-                oInfo = oNewInfo;
+                info.DAR = oNewInfo.VideoInfo.DAR;
 
             info.CreditsStartFrame = -1;
             info.IntroEndFrame = -1;
             info.VideoInput = fileName;
-            info.DAR = oInfo.VideoInfo.DAR;
             info.Zones = null;
 
             if (MainForm.Instance.Settings.AutoOpenScript)
-                openAvisynthScript(fileName);
+                OpenAvisynthScript(fileName);
 
             string filePath = FileUtil.GetOutputFolder(fileName);
             string fileNameNoExtension = Path.GetFileNameWithoutExtension(fileName);
             this.VideoOutput = Path.Combine(filePath, fileNameNoExtension) + MainForm.Instance.Settings.VideoExtension + ".extension";
             this.VideoOutput = Path.ChangeExtension(this.VideoOutput, this.CurrentVideoOutputType.Extension);
-            updateIOConfig();
+            UpdateIOConfig();
         }
 
-        private bool isFirstPass()
+        private bool IsFirstPass()
         {
             VideoCodecSettings settings = CurrentSettings;
             if (settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopass1
@@ -346,14 +356,12 @@ namespace MeGUI
 
         internal void hidePlayer()
         {
-            if (player != null)
-                player.Hide();
+            player?.Hide();
         }
 
         internal void showPlayer()
         {
-            if (player != null)
-                player.Show();
+            player?.Show();
         }
         /// <summary>
         /// callback for the video player window closing
@@ -373,7 +381,7 @@ namespace MeGUI
         {
             if (isCredits)
             {
-                if (validateCredits(frameNumber))
+                if (ValidateCredits(frameNumber))
                 {
                     player.CreditsStart = frameNumber;
                     info.CreditsStartFrame = frameNumber;
@@ -383,7 +391,7 @@ namespace MeGUI
             }
             else
             {
-                if (validateIntro(frameNumber))
+                if (ValidateIntro(frameNumber))
                 {
                     info.IntroEndFrame = frameNumber;
                     player.IntroEnd = frameNumber;
@@ -397,7 +405,7 @@ namespace MeGUI
         /// </summary>
         /// <param name="creditsStartFrame">the credits start frame</param>
         /// <returns>returns true if there is no intersetion between zones and credits and false if there is an intersection</returns>
-        private bool validateCredits(int creditsStartFrame)
+        private bool ValidateCredits(int creditsStartFrame)
         {
             foreach (Zone z in Info.Zones)
             {
@@ -416,7 +424,7 @@ namespace MeGUI
         /// </summary>
         /// <param name="introEndFrame">the frame where the intro ends</param>
         /// <returns>true if the intro zone does not interesect with a zone, false otherwise</returns>
-        private bool validateIntro(int introEndFrame)
+        private bool ValidateIntro(int introEndFrame)
         {
             foreach (Zone z in Info.Zones)
             {
@@ -461,7 +469,7 @@ namespace MeGUI
         VideoEncoderType lastCodec = null;
         private void videoProfile_SelectedProfileChanged(object sender, EventArgs e)
         {
-            updateIOConfig();
+            UpdateIOConfig();
 
             if (CurrentSettings.EncoderType == lastCodec)
                 return;
@@ -499,10 +507,12 @@ namespace MeGUI
             }
 
             ClosePlayer();
-            ZonesWindow zw = new ZonesWindow(MainForm.Instance, VideoInput);
-            zw.Zones = Info.Zones;
-            if (zw.ShowDialog() == DialogResult.OK)
-                Info.Zones = zw.Zones;
+            using (ZonesWindow zw = new ZonesWindow(VideoInput))
+            {
+                zw.Zones = Info.Zones;
+                if (zw.ShowDialog() == DialogResult.OK)
+                    Info.Zones = zw.Zones;
+            }
         }
 
         private void videopreview_Click(object sender, EventArgs e)

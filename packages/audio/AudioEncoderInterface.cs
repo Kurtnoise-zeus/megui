@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -118,7 +119,7 @@ namespace MeGUI
         }
 #region methods
 
-private void writeTempTextFile(string filePath, string text)
+        private void WriteTempTextFile(string filePath, string text)
         {
             using (Stream temp = new FileStream(filePath, System.IO.FileMode.Create))
             {
@@ -130,13 +131,13 @@ private void writeTempTextFile(string filePath, string text)
             _tempFiles.Add(filePath);
         }
 
-        private void deleteTempFiles()
+        private void DeleteTempFiles()
         {
             foreach (string filePath in _tempFiles)
-                safeDelete(filePath);
+                SafeDelete(filePath);
         }
 
-        private static void safeDelete(string filePath)
+        private static void SafeDelete(string filePath)
         {
             try
             {
@@ -148,10 +149,10 @@ private void writeTempTextFile(string filePath, string text)
             }
         }
 
-        private void createTemporallyEqFiles(string tempPath)
+        private void CreateTemporallyEqFiles(string tempPath)
         {
             // http://forum.doom9.org/showthread.php?p=778156#post778156
-            writeTempTextFile(tempPath + "front.feq", @"-96
+            WriteTempTextFile(tempPath + "front.feq", @"-96
 -96
 -96
 -4
@@ -170,7 +171,7 @@ private void writeTempTextFile(string filePath, string text)
 -96
 -96
 ");
-            writeTempTextFile(tempPath + "center.feq", @"-96
+            WriteTempTextFile(tempPath + "center.feq", @"-96
 -96
 -96
 -96
@@ -189,7 +190,7 @@ private void writeTempTextFile(string filePath, string text)
 3
 3
 ");
-            writeTempTextFile(tempPath + "lfe.feq", @"0
+            WriteTempTextFile(tempPath + "lfe.feq", @"0
 0
 0
 -96
@@ -208,7 +209,7 @@ private void writeTempTextFile(string filePath, string text)
 -96
 -96
 ");
-            writeTempTextFile(tempPath + "back.feq", @"-96
+            WriteTempTextFile(tempPath + "back.feq", @"-96
 -96
 -96
 -6
@@ -230,7 +231,7 @@ private void writeTempTextFile(string filePath, string text)
         }
 
         private bool bShowError = false;
-        private void raiseEvent()
+        private void RaiseEvent()
         {
             if (su.IsComplete || su.WasAborted || su.HasError)
             {
@@ -267,18 +268,18 @@ private void writeTempTextFile(string filePath, string text)
             StatusUpdate?.Invoke(su);
         }
 
-        private void setProgress(decimal n)
+        private void SetProgress(decimal n)
         {
             su.PercentageCurrent = n * 100M;
         }
 
-        private void raiseEvent(string s)
+        private void RaiseEvent(string s)
         {
             su.Status = s;
-            raiseEvent();
+            RaiseEvent();
         }
 
-        private void readStdOut()
+        private void ReadStdOut()
         {
             StreamReader sr;
             try
@@ -291,10 +292,10 @@ private void writeTempTextFile(string filePath, string text)
                 stdoutDone.Set();
                 return;
             }
-            readStream(sr, stdoutDone, StreamType.Stdout);
+            ReadStream(sr, stdoutDone, StreamType.Stdout);
         }
 
-        private void readStdErr()
+        private void ReadStdErr()
         {
             StreamReader sr;
             try
@@ -307,10 +308,10 @@ private void writeTempTextFile(string filePath, string text)
                 stderrDone.Set();
                 return;
             }
-            readStream(sr, stderrDone, StreamType.Stderr);
+            ReadStream(sr, stderrDone, StreamType.Stderr);
         }
 
-        private void readStream(StreamReader sr, ManualResetEvent rEvent, StreamType str)
+        private void ReadStream(StreamReader sr, ManualResetEvent rEvent, StreamType str)
         {
             string line;
             if (_encoderProcess != null)
@@ -380,104 +381,100 @@ private void writeTempTextFile(string filePath, string text)
                 su.HasError = true;
         }
 
-        private void encode()
+        private void Encode()
         {
             string fileErr = MainForm.verifyInputFile(this.audioJob.Input);
             if (fileErr != null)
             {
                 _log.LogEvent("Problem with audio input file: " + fileErr, ImageType.Error);
                 su.HasError = su.IsComplete = true;
-                raiseEvent();
+                RaiseEvent();
                 return;
             }
 
             Thread t = null;
             try
             {
-                raiseEvent("Opening file....please wait, it may take some time");
-
-                if (createAviSynthScript(out string strAVSError))
+                RaiseEvent("Opening file....please wait, it may take some time");
+                if (CreateAviSynthScript(out string strAVSError))
                 {
-                    raiseEvent("Preprocessing...please wait, it may take some time");
-                    
-                    using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
+                    RaiseEvent("Preprocessing...please wait, it may take some time");
+                    _log.LogEvent("AviSynth script environment opened");
+                    using (AviSynthClip a = AviSynthScriptEnvironment.ParseScript(_avisynthAudioScript))
                     {
-                        _log.LogEvent("AviSynth script environment opened");
-                        using (AviSynthClip a = env.ParseScript(_avisynthAudioScript))
+                        _log.LogEvent("Script loaded");
+                        if (0 == a.ChannelsCount)
+                            throw new ApplicationException("Can't find audio stream");
+                        
+                        LogItem inputLog = _log.LogEvent("Output Decoder", ImageType.Information);
+                        inputLog.LogValue("Channels", a.ChannelsCount);
+                        inputLog.LogValue("Bits per sample", a.BitsPerSample);
+                        inputLog.LogValue("Sample rate", a.AudioSampleRate);
+                        
+                        if (audioJob.Settings is FlacSettings)
+                            _encoderCommandLine += " --channels=" + a.ChannelsCount + " --bps=" + a.BitsPerSample + " --sample-rate=" + a.AudioSampleRate;
+                        
+                        const int MAX_SAMPLES_PER_ONCE = 4096;
+                        int frameSample = 0;
+                        int frameBufferTotalSize = MAX_SAMPLES_PER_ONCE * a.ChannelsCount * a.BytesPerSample;
+                        byte[] frameBuffer = new byte[frameBufferTotalSize];
+                        CreateEncoderProcess(a);
+                        try
                         {
-                            _log.LogEvent("Script loaded");
-                            if (0 == a.ChannelsCount)
-                                throw new ApplicationException("Can't find audio stream");
-
-                            LogItem inputLog = _log.LogEvent("Output Decoder", ImageType.Information);
-                            inputLog.LogValue("Channels", a.ChannelsCount);
-                            inputLog.LogValue("Bits per sample", a.BitsPerSample);
-                            inputLog.LogValue("Sample rate", a.AudioSampleRate);
-
-                            if (audioJob.Settings is FlacSettings)
-                                _encoderCommandLine += " --channels=" + a.ChannelsCount + " --bps=" + a.BitsPerSample + " --sample-rate=" + a.AudioSampleRate;
-
-                            const int MAX_SAMPLES_PER_ONCE = 4096;
-                            int frameSample = 0;
-                            int frameBufferTotalSize = MAX_SAMPLES_PER_ONCE * a.ChannelsCount * a.BytesPerSample;
-                            byte[] frameBuffer = new byte[frameBufferTotalSize];
-                            createEncoderProcess(a);
-                            try
+                            using (Stream target = _encoderProcess.StandardInput.BaseStream)
                             {
-                                using (Stream target = _encoderProcess.StandardInput.BaseStream)
+                                // let's write WAV Header
+                                WriteHeader(target, a, _sendWavHeaderToEncoderStdIn, -1);
+                                _sampleRate = a.AudioSampleRate;
+                                GCHandle h = GCHandle.Alloc(frameBuffer, GCHandleType.Pinned);
+                                IntPtr address = h.AddrOfPinnedObject();
+                                try
                                 {
-                                    // let's write WAV Header
-                                    WriteHeader(target, a, _sendWavHeaderToEncoderStdIn, -1);
-                                    _sampleRate = a.AudioSampleRate;
-                                    GCHandle h = GCHandle.Alloc(frameBuffer, GCHandleType.Pinned);
-                                    IntPtr address = h.AddrOfPinnedObject();
-                                    try
+                                    su.ClipLength = TimeSpan.FromSeconds((double)a.SamplesCount / (double)_sampleRate);
+                                    RaiseEvent("Encoding audio...");
+                                    _oLastUpdate.Restart();
+                                    while (frameSample < a.SamplesCount)
                                     {
                                         su.ClipLength = TimeSpan.FromSeconds((double)a.SamplesCount / (double)_sampleRate);
-                                        raiseEvent("Encoding audio...");
-                                        _oLastUpdate.Restart();
                                         while (frameSample < a.SamplesCount)
                                         {
-                                            su.ClipLength = TimeSpan.FromSeconds((double)a.SamplesCount / (double)_sampleRate);
-                                            while (frameSample < a.SamplesCount)
+                                            _mre.WaitOne();
+
+                                            if (_encoderProcess != null)
                                             {
-                                                _mre.WaitOne();
-                                                
-                                                if (_encoderProcess != null)
+                                                if (_encoderProcess.HasExited)
                                                 {
-                                                    if (_encoderProcess.HasExited)
-                                                    {
-                                                        string strError = WindowUtil.GetErrorText(_encoderProcess.ExitCode);
-                                                        throw new ApplicationException("Abnormal encoder termination. Exit code: " + strError);
-                                                    }
+                                                    string strError = WindowUtil.GetErrorText(_encoderProcess.ExitCode);
+                                                    throw new ApplicationException("Abnormal encoder termination. Exit code: " + strError);
                                                 }
 
-                                                int nHowMany = Math.Min((int)(a.SamplesCount - frameSample), MAX_SAMPLES_PER_ONCE);
-                                                
-                                                a.ReadAudio(address, frameSample, nHowMany);
-                                                
-                                                target.Write(frameBuffer, 0, nHowMany * a.ChannelsCount * a.BytesPerSample);
-                                                target.Flush();
-                                                frameSample += nHowMany;
-                                                if (_oLastUpdate.Elapsed.TotalSeconds > 1)
-                                                {
-                                                    setProgress((decimal)frameSample / (decimal)a.SamplesCount);
-                                                    _oLastUpdate.Restart();
-                                                }
+                                            }
+                                            int nHowMany = Math.Min((int)(a.SamplesCount - frameSample), MAX_SAMPLES_PER_ONCE);
+
+                                            a.ReadAudio(address, frameSample, nHowMany);
+
+                                            target.Write(frameBuffer, 0, nHowMany * a.ChannelsCount * a.BytesPerSample);
+                                            target.Flush();
+                                            frameSample += nHowMany;
+                                            if (_oLastUpdate.Elapsed.TotalSeconds > 1)
+                                            {
+                                                SetProgress((decimal)frameSample / (decimal)a.SamplesCount);
+                                                _oLastUpdate.Restart();
                                             }
                                         }
                                     }
-                                    finally
-                                    {
-                                        h.Free();
-                                    }
-
-                                    setProgress(1M);
-                                    if (_sendWavHeaderToEncoderStdIn != HeaderType.NONE && a.BytesPerSample % 2 == 1)
-                                        target.WriteByte(0);
                                 }
-
-                                raiseEvent("Finalizing encoder");
+                                finally
+                                {
+                                    h.Free();
+                                }
+                                
+                                SetProgress(1M);
+                                if (_sendWavHeaderToEncoderStdIn != HeaderType.NONE && a.BytesPerSample % 2 == 1)
+                                    target.WriteByte(0);
+                                }
+                                
+                                RaiseEvent("Finalizing encoder");
                                 while (!_encoderProcess.HasExited) // wait until the process has terminated without locking the GUI
                                     MeGUI.core.util.Util.Wait(100);
                                 _encoderProcess.WaitForExit();
@@ -489,23 +486,22 @@ private void writeTempTextFile(string filePath, string text)
                                     throw new ApplicationException("Abnormal encoder termination. Exit code: " + strError);
                                 }
                             }
-                            finally
-                            {
-                                if (!_encoderProcess.HasExited)
-                                {
-                                    _encoderProcess.Kill();
-                                    while (!_encoderProcess.HasExited) // wait until the process has terminated without locking the GUI
-                                        MeGUI.core.util.Util.Wait(100);
-                                    _encoderProcess.WaitForExit();
-                                    _readFromStdErrThread.Join();
-                                    _readFromStdOutThread.Join();
-                                }
-                                _readFromStdErrThread = null;
-                                _readFromStdOutThread = null;
-
-                                if (!String.IsNullOrEmpty(audioJob.Output) && File.Exists(audioJob.Output) && (new System.IO.FileInfo(audioJob.Output).Length) == 0)
-                                    _log.Error("Output file is empty, nothing was encoded");
+                         finally
+                        {
+                            if (!_encoderProcess.HasExited)
+                            { 
+                                _encoderProcess.Kill();
+                                while (!_encoderProcess.HasExited) // wait until the process has terminated without locking the GUI
+                                    MeGUI.core.util.Util.Wait(100);
+                                _encoderProcess.WaitForExit();
+                                _readFromStdErrThread.Join();
+                                _readFromStdOutThread.Join();
                             }
+                            _readFromStdErrThread = null;
+                            _readFromStdOutThread = null;
+                            
+                            if (!String.IsNullOrEmpty(audioJob.Output) && File.Exists(audioJob.Output) && (new System.IO.FileInfo(audioJob.Output).Length) == 0)
+                                _log.Error("Output file is empty, nothing was encoded");
                         }
                     }
                 }
@@ -518,12 +514,12 @@ private void writeTempTextFile(string filePath, string text)
             catch (Exception e)
             {
                 _oLastUpdate.Stop();
-                deleteOutputFile();
+                DeleteOutputFile();
                 if (e is ThreadAbortException)
                 {
                     _log.LogEvent("Aborting...");
                     su.WasAborted = true;
-                    raiseEvent();
+                    RaiseEvent();
                     return;
                 }
                 else if (e is AviSynthException)
@@ -544,25 +540,25 @@ private void writeTempTextFile(string filePath, string text)
                     stdoutDone.Set();
                     _log.LogValue("An error occurred", e, ImageType.Error);
                     su.HasError = true;
-                    raiseEvent();
+                    RaiseEvent();
                     return;
                 }
             }
             finally
             {
                 _oLastUpdate.Stop();
-                deleteTempFiles();
+                DeleteTempFiles();
             }
             su.IsComplete = true;
-            raiseEvent();
+            RaiseEvent();
         }
 
-        private void deleteOutputFile()
+        private void DeleteOutputFile()
         {
-            safeDelete(audioJob.Output);
+            SafeDelete(audioJob.Output);
         }
 
-        private void createEncoderProcess(AviSynthClip a)
+        private void CreateEncoderProcess(AviSynthClip a)
         {
             try
             {
@@ -601,8 +597,8 @@ private void writeTempTextFile(string filePath, string text)
                 _log.LogEvent("Process started");
                 stdoutLog = _log.Info(string.Format("[{0:G}] {1}", DateTime.Now, "Standard output stream"));
                 stderrLog = _log.Info(string.Format("[{0:G}] {1}", DateTime.Now, "Standard error stream"));
-                _readFromStdOutThread = new Thread(new ThreadStart(readStdOut));
-                _readFromStdErrThread = new Thread(new ThreadStart(readStdErr));
+                _readFromStdOutThread = new Thread(new ThreadStart(ReadStdOut));
+                _readFromStdErrThread = new Thread(new ThreadStart(ReadStdErr));
                 _readFromStdOutThread.Start();
                 _readFromStdErrThread.Start();
             }
@@ -699,7 +695,7 @@ private void writeTempTextFile(string filePath, string text)
         internal void Start()
         {
             Util.ensureExists(audioJob.Input);
-            _encoderThread = new Thread(new ThreadStart(this.encode));
+            _encoderThread = new Thread(new ThreadStart(this.Encode));
             WorkerPriority.GetJobPriority(audioJob, out WorkerPriorityType oPriority, out bool lowIOPriority);
             _encoderThread.Priority = OSInfo.GetThreadPriority(oPriority);
             _encoderThread.Start();
@@ -713,7 +709,7 @@ private void writeTempTextFile(string filePath, string text)
             _encoderThread = null;
             if (_encoderProcess == null)
             {
-                deleteTempFiles();
+                DeleteTempFiles();
                 su.WasAborted = true;
             }
         }
@@ -970,7 +966,7 @@ private void writeTempTextFile(string filePath, string text)
             this.su = su;
         }
 
-        private bool createAviSynthScript(out string strError)
+        private bool CreateAviSynthScript(out string strError)
         {
             strError = string.Empty;
 
@@ -1060,7 +1056,7 @@ private void writeTempTextFile(string filePath, string text)
 
                 if (!bFound)
                 {
-                    deleteTempFiles();
+                    DeleteTempFiles();
                     strError = "Failed opening the file: " + audioJob.Input;
                     return false;
                 }
@@ -1084,13 +1080,13 @@ private void writeTempTextFile(string filePath, string text)
                     }
                     catch (FileNotFoundException)
                     {
-                        deleteTempFiles();
+                        DeleteTempFiles();
                         strError = "Required file '" + audioJob.CutFile + "' is missing.";
                         return false;
                     }
                     catch (Exception)
                     {
-                        deleteTempFiles();
+                        DeleteTempFiles();
                         strError = "Broken cuts file, " + audioJob.CutFile + ", can't continue.";
                         return false;
                     }
@@ -1312,7 +1308,7 @@ private void writeTempTextFile(string filePath, string text)
                     }
                     if (audioJob.Settings.DownmixMode == ChannelMode.Upmix)
                     {
-                        createTemporallyEqFiles(tmp);
+                        CreateTemporallyEqFiles(tmp);
                         script.Append("2==Audiochannels(last)?x_upmix" + id + @"(last):last" + Environment.NewLine);
                     }
                     else if (audioJob.Settings.DownmixMode != ChannelMode.Upmix)
@@ -1329,7 +1325,7 @@ private void writeTempTextFile(string filePath, string text)
                         else
                         {
                             _log.LogEvent("As SoxFilter() is not availabble, use default upmix mode", ImageType.Information);
-                            createTemporallyEqFiles(tmp);
+                            CreateTemporallyEqFiles(tmp);
                             script.Append("2==Audiochannels(last)?x_upmix" + id + @"(last):last" + Environment.NewLine);
                         }
                     }
@@ -1739,7 +1735,7 @@ private void writeTempTextFile(string filePath, string text)
             _encoderExecutablePath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, _encoderExecutablePath);
             if (!File.Exists(_encoderExecutablePath))
             {
-                deleteTempFiles();
+                DeleteTempFiles();
                 throw new EncoderMissingException(_encoderExecutablePath);
             }
 

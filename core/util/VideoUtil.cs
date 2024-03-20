@@ -32,19 +32,18 @@ namespace MeGUI
 	/// VideoUtil is used to perform various video related tasks, namely autocropping, 
 	/// auto resizing
 	/// </summary>
-	public class VideoUtil
+	public static class VideoUtil
     {
-		public VideoUtil()	{ }
 
-		#region finding source information
-		
+        #region finding source information
+
         /// <summary>
-		/// gets the dvd decrypter generated chapter file
-		/// </summary>
-		/// <param name="fileName">name of the first vob to be loaded</param>
-		/// <returns>full name of the chapter file or an empty string if no file was found</returns>
-		public static string getChapterFile(string fileName)
-		{
+        /// gets the dvd decrypter generated chapter file
+        /// </summary>
+        /// <param name="fileName">name of the first vob to be loaded</param>
+        /// <returns>full name of the chapter file or an empty string if no file was found</returns>
+        public static string getChapterFile(string fileName)
+        {
             string vts;
 			string path = Path.GetDirectoryName(fileName);
 			string name = Path.GetFileNameWithoutExtension(fileName);
@@ -72,6 +71,9 @@ namespace MeGUI
         /// <returns>true if the file has chapters</returns>
         public static bool HasChapters(MediaInfoFile iFile)
         {
+            if (iFile == null)
+                return false;
+            
             if (iFile.HasChapters)
                 return true;
 
@@ -201,7 +203,9 @@ namespace MeGUI
                     }
                 }
             }
-
+            if (audioTracksDemux == null)
+                return audioFiles;
+            
             foreach (AudioTrackInfo oTrack in audioTracksDemux)
             {
                 bool bFound = false;
@@ -229,7 +233,6 @@ namespace MeGUI
 		/// <param name="videoOutput">name of the encoded video file</param>
 		/// <param name="muxedOutput">name of the final output</param>
 		/// <param name="aStreams">all encodable audio streams</param>
-		/// <param name="audio">all muxable audio streams</param>
 		/// <returns>the info to be added to the log</returns>
 		public static LogItem eliminatedDuplicateFilenames(ref string videoOutput, ref string muxedOutput, AudioJob[] aStreams)
 		{
@@ -273,8 +276,11 @@ namespace MeGUI
 
                 log.LogValue("File already exists. New muxed output filename", muxedOutput);
             }
+ 
+            if (aStreams == null)
+                return log;
 
-			for (int i = 0; i < aStreams.Length; i++)
+            for (int i = 0; i < aStreams.Length; i++)
 			{
 				string name = Path.GetFullPath(aStreams[i].Output);
                 log.LogValue("Encodable audio stream " + i, name);
@@ -308,9 +314,9 @@ namespace MeGUI
                 }
             }
 
-            fixFileNameExtensions(video, audioStreams, container);
+            FixFileNameExtensions(video, audioStreams, container);
             string videoOutput = video.Output;
-            log.Add(eliminatedDuplicateFilenames(ref videoOutput, ref muxedOutput, audioStreams));
+            log?.Add(eliminatedDuplicateFilenames(ref videoOutput, ref muxedOutput, audioStreams));
             
             JobChain vjobs = null;
             if (!String.IsNullOrEmpty(videoFileToMux))
@@ -358,23 +364,29 @@ namespace MeGUI
                     allInputAudioTypes.Add(stream.ToMuxableType());
                 }
 
-                foreach (MuxStream muxStream in muxOnlyAudio)
+                if (muxOnlyAudio != null)
                 {
-                    if (VideoUtil.guessAudioMuxableType(muxStream.path, true) != null)
+                    foreach (MuxStream muxStream in muxOnlyAudio)
                     {
-                        allInputAudioTypes.Add(VideoUtil.guessAudioMuxableType(muxStream.path, true));
-                        allAudioToMux.Add(muxStream);
+                        if (VideoUtil.guessAudioMuxableType(muxStream.path, true) != null)
+                        {
+                            allInputAudioTypes.Add(VideoUtil.guessAudioMuxableType(muxStream.path, true));
+                            allAudioToMux.Add(muxStream);
+                        }
                     }
                 }
             }
 
             List<MuxableType> allInputSubtitleTypes = new List<MuxableType>();
-            foreach (MuxStream muxStream in subtitles)
-                if (VideoUtil.guessSubtitleType(muxStream.path) != null)
-                    allInputSubtitleTypes.Add(new MuxableType(VideoUtil.guessSubtitleType(muxStream.path), null));
+            if (subtitles != null)
+            {
+                foreach (MuxStream muxStream in subtitles)
+                    if (VideoUtil.guessSubtitleType(muxStream.path) != null)
+                        allInputSubtitleTypes.Add(new MuxableType(VideoUtil.guessSubtitleType(muxStream.path), null));
+            }
 
             MuxableType chapterInputType = null;
-            if (chapterInfo.HasChapters)
+            if (chapterInfo != null && chapterInfo.HasChapters)
                 chapterInputType = new MuxableType(ChapterType.OGG_TXT, null);
 
             MuxableType deviceOutputType = null;
@@ -418,7 +430,7 @@ namespace MeGUI
                     new SequentialChain(muxJobs));
         }
 
-        private static void fixFileNameExtensions(VideoStream video, AudioJob[] audioStreams, ContainerType container)
+        private static void FixFileNameExtensions(VideoStream video, AudioJob[] audioStreams, ContainerType container)
         {
             AudioEncoderType[] audioCodecs = new AudioEncoderType[audioStreams.Length];
             for (int i = 0; i < audioStreams.Length; i++)
@@ -447,9 +459,9 @@ namespace MeGUI
                         video.Output = Path.ChangeExtension(video.Output, type.outputType.Extension);
                     video.VideoType = type;
                 }
-                if (type.outputType is AudioType)
+                if (type.outputType is AudioType type1)
                 {
-                    audioTypes.Add((AudioType)type.outputType);
+                    audioTypes.Add(type1);
                 }
             }
             AudioEncoderProvider aProvider = new AudioEncoderProvider();
@@ -484,6 +496,9 @@ namespace MeGUI
 
         public static VideoType guessVideoType(string p)
         {
+            if (String.IsNullOrEmpty(p))
+                return null;
+            
             foreach (VideoType type in ContainerManager.VideoTypes.Values)
             {
                 if (Path.GetExtension(p.ToLowerInvariant()) == "." + type.Extension)
@@ -494,21 +509,29 @@ namespace MeGUI
  
         public static AudioType guessAudioType(string p)
         {
+            if (String.IsNullOrEmpty(p))
+                return null;
+            
             foreach (AudioType type in ContainerManager.AudioTypes.Values)
             {
                 if (Path.GetExtension(p.ToLowerInvariant()) == "." + type.Extension)
                     return type;
             }
+
             return null;
         }
 
         public static ChapterType guessChapterType(string p)
         {
+            if (String.IsNullOrEmpty(p))
+                return null;
+            
             foreach (ChapterType type in ContainerManager.ChapterTypes.Values)
             {
                 if (Path.GetExtension(p.ToLowerInvariant()) == "." + type.Extension)
                     return type;
             }
+
             return null;
         }
 
@@ -529,9 +552,11 @@ namespace MeGUI
 
             if (useMediaInfo)
             {
-                MediaInfoFile info = new MediaInfoFile(p);
-                if (info.VideoInfo.HasVideo)
-                    return new MuxableType(info.VideoInfo.Type, info.VideoInfo.Codec);
+                using (MediaInfoFile info = new MediaInfoFile(p))
+                {
+                    if (info.VideoInfo.HasVideo)
+                        return new MuxableType(info.VideoInfo.Type, info.VideoInfo.Codec);
+                }
             }
 
             VideoType vType = guessVideoType(p);
@@ -552,9 +577,11 @@ namespace MeGUI
 
             if (useMediaInfo)
             {
-                MediaInfoFile info = new MediaInfoFile(p);
-                if (info.AudioInfo.Tracks.Count == 1 && info.AudioInfo.Tracks[0].AudioType != null)
-                    return new MuxableType(info.AudioInfo.Tracks[0].AudioType, info.AudioInfo.Tracks[0].AudioCodec);
+                using (MediaInfoFile info = new MediaInfoFile(p))
+                {
+                    if (info.AudioInfo.Tracks.Count == 1 && info.AudioInfo.Tracks[0].AudioType != null)
+                        return new MuxableType(info.AudioInfo.Tracks[0].AudioType, info.AudioInfo.Tracks[0].AudioCodec);
+                }
             }
 
             AudioType aType = guessAudioType(p);
@@ -578,11 +605,11 @@ namespace MeGUI
             foreach (OutputFileType type in types)
             {
                 initialFilter.Append(type.OutputFilter);
-                initialFilter.Append(";");
+                initialFilter.Append(';');
                 initialFilterName.Append(type.OutputFilter);
                 initialFilterName.Append(", ");
                 allSmallFilters.Append(type.OutputFilterString);
-                allSmallFilters.Append("|");
+                allSmallFilters.Append('|');
             }
 
             string initialFilterTrimmed = initialFilterName.ToString().TrimEnd(' ', ',') + ")|" +
@@ -598,22 +625,21 @@ namespace MeGUI
         {
             UpdateCacher.CheckPackage("ffms");
             GetFPSDetails(fps, inputFile, out int fpsnum, out int fpsden, true, out bool variableFrameRate);
-            return GetFFMSBasicInputLine(!isFFMSDefaultPluginRequired(), inputFile, indexFile, -1, 0, fpsnum, fpsden, true, variableFrameRate);
+            return GetFFMSBasicInputLine(!IsFFMSDefaultPluginRequired(), inputFile, indexFile, -1, 0, fpsnum, fpsden, true, variableFrameRate);
         }
 
         public static string getFFMSAudioInputLine(string inputFile, string indexFile, int track)
         {
             UpdateCacher.CheckPackage("ffms");
-            return GetFFMSBasicInputLine(!isFFMSDefaultPluginRequired(), inputFile, indexFile, track, 0, 0, 0, false, false);
+                return GetFFMSBasicInputLine(!IsFFMSDefaultPluginRequired(), inputFile, indexFile, track, 0, 0, 0, false, false);
         }
 
-        private static bool isFFMSDefaultPluginRequired()
+        private static bool IsFFMSDefaultPluginRequired()
         {
             StringBuilder script = new StringBuilder();
             script.AppendFormat("LoadPlugin(\"{0}\"){1}", Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.FFMS.Path), "ffms2.dll"), Environment.NewLine);
             script.AppendFormat("BlankClip(){0}", Environment.NewLine);
-            string errorText;
-            return AVSScriptHasVideo(script.ToString(), out errorText);
+            return AVSScriptHasVideo(script.ToString(), out _);
         }
 
         private static string GetFFMSBasicInputLine(bool loadCPlugin, string inputFile, string indexFile, int track, int rffmode, int fpsnum, int fpsden, bool video, bool variableFrameRate)
@@ -653,7 +679,7 @@ namespace MeGUI
             return script.ToString();
         }
 
-        public static string getLSMASHVideoInputLine(string inputFile, string indexFile, double fps, ref MediaInfoFile oInfo)
+        public static string GetLSMASHVideoInputLine(string inputFile, string indexFile, double fps, ref MediaInfoFile oInfo)
         {
             UpdateCacher.CheckPackage("lsmash");
 
@@ -694,16 +720,17 @@ namespace MeGUI
             }
 
             GetFPSDetails(fps, inputFile, out int fpsnum, out int fpsden);
-            return getLSMASHBasicInputLine(inputFile, indexFile, -1, 0, fpsnum, fpsden, true, iVideoBits);
+            return GetLSMASHBasicInputLine(inputFile, indexFile, -1, 0, fpsnum, fpsden, true, iVideoBits);
         }
 
         public static string getLSMASHAudioInputLine(string inputFile, string indexFile, int track)
         {
             UpdateCacher.CheckPackage("lsmash");
-            return getLSMASHBasicInputLine(inputFile, indexFile, track, 0, 0, 0, false, 8);
+                return GetLSMASHBasicInputLine(inputFile, indexFile, track, 0, 0, 0, false, 8);
         }
 
-        private static string getLSMASHBasicInputLine(string inputFile, string indexFile, int track, int rffmode, int fpsnum, int fpsden, bool video, int iVideoBit)
+        private static string GetLSMASHBasicInputLine(string inputFile, string indexFile, int track, int rffmode, int fpsnum, int fpsden, bool video, int iVideoBit)
+
         {
             StringBuilder script = new StringBuilder();
             script.AppendFormat("LoadPlugin(\"{0}\"){1}",
@@ -725,7 +752,7 @@ namespace MeGUI
                     (!bUseLsmash && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty));
 
                 if (iVideoBit <= 8)
-                    script.Append(")");
+                    script.Append(')');
                 else if (!MainForm.Instance.Settings.AviSynthPlus || MainForm.Instance.Settings.Input8Bit)
                     script.Append(", format=\"YUV420P8\")");
                 else if (iVideoBit <= 10)
@@ -762,12 +789,9 @@ namespace MeGUI
 
             try
             {
-                using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
+                using (AviSynthClip a = AviSynthScriptEnvironment.ParseScript(script.ToString()))
                 {
-                    using (AviSynthClip a = env.ParseScript(script.ToString()))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             catch
@@ -789,7 +813,7 @@ namespace MeGUI
 
         public static bool GetFPSDetails(double fps, string strInput, out int fpsnum, out int fpsden)
         {
-            return GetFPSDetails(fps, strInput, out fpsnum, out fpsden, false, out bool variableFrameRate);
+            return GetFPSDetails(fps, strInput, out fpsnum, out fpsden, false, out _);
         }
 
         public static bool GetFPSDetails(double fps, string strInput, out int fpsnum, out int fpsden, bool detectVFR, out bool variableFrameRate)
@@ -797,7 +821,7 @@ namespace MeGUI
             fpsnum = fpsden = 0;
             variableFrameRate = false;
 
-            if (File.Exists(strInput))
+            if (!String.IsNullOrEmpty(strInput) && File.Exists(strInput))
             {
                 if (fps <= 0)
                 {
@@ -811,32 +835,38 @@ namespace MeGUI
 
                         if (detectVFR)
                         {
-                            MediaInfoFile oInfo = new MediaInfoFile(strInput);
-                            if (oInfo.VideoInfo.HasVideo)
-                                variableFrameRate = oInfo.VideoInfo.VariableFrameRateMode;
-                            else
-                                return false;
+                            using (MediaInfoFile oInfo = new MediaInfoFile(strInput))
+                            {
+                                if (oInfo.VideoInfo.HasVideo)
+                                    variableFrameRate = oInfo.VideoInfo.VariableFrameRateMode;
+                                else
+                                    return false;
+                            }
                         }
                     }
                     else
                     {
-                        MediaInfoFile oInfo = new MediaInfoFile(strInput);
-                        if (oInfo.VideoInfo.HasVideo && oInfo.VideoInfo.FPS > 0)
+                        using (MediaInfoFile oInfo = new MediaInfoFile(strInput))
                         {
-                            fps = oInfo.VideoInfo.FPS;
-                            variableFrameRate = oInfo.VideoInfo.VariableFrameRateMode;
+                            if (oInfo.VideoInfo.HasVideo && oInfo.VideoInfo.FPS > 0)
+                            {
+                                fps = oInfo.VideoInfo.FPS;
+                                variableFrameRate = oInfo.VideoInfo.VariableFrameRateMode;
+                            }
+                            else
+                                return false;
                         }
-                        else
-                            return false;
                     }
                 }
                 else if (detectVFR)
                 {
-                    MediaInfoFile oInfo = new MediaInfoFile(strInput);
-                    if (oInfo.VideoInfo.HasVideo)
-                        variableFrameRate = oInfo.VideoInfo.VariableFrameRateMode;
-                    else
-                        return false;
+                    using (MediaInfoFile oInfo = new MediaInfoFile(strInput))
+                    {
+                        if (oInfo.VideoInfo.HasVideo)
+                            variableFrameRate = oInfo.VideoInfo.VariableFrameRateMode;
+                        else
+                            return false;
+                    }
                 }
             }
 
@@ -868,8 +898,7 @@ namespace MeGUI
             {
                 try
                 {
-                    ulong x, y;
-                    MeGUI.core.util.RatioUtils.approximate((decimal)fps, out x, out y);
+                    MeGUI.core.util.RatioUtils.approximate((decimal)fps, out ulong x, out ulong y);
                     fpsnum = (int)x;
                     fpsden = (int)y;
                 }
@@ -901,12 +930,9 @@ namespace MeGUI
             {
                 if (!Path.GetExtension(strAVSScript).ToLowerInvariant().Equals(".avs"))
                     return 0;
-                using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
-                {
-                    using (AviSynthClip a = env.OpenScriptFile(strAVSScript))
-                        if (a.HasVideo)
-                            return (double)a.raten / (double)a.rated;
-                }
+                using (AviSynthClip a = AviSynthScriptEnvironment.OpenScriptFile(strAVSScript))
+                    if (a.HasVideo)
+                        return (double)a.raten / (double)a.rated;
                 return 0;
             }
             catch
@@ -920,9 +946,8 @@ namespace MeGUI
             try
             {
                 strErrorText = String.Empty;
-                using (AviSynthScriptEnvironment env = new AviSynthScriptEnvironment())
-                    using (AviSynthClip a = env.ParseScript(strAVSScript))
-                        return a.HasVideo;
+                using (AviSynthClip a = AviSynthScriptEnvironment.ParseScript(strAVSScript))
+                    return a.HasVideo;
             }
             catch (Exception ex)
             {
