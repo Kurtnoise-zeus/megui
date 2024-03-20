@@ -58,7 +58,10 @@ namespace MeGUI.packages.tools.hdbdextractor
             StreamDataGridView.Columns[5].Width = MainForm.Instance.Settings.DPIRescale(90);
             StreamDataGridView.Columns[6].Width = MainForm.Instance.Settings.DPIRescale(90);
             StreamDataGridView.Columns[7].Width = MainForm.Instance.Settings.DPIRescale(80);
-
+            
+            FolderOutputSourceButton.Height = FolderOutputTextBox.Height + 2;
+            FolderInputSourceButton.Height = FolderInputTextBox.Height + 2;
+            
             if (MainForm.Instance.Settings.Eac3toLastUsedFileMode)
                 FileSelection.Select();
 
@@ -83,13 +86,14 @@ namespace MeGUI.packages.tools.hdbdextractor
         public void SetData(object sender, RunWorkerCompletedEventArgs e)
         {
             SetToolStripProgressBarValue(0);
-            SetToolStripLabelText(Extensions.GetStringValue(((ResultState)e.Result)));
             
-            if (e.Result == null)
+            if (e == null || e.Result == null)
             {
                 ResetCursor(Cursors.Default);
-                return;
+                    return;
             }
+            
+            SetToolStripLabelText(Extensions.GetStringValue(((ResultState)e.Result)));
 
             switch ((ResultState)e.Result)
             {
@@ -154,7 +158,7 @@ namespace MeGUI.packages.tools.hdbdextractor
                 {
                     this.Cursor = cursor;
                     StreamDataGridView.Cursor = cursor;
-                    FeatureDataGridView.Enabled = (cursor == Cursors.WaitCursor) ? false : true;
+                    FeatureDataGridView.Enabled = cursor != Cursors.WaitCursor;
                 }
                 else
                     this.BeginInvoke(new ResetCursorCallback(ResetCursor), cursor);
@@ -256,7 +260,6 @@ namespace MeGUI.packages.tools.hdbdextractor
         {
             foreach (DataGridViewRow row in StreamDataGridView.Rows)
             {
-                Stream s = row.DataBoundItem as Stream;
                 DataGridViewComboBoxCell comboBox = row.Cells["StreamExtractAsComboBox"] as DataGridViewComboBoxCell;
                 if (comboBox.IsInEditMode)
                 {
@@ -264,7 +267,7 @@ namespace MeGUI.packages.tools.hdbdextractor
                     comboBox.ReadOnly = false;
                 }
                 comboBox.Items.Clear();
-                if (s == null || s.Type == eac3to.StreamType.Unknown)
+                if (!(row.DataBoundItem is Stream s) || s.Type == eac3to.StreamType.Unknown)
                 {
                     row.ReadOnly = true;
                     continue;
@@ -390,7 +393,7 @@ namespace MeGUI.packages.tools.hdbdextractor
                         sb.Append(" -keepDialnorm");
                 }
 
-                sb.Append(" ");
+                sb.Append(' ');
             }
 
             return sb.ToString();
@@ -472,25 +475,25 @@ namespace MeGUI.packages.tools.hdbdextractor
             }
             else if (feature.Description.Contains("(angle"))
             {   
-                dummyInput = getBDMVPath(FolderInputTextBox.Text, feature.Description.Substring(0, feature.Description.IndexOf(" (")));
+                dummyInput = GetBDMVPath(FolderInputTextBox.Text, feature.Description.Substring(0, feature.Description.IndexOf(" (")));
             }
             else if (MeGUI.core.util.FileUtil.RegExMatch(feature.Description, @"\A\d{5}\.mpls,", true))
             {
                 // e.g. "00017.mpls, 00018.m2ts, 1:28:39" found
                 string des = feature.Description.Substring(0, feature.Description.IndexOf(","));
-                dummyInput = getBDMVPath(FolderInputTextBox.Text, des);
+                dummyInput = GetBDMVPath(FolderInputTextBox.Text, des);
             }
             else if (feature.Description.Substring(feature.Description.LastIndexOf(".") + 1, 4) == "m2ts")
             {
                 string des = feature.Description.Substring(feature.Description.IndexOf(",") + 2, feature.Description.LastIndexOf(",") - feature.Description.IndexOf(",") - 2);
 
                 if (des.Contains("+")) // seamless branching
-                    dummyInput = getBDMVPath(FolderInputTextBox.Text, feature.Description.Substring(0, feature.Description.IndexOf(",")));
+                    dummyInput = GetBDMVPath(FolderInputTextBox.Text, feature.Description.Substring(0, feature.Description.IndexOf(",")));
                 else
-                    dummyInput = getBDMVPath(FolderInputTextBox.Text, des);
+                    dummyInput = GetBDMVPath(FolderInputTextBox.Text, des);
             }
             else
-                dummyInput = getBDMVPath(FolderInputTextBox.Text, feature.Description.Substring(0, feature.Description.IndexOf(",")));
+                dummyInput = GetBDMVPath(FolderInputTextBox.Text, feature.Description.Substring(0, feature.Description.IndexOf(",")));
 
             ResetCursor(Cursors.WaitCursor);
             _oEac3toInfo.FetchStreamInformation(((Feature)FeatureDataGridView.SelectedRows[0].DataBoundItem).Number);
@@ -508,10 +511,9 @@ namespace MeGUI.packages.tools.hdbdextractor
 
             foreach (DataGridViewRow row in FeatureDataGridView.Rows)
             {
-                Feature feature = row.DataBoundItem as Feature;
                 DataGridViewComboBoxCell comboBox = row.Cells["FeatureFileDataGridViewComboBoxColumn"] as DataGridViewComboBoxCell;
 
-                if (feature == null || feature.Files == null || feature.Files.Count == 0)
+                if (!(row.DataBoundItem is Feature feature) || feature.Files == null || feature.Files.Count == 0)
                     continue;
 
                 foreach (File file in feature.Files)
@@ -556,7 +558,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             }
         }
 
-        private string getBDMVPath(string path, string file)
+        private static string GetBDMVPath(string path, string file)
         {
             string filePath;
             while (System.IO.Directory.Exists(path))

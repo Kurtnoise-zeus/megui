@@ -1,3 +1,4 @@
+2943 [HD Streams Extractor] high DPI adjustments
 2942 [OneClick]             fixed not able to add/remove tracks manually. Bug #977 (regression of 2939)
 2941 [VidepPlayer]          fixed window size to show everything independant of DPI values
 2940 [Options]              renamed "Show video preview after AviSynth script selection" to "Automatically open video preview"

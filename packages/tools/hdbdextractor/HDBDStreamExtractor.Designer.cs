@@ -109,21 +109,22 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.SuspendLayout();
             // 
             // StatusStrip
-            // 
+            //
+            this.StatusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripStatusLabel,
             this.ToolStripProgressBar});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 433);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 426);
             this.StatusStrip.Name = "StatusStrip";
             this.StatusStrip.ShowItemToolTips = true;
-            this.StatusStrip.Size = new System.Drawing.Size(759, 22);
+            this.StatusStrip.Size = new System.Drawing.Size(759, 29);
             this.StatusStrip.TabIndex = 11;
             // 
             // ToolStripStatusLabel
             // 
             this.ToolStripStatusLabel.AutoSize = false;
             this.ToolStripStatusLabel.Name = "ToolStripStatusLabel";
-            this.ToolStripStatusLabel.Size = new System.Drawing.Size(358, 17);
+            this.ToolStripStatusLabel.Size = new System.Drawing.Size(358, 24);
             this.ToolStripStatusLabel.Text = "Ready";
             this.ToolStripStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ToolStripStatusLabel.ToolTipText = "Status";
@@ -132,7 +133,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             // 
             this.ToolStripProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.ToolStripProgressBar.Name = "ToolStripProgressBar";
-            this.ToolStripProgressBar.Size = new System.Drawing.Size(200, 16);
+            this.ToolStripProgressBar.Size = new System.Drawing.Size(200, 23);
             this.ToolStripProgressBar.ToolTipText = "Progress";
             // 
             // FolderInputTextBox
@@ -142,7 +143,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.FolderInputTextBox.Enabled = false;
             this.FolderInputTextBox.Location = new System.Drawing.Point(6, 48);
             this.FolderInputTextBox.Name = "FolderInputTextBox";
-            this.FolderInputTextBox.Size = new System.Drawing.Size(321, 21);
+            this.FolderInputTextBox.Size = new System.Drawing.Size(322, 21);
             this.FolderInputTextBox.TabIndex = 0;
             // 
             // HelpButton2
@@ -220,7 +221,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             // FolderInputSourceButton
             // 
             this.FolderInputSourceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FolderInputSourceButton.Location = new System.Drawing.Point(330, 47);
+            this.FolderInputSourceButton.Location = new System.Drawing.Point(330, 48);
             this.FolderInputSourceButton.Name = "FolderInputSourceButton";
             this.FolderInputSourceButton.Size = new System.Drawing.Size(29, 23);
             this.FolderInputSourceButton.TabIndex = 0;
@@ -260,6 +261,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.FeatureDataGridView.AllowUserToResizeRows = false;
             this.FeatureDataGridView.AutoGenerateColumns = false;
             this.FeatureDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.FeatureDataGridView.ColumnHeadersHeight = 34;
             this.FeatureDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.FeatureDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FeatureNumberDataGridViewTextBoxColumn1,
@@ -273,6 +275,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.FeatureDataGridView.MultiSelect = false;
             this.FeatureDataGridView.Name = "FeatureDataGridView";
             this.FeatureDataGridView.RowHeadersVisible = false;
+            this.FeatureDataGridView.RowHeadersWidth = 62;
             this.FeatureDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.FeatureDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.FeatureDataGridView.ShowEditingIcon = false;
@@ -356,6 +359,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.StreamDataGridView.AllowUserToResizeRows = false;
             this.StreamDataGridView.AutoGenerateColumns = false;
             this.StreamDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.StreamDataGridView.ColumnHeadersHeight = 34;
             this.StreamDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.StreamDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.StreamNumberTextBox,
@@ -372,6 +376,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.StreamDataGridView.MultiSelect = false;
             this.StreamDataGridView.Name = "StreamDataGridView";
             this.StreamDataGridView.RowHeadersVisible = false;
+            this.StreamDataGridView.RowHeadersWidth = 62;
             this.StreamDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.StreamDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.StreamDataGridView.ShowEditingIcon = false;
@@ -453,6 +458,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.nameDataGridViewTextBoxColumn.MinimumWidth = 2;
             this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
             this.nameDataGridViewTextBoxColumn.ToolTipText = "Stream name";
+            this.nameDataGridViewTextBoxColumn.Width = 150;
             // 
             // StreamsBindingSource
             // 
@@ -474,7 +480,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             // FolderOutputSourceButton
             // 
             this.FolderOutputSourceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FolderOutputSourceButton.Location = new System.Drawing.Point(331, 47);
+            this.FolderOutputSourceButton.Location = new System.Drawing.Point(330, 48);
             this.FolderOutputSourceButton.Name = "FolderOutputSourceButton";
             this.FolderOutputSourceButton.Size = new System.Drawing.Size(29, 23);
             this.FolderOutputSourceButton.TabIndex = 2;
@@ -515,10 +521,12 @@ namespace MeGUI.packages.tools.hdbdextractor
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
             this.menuStrip1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.menuStrip1.Size = new System.Drawing.Size(759, 24);
             this.menuStrip1.TabIndex = 20;
@@ -534,7 +542,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.toolStripMenuItem6,
             this.addPrefixBasedOnInputToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(61, 20);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(61, 22);
             this.toolStripMenuItem1.Text = "&Settings";
             // 
             // toolStripMenuItem2
@@ -609,7 +617,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(775, 494);
+            this.MinimumSize = new System.Drawing.Size(773, 488);
             this.Name = "HdBdStreamExtractor";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
