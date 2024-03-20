@@ -714,7 +714,7 @@ namespace MeGUI
             this.devicetype.Name = "devicetype";
             this.devicetype.Size = new System.Drawing.Size(95, 21);
             this.devicetype.TabIndex = 44;
-            this.devicetype.SelectedIndexChanged += new System.EventHandler(this.updateChapterSelection);
+            this.devicetype.SelectedIndexChanged += new System.EventHandler(this.UpdateChapterSelection);
             // 
             // deviceLabel
             // 

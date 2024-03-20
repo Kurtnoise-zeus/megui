@@ -62,18 +62,17 @@ namespace MeGUI
         /// </summary>
         private ContainerType[] acceptableContainerTypes;
 
-        private MuxProvider muxProvider;
         private MediaInfoFile _videoInputInfo;
         #endregion
 
         #region profiles
         #region OneClick profiles
-        private void initOneClickHandler()
+        private void InitOneClickHandler()
         {
             oneclickProfile.Manager = MainForm.Instance.Profiles;
         }
 
-        private void initTabs()
+        private void InitTabs()
         {
             audioTracks = new List<OneClickStreamControl>
             {
@@ -104,7 +103,7 @@ namespace MeGUI
         }
         #endregion
         #region Audio profiles
-        private void initAudioHandler()
+        private void InitAudioHandler()
         {
             oneClickAudioStreamControl1.initProfileHandler();
             oneClickSubtitleStreamControl1.initProfileHandler();
@@ -121,32 +120,31 @@ namespace MeGUI
                 _oLog = MainForm.Instance.Log.Info("OneClick");
                 MainForm.Instance.OneClickLog = _oLog;
             }
-            this.muxProvider = MainForm.Instance.MuxProvider;
-            acceptableContainerTypes = muxProvider.GetSupportedContainers().ToArray();
+            acceptableContainerTypes = MainForm.Instance.MuxProvider.GetSupportedContainers().ToArray();
             InitializeComponent();
 
             
             //add all container types
             if (containerFormat.Items.Count == 0)
             {
-                containerFormat.Items.AddRange(muxProvider.GetSupportedContainers().ToArray());
+                containerFormat.Items.AddRange(MainForm.Instance.MuxProvider.GetSupportedContainers().ToArray());
                 this.containerFormat.SelectedIndex = 0;
             }
 
             beingCalled++;
             videoProfile.Manager = MainForm.Instance.Profiles;
-            initTabs();
-            initAudioHandler();
+            InitTabs();
+            InitAudioHandler();
             avsProfile.Manager = MainForm.Instance.Profiles;
-            initOneClickHandler();
+            InitOneClickHandler();
             beingCalled--;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
 
             //add device type
             if (devicetype.Items.Count == 0)
             {
                 devicetype.Items.Add("Standard");
-                devicetype.Items.AddRange(muxProvider.GetSupportedDevices((ContainerType)this.containerFormat.SelectedItem).ToArray());
+                devicetype.Items.AddRange(MainForm.Instance.MuxProvider.GetSupportedDevices((ContainerType)this.containerFormat.SelectedItem).ToArray());
             }
             if (containerFormat.SelectedItem.ToString().Equals(MainForm.Instance.Settings.AedSettings.Container))
             {
@@ -184,18 +182,17 @@ namespace MeGUI
                 input.Filter = filter;
             }
 
-            DragDropUtil.RegisterMultiFileDragDrop(input, setInput, delegate() { return input.Filter + "|All folders|*."; });
-            DragDropUtil.RegisterSingleFileDragDrop(output, setOutput);
+            DragDropUtil.RegisterMultiFileDragDrop(input, SetInput, delegate () { return input.Filter + "|All folders|*."; });
+            DragDropUtil.RegisterSingleFileDragDrop(output, SetOutput);
             DragDropUtil.RegisterSingleFileDragDrop(chapterFile, null, delegate() { return chapterFile.Filter; });
-            DragDropUtil.RegisterSingleFileDragDrop(workingDirectory, setWorkingDirectory);
+            DragDropUtil.RegisterSingleFileDragDrop(workingDirectory, SetWorkingDirectory);
         }
         #endregion
 
         #region event handlers
         private void cbGUIMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            EnumProxy o = cbGUIMode.SelectedItem as EnumProxy;
-            if (o == null)
+            if (!(cbGUIMode.SelectedItem is EnumProxy o))
                 return;
 
             if (bLock)
@@ -245,7 +242,7 @@ namespace MeGUI
             //add device types
             devicetype.Items.Clear();
             devicetype.Items.Add("Standard");
-            devicetype.Items.AddRange(muxProvider.GetSupportedDevices((ContainerType)this.containerFormat.SelectedItem).ToArray());
+            devicetype.Items.AddRange(MainForm.Instance.MuxProvider.GetSupportedDevices((ContainerType)this.containerFormat.SelectedItem).ToArray());
             if (containerFormat.SelectedItem.ToString().Equals(MainForm.Instance.Settings.AedSettings.Container))
             {
                 foreach (object o in devicetype.Items) // I know this is ugly, but using the DeviceOutputType doesn't work unless we're switching to manual serialization
@@ -260,12 +257,12 @@ namespace MeGUI
             else
                 this.devicetype.SelectedIndex = 0;
 
-            updateChapterSelection(null, null);
+            UpdateChapterSelection(null, null);
             output.Filter = ((ContainerType)containerFormat.SelectedItem).OutputFilterString;
-            updateFilename(true, false, false);
+            UpdateFilename(true, false, false);
         }
 
-        private void updateChapterSelection(object sender, EventArgs e)
+        private void UpdateChapterSelection(object sender, EventArgs e)
         {
             if (this.containerFormat.Text == "AVI" 
                 || (this.containerFormat.Text == "M2TS" && (devicetype.SelectedItem == null || devicetype.SelectedItem.ToString().Equals("Standard"))))
@@ -274,7 +271,7 @@ namespace MeGUI
                 chapterFile.Enabled = true;
         }
 
-        private void updateFilename(bool bUpdateExtension, bool bUpdateFilePath, bool bUpdateFileName)
+        private void UpdateFilename(bool bUpdateExtension, bool bUpdateFilePath, bool bUpdateFileName)
         {
             string strInputFile = input.SelectedText;
             if (String.IsNullOrEmpty(strInputFile))
@@ -290,7 +287,7 @@ namespace MeGUI
                 string filePath = FileUtil.GetOutputFolder(strInputFile);
                 string filePrefix = FileUtil.GetOutputFilePrefix(strInputFile);
                 string fileName = Path.GetFileNameWithoutExtension(strInputFile);
-                string strTempName = strInputFile;
+                string strTempName;
 
                 if (iPGCNumber > 0)
                 {
@@ -335,29 +332,29 @@ namespace MeGUI
             if (!String.IsNullOrEmpty(input.SelectedText))
             {
                 if (!bAutomatedProcessing && !bLock)
-                    openInput(input.SelectedText);
+                    OpenInput(input.SelectedText);
             }   
         }
 
-        private void setOutput(string strFileName)
+        private void SetOutput(string strFileName)
         {
             output.Filename = strFileName; 
         }
 
-        private void setWorkingDirectory(string strFolder)
+        private void SetWorkingDirectory(string strFolder)
         {
             workingDirectory.Filename = strFolder;
-            updateFilename(false, true, false);
+            UpdateFilename(false, true, false);
         }
 
         private void workingDirectory_FileSelected(FileBar sender, FileBarEventArgs args)
         {
             if (File.Exists(workingDirectory.Filename))
                 workingDirectory.Filename = Path.GetDirectoryName(workingDirectory.Filename);
-            updateFilename(false, true, false);
+            UpdateFilename(false, true, false);
         }
 
-        private void setControlState(bool bDisableControls)
+        private void SetControlState(bool bDisableControls)
         {
             if (bDisableControls)
             {
@@ -377,17 +374,20 @@ namespace MeGUI
             input.SelectedObject = strFileorFolderName;
         }
 
-        public void setInput(string[] strFileorFolderName)
+        public void SetInput(string[] strFileorFolderName)
         {
             List<OneClickFilesToProcess> arrFilesToProcess = new List<OneClickFilesToProcess>();
             List<string> arrFoldersToProcess = new List<string>();
 
-            foreach (string strFile in strFileorFolderName)
+            if (strFileorFolderName != null)
             {
-                if (File.Exists(strFile))
-                    arrFilesToProcess.Add(new OneClickFilesToProcess(strFile, 1, 0));
-                else if (Directory.Exists(strFile))
-                    arrFoldersToProcess.Add(strFile);
+                foreach (string strFile in strFileorFolderName)
+                {
+                    if (File.Exists(strFile))
+                        arrFilesToProcess.Add(new OneClickFilesToProcess(strFile, 1, 0));
+                    else if (Directory.Exists(strFile))
+                        arrFoldersToProcess.Add(strFile);
+                }
             }
 
             foreach (string strFolder in arrFoldersToProcess)
@@ -396,7 +396,7 @@ namespace MeGUI
                     || !String.IsNullOrEmpty(FileUtil.GetDVDPath(strFolder)))
                 {
                     // DVD or Blu-ray structure found
-                    setControlState(true);
+                    SetControlState(true);
                     OneClickProcessing oProcessorFolder = new OneClickProcessing(this, strFolder, _oSettings, _oLog);
                     return;
                 }
@@ -412,24 +412,24 @@ namespace MeGUI
                 MessageBox.Show("These files or folders cannot be used in OneClick mode.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            setControlState(true);
-            OneClickProcessing oProcessor = new OneClickProcessing(this, arrFilesToProcess, _oSettings, _oLog); 
+            SetControlState(true);
+            _ = new OneClickProcessing(this, arrFilesToProcess, _oSettings, _oLog);
         }
         
-        private void openInput(string fileName)
+        private void OpenInput(string fileName)
         {
             if (!Directory.Exists(fileName) && !File.Exists(fileName))
             {
                 MessageBox.Show("Input " + fileName + " does not exists", "Input not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            setControlState(true);
-            OneClickProcessing oProcessor = new OneClickProcessing(this, fileName, _oSettings, _oLog);
+            SetControlState(true);
+            _ = new OneClickProcessing(this, fileName, _oSettings, _oLog);
         }
 
         public void setOpenFailure(bool bSilent)
         {
-            setControlState(false);
+            SetControlState(false);
             if (!bSilent)
                 MessageBox.Show("This file or folder cannot be used in OneClick mode.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
@@ -437,8 +437,9 @@ namespace MeGUI
         public void setBatchProcessing(List<OneClickFilesToProcess> arrFilesToProcess, OneClickSettings oSettings)
         {
             bBatchProcessing = bAutomatedProcessing = true;
-            SetOneClickProfile(oSettings);
-            OneClickProcessing oProcessor = new OneClickProcessing(this, arrFilesToProcess, oSettings, _oLog);
+            if (oSettings != null)
+                SetOneClickProfile(oSettings);
+            _ = new OneClickProcessing(this, arrFilesToProcess, oSettings, _oLog);
             return;
         }
 
@@ -451,7 +452,7 @@ namespace MeGUI
             }
 
             beingCalled++;
-            if (!bAutomatedProcessing && arrFilesToProcess.Count > 0)
+            if (!bAutomatedProcessing && arrFilesToProcess != null && arrFilesToProcess.Count > 0)
             {
                 string question = "Do you want to process all " + (arrFilesToProcess.Count + 1) + " files/tracks in the selection?\r\nThey all will be processed with the current settings\r\nin the OneClick profile \"" + oneclickProfile.SelectedProfile.Name + "\".\r\nOther settings will be ignored.";
                 DialogResult dr = MessageBox.Show(question, "Automated folder processing", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -484,7 +485,7 @@ namespace MeGUI
             SubtitleResetTrack(arrSubtitleTrackInfo, _oSettings);
 
             beingCalled--;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
             
             // Detect Chapters
             if (!VideoUtil.HasChapters(iFile))
@@ -505,7 +506,7 @@ namespace MeGUI
                     workingDirectory.Filename = strPath;
             }
 
-            updateFilename(false, true, true);
+            UpdateFilename(false, true, true);
 
             if (_oSettings.DAR.HasValue)
                 this.ar.Value = _oSettings.DAR;
@@ -514,13 +515,13 @@ namespace MeGUI
                 this.usechaptersmarks.Enabled = true;
 
             if (bAutomatedProcessing)
-                createOneClickJob(arrFilesToProcess);
+                CreateOneClickJob(arrFilesToProcess);
 
-            setControlState(false);
+            SetControlState(false);
         }
 
         private int beingCalled = 0;
-        private void updatePossibleContainers()
+        private void UpdatePossibleContainers()
         {
             // Since everything calls everything else, this is just a safeguard to make sure we don't infinitely recurse
             if (beingCalled > 0)
@@ -576,7 +577,7 @@ namespace MeGUI
             }
 
             List<ContainerType> tempSupportedOutputTypes = new List<ContainerType>();
-            tempSupportedOutputTypes = this.muxProvider.GetSupportedContainers(VideoSettings.EncoderType, audioCodecs.ToArray(), dictatedOutputTypes.ToArray());
+            tempSupportedOutputTypes = MainForm.Instance.MuxProvider.GetSupportedContainers(VideoSettings.EncoderType, audioCodecs.ToArray(), dictatedOutputTypes.ToArray());
 
             List<ContainerType> supportedOutputTypes = new List<ContainerType>();
             foreach (ContainerType c in acceptableContainerTypes)
@@ -654,7 +655,7 @@ namespace MeGUI
             avsProfile.SetProfileNameOrWarn(settings.AvsProfileName);
 
             List<ContainerType> temp = new List<ContainerType>();
-            List<ContainerType> allContainerTypes = muxProvider.GetSupportedContainers();
+            List<ContainerType> allContainerTypes = MainForm.Instance.MuxProvider.GetSupportedContainers();
             foreach (string s in settings.ContainerCandidates)
             {
                 ContainerType ct = allContainerTypes.Find(new Predicate<ContainerType>(delegate(ContainerType t) { return t.ToString() == s; }));
@@ -683,9 +684,9 @@ namespace MeGUI
             devicetype.Text = settings.DeviceOutputType;
 
             // clean up after those settings were set
-            updatePossibleContainers();
+            UpdatePossibleContainers();
 
-            updateFilename(true, true, true);
+            UpdateFilename(true, true, true);
 
             if (settings.DAR != null)
                 ar.Value = settings.DAR.Value;
@@ -695,11 +696,11 @@ namespace MeGUI
 
         private void goButton_Click(object sender, EventArgs e)
         {
-            setControlState(true);
-            createOneClickJob(null);
+            SetControlState(true);
+            CreateOneClickJob(null);
         }
 
-        private void createOneClickJob(List<OneClickFilesToProcess> arrFilesToProcess)
+        private void CreateOneClickJob(List<OneClickFilesToProcess> arrFilesToProcess)
         {
             // checks if there is a suitable container
             if (ignoreRestrictions && bAutomatedProcessing)
@@ -725,9 +726,9 @@ namespace MeGUI
                 while (Directory.Exists(strWorkingDirectory));
             }
 
-            if (!verifyInputSettings(_videoInputInfo, strWorkingDirectory))
+            if (!VerifyInputSettings(_videoInputInfo, strWorkingDirectory))
             {
-                setControlState(false);
+                SetControlState(false);
                 return;
             }
 
@@ -1144,7 +1145,7 @@ namespace MeGUI
                     }
                 }
 
-                bool bIsDontEncodeAudioPossible = isDontEncodeAudioPossible(_videoInputInfo, oStreamControl.SelectedItem.IsStandard, inputContainer);
+                bool bIsDontEncodeAudioPossible = IsDontEncodeAudioPossible(_videoInputInfo, oStreamControl.SelectedItem.IsStandard, inputContainer);
                 if (bIsDontEncodeAudioPossible &&
                     (oStream.EncodingMode == AudioEncodingMode.Never ||
                     (oStream.EncodingMode == AudioEncodingMode.NeverOnlyCore && dpp.Eac3toDemux) ||
@@ -1505,14 +1506,14 @@ namespace MeGUI
 
             if (!this.openOnQueue.Checked && this.Visible)
             {
-                setControlState(false);
+                SetControlState(false);
                 tabControl1.SelectedTab = tabControl1.TabPages[0];
             }
             else
                 this.Close();
         }
 
-        private bool verifyInputSettings(MediaInfoFile oVideoInputInfo, string strWorkingDirectory)
+        private bool VerifyInputSettings(MediaInfoFile oVideoInputInfo, string strWorkingDirectory)
         {
             if (oVideoInputInfo == null || !File.Exists(oVideoInputInfo.FileName))
             {
@@ -1561,7 +1562,7 @@ namespace MeGUI
                 return false;
             }
 
-            if (verifyStreamSettings() != null || VideoSettings == null)
+            if (VerifyStreamSettings() != null || VideoSettings == null)
             {
                 if (bAutomatedProcessing)
                     _oLog.LogEvent("cannot process this job");
@@ -1643,7 +1644,7 @@ namespace MeGUI
 
         #region profile management
 
-        private string verifyStreamSettings()
+        private string VerifyStreamSettings()
         {
             for (int i = 0; i < audioTracks.Count; ++i)
             {
@@ -1669,7 +1670,7 @@ namespace MeGUI
         
         private void audio1_SomethingChanged(object sender, EventArgs e)
         {
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         void ProfileChanged(object sender, EventArgs e)
@@ -1678,7 +1679,7 @@ namespace MeGUI
                 usechaptersmarks.Enabled = true;
             else
                 usechaptersmarks.Enabled = false;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         private void keepInputResolution_CheckedChanged(object sender, EventArgs e)
@@ -1707,7 +1708,7 @@ namespace MeGUI
                     usechaptersmarks.Enabled = false;
                 keepInputResolution_CheckedChanged(null, null);
             }
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         #region subtitle track handling
@@ -1724,12 +1725,14 @@ namespace MeGUI
         private void SubtitleAddTrack(bool bChangeFocus)
         {
             beingCalled++;
-
+            
+#pragma warning disable CA2000 // Dispose objects before losing scope
             TabPage p = new TabPage("Subtitle " + (iSelectedSubtitleTabPage + 1))
             {
                 UseVisualStyleBackColor = subtitlesTab.TabPages[0].UseVisualStyleBackColor,
                 Padding = subtitlesTab.TabPages[0].Padding
-            };
+            };       
+#pragma warning restore CA2000 // Dispose objects before losing scope            
             
             OneClickStreamControl a = new OneClickStreamControl
             {
@@ -1750,8 +1753,8 @@ namespace MeGUI
             int i = 0;
             foreach (object oStream in subtitleTracks[0].StandardStreams)
             {
-                if (oStream is OneClickStream)
-                    oStreams[i] = ((OneClickStream)oStream).Clone();
+                if (oStream is OneClickStream stream)
+                    oStreams[i] = stream.Clone();
                 else
                     oStreams[i] = oStream;
                 i++;
@@ -1778,10 +1781,9 @@ namespace MeGUI
 
             if (bChangeFocus)
                 subtitlesTab.SelectedTab = p;
-            p.Dispose();
 
             beingCalled--;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         private void SubtitleRemoveTrack(int iTabPageIndex)
@@ -1807,7 +1809,7 @@ namespace MeGUI
             iSelectedSubtitleTabPage = subtitlesTab.SelectedIndex;
 
             beingCalled--;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
 
@@ -1862,7 +1864,7 @@ namespace MeGUI
                 }
             }
 
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         private void SubtitleResetTrack(List<OneClickStream> arrSubtitleTrackInfo, OneClickSettings settings)
@@ -1957,12 +1959,14 @@ namespace MeGUI
         {
             beingCalled++;
 
+#pragma warning disable CA2000 // Dispose objects before losing scope
             TabPage p = new TabPage("Audio " + (iSelectedAudioTabPage + 1))
             {
                 UseVisualStyleBackColor = audioTab.TabPages[0].UseVisualStyleBackColor,
                 Padding = audioTab.TabPages[0].Padding
-            };
-            
+            };          
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
             OneClickStreamControl a = new OneClickStreamControl
             {
                 TrackNumber = audioTracks.Count + 1,
@@ -1980,8 +1984,8 @@ namespace MeGUI
             int i = 0;
             foreach (object oStream in audioTracks[0].StandardStreams)
             {
-                if (oStream is OneClickStream)
-                    oStreams[i] = ((OneClickStream)oStream).Clone();
+                if (oStream is OneClickStream stream)
+                    oStreams[i] = stream.Clone();
                 else
                     oStreams[i] = oStream;
                 i++;
@@ -2017,7 +2021,7 @@ namespace MeGUI
             p.Dispose();
 
             beingCalled--;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         private void AudioRemoveTrack(int iTabPageIndex)
@@ -2043,7 +2047,7 @@ namespace MeGUI
             iSelectedAudioTabPage = audioTab.SelectedIndex;
 
             beingCalled--;
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         private int iSelectedAudioTabPage = 0;
@@ -2100,7 +2104,7 @@ namespace MeGUI
                 }
             }
 
-            updatePossibleContainers();
+            UpdatePossibleContainers();
         }
 
         private void AudioResetTrack(List<OneClickStream> arrAudioTrackInfo, OneClickSettings settings)
@@ -2292,7 +2296,7 @@ namespace MeGUI
         /// <param name="bIsStandardTrack">true if standard = inlcuded track, false if external/dedicated file</param>
         /// <param name="inputContainer">the input container type</param>
         /// <returns>true if do not encode is possible</returns>
-        private static bool isDontEncodeAudioPossible(MediaInfoFile iFile, bool bIsStandardTrack, ContainerType inputContainer)
+        private static bool IsDontEncodeAudioPossible(MediaInfoFile iFile, bool bIsStandardTrack, ContainerType inputContainer)
         {
             // external files can be remuxed
             if (!bIsStandardTrack)
@@ -2326,9 +2330,9 @@ namespace MeGUI
     [Serializable]
     public class OneClickFilesToProcess
     {
-        public string FilePath;
-        public int PGCNumber;
-        public int AngleNumber;
+        private string filePath;
+        private int pgcNumber;
+        private int angleNumber;
 
         public OneClickFilesToProcess() : this(string.Empty, 1, 0)
         {
@@ -2341,6 +2345,10 @@ namespace MeGUI
             PGCNumber = iPGCNumber;
             AngleNumber = iAngleNumber;
         }
+
+        public int AngleNumber { get => angleNumber; set => angleNumber = value; }
+        public int PGCNumber { get => pgcNumber; set => pgcNumber = value; }
+        public string FilePath { get => filePath; set => filePath = value; }
     }
 
     public class OneClickTool : MeGUI.core.plugins.interfaces.ITool
