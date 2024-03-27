@@ -447,9 +447,9 @@ namespace MeGUI
 
             switch (IndexerUsed)
             {
-                case IndexType.D2V: output.Filename = Path.Combine(projectPath, Path.ChangeExtension(fileName, ".d2v")); break;
+                case IndexType.D2V: output.Filename = Path.Combine(projectPath, fileName + ".d2v"); break;
                 case IndexType.DGM:
-                case IndexType.DGI: output.Filename = Path.Combine(projectPath, Path.ChangeExtension(fileName, ".dgi")); break;
+                case IndexType.DGI: output.Filename = Path.Combine(projectPath, fileName + ".dgi"); break;
                 case IndexType.FFMS:
                     if (Path.GetExtension(fileName).Equals(".mpls", StringComparison.InvariantCultureIgnoreCase))
                         output.Filename = Path.Combine(projectPath, Path.ChangeExtension(fileName, ".ffindex"));
