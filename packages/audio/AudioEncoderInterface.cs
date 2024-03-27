@@ -716,8 +716,10 @@ namespace MeGUI
 
         private bool OpenSourceWithFFAudioSource(out StringBuilder sbOpen)
         {
+            bool applyDRC = audioJob.Settings.ApplyDRC ? true : false;
             sbOpen = new StringBuilder();
-            sbOpen.Append(VideoUtil.getFFMSAudioInputLine(audioJob.Input, null, -1));
+            sbOpen.Append(VideoUtil.getFFMSAudioInputLine(audioJob.Input, null, -1, applyDRC));
+
             _log.LogEvent("Trying to open the file with FFAudioSource()", ImageType.Information);
             if (AudioUtil.AVSScriptHasAudio(sbOpen.ToString(), out string strErrorText))
             {
@@ -737,7 +739,9 @@ namespace MeGUI
         private bool OpenSourceWithLSMASHAudioSource(out StringBuilder sbOpen)
         {
             sbOpen = new StringBuilder();
-            sbOpen.Append(VideoUtil.getLSMASHAudioInputLine(audioJob.Input, null, -1));
+            bool applyDRC = audioJob.Settings.ApplyDRC ? true : false;
+            sbOpen.Append(VideoUtil.getLSMASHAudioInputLine(audioJob.Input, null, -1, applyDRC));
+
             _log.LogEvent("Trying to open the file with LWLibavAudioSource()", ImageType.Information);
             if (AudioUtil.AVSScriptHasAudio(sbOpen.ToString(), out string strErrorText))
             {
@@ -745,6 +749,7 @@ namespace MeGUI
                 audioJob.FilesToDelete.Add(audioJob.Input + ".lwi");
                 return true;
             }
+
             sbOpen = new StringBuilder();
             FileUtil.DeleteFile(audioJob.Input + ".lwi", _log);
             if (String.IsNullOrEmpty(strErrorText))
