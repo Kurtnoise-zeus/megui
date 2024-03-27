@@ -1,7 +1,7 @@
 Changelog version 6666.2703
-- Applied correctly the drc information from LSMASH-Works & FFMS2 as preferred audio source decoder (https://sourceforge.net/p/megui/bugs/984/). 
-- Added time modification 23 <-> 24 for audio conversion (https://sourceforge.net/p/megui/feature-requests/690/).
-- Allowed UTF8 encoding format as Reader/Writer for avisynth input files. 
+- Applied correctly the drc information from LSMASH-Works & FFMS2 as preferred audio source decoder. Fix issue #984 (https://sourceforge.net/p/megui/bugs/984/)
+- Added time modification 23 <-> 24 for audio conversion. Feature Request #690 (https://sourceforge.net/p/megui/feature-requests/690/)
+- Allowed UTF8 encoding format as Reader/Writer for avisynth input files. Feature Request #692 (https://sourceforge.net/p/megui/feature-requests/692/)
 
 
 2944 [L-SMASH Indexer]      fixed if a non-default lwi file is used, it was created twice and not always deleted. Bug #978 (regression of 2915)
