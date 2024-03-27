@@ -12,6 +12,6 @@ Just open the MeGUI.sln file using Visual Studio. I'm using VS2022 Community Edi
 
 ## Release
 
-From time to time, I upload directly on [github Release](https://github.com/Kurtnoise-zeus/megui/releases) page that I've made by myself. Use it at your own risk.
+From time to time, I upload directly on [github Release page](https://github.com/Kurtnoise-zeus/megui/releases) a package having latest changes and/or fixes. Use it at your own risk.
 
 
