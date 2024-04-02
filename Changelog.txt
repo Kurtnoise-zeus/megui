@@ -1,5 +1,6 @@
 Changelog version 6666.0204
 - Avoid false positive mismatch frames encoded vs frames source for final statistics.
+- Updated MediaInfo x64 library to the 24.03 release.
 - Used the same naming schemes for all indexers. Fix issue #988 (https://sourceforge.net/p/megui/bugs/988/)
 - Applied correctly the drc information from LSMASH-Works & FFMS2 as preferred audio source decoder. Fix issue #984 (https://sourceforge.net/p/megui/bugs/984/)
 - Added time modification 23 <-> 24 for audio conversion. Feature Request #690 (https://sourceforge.net/p/megui/feature-requests/690/)
