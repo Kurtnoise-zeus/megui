@@ -189,6 +189,8 @@ namespace MeGUI
                     stats.LogEvent("Number of encoded frames does not match the source: " + Su.NbFramesDone + "/" + Su.NbFramesTotal, ImageType.Error);
                     Su.HasError = true;
                 }
+                else
+                    stats.LogValue("Frames Source vs Encoded","Number of encoded frames match the source: " + Su.NbFramesDone + "/" + Su.NbFramesTotal);
             }
             catch (Exception e)
             {
