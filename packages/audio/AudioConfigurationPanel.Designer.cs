@@ -60,10 +60,10 @@ namespace MeGUI.core.details.audio
             this.label1 = new System.Windows.Forms.Label();
             this.BesweetChannelsLabel = new System.Windows.Forms.Label();
             this.lbSampleRate = new System.Windows.Forms.Label();
-            this.autoGain = new System.Windows.Forms.CheckBox();
+            this.lbTimeModification = new System.Windows.Forms.Label();
             this.normalize = new System.Windows.Forms.NumericUpDown();
             this.applyDRC = new System.Windows.Forms.CheckBox();
-            this.lbTimeModification = new System.Windows.Forms.Label();
+            this.autoGain = new System.Windows.Forms.CheckBox();
             this.Page2 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -225,16 +225,16 @@ namespace MeGUI.core.details.audio
             this.lbSampleRate.Text = "Sample Rate";
             this.lbSampleRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // autoGain
+            // lbTimeModification
             // 
-            this.autoGain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.autoGain.AutoSize = true;
-            this.autoGain.Location = new System.Drawing.Point(103, 107);
-            this.autoGain.Name = "autoGain";
-            this.autoGain.Size = new System.Drawing.Size(117, 20);
-            this.autoGain.TabIndex = 6;
-            this.autoGain.Text = "Normalize Peaks to";
+            this.lbTimeModification.AutoSize = true;
+            this.lbTimeModification.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbTimeModification.Location = new System.Drawing.Point(3, 78);
+            this.lbTimeModification.Name = "lbTimeModification";
+            this.lbTimeModification.Size = new System.Drawing.Size(94, 26);
+            this.lbTimeModification.TabIndex = 18;
+            this.lbTimeModification.Text = "Time Modification";
+            this.lbTimeModification.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // normalize
             // 
@@ -259,16 +259,16 @@ namespace MeGUI.core.details.audio
             this.applyDRC.Text = "Apply Dynamic Range Compression";
             this.applyDRC.UseVisualStyleBackColor = true;
             // 
-            // lbTimeModification
+            // autoGain
             // 
-            this.lbTimeModification.AutoSize = true;
-            this.lbTimeModification.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbTimeModification.Location = new System.Drawing.Point(3, 78);
-            this.lbTimeModification.Name = "lbTimeModification";
-            this.lbTimeModification.Size = new System.Drawing.Size(94, 26);
-            this.lbTimeModification.TabIndex = 18;
-            this.lbTimeModification.Text = "Time Modification";
-            this.lbTimeModification.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.autoGain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.autoGain.AutoSize = true;
+            this.autoGain.Location = new System.Drawing.Point(103, 107);
+            this.autoGain.Name = "autoGain";
+            this.autoGain.Size = new System.Drawing.Size(117, 20);
+            this.autoGain.TabIndex = 6;
+            this.autoGain.Text = "Normalize Peaks to";
             // 
             // Page2
             // 

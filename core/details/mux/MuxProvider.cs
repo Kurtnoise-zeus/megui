@@ -489,10 +489,13 @@ namespace MeGUI
             supportedVideoTypes.Add(VideoType.MPEG1);
             supportedVideoTypes.Add(VideoType.MPEG2);
             supportedVideoTypes.Add(VideoType.RAWASP);
+            supportedVideoTypes.Add(VideoType.RAWAV1);
             supportedVideoTypes.Add(VideoType.RAWAVC);
             supportedVideoTypes.Add(VideoType.RAWAVC2);
             supportedVideoTypes.Add(VideoType.RAWHEVC);
             supportedVideoTypes.Add(VideoType.RAWHEVC2);
+            supportedVideoTypes.Add(VideoType.RAWVVC);
+            supportedVideoTypes.Add(VideoType.RAWVVC2);
             supportedVideoTypes.Add(VideoType.MKV);
             supportedVideoTypes.Add(VideoType.VP8);
             supportedVideoTypes.Add(VideoType.VP9);
@@ -507,6 +510,7 @@ namespace MeGUI
             supportedAudioTypes.Add(AudioType.OPUS);
 
             supportedVideoCodecs.Add(VideoCodec.ASP);
+            supportedVideoCodecs.Add(VideoCodec.AV1);
             supportedVideoCodecs.Add(VideoCodec.AVC);
             supportedVideoCodecs.Add(VideoCodec.HEVC);
             supportedVideoCodecs.Add(VideoCodec.MPEG1);
@@ -514,6 +518,7 @@ namespace MeGUI
             supportedVideoCodecs.Add(VideoCodec.VC1);
             supportedVideoCodecs.Add(VideoCodec.VP8);
             supportedVideoCodecs.Add(VideoCodec.VP9);
+            supportedVideoCodecs.Add(VideoCodec.VVC);
             supportsAnyInputtableVideoCodec = false;
 
             supportedAudioCodecs.Add(AudioCodec.AAC);
@@ -561,6 +566,7 @@ namespace MeGUI
             supportedVideoTypes.Add(VideoType.AVI);
             supportedVideoTypes.Add(VideoType.MKV);
             supportedVideoTypes.Add(VideoType.MP4);
+            supportedVideoTypes.Add(VideoType.RAWAV1);
             supportedVideoTypes.Add(VideoType.RAWAVC);
             supportedVideoTypes.Add(VideoType.RAWAVC2);
             supportedVideoTypes.Add(VideoType.MPEG1);

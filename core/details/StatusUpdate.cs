@@ -323,9 +323,9 @@ namespace MeGUI
                 if (_framecount.HasValue)
                     NbFramesTotal = _framecount.Value;
                 if (_framecount.HasValue && !_frame.HasValue && fraction.HasValue)
-                    NbFramesDone = (ulong)(fraction.Value * _framecount.Value);
+                    NbFramesDone = (fraction.Value > 0 ? (ulong)(fraction.Value * _framecount.Value) : NbFramesTotal); // to avoid false positive mismatch at the end of encoding that may happen - https://forum.doom9.org/showthread.php?t=185380
                 if (!_framecount.HasValue && _frame.HasValue && fraction.HasValue)
-                    NbFramesTotal = (ulong)(_frame.Value / fraction.Value);
+                    NbFramesTotal = (fraction.Value > 0 ? (ulong)(_frame.Value / fraction.Value) : NbFramesDone); // to avoid false positive mismatch at the end of encoding that may happen - https://forum.doom9.org/showthread.php?t=185380
 
                 // File size
                 _fileSizeCurrent = FileSize.Of2(_strJobOutput);

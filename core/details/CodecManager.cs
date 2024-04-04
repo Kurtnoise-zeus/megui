@@ -59,6 +59,8 @@ namespace MeGUI
         public static readonly VideoCodec VC1     = new VideoCodec("VC1", "vc-1");
         public static readonly VideoCodec VP8     = new VideoCodec("VP8", "VP8");
         public static readonly VideoCodec VP9     = new VideoCodec("VP9", "VP9");
+        public static readonly VideoCodec AV1     = new VideoCodec("AV1", "AV1");
+        public static readonly VideoCodec VVC     = new VideoCodec("VVC", "VVC");
         public static readonly VideoCodec UNKNOWN = new VideoCodec("UNKNOWN", ".*");
     }
 
@@ -227,6 +229,7 @@ namespace MeGUI
         {
             if (!(
                 VideoCodecs.Register(VideoCodec.ASP)    &&
+                VideoCodecs.Register(VideoCodec.AV1)    &&
                 VideoCodecs.Register(VideoCodec.AVC)    &&
                 VideoCodecs.Register(VideoCodec.HEVC)   &&
                 VideoCodecs.Register(VideoCodec.HFYU)   &&
@@ -235,6 +238,7 @@ namespace MeGUI
                 VideoCodecs.Register(VideoCodec.VC1)    &&
                 VideoCodecs.Register(VideoCodec.VP8)    &&
                 VideoCodecs.Register(VideoCodec.VP9)    &&
+                VideoCodecs.Register(VideoCodec.VVC)    &&
                 VideoCodecs.Register(VideoCodec.UNKNOWN) // must be the last line to serve as catch-all
                 ))
                 throw new Exception("Failed to register a standard video codec");
@@ -310,10 +314,13 @@ namespace MeGUI
         public static readonly VideoType MPEG1    = new VideoType("MPEG1", "MPEG-1 Files", "m1v", null, VideoCodec.MPEG1);
         public static readonly VideoType MPEG2    = new VideoType("MPEG2", "MPEG-2 Files", "m2v", null, VideoCodec.MPEG2);
         public static readonly VideoType RAWASP   = new VideoType("RAWASP", "RAW MPEG-4 ASP Files", "m4v", null, VideoCodec.ASP);
+        public static readonly VideoType RAWAV1   = new VideoType("RAWAV1", "RAW AV1 Files", "ivf", null, VideoCodec.AV1);
         public static readonly VideoType RAWAVC   = new VideoType("RAWAVC", "RAW MPEG-4 AVC Files", "264", null, VideoCodec.AVC);
         public static readonly VideoType RAWAVC2  = new VideoType("RAWAVC", "RAW MPEG-4 AVC Files", "h264", null, VideoCodec.AVC);
         public static readonly VideoType RAWHEVC2 = new VideoType("RAWHEVC", "RAW MPEG-H HEVC Files", "h265", null, VideoCodec.HEVC);
         public static readonly VideoType RAWHEVC  = new VideoType("RAWHEVC", "RAW MPEG-H HEVC Files", "hevc", null, VideoCodec.HEVC);
+        public static readonly VideoType RAWVVC   = new VideoType("RAWVVC", "RAW VCC Files", "h266", null, VideoCodec.VVC);
+        public static readonly VideoType RAWVVC2  = new VideoType("RAWVVC", "RAW VCC Files", "vcc", null, VideoCodec.VVC);
         public static readonly VideoType VC1      = new VideoType("VC1", "VC-1 Files", "vc1", null, VideoCodec.VC1);
         public static readonly VideoType VP8      = new VideoType("VP8", "VP8 Files", "ivf", null, VideoCodec.VP8);
         public static readonly VideoType VP9      = new VideoType("VP9", "VP9 Files", "ivf", null, VideoCodec.VP9);
@@ -443,8 +450,10 @@ namespace MeGUI
                 VideoTypes.Register(VideoType.MKV)     &&
                 VideoTypes.Register(VideoType.MP4)     &&
                 VideoTypes.Register(VideoType.RAWASP)  &&
+                VideoTypes.Register(VideoType.RAWAV1)  &&
                 VideoTypes.Register(VideoType.RAWAVC)  &&
                 VideoTypes.Register(VideoType.RAWHEVC) &&
+                VideoTypes.Register(VideoType.RAWVVC)  &&
                 VideoTypes.Register(VideoType.MPEG2)   &&
                 VideoTypes.Register(VideoType.VC1)     &&
                 VideoTypes.Register(VideoType.VP8)     &&

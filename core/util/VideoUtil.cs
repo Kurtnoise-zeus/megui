@@ -628,10 +628,10 @@ namespace MeGUI
             return GetFFMSBasicInputLine(!IsFFMSDefaultPluginRequired(), inputFile, indexFile, -1, 0, fpsnum, fpsden, true, variableFrameRate);
         }
 
-        public static string getFFMSAudioInputLine(string inputFile, string indexFile, int track)
+        public static string getFFMSAudioInputLine(string inputFile, string indexFile, int track, bool applyDRC)
         {
             UpdateCacher.CheckPackage("ffms");
-                return GetFFMSBasicInputLine(!IsFFMSDefaultPluginRequired(), inputFile, indexFile, track, 0, 0, 0, false, false);
+               return GetFFAudioInputLine(inputFile, indexFile, track, true, applyDRC);
         }
 
         private static bool IsFFMSDefaultPluginRequired()
@@ -678,6 +678,51 @@ namespace MeGUI
             }
             return script.ToString();
         }
+        private static string GetFFAudioInputLine(string inputFile, string indexFile, int track, bool audio, bool drc)
+
+        {
+            StringBuilder script = new StringBuilder();
+            script.AppendFormat("LoadPlugin(\"{0}\"){1}",
+                Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.FFMS.Path), "ffms2.dll"),
+                Environment.NewLine);
+
+            if (inputFile.ToLowerInvariant().EndsWith(".ffindex") && File.Exists(inputFile))
+                inputFile = inputFile.Substring(0, inputFile.Length - 4);
+            if (!String.IsNullOrEmpty(indexFile) && indexFile.ToLowerInvariant().Equals(inputFile.ToLowerInvariant() + ".ffindex"))
+                indexFile = null;
+
+            bool bUseFFAudio = UseFFAudioSource(inputFile, audio);
+            if (audio)
+            {
+                script.AppendFormat("{0}(\"{1}\"{2}{3}{4}){5}",
+                    ("FFAudioSource"),
+                    inputFile,
+                    (track > -1 ? ", track=" + track : String.Empty),
+                    (!bUseFFAudio && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
+                    (!bUseFFAudio && drc ? ", drc_scale=1" : ", drc_scale=0"),
+                    Environment.NewLine);
+            }
+            return script.ToString();
+        }
+
+        public static bool UseFFAudioSource(string inputFile, bool bAudio)
+        {
+            StringBuilder script = new StringBuilder();
+            script.AppendFormat("LoadPlugin(\"{0}\"){1}", MainForm.Instance.Settings.FFMS.Path, Environment.NewLine);
+            script.AppendFormat("{0}(\"{1}\")", (bAudio ? "FFAudioSource" : "FFAudioSource"), inputFile);
+
+            try
+            {
+                using (AviSynthClip a = AviSynthScriptEnvironment.ParseScript(script.ToString()))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public static string GetLSMASHVideoInputLine(string inputFile, string indexFile, double fps, ref MediaInfoFile oInfo)
         {
@@ -723,10 +768,10 @@ namespace MeGUI
             return GetLSMASHBasicInputLine(inputFile, indexFile, -1, 0, fpsnum, fpsden, true, iVideoBits);
         }
 
-        public static string getLSMASHAudioInputLine(string inputFile, string indexFile, int track)
+        public static string getLSMASHAudioInputLine(string inputFile, string indexFile, int track, bool applyDRC)
         {
             UpdateCacher.CheckPackage("lsmash");
-                return GetLSMASHBasicInputLine(inputFile, indexFile, track, 0, 0, 0, false, 8);
+                return GetLSMASHAudioInputLine(inputFile, indexFile, track, true, applyDRC);
         }
 
         private static string GetLSMASHBasicInputLine(string inputFile, string indexFile, int track, int rffmode, int fpsnum, int fpsden, bool video, int iVideoBit)
@@ -786,6 +831,52 @@ namespace MeGUI
             StringBuilder script = new StringBuilder();
             script.AppendFormat("LoadPlugin(\"{0}\"){1}", MainForm.Instance.Settings.LSMASH.Path, Environment.NewLine);
             script.AppendFormat("{0}(\"{1}\")", (bVideo ? "LSMASHVideoSource" : "LSMASHAudioSource"), inputFile);
+
+            try
+            {
+                using (AviSynthClip a = AviSynthScriptEnvironment.ParseScript(script.ToString()))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static string GetLSMASHAudioInputLine(string inputFile, string indexFile, int track, bool audio, bool drc)
+
+        {
+            StringBuilder script = new StringBuilder();
+            script.AppendFormat("LoadPlugin(\"{0}\"){1}",
+                MainForm.Instance.Settings.LSMASH.Path,
+                Environment.NewLine);
+
+            if (inputFile.ToLowerInvariant().EndsWith(".lwi") && File.Exists(inputFile))
+                inputFile = inputFile.Substring(0, inputFile.Length - 4);
+            if (!String.IsNullOrEmpty(indexFile) && indexFile.ToLowerInvariant().Equals(inputFile.ToLowerInvariant() + ".lwi"))
+                indexFile = null;
+
+            bool bUseLsmash = UseLSMASHAudioSource(inputFile, audio);
+            if (audio)
+            {
+                script.AppendFormat("{0}(\"{1}\"{2}{3}{4}){5}",
+                    (bUseLsmash ? "LSMASHAudioSource" : "LWLibavAudioSource"),
+                    inputFile,
+                    (track > -1 ? (bUseLsmash ? ", track=" + track : ", stream_index=" + track) : String.Empty),
+                    (!bUseLsmash && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
+                    (!bUseLsmash && drc ? ", drc_scale=1.0" : ", drc_scale=0.0"),
+                    Environment.NewLine);
+            }
+            return script.ToString();
+        }
+
+        public static bool UseLSMASHAudioSource(string inputFile, bool bAudio)
+        {
+            StringBuilder script = new StringBuilder();
+            script.AppendFormat("LoadPlugin(\"{0}\"){1}", MainForm.Instance.Settings.LSMASH.Path, Environment.NewLine);
+            script.AppendFormat("{0}(\"{1}\")", (bAudio ? "LSMASHAudioSource" : "LWLibavAudioSource"), inputFile);
 
             try
             {
