@@ -619,7 +619,7 @@ namespace MeGUI
             bool Greater4GB = a.AudioSizeInBytes >= (uint.MaxValue - 68);
             bool WExtHeader = iChannelMask >= 0;
             uint HeaderSize = (uint)(WExtHeader ? 60 : 36);
-            int[] defmask = { 0, 4, 3, 7, 51, 55, 63, 319, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            int[] defmask = { 0, 4, 3, 11, 263, 1543, 1551, 1807, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
             if (Greater4GB && headerType == HeaderType.W64)
             {
