@@ -1780,7 +1780,6 @@ function c61_c51(clip a)
                 {
                     // plugin not available (x64)
                     script.AppendLine(@"
-# As AudioLimiter.dll is not available, SoftClipperFromAudX() cannot be used
 # 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> standard 5.1
 function c71_c51(clip a)
     {
