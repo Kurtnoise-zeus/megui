@@ -858,15 +858,14 @@ namespace MeGUI
             if (!String.IsNullOrEmpty(indexFile) && indexFile.ToLowerInvariant().Equals(inputFile.ToLowerInvariant() + ".lwi"))
                 indexFile = null;
 
-            bool bUseLsmash = UseLSMASHAudioSource(inputFile, audio);
             if (audio)
             {
                 script.AppendFormat("{0}(\"{1}\"{2}{3}{4}){5}",
-                    (bUseLsmash ? "LSMASHAudioSource" : "LWLibavAudioSource"),
+                    ("LWLibavAudioSource"),
                     inputFile,
-                    (track > -1 ? (bUseLsmash ? ", track=" + track : ", stream_index=" + track) : String.Empty),
-                    (!bUseLsmash && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
-                    (!bUseLsmash && drc ? ", drc_scale=1.0" : ", drc_scale=0.0"),
+                    (track > -1 ? ("stream_index=" + track) : String.Empty),
+                    (!String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
+                    (drc ? ", drc_scale=1" : ", drc_scale=0"),
                     Environment.NewLine);
             }
             return script.ToString();
@@ -876,7 +875,7 @@ namespace MeGUI
         {
             StringBuilder script = new StringBuilder();
             script.AppendFormat("LoadPlugin(\"{0}\"){1}", MainForm.Instance.Settings.LSMASH.Path, Environment.NewLine);
-            script.AppendFormat("{0}(\"{1}\")", (bAudio ? "LSMASHAudioSource" : "LWLibavAudioSource"), inputFile);
+            script.AppendFormat("{0}(\"{1}\")", ("LWLibavAudioSource"), inputFile);
 
             try
             {
