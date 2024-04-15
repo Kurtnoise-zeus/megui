@@ -140,7 +140,7 @@ namespace MeGUI
                     try
                     {
                         strAVSScript.AppendLine(@"# detected channels: " + oAudioTrack.NbChannels);
-                        strAVSScript.Append(@"# detected channel positions: " + oAudioTrack.ChannelPositions);
+                        strAVSScript.Append(@"# detected channels layout: " + oAudioTrack.ChannelPositions);
                         StreamWriter oAVSWriter = new StreamWriter(strAudioAVSFile, false, Encoding.Default);
                         oAVSWriter.Write(strAVSScript);
                         oAVSWriter.Close();

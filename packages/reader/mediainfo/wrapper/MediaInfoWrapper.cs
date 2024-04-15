@@ -596,7 +596,7 @@ namespace MediaInfoWrapper
                         _tracktemp_.BitRateMode = GetSpecificMediaInfo(StreamKind.Audio, num2, "BitRate_Mode");
                         _tracktemp_.Channels = GetSpecificMediaInfo(StreamKind.Audio, num2, "Channel(s)");
                         _tracktemp_.ChannelsString = GetSpecificMediaInfo(StreamKind.Audio, num2, "Channel(s)/String");
-                        _tracktemp_.ChannelPositionsString2 = GetSpecificMediaInfo(StreamKind.Audio, num2, "ChannelPositions/String2");
+                        _tracktemp_.ChannelPositionsString2 = GetSpecificMediaInfo(StreamKind.Audio, num2, "ChannelLayout");
                         _tracktemp_.SamplingRate = GetSpecificMediaInfo(StreamKind.Audio, num2, "SamplingRate");
                         _tracktemp_.SamplingRateString = GetSpecificMediaInfo(StreamKind.Audio, num2, "SamplingRate/String");
                         _tracktemp_.Delay = GetSpecificMediaInfo(StreamKind.Audio, num2, "Delay");

@@ -1140,7 +1140,7 @@ namespace MeGUI
             }
 
             script.AppendFormat(@"# detected channels: {0}{1}", iChannelCount, Environment.NewLine);
-            script.AppendFormat(@"# detected channel positions: {0}{1}", strChannelPositions, Environment.NewLine);
+            script.AppendFormat(@"# detected channels layout: {0}{1}", strChannelPositions, Environment.NewLine);
 
             if (iAVSChannelCount != iChannelCount)
                 _log.LogEvent("Channel count mismatch! The input file is reporting " + iChannelCount + " channels and the AviSynth script is reporting " + iAVSChannelCount + " channels", ImageType.Warning);
