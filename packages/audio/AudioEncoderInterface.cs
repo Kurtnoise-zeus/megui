@@ -619,7 +619,7 @@ namespace MeGUI
             bool Greater4GB = a.AudioSizeInBytes >= (uint.MaxValue - 68);
             bool WExtHeader = iChannelMask >= 0;
             uint HeaderSize = (uint)(WExtHeader ? 60 : 36);
-            int[] defmask = { 0, 4, 3, 7, 51, 55, 63, 319, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            int[] defmask = { 0, 4, 3, 11, 263, 1543, 1551, 1807, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
             if (Greater4GB && headerType == HeaderType.W64)
             {
@@ -1140,7 +1140,7 @@ namespace MeGUI
             }
 
             script.AppendFormat(@"# detected channels: {0}{1}", iChannelCount, Environment.NewLine);
-            script.AppendFormat(@"# detected channel positions: {0}{1}", strChannelPositions, Environment.NewLine);
+            script.AppendFormat(@"# detected channels layout: {0}{1}", strChannelPositions, Environment.NewLine);
 
             if (iAVSChannelCount != iChannelCount)
                 _log.LogEvent("Channel count mismatch! The input file is reporting " + iChannelCount + " channels and the AviSynth script is reporting " + iAVSChannelCount + " channels", ImageType.Warning);
@@ -1780,7 +1780,6 @@ function c61_c51(clip a)
                 {
                     // plugin not available (x64)
                     script.AppendLine(@"
-# As AudioLimiter.dll is not available, SoftClipperFromAudX() cannot be used
 # 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> standard 5.1
 function c71_c51(clip a)
     {
