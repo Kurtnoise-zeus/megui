@@ -14,4 +14,12 @@ Just open the MeGUI.sln file using Visual Studio. I'm using VS2022 Community Edi
 
 From time to time, I upload directly on [github Release page](https://github.com/Kurtnoise-zeus/megui/releases) a package having latest changes and/or fixes. Use it at your own risk.
 
+## Todo
+
+- [ ] Add AV1 Video Encoder (probably [svt-av1-psy](https://github.com/gianni-rosato/svt-av1-psy))
+- [ ] Add VVC Video Encoder (dunno which one yet)
+- [ ] Add Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)
+- [ ] Add Demuxers tool
+- [ ] ...
+
 

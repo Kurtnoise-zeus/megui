@@ -820,7 +820,7 @@ namespace MeGUI
                     if (!String.IsNullOrEmpty(t.ChannelsString))
                         oTrack.Info("ChannelsString: " + t.ChannelsString);
                     if (!String.IsNullOrEmpty(t.ChannelPositionsString2))
-                        oTrack.Info("ChannelPositionsString2: " + t.ChannelPositionsString2);
+                        oTrack.Info("ChannelLayout: " + t.ChannelPositionsString2);
                     if (!String.IsNullOrEmpty(t.BitRateMode))
                         oTrack.Info("BitRateMode: " + t.BitRateMode);
                     if (!String.IsNullOrEmpty(t.Delay))
