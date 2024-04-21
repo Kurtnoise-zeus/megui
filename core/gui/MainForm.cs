@@ -712,7 +712,10 @@ namespace MeGUI
                         return true;
                     }
                     else
-                        openOtherVideoFile(file);
+                    { 
+                        if (iFile.recommendIndexer(out _) == false)
+                            openOtherVideoFile(file);
+                    }
                 }
                 else if (iFile.HasAudio)
                 {
