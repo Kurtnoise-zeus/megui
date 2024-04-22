@@ -1436,7 +1436,7 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.Flac.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.NONE;
 
-                script.Append("AudioBits(last)>24?ConvertAudioTo24bit(last):last " + Environment.NewLine); // flac encoder doesn't support 32bits streams
+                script.Append("AudioBits(last)>24?ConvertAudioTo24bit(last):last " + Environment.NewLine); 
 
                 if (!oSettings.CustomEncoderOptions.Contains("--force "))
                     sb.Append(" --force");
@@ -1458,7 +1458,7 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.FFmpeg.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.W64;
 
-                script.Append("32==Audiobits(last)?ConvertAudioTo16bit(last):last" + Environment.NewLine); // ffac3 encoder doesn't support 32bits streams
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
                 sb.Append(" -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec "))
@@ -1476,7 +1476,7 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.FFmpeg.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.W64;
 
-                script.Append("32==Audiobits(last)?ConvertAudioTo16bit(last):last" + Environment.NewLine); // ffmp2 encoder doesn't support 32 bits streams
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
                 sb.Append(" -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec "))
@@ -1555,7 +1555,7 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.Lame.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
 
-                script.Append("32==Audiobits(last)?ConvertAudioTo16bit(last):last" + Environment.NewLine); // lame encoder doesn't support 32bits streams
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
                 if (!oSettings.CustomEncoderOptions.Contains("-V") && !oSettings.CustomEncoderOptions.Contains("-b ") && !oSettings.CustomEncoderOptions.Contains("--abr "))
                 {
@@ -1699,7 +1699,7 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.FFmpeg.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.W64;
 
-                script.Append("32==Audiobits(last)?ConvertAudioTo16bit(last):last" + Environment.NewLine); // ffmp2 encoder doesn't support 32 bits streams
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine); 
 
                 sb.Append(" -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec ") && !oSettings.CustomEncoderOptions.Contains("-codec:a "))
