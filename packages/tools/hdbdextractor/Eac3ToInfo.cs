@@ -512,6 +512,13 @@ namespace MeGUI.packages.tools.hdbdextractor
                 return;
             }
 
+            else if (data.Equals("Running in fast mode") || data.Equals("Keeping dialnorm"))
+            {
+                if (_log != null)
+                    _log.LogEvent(data);
+                return;
+            }
+
             // unusual video framerate
             // v02 The video framerate is correct, but rather unusual.
             else if (data.Contains("The video framerate is correct, but rather unusual"))
