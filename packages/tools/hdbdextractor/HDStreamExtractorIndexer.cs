@@ -164,13 +164,18 @@ namespace MeGUI
             else if (line.ToLowerInvariant().Contains("<warning>")
                 || line.ToLowerInvariant().Contains("the wav file is bigger than 4gb")
                 || line.ToLowerInvariant().Contains("some wav readers might not be able to handle this file correctly"))
+
             {
                 base.ProcessLine(line, stream, ImageType.Warning);
             }
             else if (Su.PercentageCurrent > 0 && Su.PercentageCurrent < 100
                 && !line.ToLowerInvariant().Contains("creating file ") 
                 && !line.ToLowerInvariant().Contains("(seamless branching)...")
-                && !FileUtil.RegExMatch(line, @"\w\d{2} extracting \w+ track number \d+", true))
+                && !line.ToLowerInvariant().Contains("applying aac delay...")
+                && !line.ToLowerInvariant().Contains("muxing video to matroska... ")
+                && !line.ToLowerInvariant().Contains("remaining delay of ")
+                && !FileUtil.RegExMatch(line, @"\w\d{2} extracting \w+ track number \d+", true)
+                )
             {
                 base.ProcessLine(line, stream, ImageType.Warning);
             }
