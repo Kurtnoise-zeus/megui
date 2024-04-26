@@ -1,4 +1,5 @@
-Changelog version 6666.0204
+Changelog version 6666.2604
+- First attempt to use Channel Mask feature in audio transcoding.
 - Avoid false positive mismatch frames encoded vs frames source for final statistics.
 - Updated MediaInfo x64 library to the 24.03 release.
 - Used the same naming schemes for all indexers. Fix issue #988 (https://sourceforge.net/p/megui/bugs/988/)
