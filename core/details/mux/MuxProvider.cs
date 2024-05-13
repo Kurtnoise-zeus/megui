@@ -496,7 +496,6 @@ namespace MeGUI
             supportedVideoTypes.Add(VideoType.RAWHEVC2);
             supportedVideoTypes.Add(VideoType.RAWVVC);
             supportedVideoTypes.Add(VideoType.RAWVVC2);
-            supportedVideoTypes.Add(VideoType.MKV);
             supportedVideoTypes.Add(VideoType.VP8);
             supportedVideoTypes.Add(VideoType.VP9);
             supportedVideoTypes.Add(VideoType.VC1);
@@ -538,7 +537,6 @@ namespace MeGUI
 
             supportedContainerInputTypes.Add(ContainerType.AVI);
             supportedContainerInputTypes.Add(ContainerType.MP4);
-            supportedContainerInputTypes.Add(ContainerType.MKV);
 
             supportedDeviceTypes.Add(DeviceType.APPLETV);
             supportedDeviceTypes.Add(DeviceType.IPAD);
