@@ -9,6 +9,10 @@ The current branch has been **tested only on x64 dev environment** (Avisynth+, W
 
 Just open the MeGUI.sln file using Visual Studio. I'm using VS2022 Community Edition in order to compile the latest changes.
 
+## What's new
+
+Nothing really new comparing to the official release except :
+- Audio transcoding in order to use channel mask values. This requires avisynth+ 3.7.3 or higher.
 
 ## Release
 
