@@ -508,9 +508,6 @@ namespace MeGUI
                         inputLog.LogValue("Bits per sample", a.BitsPerSample);
                         inputLog.LogValue("Sample rate", a.AudioSampleRate);
                         
-                        if (audioJob.Settings is FlacSettings)
-                            _encoderCommandLine += " --channels=" + a.ChannelsCount + " --bps=" + a.BitsPerSample + " --sample-rate=" + a.AudioSampleRate;
-                        
                         const int MAX_SAMPLES_PER_ONCE = 4096;
                         int frameSample = 0;
                         int frameBufferTotalSize = MAX_SAMPLES_PER_ONCE * a.ChannelsCount * a.BytesPerSample;
@@ -1699,18 +1696,10 @@ namespace MeGUI
                 UpdateCacher.CheckPackage("flac");
                 FlacSettings oSettings = audioJob.Settings as FlacSettings;
                 _encoderExecutablePath = this._settings.Flac.Path;
-                _sendWavHeaderToEncoderStdIn = HeaderType.NONE;
+                _sendWavHeaderToEncoderStdIn = HeaderType.W64;
 
-                script.Append("AudioBits(last)>24?ConvertAudioTo24bit(last):last " + Environment.NewLine); 
+                script.Append("AudioBits(last)>24?ConvertAudioTo24bit(last):last " + Environment.NewLine);
 
-                if (!oSettings.CustomEncoderOptions.Contains("--force "))
-                    sb.Append(" --force");
-                if (!oSettings.CustomEncoderOptions.Contains("--force-raw-format"))
-                    sb.Append(" --force-raw-format");
-                if (!oSettings.CustomEncoderOptions.Contains("--endian="))
-                    sb.Append(" --endian=little");
-                if (!oSettings.CustomEncoderOptions.Contains("--sign="))
-                    sb.Append(" --sign=signed");
                 sb.Append(" -" + oSettings.CompressionLevel);
                 if (!String.IsNullOrEmpty(oSettings.CustomEncoderOptions))
                     sb.Append(" " + oSettings.CustomEncoderOptions.Trim());
