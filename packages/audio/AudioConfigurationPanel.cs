@@ -77,7 +77,8 @@ namespace MeGUI.core.details.audio
                 AudioDecodingEngine.FFAudioSource,
                 AudioDecodingEngine.DirectShow,
                 AudioDecodingEngine.BassAudio,
-                AudioDecodingEngine.LWLibavAudioSource });
+                AudioDecodingEngine.LWLibavAudioSource,
+                AudioDecodingEngine.BestAudioSource });
             
             this.cbDownmixMode.DataSource = _avisynthChannelSet;
             this.cbDownmixMode.BindingContext = new BindingContext();

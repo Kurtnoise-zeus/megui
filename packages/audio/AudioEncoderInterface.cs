@@ -853,6 +853,29 @@ namespace MeGUI
             return false;
         }
 
+        private bool OpenSourceWithBestAudioSource(out StringBuilder sbOpen)
+        {
+            sbOpen = new StringBuilder();
+            bool applyDRC = audioJob.Settings.ApplyDRC ? true : false;
+            sbOpen.Append(VideoUtil.getBestAudioInputLine(audioJob.Input, null, -1, applyDRC));
+
+            _log.LogEvent("Trying to open the file with BSAudioSource()", ImageType.Information);
+            if (AudioUtil.AVSScriptHasAudio(sbOpen.ToString(), out string strErrorText))
+            {
+                _log.LogEvent("Sucessfully opened the file with BSAudioSource()", ImageType.Information);
+                audioJob.FilesToDelete.Add(audioJob.Input + ".lwi");
+                return true;                    
+             }
+
+            sbOpen = new StringBuilder();
+            FileUtil.DeleteFile(audioJob.Input + ".lwi", _log);
+            if (String.IsNullOrEmpty(strErrorText))
+                _log.LogEvent("Failed opening the file with BSAudioSource()", ImageType.Information);
+            else
+                _log.LogEvent("Failed opening the file with BSAudioSource(). " + strErrorText, ImageType.Information);
+            return false;
+        }
+
         private bool OpenSourceWithBassAudio(out StringBuilder sbOpen)
         {
             sbOpen = new StringBuilder();
@@ -1101,6 +1124,8 @@ namespace MeGUI
                         bFound = OpenSourceWithFFAudioSource(out script);
                     if (!bFound)
                         bFound = OpenSourceWithDirectShow(out script, oInfo);
+                    if (!bFound)
+                        bFound = OpenSourceWithBestAudioSource(out script);
                 }
                 else if (audioJob.Settings.PreferredDecoder == AudioDecodingEngine.BassAudio)
                 {
@@ -1113,6 +1138,8 @@ namespace MeGUI
                         bFound = OpenSourceWithFFAudioSource(out script);
                     if (!bFound)
                         bFound = OpenSourceWithDirectShow(out script, oInfo);
+                    if (!bFound)
+                        bFound = OpenSourceWithBestAudioSource(out script);
                 }
                 else if (audioJob.Settings.PreferredDecoder == AudioDecodingEngine.LWLibavAudioSource)
                 {
@@ -1125,12 +1152,30 @@ namespace MeGUI
                         bFound = OpenSourceWithFFAudioSource(out script);
                     if (!bFound)
                         bFound = OpenSourceWithDirectShow(out script, oInfo);
+                    if (!bFound)
+                        bFound = OpenSourceWithBestAudioSource(out script);
                 }
                 else if (audioJob.Settings.PreferredDecoder == AudioDecodingEngine.FFAudioSource)
                 {
                     bFound = OpenSourceWithFFAudioSource(out script);
                     if (!bFound)
                         bFound = OpenSourceWithLSMASHAudioSource(out script);
+                    if (!bFound)
+                        bFound = OpenSourceWithNicAudio(out script, oInfo, false);
+                    if (!bFound)
+                        bFound = OpenSourceWithBassAudio(out script);
+                    if (!bFound)
+                        bFound = OpenSourceWithDirectShow(out script, oInfo);
+                    if (!bFound)
+                        bFound = OpenSourceWithBestAudioSource(out script);
+                }
+                else if (audioJob.Settings.PreferredDecoder == AudioDecodingEngine.BestAudioSource)
+                {
+                     bFound = OpenSourceWithBestAudioSource(out script);
+                    if (!bFound)
+                        bFound = OpenSourceWithLSMASHAudioSource(out script);
+                    if (!bFound)
+                        bFound = OpenSourceWithFFAudioSource(out script);
                     if (!bFound)
                         bFound = OpenSourceWithNicAudio(out script, oInfo, false);
                     if (!bFound)

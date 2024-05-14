@@ -774,6 +774,11 @@ namespace MeGUI
                 return GetLSMASHAudioInputLine(inputFile, indexFile, track, true, applyDRC);
         }
 
+        public static string getBestAudioInputLine(string inputFile, string indexFile, int track, bool applyDRC)
+        {
+            return GetBestAudioInputLine(inputFile, indexFile, track, true, applyDRC);
+        }
+
         private static string GetLSMASHBasicInputLine(string inputFile, string indexFile, int track, int rffmode, int fpsnum, int fpsden, bool video, int iVideoBit)
 
         {
@@ -844,6 +849,33 @@ namespace MeGUI
                 return false;
             }
         }
+
+        private static string GetBestAudioInputLine(string inputFile, string indexFile, int track, bool audio, bool drc)
+
+        {
+            StringBuilder script = new StringBuilder();
+            script.AppendFormat("LoadPlugin(\"{0}\"){1}",
+                Path.Combine(MainForm.Instance.Settings.AvisynthPluginsPath, "BestSource.dll"),
+                Environment.NewLine);
+
+            if (inputFile.ToLowerInvariant().EndsWith(".lwi") && File.Exists(inputFile))
+                inputFile = inputFile.Substring(0, inputFile.Length - 4);
+            if (!String.IsNullOrEmpty(indexFile) && indexFile.ToLowerInvariant().Equals(inputFile.ToLowerInvariant() + ".lwi"))
+                indexFile = null;
+
+            if (audio)
+            {
+                script.AppendFormat("{0}(\"{1}\"{2}{3}{4}){5}",
+                    ("BSAudioSource"),
+                    inputFile,
+                    (track > -1 ? ("track=" + track) : String.Empty),
+                    (drc ? ", drc_scale=1" : ", drc_scale=0"),
+                    (!String.IsNullOrEmpty(indexFile) ? ", cachepath=\"" + indexFile + "\"" : String.Empty),                    
+                    Environment.NewLine);
+            }
+            return script.ToString();
+        }
+
 
         private static string GetLSMASHAudioInputLine(string inputFile, string indexFile, int track, bool audio, bool drc)
 

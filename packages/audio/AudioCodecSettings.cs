@@ -60,7 +60,8 @@ namespace MeGUI
         FFAudioSource,
         DirectShow,
         BassAudio,
-        LWLibavAudioSource
+        LWLibavAudioSource,
+        BestAudioSource
     };
 
     public enum SampleRateMode
@@ -201,6 +202,8 @@ namespace MeGUI
                     preferredDecoder = AudioDecodingEngine.NicAudio;
                 else if (value.Equals("LWLibavAudioSource"))
                     preferredDecoder = AudioDecodingEngine.LWLibavAudioSource;
+                else if (value.Equals("BestAudioSource"))
+                    preferredDecoder = AudioDecodingEngine.BestAudioSource;
             }
         }
 
