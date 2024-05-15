@@ -858,11 +858,6 @@ namespace MeGUI
                 Path.Combine(MainForm.Instance.Settings.AvisynthPluginsPath, "BestSource.dll"),
                 Environment.NewLine);
 
-            if (inputFile.ToLowerInvariant().EndsWith(".lwi") && File.Exists(inputFile))
-                inputFile = inputFile.Substring(0, inputFile.Length - 4);
-            if (!String.IsNullOrEmpty(indexFile) && indexFile.ToLowerInvariant().Equals(inputFile.ToLowerInvariant() + ".lwi"))
-                indexFile = null;
-
             if (audio)
             {
                 script.AppendFormat("{0}(\"{1}\"{2}{3}{4}){5}",

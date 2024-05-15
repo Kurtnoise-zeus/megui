@@ -863,12 +863,10 @@ namespace MeGUI
             if (AudioUtil.AVSScriptHasAudio(sbOpen.ToString(), out string strErrorText))
             {
                 _log.LogEvent("Sucessfully opened the file with BSAudioSource()", ImageType.Information);
-                audioJob.FilesToDelete.Add(audioJob.Input + ".lwi");
                 return true;                    
              }
 
             sbOpen = new StringBuilder();
-            FileUtil.DeleteFile(audioJob.Input + ".lwi", _log);
             if (String.IsNullOrEmpty(strErrorText))
                 _log.LogEvent("Failed opening the file with BSAudioSource()", ImageType.Information);
             else
