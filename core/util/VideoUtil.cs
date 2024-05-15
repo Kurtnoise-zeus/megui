@@ -771,7 +771,7 @@ namespace MeGUI
         public static string getLSMASHAudioInputLine(string inputFile, string indexFile, int track, bool applyDRC)
         {
             UpdateCacher.CheckPackage("lsmash");
-                return GetLSMASHAudioInputLine(inputFile, indexFile, track, true, applyDRC);
+            return GetLSMASHAudioInputLine(inputFile, indexFile, track, true, applyDRC);
         }
 
         public static string getBestAudioInputLine(string inputFile, string indexFile, int track, bool applyDRC)
