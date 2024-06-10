@@ -1075,6 +1075,7 @@ namespace MeGUI.core.util
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynthPlugins.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.LSMASH.Path));
+            targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path));
 
             // get the redist files from the redist package
             ArrayList sourceFiles = new ArrayList();
@@ -1110,6 +1111,7 @@ namespace MeGUI.core.util
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynthPlugins.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.LSMASH.Path));
+            targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path));
 
             // get the redist files from the redist package
             string strRedistPath = Path.GetDirectoryName(MainForm.Instance.Settings.Redist.Path);

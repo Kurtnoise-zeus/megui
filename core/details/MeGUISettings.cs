@@ -97,7 +97,7 @@ namespace MeGUI
         private ProgramSettings avimuxgui, avisynth, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
                                 eac3to, fdkaac, ffmpeg, ffms, flac, haali, lame, lsmash, mediainfo,
                                 megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc,
-                                oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid;
+                                oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid, bestsource;
         Dictionary<string, string> oRedistVersions;
         #endregion
         public MeGUISettings()
@@ -1266,6 +1266,12 @@ namespace MeGUI
             set { lsmash = value; }
         }
 
+        public ProgramSettings BestSource
+        {
+            get { return bestsource; }
+            set { bestsource = value; }
+        }
+
         public ProgramSettings MediaInfo
         {
             get { return mediainfo; }
@@ -1582,6 +1588,8 @@ namespace MeGUI
                 lame = new ProgramSettings("lame");
             if (lsmash == null)
                 lsmash = new ProgramSettings("lsmash");
+            if (bestsource == null)
+                bestsource = new ProgramSettings("bestsource");
             if (mediainfo == null)
                 mediainfo = new ProgramSettings("mediainfo");
             if (megui_core == null)
@@ -1688,6 +1696,7 @@ namespace MeGUI
             haali.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\haali\install.cmd"));
             lame.UpdateInformation("lame", "LAME", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\lame\lame.exe"));
             lsmash.UpdateInformation("lsmash", "L-SMASH Works", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\lsmash\LSMASHSource.dll"));
+            bestsource.UpdateInformation("bestsource", "BestSource Avisynth Plugin", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\bestsource\BestSource.dll"));
             mediainfo.UpdateInformation("mediainfo", "MediaInfo", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"MediaInfo.dll"));
             mediainfo.Required = true;
             megui_core.UpdateInformation("core", "MeGUI", Application.ExecutablePath);

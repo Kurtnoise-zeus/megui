@@ -776,6 +776,7 @@ namespace MeGUI
 
         public static string getBestAudioInputLine(string inputFile, string indexFile, int track, bool applyDRC)
         {
+            UpdateCacher.CheckPackage("bestsource");
             return GetBestAudioInputLine(inputFile, indexFile, track, true, applyDRC);
         }
 
@@ -851,11 +852,10 @@ namespace MeGUI
         }
 
         private static string GetBestAudioInputLine(string inputFile, string indexFile, int track, bool audio, bool drc)
-
         {
             StringBuilder script = new StringBuilder();
             script.AppendFormat("LoadPlugin(\"{0}\"){1}",
-                Path.Combine(MainForm.Instance.Settings.AvisynthPluginsPath, "BestSource.dll"),
+                Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll"),
                 Environment.NewLine);
 
             if (audio)
