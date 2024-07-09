@@ -317,6 +317,12 @@
     </Compile>
     <Compile Include="core\plugins\implemented\ThreadJobProcessor.cs" />
     <Compile Include="core\util\SubtitleUtil.cs" />
+    <Compile Include="packages\audio\exhale\ExhaleConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\exhale\ExhaleConfigurationPanel.Designer.cs">
+      <DependentUpon>ExhaleConfigurationPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="packages\audio\fdkaac\FDKAACSettings.cs" />
     <Compile Include="packages\audio\fdkaac\FDKAACConfigurationPanel.cs">
       <SubType>UserControl</SubType>
@@ -899,6 +905,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="core\gui\SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\exhale\ExhaleConfigurationPanel.resx">
+      <DependentUpon>ExhaleConfigurationPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="packages\audio\fdkaac\FDKAACConfigurationPanel.resx">
       <DependentUpon>FDKAACConfigurationPanel.cs</DependentUpon>

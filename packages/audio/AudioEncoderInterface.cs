@@ -1101,7 +1101,6 @@ namespace MeGUI
             int iChannelCount = 0;
             int iAVSChannelCount = 0;
             int iAVSAudioSampleRate = 0;
-            bool appliedChannelMask = false;
 
             using (MediaInfoFile oInfo = new MediaInfoFile(audioJob.Input, ref _log))
             {
@@ -1255,7 +1254,7 @@ namespace MeGUI
                 {
                     strChannelCount = oInfo.AudioInfo.Tracks[0].NbChannels;
                     strChannelPositions = oInfo.AudioInfo.Tracks[0].ChannelPositions;
-                }
+                } 
             }
 
             int iCount = 0;
@@ -1282,16 +1281,26 @@ namespace MeGUI
 
             if (MainForm.Instance.Settings.AviSynthPlus)
             {
-                script.AppendFormat(@"cm=GetChannelMask(last){0}", Environment.NewLine);
+                script.Append(@"# Checking Channel Mask..." + Environment.NewLine);
+                script.AppendFormat("CheckingChannelMask(last){0}", Environment.NewLine);
+                script.AppendLine(@"function CheckingChannelMask(clip a)
+  {
+	cm = GetChannelMask(a)
+	nc = AudioChannels(a)
+	cm0 = cm
+	nc0 = 0  #AudioChannels
+	for (i=1, 18) {
+		nc0 = nc0 + cm0 % 2
+		cm0 = int(cm0 / 2)
+	}
 
-                if (iChannelCount != 0)
-                {
-                    _iChannelMask = (int)GetSMask(strChannelPositions);
-                    if (_iChannelMask != 0)
-                    {
-                        script.AppendFormat(@"# Detected Channel Mask: cm={0}{1}", _iChannelMask.ToString(), Environment.NewLine);
-                    }
-                }
+	if (nc0 != nc ) {
+	   cm2 = Select(nc, 3, 4, 3, 7, 263, 55, 63, 319, 1599) # standard values
+		return SetChannelMask(a, true, cm2)
+	} else {
+	return a
+	}
+}");
             }
 
             if (iAVSChannelCount != iChannelCount)
@@ -1418,173 +1427,97 @@ namespace MeGUI
                                 switch (iChannelCount)
                                 {
                                     case 8:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c71_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 7:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c61_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     default:
                                         script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
                                         break;
                                 }
-                                if (_iChannelMask != 0)
-                                    appliedChannelMask = true;
-                                script.Append(@"# Set Default Channel Mask as 5.1 output:" + Environment.NewLine);
-                                script.Append(@"SetChannelMask(""1551"")" + Environment.NewLine); // Set default Channel Mask as 5.1 output
                             }
                             else if (audioJob.Settings.DownmixMode == ChannelMode.StereoDownmix)
                             {
                                 switch (iChannelCount)
                                 {
                                     case 8:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c71_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 7:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c61_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 6:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c6_stereo(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"6==Audiochannels(last)?c6_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"6==Audiochannels(last)?c6_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 5:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c5_stereo(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"5==Audiochannels(last)?c5_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"5==Audiochannels(last)?c5_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 4:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c4_stereo(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"4==Audiochannels(last)?c4_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"4==Audiochannels(last)?c4_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 3:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c3_stereo(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"3==Audiochannels(last)?c3_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"3==Audiochannels(last)?c3_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     default:
                                         script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
                                         break;
                                 }
-                                if (_iChannelMask != 0)
-                                    appliedChannelMask = true;
-                                script.Append(@"# Set Default Channel Mask as 2.0 output:" + Environment.NewLine);
-                                script.Append(@"SetChannelMask(""3"")" + Environment.NewLine); // Set default Channel Mask as 2.0 output
                             }
                             else if (audioJob.Settings.DownmixMode == ChannelMode.DPLDownmix)
                             {
                                 switch (iChannelCount)
                                 {
                                     case 8:
-                                        if (_iChannelMask != 0)
-                                                script.AppendFormat(@"{0}==cm?c71_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                            else
-                                                script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                    break;
+                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        break;
                                     case 7:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c61_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                    break;
+                                        script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        break;
                                     case 6:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c6_dpl(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"6==Audiochannels(last)?c6_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                    break;
+                                        script.Append(@"6==Audiochannels(last)?c6_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        break;
                                     case 5:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c5_dpl(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"5==Audiochannels(last)?c5_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                    break;
+                                        script.Append(@"5==Audiochannels(last)?c5_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        break;
                                     case 4:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c4_dpl(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"4==Audiochannels(last)?c4_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                     break;
+                                        script.Append(@"4==Audiochannels(last)?c4_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        break;
                                     case 3:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c3_dpl(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"3==Audiochannels(last)?c3_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                    break;
+                                        script.Append(@"3==Audiochannels(last)?c3_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        break;
                                     default:
                                         script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
                                         break;
                                 }
-                                if (_iChannelMask != 0)
-                                    appliedChannelMask = true;
-                                script.Append(@"# Set Default Channel Mask as DPL output:" + Environment.NewLine);
-                                script.Append(@"SetChannelMask(""15"")" + Environment.NewLine); // Set default Channel Mask as DPL
                             }
                             else
                             {
                                 switch (iChannelCount)
                                 {
                                     case 8:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c71_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 7:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c61_c51(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"8<=Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"8<=Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 6:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c6_dpl2(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"6==Audiochannels(last)?c6_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"6==Audiochannels(last)?c6_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 5:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c5_dpl2(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"5==Audiochannels(last)?c5_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"5==Audiochannels(last)?c5_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 4:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c4_dpl2(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"4==Audiochannels(last)?c4_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"4==Audiochannels(last)?c4_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
                                     case 3:
-                                        if (_iChannelMask != 0)
-                                            script.AppendFormat(@"{0}==cm?c3_dpl2(ConvertAudioToFloat(last)):last{1}", _iChannelMask.ToString(), Environment.NewLine);
-                                        else
-                                            script.Append(@"3==Audiochannels(last)?c3_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                        script.Append(@"3==Audiochannels(last)?c3_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         break;
 
                                     default:
                                         script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
                                         break;
                                 }
-                                if (_iChannelMask != 0)
-                                    appliedChannelMask = true;
-                                script.Append(@"# Set Default Channel Mask as DPL2 output:" + Environment.NewLine);
-                                script.Append(@"SetChannelMask(""271"")" + Environment.NewLine); // Set default Channel Mask as DPL2
                             }
                             break;
                     }
@@ -1654,13 +1587,6 @@ namespace MeGUI
                 case SampleRateMode.ConvertTo96000:
                     iTargetAudioSampleRate = 96000; break;
             }
-
-            if ((MainForm.Instance.Settings.AviSynthPlus) &&  (!appliedChannelMask))
-            {
-                script.Append(@"# Applied Channel Mask" + Environment.NewLine);
-                script.AppendFormat("SetChannelMask({0}{1}{2}){3}", "\"", _iChannelMask.ToString(), "\"", Environment.NewLine);
-            }
-
 
             if (MainForm.Instance.Settings.AviSynthPlus &&
                 ((audioJob.Settings.SampleRate != SampleRateMode.KeepOriginal && iTargetAudioSampleRate != iAVSAudioSampleRate)
