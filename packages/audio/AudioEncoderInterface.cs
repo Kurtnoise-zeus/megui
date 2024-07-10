@@ -90,7 +90,8 @@ namespace MeGUI
                 ((j as AudioJob).Settings is QaacSettings) ||
                 ((j as AudioJob).Settings is OpusSettings) ||
                 ((j as AudioJob).Settings is FDKAACSettings) ||
-                ((j as AudioJob).Settings is FFAACSettings)))
+                ((j as AudioJob).Settings is FFAACSettings) ||
+                ((j as AudioJob).Settings is ExhaleSettings)))
                 return new AviSynthAudioEncoder(mf.Settings);
             return null;
         }
@@ -1845,6 +1846,35 @@ namespace MeGUI
                 sb.Append(" - -o \"{0}\"");
 
             }
+            else if (audioJob.Settings is ExhaleSettings)
+            {
+                UpdateCacher.CheckPackage("exhale");
+                ExhaleSettings oSettings = audioJob.Settings as ExhaleSettings;
+                _encoderExecutablePath = this._settings.Exhale.Path;
+                _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
+
+                switch (oSettings.Profile)
+                {
+                    case ExhaleProfile.xHEAAC: sb.Append(" " + oSettings.Quality); break;
+                    case ExhaleProfile.xHEAACeSBR: 
+                        switch (oSettings.Quality)
+                        {
+                            case 0: sb.Append(" a"); break;
+                            case 1: sb.Append(" b"); break;
+                            case 2: sb.Append(" c"); break;
+                            case 3: sb.Append(" d"); break;
+                            case 4: sb.Append(" e"); break;
+                            case 5: sb.Append(" f"); break;
+                            case 6: sb.Append(" g"); break;
+                        }
+                     break;
+                }
+
+                if (!String.IsNullOrEmpty(oSettings.CustomEncoderOptions))
+                    sb.Append(" " + oSettings.CustomEncoderOptions.Trim());
+                sb.Append(" \"{0}\"");
+            }
+
             else if (audioJob.Settings is OpusSettings)
             {
                 UpdateCacher.CheckPackage("opus");

@@ -323,6 +323,7 @@
     <Compile Include="packages\audio\exhale\ExhaleConfigurationPanel.Designer.cs">
       <DependentUpon>ExhaleConfigurationPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="packages\audio\exhale\ExhaleSettings.cs" />
     <Compile Include="packages\audio\fdkaac\FDKAACSettings.cs" />
     <Compile Include="packages\audio\fdkaac\FDKAACConfigurationPanel.cs">
       <SubType>UserControl</SubType>

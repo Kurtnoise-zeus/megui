@@ -60,7 +60,7 @@ namespace MeGUI
         private string strMainAudioFormat, strMainFileFormat, meguiupdatecache, neroAacEncPath, version,
                        defaultLanguage1, defaultLanguage2, afterEncodingCommand, videoExtension, audioExtension,
                        strEac3toLastFolderPath, strEac3toLastFilePath, strEac3toLastDestinationPath, tempDirMP4,
-                       fdkAacPath, httpproxyaddress, httpproxyport, httpproxyuid, httpproxypwd, defaultOutputDir,
+                       fdkAacPath, httpproxyaddress, httpproxyport, httpproxyuid, httpproxypwd, defaultOutputDir, exhalePath,
                        appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString, muxInputPath, muxOutputPath;
         private bool autoForceFilm, autoOpenScript, bUseQAAC, bUseDGIndexNV, bUseDGIndexIM, bInput8Bit,
                      overwriteStats, keep2of3passOutput, autoUpdate, deleteIntermediateFiles, workerAutoStart,
@@ -96,7 +96,7 @@ namespace MeGUI
         private List<WorkerPriority> arrWorkerPriority;
         private ProgramSettings avimuxgui, avisynth, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
                                 eac3to, fdkaac, ffmpeg, ffms, flac, haali, lame, lsmash, mediainfo,
-                                megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc,
+                                megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc, exhale, 
                                 oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid, bestsource;
         Dictionary<string, string> oRedistVersions;
         #endregion
@@ -1136,6 +1136,27 @@ namespace MeGUI
             }
         }
 
+
+        /// <summary>
+        /// filename and full path of the exhale executable
+        /// </summary>
+        public string ExhalePath
+        {
+            get
+            {
+                if (!File.Exists(exhalePath))
+                    exhalePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\exhale\exhale.exe");
+                return exhalePath;
+            }
+            set
+            {
+                if (!File.Exists(value))
+                    exhalePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\exhale\exhale.exe");
+                else
+                    exhalePath = value;
+            }
+        }
+
         public bool UseDGIndexNV
         {
             get { return bUseDGIndexNV; }
@@ -1315,6 +1336,12 @@ namespace MeGUI
         {
             get { return neroaacenc; }
             set { neroaacenc = value; }
+        }
+
+        public ProgramSettings Exhale
+        {
+            get { return exhale; }
+            set { exhale = value; }
         }
 
         public ProgramSettings OggEnc
@@ -1606,6 +1633,8 @@ namespace MeGUI
                 mp4box = new ProgramSettings("mp4box");
             if (neroaacenc == null)
                 neroaacenc = new ProgramSettings("neroaacenc");
+            if (exhale == null)
+                exhale = new ProgramSettings("exhale");
             if (oggenc == null)
                 oggenc = new ProgramSettings("oggenc2");
             if (opus == null)
@@ -1685,6 +1714,7 @@ namespace MeGUI
             eac3to.UpdateInformation("eac3to", "eac3to", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\eac3to\eac3to.exe"));
             eac3to.DoNotDeleteFilesOnUpdate.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\eac3to\neroaacenc.exe"));
             fdkaac.UpdateInformation("fdkaac", "FDK-AAC", FDKAacPath);
+            exhale.UpdateInformation("exhale", "Exhale", ExhalePath);
             if (!MainForm.Instance.Settings.UseFDKAac)
                 UpdateCacher.CheckPackage("fdkaac", false, false);
             ffmpeg.UpdateInformation("ffmpeg", "FFmpeg", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\ffmpeg\ffmpeg.exe"));
