@@ -1,3 +1,8 @@
+[![GitHub version](https://img.shields.io/github/v/release/Kurtnoise-zeus/megui)](https://github.com/Kurtnoise-zeus/megui/)
+![MeGUI number of downloads](https://img.shields.io/github/downloads/kurtnoise-zeus/megui/latest/total.svg)
+[![download latest release](https://img.shields.io/badge/Megui-download-green?style=flat)](https://github.com/Kurtnoise-zeus/megui/releases/latest) 
+
+
 # MeGUI 6666 version
 
 During summer 2022, I upgraded the [current megui codebase](https://sourceforge.net/p/megui/code/HEAD/tree/megui/trunk/) in order to fix some issues and add some new features. 
