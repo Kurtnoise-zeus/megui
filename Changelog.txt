@@ -1,4 +1,6 @@
-Changelog version 6666.1405
+Changelog version 6666.0710
+- Introduce Exhale Audio encoder (https://gitlab.com/ecodis/exhale)
+- Simplify audio transcoding channel mask use.
 - Removed mkv as input for mp4 muxing. Doesnt seems to be usable for the moment on Windows OS.
 - Fixed internal issues from audio transcoding when using channel mask.
 - HDStreamExtractor/eac3to : updated log event in order to be on par within the latest version.
