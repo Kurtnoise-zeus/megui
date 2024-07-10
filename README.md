@@ -18,6 +18,7 @@ Just open the MeGUI.sln file using Visual Studio. I'm using VS2022 Community Edi
 
 Nothing really new comparing to the official release except :
 - Audio transcoding in order to use channel mask values. This requires avisynth+ 3.7.3 or higher.
+- Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)
 
 ## Release
 
@@ -27,7 +28,7 @@ From time to time, I upload directly on [github Release page](https://github.com
 
 - [ ] Add AV1 Video Encoder (probably [svt-av1-psy](https://github.com/gianni-rosato/svt-av1-psy))
 - [ ] Add VVC Video Encoder (dunno which one yet)
-- [ ] Add Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)
+- [ ] ~~Add Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)~~
 - [ ] Add Bitrate Video Viewer
 - [ ] Add Demuxers tool
 - [ ] ...
