@@ -29,7 +29,7 @@ From time to time, I upload directly on [github Release page](https://github.com
 
 - [ ] Add AV1 Video Encoder (probably [svt-av1-psy](https://github.com/gianni-rosato/svt-av1-psy))
 - [ ] Add VVC Video Encoder (dunno which one yet)
-- [ ] ~~Add Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)~~
+- [x] Add Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)
 - [ ] Add Bitrate Video Viewer
 - [ ] Add Demuxers tool
 - [ ] ...
