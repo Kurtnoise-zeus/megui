@@ -491,12 +491,23 @@ namespace MeGUI
                     return languagesReverseTerminology[code];
             }
             else
-            {
+            { 
                 // we may have language information w/ more than ISO Codes e.g "en-US/English (US)"
                 int position = code.IndexOf("-");
-                string ncode = code.Substring(0, position); // so, lets take only the 2 first characters
-                if (languagesReverseISO2.ContainsKey(ncode))
-                    return languagesReverseISO2[ncode];
+                string ncode = code.Substring(0, position);
+                if (ncode.Length == 2)
+                {
+                    if (languagesReverseISO2.ContainsKey(ncode))
+                        return languagesReverseISO2[ncode];
+                }
+                else if (ncode.Length == 3)
+                {
+                    if (languagesReverseBibliographic.ContainsKey(ncode))
+                        return languagesReverseBibliographic[ncode];
+                    else if (languagesReverseTerminology.ContainsKey(ncode))
+                        return languagesReverseTerminology[ncode];
+                }
+                else return ""; 
             } 
             return "";
 		}
