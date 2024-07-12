@@ -494,18 +494,21 @@ namespace MeGUI
             { 
                 // we may have language information w/ more than ISO Codes e.g "en-US/English (US)"
                 int position = code.IndexOf("-");
-                string ncode = code.Substring(0, position);
-                if (ncode.Length == 2)
+                if ( position >= 0)
                 {
-                    if (languagesReverseISO2.ContainsKey(ncode))
-                        return languagesReverseISO2[ncode];
-                }
-                else if (ncode.Length == 3)
-                {
-                    if (languagesReverseBibliographic.ContainsKey(ncode))
-                        return languagesReverseBibliographic[ncode];
-                    else if (languagesReverseTerminology.ContainsKey(ncode))
-                        return languagesReverseTerminology[ncode];
+                    string ncode = code.Substring(0, position);
+                    if (ncode.Length == 2)
+                    {
+                        if (languagesReverseISO2.ContainsKey(ncode))
+                            return languagesReverseISO2[ncode];
+                    }
+                    else if (ncode.Length == 3)
+                    {
+                        if (languagesReverseBibliographic.ContainsKey(ncode))
+                            return languagesReverseBibliographic[ncode];
+                        else if (languagesReverseTerminology.ContainsKey(ncode))
+                            return languagesReverseTerminology[ncode];
+                    }
                 }
                 else return ""; 
             } 
