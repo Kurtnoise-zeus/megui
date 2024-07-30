@@ -1618,8 +1618,14 @@ namespace MeGUI
             {
                 case TimeModificationMode.KeepOriginal:
                     break;
+                case TimeModificationMode.SpeedUp23976To24:
+                    script.Append((MainForm.Instance.Settings.AviSynthPlus ? "TimeStretch" : "TimeStretchPlugin") + "AssumeSampleRate(Round((AudioRate()*1001.0)/100.0)).SSRC(AudioRate())" + Environment.NewLine);
+                    break;
                 case TimeModificationMode.SpeedUp23976To25:
                     script.Append("AssumeSampleRate(Round((AudioRate()*1001.0)/960.0)).SSRC(AudioRate())" + Environment.NewLine);
+                    break;
+                case TimeModificationMode.SlowDown24To23976:
+                    script.Append((MainForm.Instance.Settings.AviSynthPlus ? "TimeStretch" : "TimeStretchPlugin") + "SSRC(Round((AudioRate() * 1001.0) / 1000.0)).AssumeSampleRate(AudioRate())" + Environment.NewLine);
                     break;
                 case TimeModificationMode.SlowDown25To23976:
                     script.Append("SSRC(Round((AudioRate()*1001.0)/960.0)).AssumeSampleRate(AudioRate())" + Environment.NewLine);

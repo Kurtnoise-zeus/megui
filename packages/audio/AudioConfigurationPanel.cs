@@ -95,11 +95,13 @@ namespace MeGUI.core.details.audio
 
             this.cbTimeModification.DataSource = EnumProxy.CreateArray(new object[] {
                 TimeModificationMode.KeepOriginal,
+                TimeModificationMode.SlowDown24To23976,
                 TimeModificationMode.SlowDown24To23976WithCorrection,
                 TimeModificationMode.SlowDown25To23976,
                 TimeModificationMode.SlowDown25To23976WithCorrection,
                 TimeModificationMode.SlowDown25To24,
                 TimeModificationMode.SlowDown25To24WithCorrection,
+                TimeModificationMode.SpeedUp23976To24,
                 TimeModificationMode.SpeedUp23976To24WithCorrection,
                 TimeModificationMode.SpeedUp23976To25,
                 TimeModificationMode.SpeedUp23976To25WithCorrection,

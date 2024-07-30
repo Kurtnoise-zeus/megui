@@ -88,12 +88,16 @@ namespace MeGUI
     {
         [EnumTitle("Keep Original")]
         KeepOriginal,
+        [EnumTitle("Speed-up (23.976 to 24)")]
+        SpeedUp23976To24,
         [EnumTitle("Speed-up (23.976 to 25)")]
         SpeedUp23976To25,
         [EnumTitle("Slow-down (25 to 23.976)")]
         SlowDown25To23976,
         [EnumTitle("Speed-up (24 to 25)")]
         SpeedUp24To25,
+        [EnumTitle("Slow-down (24 to 23.976)")]
+        SlowDown24To23976,
         [EnumTitle("Slow-down (25 to 24)")]
         SlowDown25To24,
         [EnumTitle("Speed-up (23.976 to 24) with pitch correction")]
@@ -241,7 +245,6 @@ namespace MeGUI
                     return;
 
                 sampleRate = SampleRateMode.KeepOriginal;
-                timeModification = TimeModificationMode.KeepOriginal;
 
                 if (value.Equals("1"))
                     sampleRate = SampleRateMode.ConvertTo08000;
@@ -256,13 +259,7 @@ namespace MeGUI
                 else if (value.Equals("6"))
                     sampleRate = SampleRateMode.ConvertTo48000;
                 else if (value.Equals("7"))
-                    timeModification = TimeModificationMode.SpeedUp23976To25;
-                else if (value.Equals("8"))
-                    timeModification = TimeModificationMode.SlowDown25To23976;
-                else if (value.Equals("9"))
-                    timeModification = TimeModificationMode.SpeedUp24To25;
-                else if (value.Equals("10"))
-                    timeModification = TimeModificationMode.SlowDown25To24;
+                    sampleRate = SampleRateMode.ConvertTo96000;
             }
         }
 
