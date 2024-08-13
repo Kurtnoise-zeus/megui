@@ -646,6 +646,8 @@ namespace MeGUI.packages.video.x265
                 x265Tunes.SelectedIndex = 0; // Default
             if (cbBPyramid.SelectedIndex == -1)
                 cbBPyramid.SelectedIndex = 2;
+            if (hevcProfile.SelectedIndex == -1)
+                hevcProfile.SelectedIndex = 0;
             lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)this.x265EncodingMode.SelectedIndex;
             if ((VideoCodecSettings.VideoEncodingMode)x265EncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.CQ
                 && (VideoCodecSettings.VideoEncodingMode)x265EncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.quality)
@@ -769,6 +771,8 @@ namespace MeGUI.packages.video.x265
                 xs.x265BFramePyramid = this.cbBPyramid.SelectedIndex;
                 xs.x265GOPCalculation = this.cbGOPCalculation.SelectedIndex;
                 xs.Nalhrd = (int)x265hrd.SelectedIndex;
+                xs.X26510Bits = ch10BitsEncoder.Checked;
+                xs.Profile = hevcProfile.SelectedIndex;
                 return xs;
             }
             set
@@ -780,6 +784,10 @@ namespace MeGUI.packages.video.x265
                 x265Settings xs = value;
                 updating = true;
                 tbx265Presets.Value = (int)xs.x265PresetLevel;
+                if (xs.Profile > 2)
+                    hevcProfile.SelectedIndex = 2;
+                else
+                    hevcProfile.SelectedIndex = xs.Profile;
                 x265Tunes.SelectedItem = EnumProxy.Create(xs.x265PsyTuning);
                 deadzoneInter.Value = xs.DeadZoneInter;
                 deadzoneIntra.Value = xs.DeadZoneIntra;
@@ -870,6 +878,7 @@ namespace MeGUI.packages.video.x265
                 x265WeightedBPrediction.Checked = xs.WeightedBPrediction;
                 x265WeightedPPrediction.SelectedIndex = xs.WeightedPPrediction;
                 x265hrd.SelectedIndex = xs.Nalhrd;
+                ch10BitsEncoder.Checked = xs.X26510Bits;
                 updating = false;
                 genericUpdate();
             }
@@ -1175,6 +1184,8 @@ namespace MeGUI.packages.video.x265
             this.x265Tunes.SelectedIndex = 0;
             this.tbx265Presets.Value = 5;
             this.advancedSettings.Checked = false;
+            this.hevcProfile.SelectedIndex = 0;
+
 
             // Frame-Type Tab
             this.x265DeblockActive.Checked = true;
@@ -1277,8 +1288,13 @@ namespace MeGUI.packages.video.x265
             EnumProxy o = x265Tunes.SelectedItem as EnumProxy;
             return (x265Settings.x265PsyTuningModes)o.RealValue;
         }
+        private AVCLevels.Levels getAVCLevel()
+        {
+            EnumProxy o = hevcLevel.SelectedItem as EnumProxy;
+            return (AVCLevels.Levels)o.RealValue; 
+        }
 
-         private void x265VBVBufferSize_ValueChanged(object sender, EventArgs e)
+        private void x265VBVBufferSize_ValueChanged(object sender, EventArgs e)
         {
             x265VBVBufferSize.ForeColor = System.Drawing.SystemColors.WindowText;
 
@@ -1295,6 +1311,39 @@ namespace MeGUI.packages.video.x265
         private void ch10BitsEncoder_CheckedChanged(object sender, EventArgs e)
         {
             updateEvent(sender, e);
+        }
+
+        private void ch10BitsEncoder_CheckedChanged_1(object sender, EventArgs e)
+        {
+            hevcProfileGroupbox.Enabled = !ch10BitsEncoder.Checked;
+            updateEvent(sender, e);
+        }
+
+        private void hevcProfile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.x265NumberOfBFrames.Value != x265Settings.GetDefaultNumberOfBFrames((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning(), chkTuneZeroLatency.Checked, chkBlurayCompat.Checked))
+                this.x265NumberOfBFrames.Value = x265Settings.GetDefaultNumberOfBFrames((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning(), chkTuneZeroLatency.Checked, chkBlurayCompat.Checked);
+            if (this.x265WeightedPPrediction.SelectedIndex != x265Settings.GetDefaultNumberOfWeightp((x265Settings.x265PresetLevelModes)tbx265Presets.Value, chkTuneFastDecode.Checked, chkBlurayCompat.Checked))
+                this.x265WeightedPPrediction.SelectedIndex = x265Settings.GetDefaultNumberOfWeightp((x265Settings.x265PresetLevelModes)tbx265Presets.Value, chkTuneFastDecode.Checked, chkBlurayCompat.Checked);
+
+            hevcLevel_SelectedIndexChanged(null, null);
+        }
+
+        private void hevcLevel_SelectedIndexChanged(object sender, EventArgs e)
+        {/*
+            AVCLevels.Levels avcLevel = getAVCLevel();
+            if (avcLevel == AVCLevels.Levels.L_UNRESTRICTED || hevcProfile.SelectedIndex < 0)
+            {
+                x265VBVBufferSize.Value = 0;
+                x265VBVMaxRate.Value = 0;
+            }
+            else
+            {
+                AVCLevels al = new AVCLevels();
+                x265VBVBufferSize.Value = al.getMaxCBP(avcLevel, hevcProfile.SelectedIndex == 0);
+                x265VBVMaxRate.Value = al.getMaxBR(avcLevel, hevcProfile.SelectedIndex == 0);
+            } */
+            genericUpdate();
         }
     }
 }

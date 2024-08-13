@@ -90,7 +90,7 @@ namespace MeGUI
 		bool deblock, cabac, p4x4mv, p8x8mv, b8x8mv, i4x4mv, i8x8mv, weightedBPrediction, 
 			chromaME, adaptiveDCT, noMixedRefs, noFastPSkip, psnrCalc, noDctDecimate, ssimCalc, useQPFile,
             FullRange, advSet, noMBTree, threadInput, noPsy, scenecut, x265SlowFirstpass, picStruct,
-            fakeInterlaced, nonDeterministic, tuneFastDecode, tuneZeroLatency, stitchable;
+            fakeInterlaced, nonDeterministic, tuneFastDecode, tuneZeroLatency, stitchable, x26510Bits;
 		string quantizerMatrix, qpfile, openGop, range;
         x265PresetLevelModes preset;
         x265PsyTuningModes psyTuningMode;
@@ -187,7 +187,8 @@ namespace MeGUI
             quantizerCrf = 28;
             tuneFastDecode = tuneZeroLatency = false;
             stitchable = false;
-		}
+            x26510Bits = false;
+        }
 		#endregion
 		#region properties
         public x265PresetLevelModes x265PresetLevel
@@ -465,6 +466,11 @@ namespace MeGUI
         {
             get { return deadZoneIntra; }
             set { deadZoneIntra = value; }
+        }
+        public bool X26510Bits
+        {
+            get { return x26510Bits; }
+            set { x26510Bits = value; }
         }
 
         /// <summary>

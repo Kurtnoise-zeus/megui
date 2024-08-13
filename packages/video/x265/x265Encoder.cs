@@ -171,6 +171,10 @@ namespace MeGUI
             if (!xs.CustomEncoderOptions.Contains("--frame-threads "))
                 if (xs.NbThreads > 0)
                     sb.Append("--frame-threads " + xs.NbThreads + " ");
+
+            // bit-depth
+            if (xs.X26510Bits)
+                sb.Append("--output-depth 10 ");
             #endregion
 
             string CustomSarValue;
@@ -211,7 +215,7 @@ namespace MeGUI
                     sb.Append("--output NUL ");
                 else if (!String.IsNullOrEmpty(output))
                     sb.Append("--output " + "\"" + output + "\" ");
-                sb.Append("--frames " + numberOfFrames + " --y4m -\"");
+                sb.Append("--frames " + numberOfFrames + " --y4m --input -\""); //force --input switch since x265 v3.6+65 otherwise we get an error
             }
 
             return sb.ToString();
