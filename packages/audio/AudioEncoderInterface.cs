@@ -1673,6 +1673,7 @@ namespace MeGUI
                 FlacSettings oSettings = audioJob.Settings as FlacSettings;
                 _encoderExecutablePath = this._settings.Flac.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.W64;
+                _iChannelMask = 1;
 
                 script.Append("AudioBits(last)>24?ConvertAudioTo24bit(last):last " + Environment.NewLine);
 
