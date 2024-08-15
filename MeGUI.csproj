@@ -844,6 +844,15 @@
     </Compile>
     <Compile Include="packages\tools\worker\WorkerPriority.cs" />
     <Compile Include="packages\tools\worker\WorkerSettings.cs" />
+    <Compile Include="packages\video\ffv1\ffv1Encoder.cs" />
+    <Compile Include="packages\video\ffv1\ffv1Settings.cs" />
+    <Compile Include="packages\video\ffv1\ffv1SettingsHandler.cs" />
+    <Compile Include="packages\video\ffv1\ffv1ConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\video\ffv1\ffv1ConfigurationPanel.Designer.cs">
+      <DependentUpon>ffv1ConfigurationPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="packages\video\huffyuv\hfyuSettings.cs" />
     <Compile Include="packages\video\ffmpeg\ffmpegEncoder.cs" />
     <Compile Include="packages\video\x264\x264ConfigurationPanel.cs">
@@ -1139,6 +1148,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="packages\tools\vobsub\VobSubIndexWindow.resx">
       <DependentUpon>VobSubIndexWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="packages\video\ffv1\ffv1ConfigurationPanel.resx">
+      <DependentUpon>ffv1ConfigurationPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="packages\video\x264\x264ConfigurationPanel.resx">

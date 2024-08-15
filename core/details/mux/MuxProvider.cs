@@ -1236,6 +1236,7 @@ namespace MeGUI
         public VideoEncoderProvider()
             : base()
         {
+            this.RegisterEncoder(new FFV1EncoderProvider());
             this.RegisterEncoder(new X264EncoderProvider());
             this.RegisterEncoder(new X265EncoderProvider());
             this.RegisterEncoder(new XviDEncoderProvider());
@@ -1311,6 +1312,22 @@ namespace MeGUI
             return new x265Encoder(settings.X265.Path);
         }
     }
+
+    public class FFV1EncoderProvider : EncodingProvider<VideoCodec, VideoType, VideoEncoderType>
+    {
+        public FFV1EncoderProvider()
+        {
+            supportedCodecs.Add(VideoCodec.FFV1);
+            supportedTypes.Add(VideoType.MKV);
+            supportedEncoderTypes.Add(VideoEncoderType.FFV1);
+        }
+
+        public override IJobProcessor CreateEncoder(MeGUISettings settings)
+        {
+            return new ffv1Encoder(settings.FFmpeg.Path);
+        }
+    }
+
     #endregion
     #region audio encoding providers
     public class NeroAACEncodingProvider : AudioEncodingProvider

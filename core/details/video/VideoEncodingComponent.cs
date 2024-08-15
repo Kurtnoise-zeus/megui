@@ -199,7 +199,8 @@ namespace MeGUI
 
             if (!fileType.Text.StartsWith("RAW") && 
                 vSettings.VideoEncodingType != MeGUI.VideoCodecSettings.VideoEncodingMode.twopass1 && vSettings.VideoEncodingType != MeGUI.VideoCodecSettings.VideoEncodingMode.threepass1
-                && (!vSettings.SettingsID.Equals("x264") || !fileType.Text.Equals("MKV") || MainForm.Instance.Settings.UseExternalMuxerX264))
+                && (!vSettings.SettingsID.Equals("x264") || !fileType.Text.Equals("MKV") || MainForm.Instance.Settings.UseExternalMuxerX264)
+                && (!vSettings.SettingsID.Equals("FFV1")))
             {
                 // create mux job
                 MuxJob mJob = new MuxJob

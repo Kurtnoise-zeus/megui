@@ -51,7 +51,9 @@ namespace MeGUI
         }
 
         public static readonly VideoCodec ASP     = new VideoCodec("ASP", "mpeg-4 visual");
+        public static readonly VideoCodec AV1     = new VideoCodec("AV1", "AV1");
         public static readonly VideoCodec AVC     = new VideoCodec("AVC", "avc");
+        public static readonly VideoCodec FFV1    = new VideoCodec("FFV1", "FFV1");
         public static readonly VideoCodec HEVC    = new VideoCodec("HEVC", "hevc");
         public static readonly VideoCodec HFYU    = new VideoCodec("HFYU", "ffvh");
         public static readonly VideoCodec MPEG1   = new VideoCodec("MPEG1", "(mpeg-1 video)|(mpeg video version 1)");
@@ -59,7 +61,6 @@ namespace MeGUI
         public static readonly VideoCodec VC1     = new VideoCodec("VC1", "vc-1");
         public static readonly VideoCodec VP8     = new VideoCodec("VP8", "VP8");
         public static readonly VideoCodec VP9     = new VideoCodec("VP9", "VP9");
-        public static readonly VideoCodec AV1     = new VideoCodec("AV1", "AV1");
         public static readonly VideoCodec VVC     = new VideoCodec("VVC", "VVC");
         public static readonly VideoCodec UNKNOWN = new VideoCodec("UNKNOWN", ".*");
     }
@@ -177,6 +178,7 @@ namespace MeGUI
         {
             return ID;
         }
+        public static readonly VideoEncoderType FFV1 = new VideoEncoderType("FFV1", VideoCodec.FFV1);
         public static readonly VideoEncoderType HFYU = new VideoEncoderType("Huffyuv", VideoCodec.HFYU);
         public static readonly VideoEncoderType X264 = new VideoEncoderType("x264", VideoCodec.AVC);
         public static readonly VideoEncoderType X265 = new VideoEncoderType("x265", VideoCodec.HEVC);
@@ -271,6 +273,7 @@ namespace MeGUI
                 ))
                 throw new Exception("Failed to register a standard video codec");
             if (!(
+                VideoEncoderTypes.Register(VideoEncoderType.FFV1) &&
                 VideoEncoderTypes.Register(VideoEncoderType.HFYU) &&
                 VideoEncoderTypes.Register(VideoEncoderType.X264) &&
                 VideoEncoderTypes.Register(VideoEncoderType.X265) &&
