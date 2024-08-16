@@ -65,6 +65,11 @@ namespace MeGUI
 			{
 				job.Settings.VideoEncodingType = VideoCodecSettings.VideoEncodingMode.twopass2;
 			}
+            else if (job.Settings.FFV1EncodingType == VideoCodecSettings.FFV1EncodingMode.twopassAutomated) // automated 2 pass, change type to 2 pass 2nd pass
+            {
+                job.Settings.FFV1EncodingType = VideoCodecSettings.FFV1EncodingMode.twopass2;
+                settings.Logfile = Path.ChangeExtension(output, ".log");
+            }
             else if (job.Settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepassAutomated) // automated 3 pass, change type to 3 pass first pass
 			{
 				if (MainForm.Instance.Settings.OverwriteStats)
@@ -303,9 +308,11 @@ namespace MeGUI
 
 			bool twoPasses = false, threePasses = false;
             if (settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopassAutomated) // automated twopass
-				twoPasses = true;
+                twoPasses = true;
+            else if (settings.FFV1EncodingType == VideoCodecSettings.FFV1EncodingMode.twopassAutomated)
+                twoPasses = true;
             else if (settings.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepassAutomated) // automated threepass
-				threePasses = true;
+                threePasses = true;
 
             VideoJob prerenderJob = null;
             FFMSIndexJob indexJob = null;
@@ -366,8 +373,16 @@ namespace MeGUI
                         job.FilesToDelete.Add(cutreeFile);
                         job.FilesToDelete.Add(cutreeFile + ".temp");
                     }
+                    else if (job.Settings.SettingsID.Equals("FFV1"))
+                    {
+                        string jobfile = Path.ChangeExtension(job.Output, "-0.log");
+                        job.FilesToDelete.Add(jobfile);
+                    }
                     firstpass = cloneJob(job);
 					firstpass.Output = ""; // the first pass has no output
+                    if (job.Settings.SettingsID.Equals("FFV1"))
+                        firstpass.Settings.FFV1EncodingType = VideoCodecSettings.FFV1EncodingMode.twopass1;
+                    else
                     firstpass.Settings.VideoEncodingType = VideoCodecSettings.VideoEncodingMode.twopass1;
                     firstpass.DAR = dar;
 					if (threePasses)

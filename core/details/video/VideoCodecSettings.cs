@@ -69,7 +69,16 @@ namespace MeGUI
             threepass2,
             threepass3,
             threepassAutomated,
-            quality
+            quality,
+            none
+        };
+
+        public enum FFV1EncodingMode : int
+        {
+            none,
+            twopass1,
+            twopass2,
+            twopassAutomated
         };
 
         private int bitrateQuantizer, keyframeInterval, nbBframes, minQuantizer, maxQuantizer, maxNumberOfPasses, nbThreads;
@@ -78,6 +87,7 @@ namespace MeGUI
 		private string logfile, customEncoderOptions, videoName;
         private VideoEncoderType vet;
         private VideoEncodingMode videoEncodyingType;
+        private FFV1EncodingMode ffv1EncodingType;
 
         public abstract bool UsesSAR
         {
@@ -106,7 +116,13 @@ namespace MeGUI
             get { return videoEncodyingType; }
             set { videoEncodyingType = value; }
         }
-		public int BitrateQuantizer
+        public FFV1EncodingMode FFV1EncodingType
+        {
+            get { return ffv1EncodingType; }
+            set { ffv1EncodingType = value; }
+        }
+
+        public int BitrateQuantizer
 		{
 			get { return bitrateQuantizer; }
 			set { bitrateQuantizer = value; }

@@ -29,6 +29,7 @@ namespace MeGUI.core.details.video
         protected bool updating = false;
         private double bytesPerFrame;
         protected VideoCodecSettings.VideoEncodingMode lastEncodingMode = 0;
+        protected VideoCodecSettings.FFV1EncodingMode lastFFV1EncodingMode = 0;
         protected int lastBitrateEncodingValue = 1000;
         protected int lastQuantizerEncodingValue = 32;
 

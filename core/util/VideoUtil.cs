@@ -308,7 +308,10 @@ namespace MeGUI
                     && video.Settings.VideoEncodingType != VideoCodecSettings.VideoEncodingMode.threepassAutomated) // no automated 2/3 pass
                 {
                     if (MainForm.Instance.Settings.NbPasses == 2)
+                    {
                         video.Settings.VideoEncodingType = VideoCodecSettings.VideoEncodingMode.twopassAutomated; // automated 2 pass
+                        video.Settings.FFV1EncodingType = VideoCodecSettings.FFV1EncodingMode.twopassAutomated;   // automated 2 pass
+                    }
                     else if (video.Settings.MaxNumberOfPasses == 3)
                         video.Settings.VideoEncodingType = VideoCodecSettings.VideoEncodingMode.threepassAutomated;
                 }
