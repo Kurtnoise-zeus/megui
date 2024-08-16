@@ -42,12 +42,34 @@ namespace MeGUI.packages.video.ffv1
             InitializeComponent();
             ffv1Coder.SelectedIndex = 1;
             ffv1Slices.SelectedIndex = 0;
+            ffv1EncodingMode.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Returns whether the given mode is a bitrate or quality-based mode
+        /// </summary>
+        /// <param name="mode">selected encoding mode</param>
+        /// <returns>true if the mode is a bitrate mode, false otherwise</returns>
+        private bool isBitrateMode(VideoCodecSettings.VideoEncodingMode mode)
+        {
+            return !(mode == VideoCodecSettings.VideoEncodingMode.none);
+        }
+        private void doDropDownAdjustments()
+        {
+            lastFFV1EncodingMode = (VideoCodecSettings.FFV1EncodingMode)this.ffv1EncodingMode.SelectedIndex;
         }
 
         protected override string getCommandline()
         {
             ulong x = 1;
             return ffv1Encoder.genCommandline(null, null, null, -1, -1, ref x, Settings as ffv1Settings, null);
+        }
+        /// <summary>
+        /// Does all the necessary adjustments after a GUI change has been made.
+        /// </summary>
+        protected override void doCodecSpecificAdjustments()
+        {
+            doDropDownAdjustments();
         }
 
         /// <summary>
@@ -84,8 +106,7 @@ namespace MeGUI.packages.video.ffv1
                 xs.GOPSize = (int)nmGOPSize.Value;
                 xs.ErrorCorrection = chErrorCorrection.Checked;
                 xs.Context = chContext.Checked ? 1 :0;
-                xs.MultiPass = chMultiPass.Checked;
-                xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)ffv1EncodingMode.SelectedIndex;
+                xs.FFV1EncodingType = (VideoCodecSettings.FFV1EncodingMode)this.ffv1EncodingMode.SelectedIndex;
                 return xs;
             }
             set
@@ -96,6 +117,7 @@ namespace MeGUI.packages.video.ffv1
 
                 ffv1Settings xs = value;
                 updating = true;
+                lastEncodingMode = xs.VideoEncodingType;
                 ffv1Coder.SelectedIndex = xs.Coder;
                 ffv1Slices.SelectedIndex = xs.Slices;
                 ch10BitsEncoder.Checked = xs.FFV110Bits;
@@ -103,8 +125,7 @@ namespace MeGUI.packages.video.ffv1
                 nmGOPSize.Value = xs.GOPSize;
                 chErrorCorrection.Checked = xs.ErrorCorrection;
                 chContext.Checked = xs.Context == 1 ? true : false;
-                chMultiPass.Checked = xs.MultiPass;
-                ffv1EncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
+                ffv1EncodingMode.SelectedIndex = (int)xs.FFV1EncodingType;
                 updating = false;
                 genericUpdate();
             }
@@ -150,52 +171,54 @@ namespace MeGUI.packages.video.ffv1
 
         private void chMultiPass_CheckedChanged(object sender, EventArgs e)
         {
-           ffv1EncodingMode.Enabled = chMultiPass.Checked;
-            genericUpdate();
+           updateEvent(sender, e);
         }
 
         private void chErrorCorrection_CheckedChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+           updateEvent(sender, e);
         }
 
         private void chContext_CheckedChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+            updateEvent(sender, e);
         }
 
         private void ch10BitsEncoder_CheckedChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+            updateEvent(sender, e);
         }
 
         private void ffv1Coder_SelectedIndexChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+            updateEvent(sender, e);
         }
 
         private void ffv1Slices_SelectedIndexChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+            updateEvent(sender, e);
         }
 
         private void nmGOPSize_ValueChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+            updateEvent(sender, e);
         }
 
         private void ffv1NbThreads_ValueChanged(object sender, EventArgs e)
         {
-            genericUpdate();
+            updateEvent(sender, e);
         }
 
         private void ffv1EncodingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            genericUpdate();
-        }
-
-        private void ffv1EncodingMode_SelectionChangeCommitted(object sender, EventArgs e)
-        {
+            //ffv1Settings xs = new ffv1Settings();
+            //switch (ffv1EncodingMode.SelectedIndex)
+            //{
+            //    case 0: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)10;  break;
+            //    case 1: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)2;   break;
+            //    case 2: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)3;   break;
+            //    case 3: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)4;   break;
+            //}
             genericUpdate();
         }
     }

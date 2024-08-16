@@ -66,7 +66,6 @@ namespace MeGUI.packages.video.ffv1
             this.nmGOPSize = new System.Windows.Forms.NumericUpDown();
             this.gbExtra = new System.Windows.Forms.GroupBox();
             this.ffv1CodecGeneralGroupbox = new System.Windows.Forms.GroupBox();
-            this.chMultiPass = new System.Windows.Forms.CheckBox();
             this.ffv1EncodingMode = new System.Windows.Forms.ComboBox();
             this.ffv1SlicesGroupbox = new System.Windows.Forms.GroupBox();
             this.ffv1Slices = new System.Windows.Forms.ComboBox();
@@ -87,7 +86,7 @@ namespace MeGUI.packages.video.ffv1
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.MiscTabPage);
-            this.tabControl1.Size = new System.Drawing.Size(510, 246);
+            this.tabControl1.Size = new System.Drawing.Size(370, 246);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Controls.SetChildIndex(this.MiscTabPage, 0);
@@ -96,7 +95,7 @@ namespace MeGUI.packages.video.ffv1
             // commandline
             // 
             this.commandline.Location = new System.Drawing.Point(0, 248);
-            this.commandline.Size = new System.Drawing.Size(507, 89);
+            this.commandline.Size = new System.Drawing.Size(367, 89);
             this.commandline.TabIndex = 1;
             this.commandline.Text = " ";
             // 
@@ -104,7 +103,7 @@ namespace MeGUI.packages.video.ffv1
             // 
             this.mainTabPage.Controls.Add(this.gbExtra);
             this.mainTabPage.Controls.Add(this.helpButton1);
-            this.mainTabPage.Size = new System.Drawing.Size(502, 220);
+            this.mainTabPage.Size = new System.Drawing.Size(362, 220);
             // 
             // label3
             // 
@@ -139,10 +138,10 @@ namespace MeGUI.packages.video.ffv1
             // 
             this.helpButton1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.helpButton1.ArticleName = "Configuration/Video_Encoder_Configuration/x265";
+            this.helpButton1.ArticleName = "Configuration/Video_Encoder_Configuration/FFV1";
             this.helpButton1.AutoSize = true;
             this.helpButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.helpButton1.Location = new System.Drawing.Point(451, 183);
+            this.helpButton1.Location = new System.Drawing.Point(299, 183);
             this.helpButton1.Name = "helpButton1";
             this.helpButton1.Size = new System.Drawing.Size(39, 23);
             this.helpButton1.TabIndex = 10;
@@ -153,7 +152,7 @@ namespace MeGUI.packages.video.ffv1
             this.MiscTabPage.Location = new System.Drawing.Point(4, 22);
             this.MiscTabPage.Name = "MiscTabPage";
             this.MiscTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MiscTabPage.Size = new System.Drawing.Size(502, 220);
+            this.MiscTabPage.Size = new System.Drawing.Size(362, 220);
             this.MiscTabPage.TabIndex = 6;
             this.MiscTabPage.Text = "Misc";
             this.MiscTabPage.UseVisualStyleBackColor = true;
@@ -193,7 +192,7 @@ namespace MeGUI.packages.video.ffv1
             this.ffv1NbThreads.Name = "ffv1NbThreads";
             this.ffv1NbThreads.Size = new System.Drawing.Size(43, 20);
             this.ffv1NbThreads.TabIndex = 18;
-            this.ffv1NbThreads.ValueChanged += new System.EventHandler(this.ffv1NbThreads_ValueChanged);
+            this.ffv1NbThreads.ValueChanged += new System.EventHandler(this.updateEvent);
             // 
             // ch10BitsEncoder
             // 
@@ -204,7 +203,7 @@ namespace MeGUI.packages.video.ffv1
             this.ch10BitsEncoder.TabIndex = 41;
             this.ch10BitsEncoder.Text = "Enable 10-Bits Encoding";
             this.ch10BitsEncoder.UseVisualStyleBackColor = true;
-            this.ch10BitsEncoder.CheckedChanged += new System.EventHandler(this.ch10BitsEncoder_CheckedChanged);
+            this.ch10BitsEncoder.CheckedChanged += new System.EventHandler(this.updateEvent);
             // 
             // chErrorCorrection
             // 
@@ -217,7 +216,7 @@ namespace MeGUI.packages.video.ffv1
             this.chErrorCorrection.TabIndex = 43;
             this.chErrorCorrection.Text = "Enable Error Correction";
             this.chErrorCorrection.UseVisualStyleBackColor = true;
-            this.chErrorCorrection.CheckedChanged += new System.EventHandler(this.chErrorCorrection_CheckedChanged);
+            this.chErrorCorrection.CheckedChanged += new System.EventHandler(this.updateEvent);
             // 
             // chContext
             // 
@@ -230,7 +229,7 @@ namespace MeGUI.packages.video.ffv1
             this.chContext.TabIndex = 44;
             this.chContext.Text = "Enable Context";
             this.chContext.UseVisualStyleBackColor = true;
-            this.chContext.CheckedChanged += new System.EventHandler(this.chContext_CheckedChanged);
+            this.chContext.CheckedChanged += new System.EventHandler(this.updateEvent);
             // 
             // lbGOPSize
             // 
@@ -257,10 +256,12 @@ namespace MeGUI.packages.video.ffv1
             0,
             0,
             0});
-            this.nmGOPSize.ValueChanged += new System.EventHandler(this.nmGOPSize_ValueChanged);
+            this.nmGOPSize.ValueChanged += new System.EventHandler(this.updateEvent);
             // 
             // gbExtra
             // 
+            this.gbExtra.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbExtra.Controls.Add(this.ffv1CodecGeneralGroupbox);
             this.gbExtra.Controls.Add(this.ch10BitsEncoder);
             this.gbExtra.Controls.Add(this.chContext);
@@ -273,7 +274,7 @@ namespace MeGUI.packages.video.ffv1
             this.gbExtra.Controls.Add(this.ffv1NbThreads);
             this.gbExtra.Location = new System.Drawing.Point(6, 6);
             this.gbExtra.Name = "gbExtra";
-            this.gbExtra.Size = new System.Drawing.Size(490, 171);
+            this.gbExtra.Size = new System.Drawing.Size(350, 171);
             this.gbExtra.TabIndex = 47;
             this.gbExtra.TabStop = false;
             this.gbExtra.Text = "FFV1 Settings";
@@ -282,56 +283,47 @@ namespace MeGUI.packages.video.ffv1
             // 
             this.ffv1CodecGeneralGroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ffv1CodecGeneralGroupbox.Controls.Add(this.chMultiPass);
             this.ffv1CodecGeneralGroupbox.Controls.Add(this.ffv1EncodingMode);
-            this.ffv1CodecGeneralGroupbox.Location = new System.Drawing.Point(195, 9);
+            this.ffv1CodecGeneralGroupbox.Location = new System.Drawing.Point(198, 9);
             this.ffv1CodecGeneralGroupbox.Name = "ffv1CodecGeneralGroupbox";
-            this.ffv1CodecGeneralGroupbox.Size = new System.Drawing.Size(289, 48);
+            this.ffv1CodecGeneralGroupbox.Size = new System.Drawing.Size(146, 48);
             this.ffv1CodecGeneralGroupbox.TabIndex = 45;
             this.ffv1CodecGeneralGroupbox.TabStop = false;
             this.ffv1CodecGeneralGroupbox.Text = " Encoding Mode ";
             // 
-            // chMultiPass
-            // 
-            this.chMultiPass.AutoSize = true;
-            this.chMultiPass.Location = new System.Drawing.Point(6, 21);
-            this.chMultiPass.Name = "chMultiPass";
-            this.chMultiPass.Size = new System.Drawing.Size(110, 17);
-            this.chMultiPass.TabIndex = 3;
-            this.chMultiPass.Text = "Enable Multi-Pass";
-            this.chMultiPass.UseVisualStyleBackColor = true;
-            this.chMultiPass.CheckedChanged += new System.EventHandler(this.chMultiPass_CheckedChanged);
-            // 
             // ffv1EncodingMode
             // 
-            this.ffv1EncodingMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ffv1EncodingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ffv1EncodingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ffv1EncodingMode.Enabled = false;
             this.ffv1EncodingMode.Items.AddRange(new object[] {
+            "None",
             "2pass - 1st pass",
             "2pass - 2nd pass",
             "Automated 2pass"});
-            this.ffv1EncodingMode.Location = new System.Drawing.Point(135, 19);
+            this.ffv1EncodingMode.Location = new System.Drawing.Point(14, 19);
             this.ffv1EncodingMode.MaxDropDownItems = 2;
             this.ffv1EncodingMode.Name = "ffv1EncodingMode";
-            this.ffv1EncodingMode.Size = new System.Drawing.Size(144, 21);
+            this.ffv1EncodingMode.Size = new System.Drawing.Size(123, 21);
             this.ffv1EncodingMode.TabIndex = 2;
-            this.ffv1EncodingMode.SelectedIndexChanged += new System.EventHandler(this.ffv1EncodingMode_SelectedIndexChanged);
-            this.ffv1EncodingMode.SelectionChangeCommitted += new System.EventHandler(this.ffv1EncodingMode_SelectionChangeCommitted);
+            this.ffv1EncodingMode.SelectedIndexChanged += new System.EventHandler(this.updateEvent);
             // 
             // ffv1SlicesGroupbox
             // 
-            this.ffv1SlicesGroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ffv1SlicesGroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ffv1SlicesGroupbox.Controls.Add(this.ffv1Slices);
-            this.ffv1SlicesGroupbox.Location = new System.Drawing.Point(344, 63);
+            this.ffv1SlicesGroupbox.Location = new System.Drawing.Point(198, 117);
             this.ffv1SlicesGroupbox.Name = "ffv1SlicesGroupbox";
-            this.ffv1SlicesGroupbox.Size = new System.Drawing.Size(140, 48);
+            this.ffv1SlicesGroupbox.Size = new System.Drawing.Size(146, 48);
             this.ffv1SlicesGroupbox.TabIndex = 44;
             this.ffv1SlicesGroupbox.TabStop = false;
             this.ffv1SlicesGroupbox.Text = "Slices";
             // 
             // ffv1Slices
             // 
+            this.ffv1Slices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ffv1Slices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ffv1Slices.Items.AddRange(new object[] {
             "4",
@@ -343,23 +335,26 @@ namespace MeGUI.packages.video.ffv1
             "30"});
             this.ffv1Slices.Location = new System.Drawing.Point(14, 19);
             this.ffv1Slices.Name = "ffv1Slices";
-            this.ffv1Slices.Size = new System.Drawing.Size(116, 21);
+            this.ffv1Slices.Size = new System.Drawing.Size(123, 21);
             this.ffv1Slices.TabIndex = 0;
-            this.ffv1Slices.SelectedIndexChanged += new System.EventHandler(this.ffv1Slices_SelectedIndexChanged);
+            this.ffv1Slices.SelectedIndexChanged += new System.EventHandler(this.updateEvent);
             // 
             // gbCoder
             // 
-            this.gbCoder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbCoder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbCoder.Controls.Add(this.ffv1Coder);
-            this.gbCoder.Location = new System.Drawing.Point(195, 63);
+            this.gbCoder.Location = new System.Drawing.Point(198, 63);
             this.gbCoder.Name = "gbCoder";
-            this.gbCoder.Size = new System.Drawing.Size(143, 48);
+            this.gbCoder.Size = new System.Drawing.Size(146, 48);
             this.gbCoder.TabIndex = 43;
             this.gbCoder.TabStop = false;
             this.gbCoder.Text = "Coder";
             // 
             // ffv1Coder
             // 
+            this.ffv1Coder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ffv1Coder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ffv1Coder.FormattingEnabled = true;
             this.ffv1Coder.Items.AddRange(new object[] {
@@ -368,16 +363,16 @@ namespace MeGUI.packages.video.ffv1
             "2"});
             this.ffv1Coder.Location = new System.Drawing.Point(14, 19);
             this.ffv1Coder.Name = "ffv1Coder";
-            this.ffv1Coder.Size = new System.Drawing.Size(111, 21);
+            this.ffv1Coder.Size = new System.Drawing.Size(123, 21);
             this.ffv1Coder.TabIndex = 0;
-            this.ffv1Coder.SelectedIndexChanged += new System.EventHandler(this.ffv1Coder_SelectedIndexChanged);
+            this.ffv1Coder.SelectedIndexChanged += new System.EventHandler(this.updateEvent);
             // 
             // ffv1ConfigurationPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Name = "ffv1ConfigurationPanel";
-            this.Size = new System.Drawing.Size(510, 340);
+            this.Size = new System.Drawing.Size(370, 340);
             this.tabControl1.ResumeLayout(false);
             this.mainTabPage.ResumeLayout(false);
             this.mainTabPage.PerformLayout();
@@ -389,7 +384,6 @@ namespace MeGUI.packages.video.ffv1
             this.gbExtra.ResumeLayout(false);
             this.gbExtra.PerformLayout();
             this.ffv1CodecGeneralGroupbox.ResumeLayout(false);
-            this.ffv1CodecGeneralGroupbox.PerformLayout();
             this.ffv1SlicesGroupbox.ResumeLayout(false);
             this.gbCoder.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -421,6 +415,5 @@ namespace MeGUI.packages.video.ffv1
         private System.Windows.Forms.ComboBox ffv1Coder;
         private System.Windows.Forms.GroupBox ffv1CodecGeneralGroupbox;
         private System.Windows.Forms.ComboBox ffv1EncodingMode;
-        private System.Windows.Forms.CheckBox chMultiPass;
     }
 }

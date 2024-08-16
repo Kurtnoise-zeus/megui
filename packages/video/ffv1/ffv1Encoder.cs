@@ -36,7 +36,7 @@ namespace MeGUI
             if (j is VideoJob && (j as VideoJob).Settings is ffv1Settings)
             {
                 UpdateCacher.CheckPackage("ffmpeg");
-                return new ffv1Encoder("cmd.exe");
+                return new ffv1Encoder(mf.Settings.FFmpeg.Path);
             }
             return null;
         }
@@ -75,7 +75,6 @@ namespace MeGUI
 
         public static string genCommandline(string input, string output, Dar? d, int hres, int vres, ref ulong numberOfFrames, ffv1Settings _xs, LogItem log)
         {
-            int qp;
             StringBuilder sb = new StringBuilder();
             CultureInfo ci = new CultureInfo("en-us");
             ffv1Settings xs = (ffv1Settings)_xs.Clone();
@@ -86,8 +85,6 @@ namespace MeGUI
             {
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
-
-                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" ");
             }
 
             #region main tab
@@ -133,18 +130,18 @@ namespace MeGUI
                 sb.Append("-g " + xs.GOPSize.ToString() + " ");
 
             // Encoding Modes
-            if (xs.MultiPass)
+            switch (xs.FFV1EncodingType)
             {
-                switch (xs.VideoEncodingType)
-                {
-                    case VideoCodecSettings.VideoEncodingMode.twopass1: // 2 pass first pass
-                        sb.Append("-pass 1 -passlogfile " + "\"" + xs.Logfile + "\" ");
-                        break;
-                    case VideoCodecSettings.VideoEncodingMode.twopass2: // 2 pass second pass
-                    case VideoCodecSettings.VideoEncodingMode.twopassAutomated: // automated twopass
-                        sb.Append("-pass 2 -passlogfile " + "\"" + xs.Logfile + "\" ");
-                        break;
-                }
+                case VideoCodecSettings.FFV1EncodingMode.none: // No MultiPass
+                    break;
+                case VideoCodecSettings.FFV1EncodingMode.twopass1: // 2 pass first pass
+                    sb.Append("-pass 1 -passlogfile " + "\"" + Path.ChangeExtension(xs.Logfile, "") + "\" ");
+                    break;
+                case VideoCodecSettings.FFV1EncodingMode.twopass2: // 2 pass second pass
+                case VideoCodecSettings.FFV1EncodingMode.twopassAutomated: // automated twopass
+                    sb.Append("-pass 2 -passlogfile " + "\"" + Path.ChangeExtension(xs.Logfile, "") + "\" ");
+                    break;
+                default: break;
             }
 
             // Threads
@@ -167,7 +164,7 @@ namespace MeGUI
             if (log != null)
             {
                 // input/output
-                if (xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopass1)
+                if (xs.FFV1EncodingType == VideoCodecSettings.FFV1EncodingMode.twopass1)
                     sb.Append("-f null NUL ");
                 else if (!String.IsNullOrEmpty(output))
                     sb.Append("-f matroska " + "\"" + output + "\" "); // Force MKV output

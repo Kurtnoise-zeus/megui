@@ -44,7 +44,7 @@ namespace MeGUI
 
         int coder, context, gopsize, slicesnb, nbThreads;
 		decimal quantizerCrf;
-		bool errorCorrection, ffv110Bits, multipass;
+		bool errorCorrection, ffv110Bits;
 
 		#region constructor
         /// <summary>
@@ -60,10 +60,11 @@ namespace MeGUI
             slicesnb = 1;
             quantizerCrf = 28;
             ffv110Bits = false;
-            multipass = false;
+            FFV1EncodingType = FFV1EncodingMode.none;
+            base.MaxNumberOfPasses = 2;
         }
-		#endregion
-		#region properties
+        #endregion
+        #region properties
 
         [XmlIgnore()]
         [MeGUI.core.plugins.interfaces.PropertyEqualityIgnoreAttribute()]
@@ -102,12 +103,6 @@ namespace MeGUI
             get { return ffv110Bits; }
             set { ffv110Bits = value; }
         }
-        public bool MultiPass
-        {
-            get { return multipass; }
-            set { multipass = value; }
-        }
-
         #endregion
         public override bool UsesSAR
         {
@@ -129,7 +124,7 @@ namespace MeGUI
         public bool IsAltered(ffv1Settings otherSettings)
         {
             if (
-                    this.gopsize != otherSettings.gopsize
+                this.FFV1EncodingType != otherSettings.FFV1EncodingType
                 )
                 return true;
             else
