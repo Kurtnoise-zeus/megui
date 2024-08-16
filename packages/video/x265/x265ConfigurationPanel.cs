@@ -1330,7 +1330,7 @@ namespace MeGUI.packages.video.x265
         }
 
         private void hevcLevel_SelectedIndexChanged(object sender, EventArgs e)
-        {/*
+        {
             AVCLevels.Levels avcLevel = getAVCLevel();
             if (avcLevel == AVCLevels.Levels.L_UNRESTRICTED || hevcProfile.SelectedIndex < 0)
             {
@@ -1342,7 +1342,7 @@ namespace MeGUI.packages.video.x265
                 AVCLevels al = new AVCLevels();
                 x265VBVBufferSize.Value = al.getMaxCBP(avcLevel, hevcProfile.SelectedIndex == 0);
                 x265VBVMaxRate.Value = al.getMaxBR(avcLevel, hevcProfile.SelectedIndex == 0);
-            } */
+            }
             genericUpdate();
         }
     }
