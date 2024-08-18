@@ -1237,6 +1237,7 @@ namespace MeGUI
             : base()
         {
             this.RegisterEncoder(new FFV1EncoderProvider());
+            this.RegisterEncoder(new SVTAV1PSYEncoderProvider());
             this.RegisterEncoder(new X264EncoderProvider());
             this.RegisterEncoder(new X265EncoderProvider());
             this.RegisterEncoder(new XviDEncoderProvider());
@@ -1267,8 +1268,6 @@ namespace MeGUI
         public XviDEncoderProvider()
         {
             supportedCodecs.Add(VideoCodec.ASP);
-            //supportedTypes.Add(VideoType.AVI);
-            //supportedTypes.Add(VideoType.MKV);
             supportedTypes.Add(VideoType.RAWASP);
             supportedEncoderTypes.Add(VideoEncoderType.XVID);
         }
@@ -1284,7 +1283,7 @@ namespace MeGUI
         public X264EncoderProvider()
         {
             supportedCodecs.Add(VideoCodec.AVC);
-            //supportedTypes.Add(VideoType.MP4); disabled as official x264 builds do not output to mp4
+            supportedTypes.Add(VideoType.MP4);
             supportedTypes.Add(VideoType.MKV);
             supportedTypes.Add(VideoType.RAWAVC);
             supportedEncoderTypes.Add(VideoEncoderType.X264);
@@ -1301,8 +1300,6 @@ namespace MeGUI
         public X265EncoderProvider()
         {
             supportedCodecs.Add(VideoCodec.HEVC);
-            //supportedTypes.Add(VideoType.MP4);
-            //supportedTypes.Add(VideoType.MKV); 
             supportedTypes.Add(VideoType.RAWHEVC);
             supportedEncoderTypes.Add(VideoEncoderType.X265);
         }
@@ -1325,6 +1322,22 @@ namespace MeGUI
         public override IJobProcessor CreateEncoder(MeGUISettings settings)
         {
             return new ffv1Encoder(settings.FFmpeg.Path);
+        }
+    }
+
+    public class SVTAV1PSYEncoderProvider : EncodingProvider<VideoCodec, VideoType, VideoEncoderType>
+    {
+        public SVTAV1PSYEncoderProvider()
+        {
+            supportedCodecs.Add(VideoCodec.AV1);
+            supportedTypes.Add(VideoType.MKV);
+            supportedTypes.Add(VideoType.MP4);
+            supportedEncoderTypes.Add(VideoEncoderType.SVTAV1PSY);
+        }
+
+        public override IJobProcessor CreateEncoder(MeGUISettings settings)
+        {
+            return new svtav1psyEncoder(settings.FFmpeg.Path);
         }
     }
 

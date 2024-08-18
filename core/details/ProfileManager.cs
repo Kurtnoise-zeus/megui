@@ -35,6 +35,7 @@ using MeGUI.packages.video.x264;
 using MeGUI.packages.video.x265;
 using MeGUI.packages.video.xvid;
 using MeGUI.packages.video.ffv1;
+using MeGUI.packages.video.svtav1psy;
 
 namespace MeGUI
 {
@@ -63,6 +64,7 @@ namespace MeGUI
                 this.profileFolder = profileFolder;
             profileGroups.Add(new ProfileGroup(typeof(VideoCodecSettings), "Video"));
             SafeRegister<ffv1Settings, ffv1ConfigurationPanel>("Video");
+            SafeRegister<svtav1psySettings, svtav1psyConfigurationPanel>("Video");
             SafeRegister<x264Settings, x264ConfigurationPanel>("Video");
             SafeRegister<x265Settings, x265ConfigurationPanel>("Video");
             SafeRegister<xvidSettings, xvidConfigurationPanel>("Video");
