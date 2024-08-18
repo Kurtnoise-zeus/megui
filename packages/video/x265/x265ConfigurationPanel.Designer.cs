@@ -199,14 +199,6 @@ namespace MeGUI.packages.video.x265
             this.x265NumberOfRefFramesLabel = new System.Windows.Forms.Label();
             this.trellisLabel = new System.Windows.Forms.Label();
             this.MiscTabPage = new System.Windows.Forms.TabPage();
-            this.gbOther = new System.Windows.Forms.GroupBox();
-            this.chkTuneZeroLatency = new System.Windows.Forms.CheckBox();
-            this.chkTuneFastDecode = new System.Windows.Forms.CheckBox();
-            this.x264NbThreads = new System.Windows.Forms.NumericUpDown();
-            this.nonDeterministic = new System.Windows.Forms.CheckBox();
-            this.x264SlowFirstpass = new System.Windows.Forms.CheckBox();
-            this.threadin = new System.Windows.Forms.CheckBox();
-            this.x264NbThreadsLabel = new System.Windows.Forms.Label();
             this.gbx265CustomCmd = new System.Windows.Forms.GroupBox();
             this.customCommandlineOptions = new System.Windows.Forms.TextBox();
             this.x265ThreadsLabel = new System.Windows.Forms.Label();
@@ -216,6 +208,9 @@ namespace MeGUI.packages.video.x265
             this.hevcProfile = new System.Windows.Forms.ComboBox();
             this.hevcLevelGroupbox = new System.Windows.Forms.GroupBox();
             this.hevcLevel = new System.Windows.Forms.ComboBox();
+            this.chkTuneZeroLatency = new System.Windows.Forms.CheckBox();
+            this.chkTuneFastDecode = new System.Windows.Forms.CheckBox();
+            this.gbOthers = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.mainTabPage.SuspendLayout();
             this.x265CodecGeneralGroupbox.SuspendLayout();
@@ -273,12 +268,11 @@ namespace MeGUI.packages.video.x265
             this.x265OtherOptionsGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.x265MERange)).BeginInit();
             this.MiscTabPage.SuspendLayout();
-            this.gbOther.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.x264NbThreads)).BeginInit();
             this.gbx265CustomCmd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.x265NbThreads)).BeginInit();
             this.hevcProfileGroupbox.SuspendLayout();
             this.hevcLevelGroupbox.SuspendLayout();
+            this.gbOthers.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -305,12 +299,9 @@ namespace MeGUI.packages.video.x265
             // 
             // mainTabPage
             // 
+            this.mainTabPage.Controls.Add(this.gbOthers);
             this.mainTabPage.Controls.Add(this.hevcLevelGroupbox);
             this.mainTabPage.Controls.Add(this.hevcProfileGroupbox);
-            this.mainTabPage.Controls.Add(this.ch10BitsEncoder);
-            this.mainTabPage.Controls.Add(this.x265ThreadsLabel);
-            this.mainTabPage.Controls.Add(this.x265NbThreads);
-            this.mainTabPage.Controls.Add(this.advancedSettings);
             this.mainTabPage.Controls.Add(this.gbTunes);
             this.mainTabPage.Controls.Add(this.gbPresets);
             this.mainTabPage.Controls.Add(this.helpButton1);
@@ -1669,7 +1660,7 @@ namespace MeGUI.packages.video.x265
             this.helpButton1.ArticleName = "Configuration/Video_Encoder_Configuration/x265";
             this.helpButton1.AutoSize = true;
             this.helpButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.helpButton1.Location = new System.Drawing.Point(455, 199);
+            this.helpButton1.Location = new System.Drawing.Point(455, 324);
             this.helpButton1.Name = "helpButton1";
             this.helpButton1.Size = new System.Drawing.Size(39, 23);
             this.helpButton1.TabIndex = 10;
@@ -2287,7 +2278,7 @@ namespace MeGUI.packages.video.x265
             // 
             this.advancedSettings.AutoSize = true;
             this.advancedSettings.Enabled = false;
-            this.advancedSettings.Location = new System.Drawing.Point(21, 278);
+            this.advancedSettings.Location = new System.Drawing.Point(14, 92);
             this.advancedSettings.Name = "advancedSettings";
             this.advancedSettings.Size = new System.Drawing.Size(146, 17);
             this.advancedSettings.TabIndex = 16;
@@ -2339,7 +2330,6 @@ namespace MeGUI.packages.video.x265
             // 
             // MiscTabPage
             // 
-            this.MiscTabPage.Controls.Add(this.gbOther);
             this.MiscTabPage.Controls.Add(this.gbx265CustomCmd);
             this.MiscTabPage.Location = new System.Drawing.Point(4, 22);
             this.MiscTabPage.Name = "MiscTabPage";
@@ -2348,100 +2338,6 @@ namespace MeGUI.packages.video.x265
             this.MiscTabPage.TabIndex = 6;
             this.MiscTabPage.Text = "Misc";
             this.MiscTabPage.UseVisualStyleBackColor = true;
-            // 
-            // gbOther
-            // 
-            this.gbOther.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbOther.Controls.Add(this.chkTuneZeroLatency);
-            this.gbOther.Controls.Add(this.chkTuneFastDecode);
-            this.gbOther.Controls.Add(this.x264NbThreads);
-            this.gbOther.Controls.Add(this.nonDeterministic);
-            this.gbOther.Controls.Add(this.x264SlowFirstpass);
-            this.gbOther.Controls.Add(this.threadin);
-            this.gbOther.Controls.Add(this.x264NbThreadsLabel);
-            this.gbOther.Location = new System.Drawing.Point(93, 153);
-            this.gbOther.Name = "gbOther";
-            this.gbOther.Size = new System.Drawing.Size(317, 106);
-            this.gbOther.TabIndex = 35;
-            this.gbOther.TabStop = false;
-            this.gbOther.Text = "Other";
-            // 
-            // chkTuneZeroLatency
-            // 
-            this.chkTuneZeroLatency.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkTuneZeroLatency.Location = new System.Drawing.Point(184, 76);
-            this.chkTuneZeroLatency.Name = "chkTuneZeroLatency";
-            this.chkTuneZeroLatency.Size = new System.Drawing.Size(125, 24);
-            this.chkTuneZeroLatency.TabIndex = 40;
-            this.chkTuneZeroLatency.Text = "Zero Latency";
-            this.chkTuneZeroLatency.UseVisualStyleBackColor = true;
-            // 
-            // chkTuneFastDecode
-            // 
-            this.chkTuneFastDecode.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkTuneFastDecode.Location = new System.Drawing.Point(12, 76);
-            this.chkTuneFastDecode.Name = "chkTuneFastDecode";
-            this.chkTuneFastDecode.Size = new System.Drawing.Size(125, 24);
-            this.chkTuneFastDecode.TabIndex = 39;
-            this.chkTuneFastDecode.Text = "Fast Decode";
-            this.chkTuneFastDecode.UseVisualStyleBackColor = true;
-            // 
-            // x264NbThreads
-            // 
-            this.x264NbThreads.Location = new System.Drawing.Point(113, 21);
-            this.x264NbThreads.Maximum = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
-            this.x264NbThreads.Name = "x264NbThreads";
-            this.x264NbThreads.Size = new System.Drawing.Size(37, 20);
-            this.x264NbThreads.TabIndex = 12;
-            // 
-            // nonDeterministic
-            // 
-            this.nonDeterministic.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.nonDeterministic.Location = new System.Drawing.Point(12, 47);
-            this.nonDeterministic.Name = "nonDeterministic";
-            this.nonDeterministic.Size = new System.Drawing.Size(125, 24);
-            this.nonDeterministic.TabIndex = 38;
-            this.nonDeterministic.Text = "Non Deterministic";
-            this.nonDeterministic.UseVisualStyleBackColor = true;
-            // 
-            // x264SlowFirstpass
-            // 
-            this.x264SlowFirstpass.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.x264SlowFirstpass.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.x264SlowFirstpass.Location = new System.Drawing.Point(184, 48);
-            this.x264SlowFirstpass.Name = "x264SlowFirstpass";
-            this.x264SlowFirstpass.Size = new System.Drawing.Size(125, 24);
-            this.x264SlowFirstpass.TabIndex = 37;
-            this.x264SlowFirstpass.Text = "Slow first pass";
-            // 
-            // threadin
-            // 
-            this.threadin.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.threadin.Checked = true;
-            this.threadin.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.threadin.Location = new System.Drawing.Point(184, 18);
-            this.threadin.Margin = new System.Windows.Forms.Padding(0);
-            this.threadin.Name = "threadin";
-            this.threadin.Size = new System.Drawing.Size(125, 24);
-            this.threadin.TabIndex = 13;
-            this.threadin.Text = "Thread-Input";
-            this.threadin.UseVisualStyleBackColor = true;
-            // 
-            // x264NbThreadsLabel
-            // 
-            this.x264NbThreadsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.x264NbThreadsLabel.Location = new System.Drawing.Point(12, 17);
-            this.x264NbThreadsLabel.Margin = new System.Windows.Forms.Padding(3);
-            this.x264NbThreadsLabel.Name = "x264NbThreadsLabel";
-            this.x264NbThreadsLabel.Size = new System.Drawing.Size(125, 24);
-            this.x264NbThreadsLabel.TabIndex = 11;
-            this.x264NbThreadsLabel.Text = "Threads (0=Auto)";
-            this.x264NbThreadsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // gbx265CustomCmd
             // 
@@ -2467,7 +2363,7 @@ namespace MeGUI.packages.video.x265
             // x265ThreadsLabel
             // 
             this.x265ThreadsLabel.AutoSize = true;
-            this.x265ThreadsLabel.Location = new System.Drawing.Point(18, 201);
+            this.x265ThreadsLabel.Location = new System.Drawing.Point(170, 20);
             this.x265ThreadsLabel.Name = "x265ThreadsLabel";
             this.x265ThreadsLabel.Size = new System.Drawing.Size(127, 13);
             this.x265ThreadsLabel.TabIndex = 17;
@@ -2475,7 +2371,7 @@ namespace MeGUI.packages.video.x265
             // 
             // x265NbThreads
             // 
-            this.x265NbThreads.Location = new System.Drawing.Point(160, 199);
+            this.x265NbThreads.Location = new System.Drawing.Point(317, 18);
             this.x265NbThreads.Name = "x265NbThreads";
             this.x265NbThreads.Size = new System.Drawing.Size(43, 20);
             this.x265NbThreads.TabIndex = 18;
@@ -2484,7 +2380,7 @@ namespace MeGUI.packages.video.x265
             // ch10BitsEncoder
             // 
             this.ch10BitsEncoder.AutoSize = true;
-            this.ch10BitsEncoder.Location = new System.Drawing.Point(21, 255);
+            this.ch10BitsEncoder.Location = new System.Drawing.Point(14, 19);
             this.ch10BitsEncoder.Name = "ch10BitsEncoder";
             this.ch10BitsEncoder.Size = new System.Drawing.Size(142, 17);
             this.ch10BitsEncoder.TabIndex = 41;
@@ -2537,6 +2433,39 @@ namespace MeGUI.packages.video.x265
             this.hevcLevel.Size = new System.Drawing.Size(157, 21);
             this.hevcLevel.TabIndex = 0;
             this.hevcLevel.SelectedIndexChanged += new System.EventHandler(this.hevcLevel_SelectedIndexChanged);
+            // 
+            // chkTuneZeroLatency
+            // 
+            this.chkTuneZeroLatency.Location = new System.Drawing.Point(14, 66);
+            this.chkTuneZeroLatency.Name = "chkTuneZeroLatency";
+            this.chkTuneZeroLatency.Size = new System.Drawing.Size(125, 20);
+            this.chkTuneZeroLatency.TabIndex = 45;
+            this.chkTuneZeroLatency.Text = "Zero Latency";
+            this.chkTuneZeroLatency.UseVisualStyleBackColor = true;
+            // 
+            // chkTuneFastDecode
+            // 
+            this.chkTuneFastDecode.Location = new System.Drawing.Point(14, 43);
+            this.chkTuneFastDecode.Name = "chkTuneFastDecode";
+            this.chkTuneFastDecode.Size = new System.Drawing.Size(125, 17);
+            this.chkTuneFastDecode.TabIndex = 44;
+            this.chkTuneFastDecode.Text = "Fast Decode";
+            this.chkTuneFastDecode.UseVisualStyleBackColor = true;
+            // 
+            // gbOthers
+            // 
+            this.gbOthers.Controls.Add(this.ch10BitsEncoder);
+            this.gbOthers.Controls.Add(this.chkTuneZeroLatency);
+            this.gbOthers.Controls.Add(this.chkTuneFastDecode);
+            this.gbOthers.Controls.Add(this.x265NbThreads);
+            this.gbOthers.Controls.Add(this.x265ThreadsLabel);
+            this.gbOthers.Controls.Add(this.advancedSettings);
+            this.gbOthers.Location = new System.Drawing.Point(7, 180);
+            this.gbOthers.Name = "gbOthers";
+            this.gbOthers.Size = new System.Drawing.Size(489, 122);
+            this.gbOthers.TabIndex = 46;
+            this.gbOthers.TabStop = false;
+            this.gbOthers.Text = "Other Settings";
             // 
             // x265ConfigurationPanel
             // 
@@ -2615,13 +2544,13 @@ namespace MeGUI.packages.video.x265
             this.x265OtherOptionsGroupbox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.x265MERange)).EndInit();
             this.MiscTabPage.ResumeLayout(false);
-            this.gbOther.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.x264NbThreads)).EndInit();
             this.gbx265CustomCmd.ResumeLayout(false);
             this.gbx265CustomCmd.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.x265NbThreads)).EndInit();
             this.hevcProfileGroupbox.ResumeLayout(false);
             this.hevcLevelGroupbox.ResumeLayout(false);
+            this.gbOthers.ResumeLayout(false);
+            this.gbOthers.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2790,13 +2719,8 @@ namespace MeGUI.packages.video.x265
         private System.Windows.Forms.ComboBox hevcProfile;
         private System.Windows.Forms.GroupBox hevcLevelGroupbox;
         private System.Windows.Forms.ComboBox hevcLevel;
-        private System.Windows.Forms.GroupBox gbOther;
         private System.Windows.Forms.CheckBox chkTuneZeroLatency;
         private System.Windows.Forms.CheckBox chkTuneFastDecode;
-        private System.Windows.Forms.NumericUpDown x264NbThreads;
-        private System.Windows.Forms.CheckBox nonDeterministic;
-        private System.Windows.Forms.CheckBox x264SlowFirstpass;
-        private System.Windows.Forms.CheckBox threadin;
-        private System.Windows.Forms.Label x264NbThreadsLabel;
+        private System.Windows.Forms.GroupBox gbOthers;
     }
 }
