@@ -164,6 +164,14 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="App.ico" />
+    <EmbeddedResource Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.resx">
+      <DependentUpon>svtav1psyConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include=".editorconfig" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
@@ -855,6 +863,15 @@
     </Compile>
     <Compile Include="packages\video\huffyuv\hfyuSettings.cs" />
     <Compile Include="packages\video\ffmpeg\ffmpegEncoder.cs" />
+    <Compile Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.Designer.cs">
+      <DependentUpon>svtav1psyConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\video\svtav1psy\svtav1psyEncoder.cs" />
+    <Compile Include="packages\video\svtav1psy\svtav1psySettings.cs" />
+    <Compile Include="packages\video\svtav1psy\svtav1psySettingsHandler.cs" />
     <Compile Include="packages\video\x264\x264ConfigurationPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -884,6 +901,11 @@
     <Compile Include="packages\video\xvid\xvidSettings.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <EmbeddedResource Include="core\gui\AdaptiveMuxWindow.resx">
@@ -1207,9 +1229,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Analyzer Include="packages\Microsoft.CodeAnalysis.NetAnalyzers.8.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
     <Analyzer Include="packages\Microsoft.CodeAnalysis.NetAnalyzers.8.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
