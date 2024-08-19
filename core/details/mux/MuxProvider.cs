@@ -1330,6 +1330,7 @@ namespace MeGUI
         public SVTAV1PSYEncoderProvider()
         {
             supportedCodecs.Add(VideoCodec.AV1);
+            supportedTypes.Add(VideoType.RAWAV1);
             supportedTypes.Add(VideoType.MKV);
             supportedTypes.Add(VideoType.MP4);
             supportedEncoderTypes.Add(VideoEncoderType.SVTAV1PSY);
@@ -1337,7 +1338,7 @@ namespace MeGUI
 
         public override IJobProcessor CreateEncoder(MeGUISettings settings)
         {
-            return new svtav1psyEncoder(settings.FFmpeg.Path);
+            return new svtav1psyEncoder(settings.SvtAv1Psy.Path);
         }
     }
 

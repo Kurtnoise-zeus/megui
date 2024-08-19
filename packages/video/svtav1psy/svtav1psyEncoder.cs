@@ -36,7 +36,8 @@ namespace MeGUI
             if (j is VideoJob && (j as VideoJob).Settings is svtav1psySettings)
             {
                 UpdateCacher.CheckPackage("ffmpeg");
-                return new svtav1psyEncoder(mf.Settings.FFmpeg.Path);
+                //UpdateCacher.CheckPackage("svtav1psy");
+                return new ffv1Encoder(mf.Settings.FFmpeg.Path);
             }
             return null;
         }
@@ -85,13 +86,44 @@ namespace MeGUI
             {
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
+
+                sb.Append("\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
+                sb.Append("\"" + MainForm.Instance.Settings.SvtAv1Psy.Path + "\" ");
             }
 
             #region main tab
             ///<summary>
-            /// FFV1 Main Tab Settings
+            /// SVT-AV1-PSY Main Tab Settings
             ///</summary>
             ///
+
+            // Cmd
+            sb.Append("--progress 3 -i - --rc 0 --crf 43 ");
+
+            // Presets
+            if (!xs.CustomEncoderOptions.Contains("--preset "))
+            {
+                switch (xs.Preset)
+                {
+                    case 0:  sb.Append("--preset 0 "); break;
+                    case 1:  sb.Append("--preset 1 "); break;
+                    case 2:  sb.Append("--preset 2 "); break;
+                    case 3:  sb.Append("--preset 3 "); break;
+                    case 4:  sb.Append("--preset 4 "); break;
+                    case 5:  sb.Append("--preset 5 "); break; 
+                    case 6:  sb.Append("--preset 6 "); break;
+                    case 7:  sb.Append("--preset 7 "); break;
+                    case 8:  sb.Append("--preset 8 "); break;
+                    case 9:  sb.Append("--preset 9 "); break;
+                    case 10: sb.Append("--preset 10 "); break; // default value
+                    case 11: sb.Append("--preset 11 "); break;
+                    case 12: sb.Append("--preset 12 "); break;
+                    case 13: sb.Append("--preset 13 "); break;
+                    default: break;
+                }
+            }
+
+            /*
             // Input
             sb.Append("-hide_banner -i "  + "\"" + input + "\" ");
 
@@ -152,6 +184,7 @@ namespace MeGUI
             // bit-depth
             if (xs.FFV110Bits)
                 sb.Append("-pix_fmt yuv420p10le ");
+            */
             #endregion
 
             // get number of frames to encode
@@ -167,7 +200,7 @@ namespace MeGUI
                 if (xs.FFV1EncodingType == VideoCodecSettings.FFV1EncodingMode.twopass1)
                     sb.Append("-f null NUL ");
                 else if (!String.IsNullOrEmpty(output))
-                    sb.Append("-f matroska " + "\"" + output + "\" "); // Force MKV output
+                    sb.Append("-b " + "\"" + output + "\""); // Force MKV output
             }
 
             return sb.ToString();

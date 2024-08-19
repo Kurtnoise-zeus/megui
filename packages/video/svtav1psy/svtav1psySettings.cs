@@ -42,7 +42,7 @@ namespace MeGUI
             base.FixFileNames(substitutionTable);
         }
 
-        int coder, context, gopsize, slicesnb, nbThreads;
+        int coder, context, gopsize, slicesnb, nbThreads, preset;
 		decimal quantizerCrf;
 		bool errorCorrection, ffv110Bits;
 
@@ -62,12 +62,19 @@ namespace MeGUI
             ffv110Bits = false;
             FFV1EncodingType = FFV1EncodingMode.none;
             base.MaxNumberOfPasses = 2;
+            preset = 10;
         }
         #endregion
         #region properties
 
         [XmlIgnore()]
         [MeGUI.core.plugins.interfaces.PropertyEqualityIgnoreAttribute()]
+        public int Preset
+        {
+            get { return preset; }
+            set { preset = value; }
+        }
+
         public int Coder
         {
             get { return coder; }

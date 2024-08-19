@@ -956,6 +956,7 @@ namespace MeGUI
             PackageSystem.JobProcessors.Register(AviSynthAudioEncoder.Factory);
             PackageSystem.JobProcessors.Register(ffmpegEncoder.Factory);
             PackageSystem.JobProcessors.Register(ffv1Encoder.Factory);
+            PackageSystem.JobProcessors.Register(svtav1psyEncoder.Factory);
             PackageSystem.JobProcessors.Register(x264Encoder.Factory);
             PackageSystem.JobProcessors.Register(x265Encoder.Factory);
             PackageSystem.JobProcessors.Register(XviDEncoder.Factory);

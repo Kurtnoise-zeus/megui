@@ -97,7 +97,7 @@ namespace MeGUI.packages.video.svtav1psy
             get
             {
                 svtav1psySettings xs = new svtav1psySettings();
-
+                xs.Preset = tbsvtPresets.Value;
                 return xs;
             }
             set
@@ -108,6 +108,7 @@ namespace MeGUI.packages.video.svtav1psy
 
                 svtav1psySettings xs = value;
                 updating = true;
+                tbsvtPresets.Value = xs.Preset;
                 updating = false;
                 genericUpdate();
             }
@@ -193,6 +194,12 @@ namespace MeGUI.packages.video.svtav1psy
 
         private void ffv1EncodingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
+            genericUpdate();
+        }
+
+        private void tbsvtPresets_Scroll(object sender, EventArgs e)
+        {
+            gbPresets.Text = "Preset #" + tbsvtPresets.Value.ToString();
             genericUpdate();
         }
     }

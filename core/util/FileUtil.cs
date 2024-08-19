@@ -1069,6 +1069,7 @@ namespace MeGUI.core.util
             ArrayList targetDirectories = new ArrayList();
             targetDirectories.Add(Path.GetDirectoryName(Application.ExecutablePath));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.FFmpeg.Path));
+            targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.SvtAv1Psy.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.X264.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.X265.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.XviD.Path));
@@ -1105,6 +1106,7 @@ namespace MeGUI.core.util
             ArrayList targetDirectories = new ArrayList();
             targetDirectories.Add(Path.GetDirectoryName(Application.ExecutablePath));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.FFmpeg.Path));
+            targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.SvtAv1Psy.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.X264.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.X265.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.XviD.Path));
@@ -1144,6 +1146,7 @@ namespace MeGUI.core.util
             ArrayList targetDirectories = new ArrayList();
             targetDirectories.Add(Path.GetDirectoryName(Application.ExecutablePath));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.FFmpeg.Path));
+            targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.SvtAv1Psy.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.X264.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.X265.Path));
             targetDirectories.Add(Path.GetDirectoryName(MainForm.Instance.Settings.XviD.Path));

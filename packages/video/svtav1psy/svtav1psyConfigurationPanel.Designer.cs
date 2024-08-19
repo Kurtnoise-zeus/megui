@@ -60,8 +60,8 @@ namespace MeGUI.packages.video.svtav1psy
             this.ffv1ThreadsLabel = new System.Windows.Forms.Label();
             this.ffv1NbThreads = new System.Windows.Forms.NumericUpDown();
             this.ffv1CodecGeneralGroupbox = new System.Windows.Forms.GroupBox();
-            this.svtEncodingMode = new System.Windows.Forms.ComboBox();
             this.svtBitrateQuantizer = new System.Windows.Forms.NumericUpDown();
+            this.svtEncodingMode = new System.Windows.Forms.ComboBox();
             this.svtBitrateQuantizerLabel = new System.Windows.Forms.Label();
             this.gbPresets = new System.Windows.Forms.GroupBox();
             this.lbPreset = new System.Windows.Forms.Label();
@@ -142,7 +142,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.helpButton1.ArticleName = "Configuration/Video_Encoder_Configuration/SVTAV1PSY";
             this.helpButton1.AutoSize = true;
             this.helpButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.helpButton1.Location = new System.Drawing.Point(299, 154);
+            this.helpButton1.Location = new System.Drawing.Point(299, 178);
             this.helpButton1.Name = "helpButton1";
             this.helpButton1.Size = new System.Drawing.Size(39, 23);
             this.helpButton1.TabIndex = 10;
@@ -181,7 +181,7 @@ namespace MeGUI.packages.video.svtav1psy
             // ffv1ThreadsLabel
             // 
             this.ffv1ThreadsLabel.AutoSize = true;
-            this.ffv1ThreadsLabel.Location = new System.Drawing.Point(15, 154);
+            this.ffv1ThreadsLabel.Location = new System.Drawing.Point(15, 178);
             this.ffv1ThreadsLabel.Name = "ffv1ThreadsLabel";
             this.ffv1ThreadsLabel.Size = new System.Drawing.Size(95, 13);
             this.ffv1ThreadsLabel.TabIndex = 17;
@@ -189,7 +189,7 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             // ffv1NbThreads
             // 
-            this.ffv1NbThreads.Location = new System.Drawing.Point(117, 152);
+            this.ffv1NbThreads.Location = new System.Drawing.Point(117, 176);
             this.ffv1NbThreads.Name = "ffv1NbThreads";
             this.ffv1NbThreads.Size = new System.Drawing.Size(43, 20);
             this.ffv1NbThreads.TabIndex = 18;
@@ -209,6 +209,19 @@ namespace MeGUI.packages.video.svtav1psy
             this.ffv1CodecGeneralGroupbox.TabStop = false;
             this.ffv1CodecGeneralGroupbox.Text = " Encoding Mode ";
             // 
+            // svtBitrateQuantizer
+            // 
+            this.svtBitrateQuantizer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.svtBitrateQuantizer.Location = new System.Drawing.Point(170, 20);
+            this.svtBitrateQuantizer.Maximum = new decimal(new int[] {
+            300000,
+            0,
+            0,
+            0});
+            this.svtBitrateQuantizer.Name = "svtBitrateQuantizer";
+            this.svtBitrateQuantizer.Size = new System.Drawing.Size(55, 20);
+            this.svtBitrateQuantizer.TabIndex = 48;
+            // 
             // svtEncodingMode
             // 
             this.svtEncodingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -224,19 +237,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtEncodingMode.Name = "svtEncodingMode";
             this.svtEncodingMode.Size = new System.Drawing.Size(106, 21);
             this.svtEncodingMode.TabIndex = 2;
-            // 
-            // svtBitrateQuantizer
-            // 
-            this.svtBitrateQuantizer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.svtBitrateQuantizer.Location = new System.Drawing.Point(170, 20);
-            this.svtBitrateQuantizer.Maximum = new decimal(new int[] {
-            300000,
-            0,
-            0,
-            0});
-            this.svtBitrateQuantizer.Name = "svtBitrateQuantizer";
-            this.svtBitrateQuantizer.Size = new System.Drawing.Size(55, 20);
-            this.svtBitrateQuantizer.TabIndex = 48;
             // 
             // svtBitrateQuantizerLabel
             // 
@@ -257,9 +257,10 @@ namespace MeGUI.packages.video.svtav1psy
             this.gbPresets.BackColor = System.Drawing.Color.Transparent;
             this.gbPresets.Controls.Add(this.lbPreset);
             this.gbPresets.Controls.Add(this.tbsvtPresets);
+            this.gbPresets.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbPresets.Location = new System.Drawing.Point(6, 59);
             this.gbPresets.Name = "gbPresets";
-            this.gbPresets.Size = new System.Drawing.Size(350, 77);
+            this.gbPresets.Size = new System.Drawing.Size(350, 101);
             this.gbPresets.TabIndex = 47;
             this.gbPresets.TabStop = false;
             this.gbPresets.Text = " Preset ";
@@ -268,12 +269,12 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             this.lbPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbPreset.AutoSize = true;
-            this.lbPreset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbPreset.Location = new System.Drawing.Point(174, 16);
+            this.lbPreset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbPreset.Location = new System.Drawing.Point(6, 75);
             this.lbPreset.Name = "lbPreset";
-            this.lbPreset.Size = new System.Drawing.Size(44, 13);
+            this.lbPreset.Size = new System.Drawing.Size(336, 13);
             this.lbPreset.TabIndex = 1;
-            this.lbPreset.Text = "Medium";
+            this.lbPreset.Text = "Higher Presets means Faster encodes but with a quality tradeoff";
             // 
             // tbsvtPresets
             // 
@@ -282,12 +283,13 @@ namespace MeGUI.packages.video.svtav1psy
             this.tbsvtPresets.AutoSize = false;
             this.tbsvtPresets.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.tbsvtPresets.Location = new System.Drawing.Point(6, 32);
-            this.tbsvtPresets.Maximum = 9;
+            this.tbsvtPresets.Maximum = 13;
             this.tbsvtPresets.Name = "tbsvtPresets";
-            this.tbsvtPresets.Size = new System.Drawing.Size(326, 30);
+            this.tbsvtPresets.Size = new System.Drawing.Size(338, 30);
             this.tbsvtPresets.TabIndex = 0;
             this.tbsvtPresets.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.tbsvtPresets.Value = 5;
+            this.tbsvtPresets.Value = 10;
+            this.tbsvtPresets.Scroll += new System.EventHandler(this.tbsvtPresets_Scroll);
             // 
             // gbTunes
             // 

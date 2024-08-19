@@ -97,7 +97,7 @@ namespace MeGUI
         private ProgramSettings avimuxgui, avisynth, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
                                 eac3to, fdkaac, ffmpeg, ffms, flac, haali, lame, lsmash, mediainfo,
                                 megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc, exhale, 
-                                oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid, bestsource;
+                                oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid, bestsource, svtav1psy;
         Dictionary<string, string> oRedistVersions;
         #endregion
         public MeGUISettings()
@@ -1406,6 +1406,12 @@ namespace MeGUI
             get { return xvid; }
             set { xvid = value; }
         }
+
+        public ProgramSettings SvtAv1Psy
+        {
+            get { return svtav1psy; }
+            set { svtav1psy = value; }
+        }
 #endregion
 
         private bool bPortableAviSynth;
@@ -1645,6 +1651,8 @@ namespace MeGUI
                 qaac = new ProgramSettings("qaac");
             if (redist == null)
                 redist = new ProgramSettings("redist");
+            if (svtav1psy == null)
+                svtav1psy = new ProgramSettings("svtav1psy");
             if (tsmuxer == null)
                 tsmuxer = new ProgramSettings("tsmuxer");
             if (vsrip == null)
@@ -1756,6 +1764,7 @@ namespace MeGUI
                 UpdateCacher.CheckPackage("qaac", false, false);
             redist.UpdateInformation("redist", "Runtime Files", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\redist\install.cmd"));
             redist.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\redist\remove.cmd"));
+            svtav1psy.UpdateInformation("svtav1psy", "SVT-AV1-PSY", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\svtav1psy\SvtAv1EncApp.exe"));
             tsmuxer.UpdateInformation("tsmuxer", "tsMuxeR", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\tsmuxer\tsmuxer.exe"));
             vsrip.UpdateInformation("vsrip", "VobSub Ripper", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\vsrip\vsrip.exe"));
             x264.UpdateInformation("x264", "x264", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\x264\x264.exe"));

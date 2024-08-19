@@ -495,6 +495,12 @@ namespace MeGUI
                 vArray[vArray.Length - 2] = VideoType.MKV;
                 vArray[vArray.Length - 1] = VideoType.MP4;
             }
+            else if (lastCodec == VideoEncoderType.SVTAV1PSY)
+            {
+                Array.Resize(ref vArray, vArray.Length + 2);
+                vArray[vArray.Length - 2] = VideoType.MKV;
+                vArray[vArray.Length - 1] = VideoType.MP4;
+            }
 
             Util.ChangeItemsKeepingSelectedSame(fileType, vArray);
         }

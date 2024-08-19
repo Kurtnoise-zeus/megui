@@ -458,6 +458,8 @@ namespace MeGUI
                         video.Output = Path.ChangeExtension(video.Output, ".264");
                     else if (video.Settings.EncoderType == VideoEncoderType.X265 && (type.outputType.ContainerType == ContainerType.MKV || type.outputType.ContainerType == ContainerType.MP4))
                         video.Output = Path.ChangeExtension(video.Output, ".hevc");
+                    else if (video.Settings.EncoderType == VideoEncoderType.SVTAV1PSY && (type.outputType.ContainerType == ContainerType.MKV || type.outputType.ContainerType == ContainerType.MP4))
+                        video.Output = Path.ChangeExtension(video.Output, ".ivf");
                     else 
                         video.Output = Path.ChangeExtension(video.Output, type.outputType.Extension);
                     video.VideoType = type;
