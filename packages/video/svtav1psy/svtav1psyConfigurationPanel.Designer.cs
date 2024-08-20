@@ -221,6 +221,11 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtBitrateQuantizer.Name = "svtBitrateQuantizer";
             this.svtBitrateQuantizer.Size = new System.Drawing.Size(55, 20);
             this.svtBitrateQuantizer.TabIndex = 48;
+            this.svtBitrateQuantizer.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // svtEncodingMode
             // 
@@ -228,15 +233,23 @@ namespace MeGUI.packages.video.svtav1psy
             | System.Windows.Forms.AnchorStyles.Right)));
             this.svtEncodingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.svtEncodingMode.Items.AddRange(new object[] {
-            "None",
+            "ABR",
+            "Const. Quantizer",
             "2pass - 1st pass",
             "2pass - 2nd pass",
-            "Automated 2pass"});
+            "Automated 2pass",
+            "3pass - 1st pass",
+            "3pass - 2nd pass",
+            "3pass - 3rd pass",
+            "Automated 3pass",
+            "Const. Quality"});
             this.svtEncodingMode.Location = new System.Drawing.Point(6, 19);
             this.svtEncodingMode.MaxDropDownItems = 2;
             this.svtEncodingMode.Name = "svtEncodingMode";
             this.svtEncodingMode.Size = new System.Drawing.Size(106, 21);
             this.svtEncodingMode.TabIndex = 2;
+            this.svtEncodingMode.SelectedIndexChanged += new System.EventHandler(this.updateEvent);
+            this.svtEncodingMode.SelectionChangeCommitted += new System.EventHandler(this.svtEncodingMode_SelectionChangeCommitted);
             // 
             // svtBitrateQuantizerLabel
             // 

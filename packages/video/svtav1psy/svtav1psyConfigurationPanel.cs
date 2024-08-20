@@ -101,12 +101,53 @@ namespace MeGUI.packages.video.svtav1psy
 
         private void doEncodingModeAdjustments()
         {
-            lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;
-            if ((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.CQ
-                && (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.quality)
-                lastBitrateEncodingValue = (int)this.svtBitrateQuantizer.Value;
+            if (isBitrateMode((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex))
+            {
+                this.svtBitrateQuantizerLabel.Text = "Bitrate";
+                svtBitrateQuantizer.Maximum = 100000;
+                svtBitrateQuantizer.Minimum = 1;
+                svtBitrateQuantizer.DecimalPlaces = 0;
+                svtBitrateQuantizer.Increment = 10;
+            }
             else
-                lastQuantizerEncodingValue = (int)this.svtBitrateQuantizer.Value;
+            {
+               if (svtEncodingMode.SelectedIndex == (int)VideoCodecSettings.VideoEncodingMode.CQ)
+                {
+                    this.svtBitrateQuantizerLabel.Text = "Quantizer";
+                }
+                if (svtEncodingMode.SelectedIndex == (int)VideoCodecSettings.VideoEncodingMode.quality)
+                {
+                    this.svtBitrateQuantizerLabel.Text = "Quality";
+                }
+
+                if (svtEncodingMode.SelectedIndex == (int)VideoCodecSettings.VideoEncodingMode.quality) // crf
+                {
+                    svtBitrateQuantizer.Maximum = 63;
+                    svtBitrateQuantizer.Minimum = 1.0M;
+                    svtBitrateQuantizer.DecimalPlaces = 1;
+                    svtBitrateQuantizer.Increment = 0.1M;
+                }
+                else // qp
+                {
+                    svtBitrateQuantizer.Maximum = 63;
+                    svtBitrateQuantizer.Minimum = 1;
+                    svtBitrateQuantizer.Value = (int)svtBitrateQuantizer.Value; // makes sure it is an integer, in case we just swapped from crf                    
+                    svtBitrateQuantizer.DecimalPlaces = 0;
+                    svtBitrateQuantizer.Increment = 1;
+                }
+
+            }
+
+            // We check whether the bitrate/quality text needs to be changed
+            if (isBitrateMode((VideoCodecSettings.VideoEncodingMode)lastEncodingMode) != isBitrateMode((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex))
+            {
+                if (isBitrateMode((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex))
+                    this.svtBitrateQuantizer.Value = 7000;
+                else
+                    this.svtBitrateQuantizer.Value = 35;
+            }
+
+            lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;
         }
 
         protected override string getCommandline()
@@ -131,12 +172,6 @@ namespace MeGUI.packages.video.svtav1psy
             if (svtTunes.SelectedIndex == -1)
                 svtTunes.SelectedIndex = 0; // Default
             lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)this.svtEncodingMode.SelectedIndex;
-            if ((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.CQ
-                && (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.quality)
-                lastBitrateEncodingValue = (int)this.svtBitrateQuantizer.Value;
-            else
-                lastQuantizerEncodingValue = (int)this.svtBitrateQuantizer.Value;
-
             try
             {
                 string p = System.IO.Path.Combine(Application.StartupPath, "Data");
@@ -148,6 +183,8 @@ namespace MeGUI.packages.video.svtav1psy
             {
                 MessageBox.Show("The ContextHelp.xml file could not be found. Please check in the 'Data' directory to see if it exists. Help tooltips will not be available.", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
+            tbsvtPresets_Scroll(null, null); // to update the trackbar label
         }
 
 
@@ -195,7 +232,7 @@ namespace MeGUI.packages.video.svtav1psy
                 tbsvtPresets.Value = xs.Preset;
                 svtTunes.SelectedItem = EnumProxy.Create(xs.svtAv1PsyTuning);
                 svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
-                svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 0) ? xs.BitrateQuantizer : xs.QuantizerCRF;
+                svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 1) ? xs.BitrateQuantizer : xs.QuantizerCRF;
                 doEncodingModeAdjustments();
                 updating = false;
                 genericUpdate();
@@ -342,10 +379,10 @@ namespace MeGUI.packages.video.svtav1psy
         private void dSettings_Click(object sender, EventArgs e)
         {
             // Main Tab
-            this.svtEncodingMode.SelectedIndex = 0;
-            this.svtBitrateQuantizer.Value = 32;
+            this.svtEncodingMode.SelectedIndex = (int)VideoCodecSettings.VideoEncodingMode.quality;
+            this.svtBitrateQuantizer.Value = 35;
             this.svtTunes.SelectedIndex = 0;
-            this.tbsvtPresets.Value = 5;
+            this.tbsvtPresets.Value = 10;
 
             // to update presets label
             tbsvtPresets_Scroll(null, null);
@@ -413,5 +450,26 @@ namespace MeGUI.packages.video.svtav1psy
             EnumProxy o = svtTunes.SelectedItem as EnumProxy;
             return (svtav1psySettings.svtAv1PsyTuningModes)o.RealValue;
         }
+
+        private void svtEncodingMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            genericUpdate();
+        }
+
+        private void svtEncodingMode_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (svtEncodingMode.SelectedIndex == 0)
+            {
+                if (MainForm.Instance.Settings.NbPasses == 3)
+                    svtEncodingMode.SelectedIndex = (int)VideoCodecSettings.VideoEncodingMode.threepassAutomated;
+                else
+                    svtEncodingMode.SelectedIndex = (int)VideoCodecSettings.VideoEncodingMode.twopassAutomated;
+            }
+            else
+            {
+                svtEncodingMode.SelectedIndex = (int)VideoCodecSettings.VideoEncodingMode.quality;
+            }
+        }
+
     }
 }
