@@ -42,6 +42,8 @@ namespace MeGUI.packages.video.svtav1psy
             InitializeComponent();
             svtEncodingMode.SelectedIndex = 0;
             gbPresets.Text = "Preset #" + tbsvtPresets.Value.ToString();
+            svtTunes.Items.AddRange(EnumProxy.CreateArray(svtav1psySettings.SupportedPsyTuningModes));
+            svtTunes.SelectedItem = EnumProxy.Create(svtav1psySettings.svtAv1PsyTuningModes.NONE);
         }
 
         /// <summary>
@@ -51,11 +53,60 @@ namespace MeGUI.packages.video.svtav1psy
         /// <returns>true if the mode is a bitrate mode, false otherwise</returns>
         private bool isBitrateMode(VideoCodecSettings.VideoEncodingMode mode)
         {
-            return !(mode == VideoCodecSettings.VideoEncodingMode.none);
+            return !(mode == VideoCodecSettings.VideoEncodingMode.CQ ||
+                mode == VideoCodecSettings.VideoEncodingMode.quality);
         }
-        private void doDropDownAdjustments()
+
+        private void doTuningsAdjustments()
         {
-            //lastFFV1EncodingMode = (VideoCodecSettings.FFV1EncodingMode)this.ffv1EncodingMode.SelectedIndex;
+            //if (this.x265NumberOfRefFrames.Value != x265Settings.GetDefaultNumberOfRefFrames((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning(), chkBlurayCompat.Checked))
+            //    this.x265NumberOfRefFrames.Value = x265Settings.GetDefaultNumberOfRefFrames((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning(), chkBlurayCompat.Checked);
+            //if (this.cbAQMode.SelectedIndex != x265Settings.GetDefaultAQMode((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning()))
+            //    this.cbAQMode.SelectedIndex = x265Settings.GetDefaultAQMode((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning());
+
+            switch (getPsyTuning())
+            {
+                case svtav1psySettings.svtAv1PsyTuningModes.NONE:
+                    {
+
+                    }
+                    break;
+
+                case svtav1psySettings.svtAv1PsyTuningModes.VQ:
+                    {
+
+                    }
+                    break;
+
+                case svtav1psySettings.svtAv1PsyTuningModes.PSNR:
+                    {
+
+                    }
+                    break;
+
+                case svtav1psySettings.svtAv1PsyTuningModes.SSIM:
+                    {
+
+                    }
+                    break;
+
+                case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM:
+                    {
+
+                    }
+                    break;
+            }
+
+        }
+
+        private void doEncodingModeAdjustments()
+        {
+            lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;
+            if ((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.CQ
+                && (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.quality)
+                lastBitrateEncodingValue = (int)this.svtBitrateQuantizer.Value;
+            else
+                lastQuantizerEncodingValue = (int)this.svtBitrateQuantizer.Value;
         }
 
         protected override string getCommandline()
@@ -68,8 +119,37 @@ namespace MeGUI.packages.video.svtav1psy
         /// </summary>
         protected override void doCodecSpecificAdjustments()
         {
-            doDropDownAdjustments();
+            doEncodingModeAdjustments();
         }
+        /// <summary>
+        /// The method by which codecs can add things to the Load event
+        /// </summary>
+        protected override void doCodecSpecificLoadAdjustments()
+        {
+            if (svtEncodingMode.SelectedIndex == -1)
+                this.svtEncodingMode.SelectedIndex = 0;
+            if (svtTunes.SelectedIndex == -1)
+                svtTunes.SelectedIndex = 0; // Default
+            lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)this.svtEncodingMode.SelectedIndex;
+            if ((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.CQ
+                && (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex != VideoCodecSettings.VideoEncodingMode.quality)
+                lastBitrateEncodingValue = (int)this.svtBitrateQuantizer.Value;
+            else
+                lastQuantizerEncodingValue = (int)this.svtBitrateQuantizer.Value;
+
+            try
+            {
+                string p = System.IO.Path.Combine(Application.StartupPath, "Data");
+                p = System.IO.Path.Combine(p, "ContextHelp.xml");
+                ContextHelp.Load(p);
+                SetToolTips();
+            }
+            catch
+            {
+                MessageBox.Show("The ContextHelp.xml file could not be found. Please check in the 'Data' directory to see if it exists. Help tooltips will not be available.", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
 
         /// <summary>
         /// Returns whether settings is ffv1Settings
@@ -99,6 +179,9 @@ namespace MeGUI.packages.video.svtav1psy
             {
                 svtav1psySettings xs = new svtav1psySettings();
                 xs.Preset = tbsvtPresets.Value;
+                xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;
+                xs.BitrateQuantizer = (int)svtBitrateQuantizer.Value;
+                xs.svtAv1PsyTuning = getPsyTuning();
                 return xs;
             }
             set
@@ -110,12 +193,17 @@ namespace MeGUI.packages.video.svtav1psy
                 svtav1psySettings xs = value;
                 updating = true;
                 tbsvtPresets.Value = xs.Preset;
+                svtTunes.SelectedItem = EnumProxy.Create(xs.svtAv1PsyTuning);
+                svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
+                svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 0) ? xs.BitrateQuantizer : xs.QuantizerCRF;
+                doEncodingModeAdjustments();
                 updating = false;
                 genericUpdate();
             }
         }
         private void updateEvent(object sender, EventArgs e)
         {
+            doEncodingModeAdjustments();
             genericUpdate();
         }
         private void textField_KeyPress(object sender, KeyPressEventArgs e)
@@ -152,8 +240,118 @@ namespace MeGUI.packages.video.svtav1psy
 
             return (HelpText.ToString());
         }
+        private void SetToolTips()
+        {
+            /**********/
+            /* Main   */
+            /**********/
+         /*   tooltipHelp.SetToolTip(x265Tunes, SelectHelpText("tunes"));
+            //tooltipHelp.SetToolTip(cbTarget, SelectHelpText("targetmode"));
+            tooltipHelp.SetToolTip(tbx265Presets, SelectHelpText("presets"));
+            tooltipHelp.SetToolTip(x265BitrateQuantizer, SelectHelpText("bitrate"));
+            tooltipHelp.SetToolTip(x265EncodingMode, SelectHelpText("encodingmode"));
+         */
+            /**************/
+            /* Frame-Type */
+            /**************/
+         /*  tooltipHelp.SetToolTip(x265KeyframeInterval, SelectHelpText("keyint"));
+            tooltipHelp.SetToolTip(NoiseReduction, SelectHelpText("nr"));
+            tooltipHelp.SetToolTip(noFastPSkip, SelectHelpText("no-fast-pskip"));
+            tooltipHelp.SetToolTip(macroblockOptions, SelectHelpText("partitions"));
+            tooltipHelp.SetToolTip(x265ChromaMe, SelectHelpText("no-chroma-me"));
+            tooltipHelp.SetToolTip(x265WeightedBPrediction, SelectHelpText("weightb"));
+            tooltipHelp.SetToolTip(x265WeightedPPrediction, SelectHelpText("weightp"));
+            tooltipHelp.SetToolTip(x265SubpelRefinement, SelectHelpText("subme"));
+            tooltipHelp.SetToolTip(cabac, SelectHelpText("no-cabac"));
+            tooltipHelp.SetToolTip(x265DeblockActive, SelectHelpText("nf"));
+            tooltipHelp.SetToolTip(x265NewAdaptiveBframes, SelectHelpText("b-adapt"));
+            tooltipHelp.SetToolTip(x265NumberOfRefFrames, SelectHelpText("ref"));
+            tooltipHelp.SetToolTip(x265NumberOfBFrames, SelectHelpText("bframes"));
+            tooltipHelp.SetToolTip(x265AlphaDeblock, SelectHelpText("filter"));
+            tooltipHelp.SetToolTip(x265BetaDeblock, SelectHelpText("filter"));
+            tooltipHelp.SetToolTip(x265CreditsQuantizer, SelectHelpText("creditsquant"));
+            tooltipHelp.SetToolTip(x265IPFrameFactor, SelectHelpText("ipratio"));
+            tooltipHelp.SetToolTip(x265PBFrameFactor, SelectHelpText("pbratio"));
+            tooltipHelp.SetToolTip(x265ChromaQPOffset, SelectHelpText("chroma-qp-offset"));
+            tooltipHelp.SetToolTip(cbBPyramid, SelectHelpText("b-pyramid"));
+            tooltipHelp.SetToolTip(cbInterlaceMode, SelectHelpText("interlaced"));
+            tooltipHelp.SetToolTip(x265PullDown, SelectHelpText("pulldown"));
+            tooltipHelp.SetToolTip(scenecut, SelectHelpText("noscenecut"));
+            tooltipHelp.SetToolTip(chkOpenGop, SelectHelpText("opengop"));
+            tooltipHelp.SetToolTip(slicesnb, SelectHelpText("slicesnb"));
+            tooltipHelp.SetToolTip(maxSliceSizeBytes, SelectHelpText("maxSliceSizeBytes"));
+            tooltipHelp.SetToolTip(maxSliceSizeMB, SelectHelpText("maxSliceSizeMB"));
+            tooltipHelp.SetToolTip(x265MinGOPSize, SelectHelpText("min-keyint"));
+            tooltipHelp.SetToolTip(x265SCDSensitivity, SelectHelpText("scenecut"));
+            tooltipHelp.SetToolTip(x265BframeBias, SelectHelpText("b-bias"));
+            tooltipHelp.SetToolTip(x265BframePredictionMode, SelectHelpText("direct"));
+            tooltipHelp.SetToolTip(cbGOPCalculation, SelectHelpText("gopcalculation"));
+         */
+            /*************************/
+            /* Rate Control Tooltips */
+            /*************************/
+         /*   tooltipHelp.SetToolTip(x265MinimimQuantizer, SelectHelpText("qpmin"));
+            tooltipHelp.SetToolTip(x265MaximumQuantizer, SelectHelpText("qpmax"));
+            tooltipHelp.SetToolTip(x265MaxQuantDelta, SelectHelpText("qpstep"));
+            tooltipHelp.SetToolTip(x265VBVBufferSize, SelectHelpText("vbv-bufsize"));
+            tooltipHelp.SetToolTip(x265VBVMaxRate, SelectHelpText("vbv-maxrate"));
+            tooltipHelp.SetToolTip(x265VBVInitialBuffer, SelectHelpText("vbv-init"));
+            tooltipHelp.SetToolTip(x265RateTol, SelectHelpText("ratetol"));
+            tooltipHelp.SetToolTip(x265QuantizerCompression, SelectHelpText("qcomp"));
+            tooltipHelp.SetToolTip(x265TempFrameComplexityBlur, SelectHelpText("cplxblur"));
+            tooltipHelp.SetToolTip(x265TempQuantBlur, SelectHelpText("qblur"));
+            tooltipHelp.SetToolTip(mbtree, SelectHelpText("mbtree"));
+            tooltipHelp.SetToolTip(lookahead, SelectHelpText("lookahead"));
+            tooltipHelp.SetToolTip(deadzoneInter, SelectHelpText("deadzoneInter"));
+            tooltipHelp.SetToolTip(deadzoneIntra, SelectHelpText("deadzoneIntra"));
+            tooltipHelp.SetToolTip(cqmComboBox1, SelectHelpText("cqm"));
+         */
+            /*************************/
+            /* Analysis Tooltips */
+            /*************************/
+         /*   tooltipHelp.SetToolTip(cbAQMode, SelectHelpText("aqmode"));
+            tooltipHelp.SetToolTip(numAQStrength, SelectHelpText("aqstrength"));
+            tooltipHelp.SetToolTip(macroblockOptions, SelectHelpText("analyse"));
+            tooltipHelp.SetToolTip(adaptiveDCT, SelectHelpText("i8x8dct"));
+            tooltipHelp.SetToolTip(x265B8x8mv, SelectHelpText("b8x8mv"));
+            tooltipHelp.SetToolTip(x265P8x8mv, SelectHelpText("p8x8mv"));
+            tooltipHelp.SetToolTip(x265P4x4mv, SelectHelpText("p4x4mv"));
+            tooltipHelp.SetToolTip(x265I4x4mv, SelectHelpText("i4x4mv"));
+            tooltipHelp.SetToolTip(x265I8x8mv, SelectHelpText("i8x8mv"));
+            tooltipHelp.SetToolTip(x265aud, SelectHelpText("aud"));
+            tooltipHelp.SetToolTip(x265hrd, SelectHelpText("nalhrd"));
+            tooltipHelp.SetToolTip(noDCTDecimateOption, SelectHelpText("noDCTDecimateOption"));
+            tooltipHelp.SetToolTip(nopsy, SelectHelpText("nopsy"));
+            tooltipHelp.SetToolTip(fakeInterlaced, SelectHelpText("fakeInterlaced"));
+            tooltipHelp.SetToolTip(chkBlurayCompat, SelectHelpText("blurayCompat"));
+            tooltipHelp.SetToolTip(x265MixedReferences, SelectHelpText("mixed-refs"));
+            tooltipHelp.SetToolTip(PsyRD, SelectHelpText("psyrd"));
+            tooltipHelp.SetToolTip(PsyTrellis, SelectHelpText("psytrellis"));
+            tooltipHelp.SetToolTip(trellis, SelectHelpText("trellis"));
+            tooltipHelp.SetToolTip(x265METype, SelectHelpText("me"));
+            tooltipHelp.SetToolTip(x265MERange, SelectHelpText("merange"));
+         */
+            /**************************/
+            /* Misc Tooltips */
+            /**************************/
+         /*   tooltipHelp.SetToolTip(x265NbThreads, SelectHelpText("threads"));
+            tooltipHelp.SetToolTip(customCommandlineOptions, SelectHelpText("customcommandline"));
+            */
+        }
 
-        private void chMultiPass_CheckedChanged(object sender, EventArgs e)
+        private void dSettings_Click(object sender, EventArgs e)
+        {
+            // Main Tab
+            this.svtEncodingMode.SelectedIndex = 0;
+            this.svtBitrateQuantizer.Value = 32;
+            this.svtTunes.SelectedIndex = 0;
+            this.tbsvtPresets.Value = 5;
+
+            // to update presets label
+            tbsvtPresets_Scroll(null, null);
+        }
+
+            private void chMultiPass_CheckedChanged(object sender, EventArgs e)
         {
            updateEvent(sender, e);
         }
@@ -202,6 +400,18 @@ namespace MeGUI.packages.video.svtav1psy
         {
             gbPresets.Text = "Preset #" + tbsvtPresets.Value.ToString();
             genericUpdate();
+        }
+
+        private void svtTunes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            doTuningsAdjustments();
+            genericUpdate();
+        }
+
+        private svtav1psySettings.svtAv1PsyTuningModes getPsyTuning()
+        {
+            EnumProxy o = svtTunes.SelectedItem as EnumProxy;
+            return (svtav1psySettings.svtAv1PsyTuningModes)o.RealValue;
         }
     }
 }

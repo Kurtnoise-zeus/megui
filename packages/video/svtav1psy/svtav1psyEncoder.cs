@@ -129,6 +129,19 @@ namespace MeGUI
                 }
             }
 
+            // Tunings
+            if (!xs.CustomEncoderOptions.Contains("--tune "))
+            {
+                switch (xs.svtAv1PsyTuning)
+                {
+                    case svtav1psySettings.svtAv1PsyTuningModes.VQ:             sb.Append("--tune 0 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.PSNR:           sb.Append("--tune 1 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.SSIM:           sb.Append("--tune 2 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
+                    default: break;
+                }
+            }
+
             /*
             // Threads
             if (!xs.CustomEncoderOptions.Contains("-threads "))

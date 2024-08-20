@@ -310,6 +310,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtTunes.Name = "svtTunes";
             this.svtTunes.Size = new System.Drawing.Size(97, 21);
             this.svtTunes.TabIndex = 0;
+            this.svtTunes.SelectedIndexChanged += new System.EventHandler(this.svtTunes_SelectedIndexChanged);
             // 
             // svtav1psyConfigurationPanel
             // 

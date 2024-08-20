@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using static MeGUI.svtav1psySettings;
 
 namespace MeGUI
 {
@@ -32,6 +33,28 @@ namespace MeGUI
 	{
         public static string ID = "SVT-AV1-PSY";
 
+        public static readonly svtAv1PsyTuningModes[] SupportedPsyTuningModes = new svtAv1PsyTuningModes[]
+        { svtAv1PsyTuningModes.NONE,
+          svtAv1PsyTuningModes.VQ,
+          svtAv1PsyTuningModes.PSNR,
+          svtAv1PsyTuningModes.SSIM,
+          svtAv1PsyTuningModes.SUBJECTIVESSIM
+        };
+
+        public enum svtAv1PsyTuningModes
+        {
+            [EnumTitle("None")]
+            NONE,
+            [EnumTitle("VQ")]
+            VQ,
+            [EnumTitle("PSNR")]
+            PSNR,
+            [EnumTitle("SSIM")]
+            SSIM,
+            [EnumTitle("Subjective SSIM")]
+            SUBJECTIVESSIM
+        };
+
         public override void setAdjustedNbThreads(int nbThreads)
         {
             base.setAdjustedNbThreads(0);
@@ -42,73 +65,48 @@ namespace MeGUI
             base.FixFileNames(substitutionTable);
         }
 
-        int coder, context, gopsize, slicesnb, nbThreads, preset;
+        int nbThreads, preset;
 		decimal quantizerCrf;
 		bool errorCorrection, ffv110Bits;
+        svtAv1PsyTuningModes psyTuningMode;
 
-		#region constructor
+
+        #region constructor
         /// <summary>
-		/// default constructor, initializes codec default values
-		/// </summary>
-		public svtav1psySettings():base(ID, VideoEncoderType.SVTAV1PSY)
+        /// default constructor, initializes codec default values
+        /// </summary>
+        public svtav1psySettings():base(ID, VideoEncoderType.SVTAV1PSY)
 		{
-            coder = 1;
-            context = 1;
-            gopsize = 1;
+            psyTuningMode = svtAv1PsyTuningModes.NONE;
             nbThreads = 1;
-            errorCorrection = true;
-            slicesnb = 1;
             quantizerCrf = 28;
-            ffv110Bits = false;
-            FFV1EncodingType = FFV1EncodingMode.none;
+            VideoEncodingType = VideoEncodingMode.quality;
             base.MaxNumberOfPasses = 2;
             preset = 10;
         }
         #endregion
         #region properties
+        public svtAv1PsyTuningModes svtAv1PsyTuning
+        {
+            get { return psyTuningMode; }
+            set { psyTuningMode = value; }
+        }
 
-        [XmlIgnore()]
-        [MeGUI.core.plugins.interfaces.PropertyEqualityIgnoreAttribute()]
+        public decimal QuantizerCRF
+        {
+            get { return quantizerCrf; }
+            set { quantizerCrf = value; }
+        }
         public int Preset
         {
             get { return preset; }
             set { preset = value; }
         }
 
-        public int Coder
-        {
-            get { return coder; }
-            set { coder = value; }
-        }
-        public int Context
-		{
-			get { return context; }
-			set { context = value; }
-		}
-		public int GOPSize
-		{
-			get { return gopsize; }
-			set { gopsize = value; }
-		}
         public int NBThreads
         {
             get { return nbThreads; }
             set { nbThreads = value; }
-        }
-        public int Slices
-        {
-            get { return slicesnb; }
-            set { slicesnb = value; }
-        }
-        public bool ErrorCorrection
-        {
-            get { return errorCorrection; }
-            set { errorCorrection = value; }
-        }
-        public bool FFV110Bits
-        {
-            get { return ffv110Bits; }
-            set { ffv110Bits = value; }
         }
         #endregion
         public override bool UsesSAR
@@ -131,7 +129,8 @@ namespace MeGUI
         public bool IsAltered(svtav1psySettings otherSettings)
         {
             if (
-                this.FFV1EncodingType != otherSettings.FFV1EncodingType
+                this.FFV1EncodingType != otherSettings.FFV1EncodingType ||
+                this.svtAv1PsyTuning != otherSettings.svtAv1PsyTuning
                 )
                 return true;
             else
