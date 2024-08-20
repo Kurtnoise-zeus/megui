@@ -41,6 +41,7 @@ namespace MeGUI.packages.video.svtav1psy
         {
             InitializeComponent();
             svtEncodingMode.SelectedIndex = 0;
+            gbPresets.Text = "Preset #" + tbsvtPresets.Value.ToString();
         }
 
         /// <summary>

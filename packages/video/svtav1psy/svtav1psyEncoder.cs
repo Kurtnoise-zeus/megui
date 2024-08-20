@@ -37,7 +37,7 @@ namespace MeGUI
             {
                 UpdateCacher.CheckPackage("ffmpeg");
                 //UpdateCacher.CheckPackage("svtav1psy");
-                return new ffv1Encoder(mf.Settings.FFmpeg.Path);
+                return new svtav1psyEncoder("cmd.exe");
             }
             return null;
         }
@@ -50,13 +50,18 @@ namespace MeGUI
 
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
         {
-            if (line.StartsWith("Pos:")) // status update
+            
+            if (line.StartsWith("Encoding:")) // status update
             {
-                int frameNumberStart = line.IndexOf("s", 4) + 1;
-                int frameNumberEnd = line.IndexOf("f");
-                if (base.setFrameNumber(line.Substring(frameNumberStart, frameNumberEnd - frameNumberStart).Trim()))
-                    return;
-            }
+                int frameNumberStart = line.IndexOf(":", 4) + 2;
+                int frameNumberEnd = line.IndexOf("/");
+                if (frameNumberStart > 0 && frameNumberEnd > 0 && frameNumberEnd > frameNumberStart)
+                    if (base.setFrameNumber(line.Substring(frameNumberStart, frameNumberEnd - frameNumberStart).Trim()))
+                        return;
+            } 
+            else if (FileUtil.RegExMatch(line, @"^Encoding: \d+/", true))
+                base.setFrameNumber(line.Substring(11, line.IndexOf("/") - 11));
+
             else if (line.StartsWith("frame=")) // status update for ffmpeg
             {
                 int frameNumberEnd = line.IndexOf("f", 6);
@@ -87,7 +92,7 @@ namespace MeGUI
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
 
-                sb.Append("\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
+                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
                 sb.Append("\"" + MainForm.Instance.Settings.SvtAv1Psy.Path + "\" ");
             }
 
@@ -97,8 +102,9 @@ namespace MeGUI
             ///</summary>
             ///
 
-            // Cmd
-            sb.Append("--progress 3 -i - --rc 0 --crf 43 ");
+            // Progress & Input
+            sb.Append("--progress 3 -i - ");
+            sb.Append("--rc 0 --crf 43 ");
 
             // Presets
             if (!xs.CustomEncoderOptions.Contains("--preset "))
@@ -124,58 +130,6 @@ namespace MeGUI
             }
 
             /*
-            // Input
-            sb.Append("-hide_banner -i "  + "\"" + input + "\" ");
-
-            // Only FFV1.3 supported
-            sb.Append("-vcodec ffv1 -level 3 "); 
-
-            // Contex
-            if (xs.Context == 1)
-                sb.Append("-context 1 ");
-            else
-                sb.Append("-context 0 ");
-
-            // Coder
-            if (xs.Coder > -1)
-                sb.Append("-coder " + xs.Coder.ToString()  + " ");
-
-            // Error Correction
-            if (xs.ErrorCorrection)
-                sb.Append("-slicecrc 1 ");
-
-            // Slices
-            switch (xs.Slices)
-            {
-                case 0: sb.Append("-slices 4 "); break;
-                case 1: sb.Append("-slices 6 "); break;
-                case 2: sb.Append("-slices 9 "); break;
-                case 3: sb.Append("-slices 12 "); break;
-                case 4: sb.Append("-slices 16 "); break;
-                case 5: sb.Append("-slices 24 "); break;
-                case 6: sb.Append("-slices 30 "); break;
-                default: break;
-            }
-
-            // GOP Size
-            if (xs.GOPSize >=1)
-                sb.Append("-g " + xs.GOPSize.ToString() + " ");
-
-            // Encoding Modes
-            switch (xs.FFV1EncodingType)
-            {
-                case VideoCodecSettings.FFV1EncodingMode.none: // No MultiPass
-                    break;
-                case VideoCodecSettings.FFV1EncodingMode.twopass1: // 2 pass first pass
-                    sb.Append("-pass 1 -passlogfile " + "\"" + Path.ChangeExtension(xs.Logfile, "") + "\" ");
-                    break;
-                case VideoCodecSettings.FFV1EncodingMode.twopass2: // 2 pass second pass
-                case VideoCodecSettings.FFV1EncodingMode.twopassAutomated: // automated twopass
-                    sb.Append("-pass 2 -passlogfile " + "\"" + Path.ChangeExtension(xs.Logfile, "") + "\" ");
-                    break;
-                default: break;
-            }
-
             // Threads
             if (!xs.CustomEncoderOptions.Contains("-threads "))
                 if (xs.NbThreads > 0)
@@ -189,6 +143,8 @@ namespace MeGUI
 
             // get number of frames to encode
             oSettingsHandler.getFrames(ref numberOfFrames);
+            if (numberOfFrames != null)
+                sb.Append("--frames " + numberOfFrames.ToString() + " ");
 
             xs.CustomEncoderOptions = oSettingsHandler.getCustomCommandLine();
             if (!String.IsNullOrEmpty(xs.CustomEncoderOptions)) // add custom encoder options
@@ -200,7 +156,7 @@ namespace MeGUI
                 if (xs.FFV1EncodingType == VideoCodecSettings.FFV1EncodingMode.twopass1)
                     sb.Append("-f null NUL ");
                 else if (!String.IsNullOrEmpty(output))
-                    sb.Append("-b " + "\"" + output + "\""); // Force MKV output
+                    sb.Append("-b " + "\"" + output + "\""); 
             }
 
             return sb.ToString();
