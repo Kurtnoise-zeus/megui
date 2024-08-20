@@ -471,5 +471,9 @@ namespace MeGUI.packages.video.svtav1psy
             }
         }
 
+        private void svtBitrateQuantizer_ValueChanged(object sender, EventArgs e)
+        {
+            genericUpdate();
+        }
     }
 }

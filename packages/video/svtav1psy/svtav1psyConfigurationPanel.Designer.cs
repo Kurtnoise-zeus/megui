@@ -83,7 +83,7 @@ namespace MeGUI.packages.video.svtav1psy
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.MiscTabPage);
-            this.tabControl1.Size = new System.Drawing.Size(370, 246);
+            this.tabControl1.Size = new System.Drawing.Size(490, 246);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Controls.SetChildIndex(this.MiscTabPage, 0);
@@ -92,7 +92,7 @@ namespace MeGUI.packages.video.svtav1psy
             // commandline
             // 
             this.commandline.Location = new System.Drawing.Point(0, 248);
-            this.commandline.Size = new System.Drawing.Size(367, 89);
+            this.commandline.Size = new System.Drawing.Size(487, 89);
             this.commandline.TabIndex = 1;
             this.commandline.Text = " ";
             // 
@@ -104,7 +104,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.mainTabPage.Controls.Add(this.helpButton1);
             this.mainTabPage.Controls.Add(this.ffv1ThreadsLabel);
             this.mainTabPage.Controls.Add(this.ffv1NbThreads);
-            this.mainTabPage.Size = new System.Drawing.Size(362, 220);
+            this.mainTabPage.Size = new System.Drawing.Size(482, 220);
             // 
             // label3
             // 
@@ -158,11 +158,11 @@ namespace MeGUI.packages.video.svtav1psy
             this.MiscTabPage.Text = "Misc";
             this.MiscTabPage.UseVisualStyleBackColor = true;
             // 
-            // gbffv1CustomCmd
+            // gbsvtCustomCmd
             // 
             this.gbffv1CustomCmd.Controls.Add(this.customCommandlineOptions);
             this.gbffv1CustomCmd.Location = new System.Drawing.Point(6, 6);
-            this.gbffv1CustomCmd.Name = "gbffv1CustomCmd";
+            this.gbffv1CustomCmd.Name = "gbsvtCustomCmd";
             this.gbffv1CustomCmd.Size = new System.Drawing.Size(490, 65);
             this.gbffv1CustomCmd.TabIndex = 27;
             this.gbffv1CustomCmd.TabStop = false;
@@ -178,24 +178,24 @@ namespace MeGUI.packages.video.svtav1psy
             this.customCommandlineOptions.Size = new System.Drawing.Size(464, 34);
             this.customCommandlineOptions.TabIndex = 0;
             // 
-            // ffv1ThreadsLabel
+            // svtThreadsLabel
             // 
             this.ffv1ThreadsLabel.AutoSize = true;
             this.ffv1ThreadsLabel.Location = new System.Drawing.Point(15, 178);
-            this.ffv1ThreadsLabel.Name = "ffv1ThreadsLabel";
+            this.ffv1ThreadsLabel.Name = "svtThreadsLabel";
             this.ffv1ThreadsLabel.Size = new System.Drawing.Size(95, 13);
             this.ffv1ThreadsLabel.TabIndex = 17;
             this.ffv1ThreadsLabel.Text = "Threads (0 = Auto)";
             // 
-            // ffv1NbThreads
+            // svtNbThreads
             // 
             this.ffv1NbThreads.Location = new System.Drawing.Point(117, 176);
-            this.ffv1NbThreads.Name = "ffv1NbThreads";
+            this.ffv1NbThreads.Name = "svtNbThreads";
             this.ffv1NbThreads.Size = new System.Drawing.Size(43, 20);
             this.ffv1NbThreads.TabIndex = 18;
             this.ffv1NbThreads.ValueChanged += new System.EventHandler(this.updateEvent);
             // 
-            // ffv1CodecGeneralGroupbox
+            // svtCodecGeneralGroupbox
             // 
             this.ffv1CodecGeneralGroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -203,8 +203,8 @@ namespace MeGUI.packages.video.svtav1psy
             this.ffv1CodecGeneralGroupbox.Controls.Add(this.svtEncodingMode);
             this.ffv1CodecGeneralGroupbox.Controls.Add(this.svtBitrateQuantizerLabel);
             this.ffv1CodecGeneralGroupbox.Location = new System.Drawing.Point(6, 6);
-            this.ffv1CodecGeneralGroupbox.Name = "ffv1CodecGeneralGroupbox";
-            this.ffv1CodecGeneralGroupbox.Size = new System.Drawing.Size(231, 48);
+            this.ffv1CodecGeneralGroupbox.Name = "svtCodecGeneralGroupbox";
+            this.ffv1CodecGeneralGroupbox.Size = new System.Drawing.Size(315, 48);
             this.ffv1CodecGeneralGroupbox.TabIndex = 46;
             this.ffv1CodecGeneralGroupbox.TabStop = false;
             this.ffv1CodecGeneralGroupbox.Text = " Encoding Mode ";
@@ -212,7 +212,7 @@ namespace MeGUI.packages.video.svtav1psy
             // svtBitrateQuantizer
             // 
             this.svtBitrateQuantizer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.svtBitrateQuantizer.Location = new System.Drawing.Point(170, 20);
+            this.svtBitrateQuantizer.Location = new System.Drawing.Point(254, 20);
             this.svtBitrateQuantizer.Maximum = new decimal(new int[] {
             300000,
             0,
@@ -226,6 +226,7 @@ namespace MeGUI.packages.video.svtav1psy
             0,
             0,
             0});
+            this.svtBitrateQuantizer.ValueChanged += new System.EventHandler(this.updateEvent);
             // 
             // svtEncodingMode
             // 
@@ -246,15 +247,14 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtEncodingMode.Location = new System.Drawing.Point(6, 19);
             this.svtEncodingMode.MaxDropDownItems = 2;
             this.svtEncodingMode.Name = "svtEncodingMode";
-            this.svtEncodingMode.Size = new System.Drawing.Size(106, 21);
+            this.svtEncodingMode.Size = new System.Drawing.Size(153, 21);
             this.svtEncodingMode.TabIndex = 2;
             this.svtEncodingMode.SelectedIndexChanged += new System.EventHandler(this.updateEvent);
-            this.svtEncodingMode.SelectionChangeCommitted += new System.EventHandler(this.svtEncodingMode_SelectionChangeCommitted);
             // 
             // svtBitrateQuantizerLabel
             // 
             this.svtBitrateQuantizerLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.svtBitrateQuantizerLabel.Location = new System.Drawing.Point(118, 17);
+            this.svtBitrateQuantizerLabel.Location = new System.Drawing.Point(179, 19);
             this.svtBitrateQuantizerLabel.Margin = new System.Windows.Forms.Padding(3);
             this.svtBitrateQuantizerLabel.Name = "svtBitrateQuantizerLabel";
             this.svtBitrateQuantizerLabel.Padding = new System.Windows.Forms.Padding(3);
@@ -273,7 +273,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.gbPresets.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbPresets.Location = new System.Drawing.Point(6, 59);
             this.gbPresets.Name = "gbPresets";
-            this.gbPresets.Size = new System.Drawing.Size(350, 101);
+            this.gbPresets.Size = new System.Drawing.Size(470, 101);
             this.gbPresets.TabIndex = 47;
             this.gbPresets.TabStop = false;
             this.gbPresets.Text = " Preset ";
@@ -283,7 +283,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.lbPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lbPreset.AutoSize = true;
             this.lbPreset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbPreset.Location = new System.Drawing.Point(6, 75);
+            this.lbPreset.Location = new System.Drawing.Point(83, 74);
             this.lbPreset.Name = "lbPreset";
             this.lbPreset.Size = new System.Drawing.Size(336, 13);
             this.lbPreset.TabIndex = 1;
@@ -298,7 +298,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.tbsvtPresets.Location = new System.Drawing.Point(6, 32);
             this.tbsvtPresets.Maximum = 13;
             this.tbsvtPresets.Name = "tbsvtPresets";
-            this.tbsvtPresets.Size = new System.Drawing.Size(338, 30);
+            this.tbsvtPresets.Size = new System.Drawing.Size(458, 30);
             this.tbsvtPresets.TabIndex = 0;
             this.tbsvtPresets.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.tbsvtPresets.Value = 10;
@@ -308,9 +308,9 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             this.gbTunes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gbTunes.Controls.Add(this.svtTunes);
-            this.gbTunes.Location = new System.Drawing.Point(243, 6);
+            this.gbTunes.Location = new System.Drawing.Point(327, 6);
             this.gbTunes.Name = "gbTunes";
-            this.gbTunes.Size = new System.Drawing.Size(113, 48);
+            this.gbTunes.Size = new System.Drawing.Size(149, 48);
             this.gbTunes.TabIndex = 48;
             this.gbTunes.TabStop = false;
             this.gbTunes.Text = " Tuning ";
@@ -321,7 +321,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtTunes.FormattingEnabled = true;
             this.svtTunes.Location = new System.Drawing.Point(10, 19);
             this.svtTunes.Name = "svtTunes";
-            this.svtTunes.Size = new System.Drawing.Size(97, 21);
+            this.svtTunes.Size = new System.Drawing.Size(133, 21);
             this.svtTunes.TabIndex = 0;
             this.svtTunes.SelectedIndexChanged += new System.EventHandler(this.svtTunes_SelectedIndexChanged);
             // 
@@ -330,7 +330,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Name = "svtav1psyConfigurationPanel";
-            this.Size = new System.Drawing.Size(370, 340);
+            this.Size = new System.Drawing.Size(490, 340);
             this.tabControl1.ResumeLayout(false);
             this.mainTabPage.ResumeLayout(false);
             this.mainTabPage.PerformLayout();
