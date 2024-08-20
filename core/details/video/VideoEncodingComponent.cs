@@ -190,6 +190,8 @@ namespace MeGUI
                     videoOutput = Path.ChangeExtension(videoOutput, "hevc");
                 else if (vSettings.SettingsID.Equals("XviD"))
                     videoOutput = Path.ChangeExtension(videoOutput, "m4v");
+                else if (vSettings.SettingsID.Equals("SVT-AV1-PSY"))
+                    videoOutput = Path.ChangeExtension(videoOutput, "ivf");
             }
 
             JobUtil.GetInputProperties(info.VideoInput, out ulong frameCount, out _);
