@@ -67,7 +67,6 @@ namespace MeGUI
 
         int nbThreads, preset;
 		decimal quantizerCrf;
-		bool errorCorrection, ffv110Bits;
         svtAv1PsyTuningModes psyTuningMode;
 
 
@@ -79,7 +78,7 @@ namespace MeGUI
 		{
             psyTuningMode = svtAv1PsyTuningModes.NONE;
             nbThreads = 1;
-            quantizerCrf = 28;
+            quantizerCrf = 35;
             VideoEncodingType = VideoEncodingMode.quality;
             base.MaxNumberOfPasses = 2;
             preset = 10;
