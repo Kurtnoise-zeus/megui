@@ -81,6 +81,7 @@ namespace MeGUI
 
         public static string genCommandline(string input, string output, Dar? d, int hres, int vres, ref ulong numberOfFrames, svtav1psySettings _xs, LogItem log)
         {
+            int qp;
             StringBuilder sb = new StringBuilder();
             CultureInfo ci = new CultureInfo("en-us");
             svtav1psySettings xs = (svtav1psySettings)_xs.Clone();
@@ -104,7 +105,6 @@ namespace MeGUI
 
             // Progress & Input
             sb.Append("--progress 3 -i - ");
-            sb.Append("--rc 0 --crf 43 ");
 
             // Presets
             if (!xs.CustomEncoderOptions.Contains("--preset "))
@@ -140,6 +140,44 @@ namespace MeGUI
                     case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
                     default: break;
                 }
+            }
+
+            // Encoding Modes
+            switch (xs.VideoEncodingType)
+            {
+                case VideoCodecSettings.VideoEncodingMode.CBR:
+                    if (!xs.CustomEncoderOptions.Contains("--tbr "))
+                        sb.Append("--rc 2 --tbr " + xs.BitrateQuantizer + " ");
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.CQ: // CQ
+                    if (!xs.CustomEncoderOptions.Contains("--qp "))
+                    {
+                        qp = (int)xs.QuantizerCRF;
+                        sb.Append("--rc 0 --qp " + qp.ToString(ci) + " ");
+                    }
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.twopass1: // 2 pass first pass
+                    sb.Append("--rc 1 --pass 1 --tbr " + xs.BitrateQuantizer + " --stats " + "\"" + xs.Logfile + "\" ");
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.twopass2: // 2 pass second pass
+                case VideoCodecSettings.VideoEncodingMode.twopassAutomated: // automated twopass
+                    sb.Append("--rc 1 --pass 2 --tbr " + xs.BitrateQuantizer + " --stats " + "\"" + xs.Logfile + "\" ");
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.threepass1: // 3 pass first pass
+                    sb.Append("--rc 1 --pass 1 --tbr " + xs.BitrateQuantizer + " --stats " + "\"" + xs.Logfile + "\" ");
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.threepass2: // 3 pass 2nd pass
+                    sb.Append("--rc 1 --pass 3 --tbr " + xs.BitrateQuantizer + " --stats " + "\"" + xs.Logfile + "\" ");
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.threepass3: // 3 pass 3rd pass
+                case VideoCodecSettings.VideoEncodingMode.threepassAutomated: // automated threepass, show third pass options
+                    sb.Append("--rc 1 --pass 3 --tbr " + xs.BitrateQuantizer + " --stats " + "\"" + xs.Logfile + "\" ");
+                    break;
+                case VideoCodecSettings.VideoEncodingMode.quality: // constant quality
+                    if (!xs.CustomEncoderOptions.Contains("--crf "))
+                        if (xs.QuantizerCRF != 35)
+                            sb.Append("--rc 0 --crf " + xs.QuantizerCRF.ToString(ci) + " ");
+                    break;
             }
 
             /*
