@@ -211,14 +211,6 @@ namespace MeGUI.packages.video.ffv1
 
         private void ffv1EncodingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //ffv1Settings xs = new ffv1Settings();
-            //switch (ffv1EncodingMode.SelectedIndex)
-            //{
-            //    case 0: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)10;  break;
-            //    case 1: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)2;   break;
-            //    case 2: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)3;   break;
-            //    case 3: xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)4;   break;
-            //}
             genericUpdate();
         }
     }
