@@ -85,7 +85,7 @@ namespace MeGUI
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
 
-                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
+                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
                 if (!MainForm.Instance.Settings.Usex64Tools)
                     sb.Append("\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.X265.Path), @"x86\x265.exe") + "\" ");
                 else
