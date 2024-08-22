@@ -38,7 +38,8 @@ namespace MeGUI
           svtAv1PsyTuningModes.VQ,
           svtAv1PsyTuningModes.PSNR,
           svtAv1PsyTuningModes.SSIM,
-          svtAv1PsyTuningModes.SUBJECTIVESSIM
+          svtAv1PsyTuningModes.SUBJECTIVESSIM,
+          svtAv1PsyTuningModes.STILLPICTURE
         };
 
         public enum svtAv1PsyTuningModes
@@ -52,7 +53,9 @@ namespace MeGUI
             [EnumTitle("SSIM")]
             SSIM,
             [EnumTitle("Subjective SSIM")]
-            SUBJECTIVESSIM
+            SUBJECTIVESSIM,
+            [EnumTitle("Still Picture")]
+            STILLPICTURE
         };
 
         public override void setAdjustedNbThreads(int nbThreads)

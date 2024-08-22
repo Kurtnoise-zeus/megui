@@ -93,7 +93,7 @@ namespace MeGUI
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
 
-                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
+                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner  -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
                 sb.Append("\"" + MainForm.Instance.Settings.SvtAv1Psy.Path + "\" ");
             }
 
@@ -138,6 +138,7 @@ namespace MeGUI
                     case svtav1psySettings.svtAv1PsyTuningModes.PSNR:           sb.Append("--tune 1 "); break;
                     case svtav1psySettings.svtAv1PsyTuningModes.SSIM:           sb.Append("--tune 2 "); break;
                     case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.STILLPICTURE:   sb.Append("--tune 4 "); break;
                     default: break;
                 }
             }
