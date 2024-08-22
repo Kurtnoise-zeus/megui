@@ -57,8 +57,8 @@ namespace MeGUI.packages.video.svtav1psy
             this.MiscTabPage = new System.Windows.Forms.TabPage();
             this.gbffv1CustomCmd = new System.Windows.Forms.GroupBox();
             this.customCommandlineOptions = new System.Windows.Forms.TextBox();
-            this.ffv1ThreadsLabel = new System.Windows.Forms.Label();
-            this.ffv1NbThreads = new System.Windows.Forms.NumericUpDown();
+            this.svtThreadsLabel = new System.Windows.Forms.Label();
+            this.svtNbThreads = new System.Windows.Forms.NumericUpDown();
             this.ffv1CodecGeneralGroupbox = new System.Windows.Forms.GroupBox();
             this.svtBitrateQuantizer = new System.Windows.Forms.NumericUpDown();
             this.svtEncodingMode = new System.Windows.Forms.ComboBox();
@@ -68,11 +68,13 @@ namespace MeGUI.packages.video.svtav1psy
             this.tbsvtPresets = new System.Windows.Forms.TrackBar();
             this.gbTunes = new System.Windows.Forms.GroupBox();
             this.svtTunes = new System.Windows.Forms.ComboBox();
+            this.PsyTabPage = new System.Windows.Forms.TabPage();
+            this.chAdvanced = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.mainTabPage.SuspendLayout();
             this.MiscTabPage.SuspendLayout();
             this.gbffv1CustomCmd.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ffv1NbThreads)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.svtNbThreads)).BeginInit();
             this.ffv1CodecGeneralGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.svtBitrateQuantizer)).BeginInit();
             this.gbPresets.SuspendLayout();
@@ -82,29 +84,32 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.PsyTabPage);
             this.tabControl1.Controls.Add(this.MiscTabPage);
-            this.tabControl1.Size = new System.Drawing.Size(490, 246);
+            this.tabControl1.Size = new System.Drawing.Size(490, 288);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Controls.SetChildIndex(this.MiscTabPage, 0);
+            this.tabControl1.Controls.SetChildIndex(this.PsyTabPage, 0);
             this.tabControl1.Controls.SetChildIndex(this.mainTabPage, 0);
             // 
             // commandline
             // 
-            this.commandline.Location = new System.Drawing.Point(0, 248);
+            this.commandline.Location = new System.Drawing.Point(0, 290);
             this.commandline.Size = new System.Drawing.Size(487, 89);
             this.commandline.TabIndex = 1;
             this.commandline.Text = " ";
             // 
             // mainTabPage
             // 
+            this.mainTabPage.Controls.Add(this.chAdvanced);
             this.mainTabPage.Controls.Add(this.gbTunes);
             this.mainTabPage.Controls.Add(this.gbPresets);
             this.mainTabPage.Controls.Add(this.ffv1CodecGeneralGroupbox);
             this.mainTabPage.Controls.Add(this.helpButton1);
-            this.mainTabPage.Controls.Add(this.ffv1ThreadsLabel);
-            this.mainTabPage.Controls.Add(this.ffv1NbThreads);
-            this.mainTabPage.Size = new System.Drawing.Size(482, 220);
+            this.mainTabPage.Controls.Add(this.svtThreadsLabel);
+            this.mainTabPage.Controls.Add(this.svtNbThreads);
+            this.mainTabPage.Size = new System.Drawing.Size(482, 262);
             // 
             // label3
             // 
@@ -142,7 +147,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.helpButton1.ArticleName = "Configuration/Video_Encoder_Configuration/SVTAV1PSY";
             this.helpButton1.AutoSize = true;
             this.helpButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.helpButton1.Location = new System.Drawing.Point(299, 178);
+            this.helpButton1.Location = new System.Drawing.Point(431, 176);
             this.helpButton1.Name = "helpButton1";
             this.helpButton1.Size = new System.Drawing.Size(39, 23);
             this.helpButton1.TabIndex = 10;
@@ -153,16 +158,16 @@ namespace MeGUI.packages.video.svtav1psy
             this.MiscTabPage.Location = new System.Drawing.Point(4, 22);
             this.MiscTabPage.Name = "MiscTabPage";
             this.MiscTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MiscTabPage.Size = new System.Drawing.Size(362, 220);
+            this.MiscTabPage.Size = new System.Drawing.Size(482, 262);
             this.MiscTabPage.TabIndex = 6;
             this.MiscTabPage.Text = "Misc";
             this.MiscTabPage.UseVisualStyleBackColor = true;
             // 
-            // gbsvtCustomCmd
+            // gbffv1CustomCmd
             // 
             this.gbffv1CustomCmd.Controls.Add(this.customCommandlineOptions);
             this.gbffv1CustomCmd.Location = new System.Drawing.Point(6, 6);
-            this.gbffv1CustomCmd.Name = "gbsvtCustomCmd";
+            this.gbffv1CustomCmd.Name = "gbffv1CustomCmd";
             this.gbffv1CustomCmd.Size = new System.Drawing.Size(490, 65);
             this.gbffv1CustomCmd.TabIndex = 27;
             this.gbffv1CustomCmd.TabStop = false;
@@ -180,22 +185,22 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             // svtThreadsLabel
             // 
-            this.ffv1ThreadsLabel.AutoSize = true;
-            this.ffv1ThreadsLabel.Location = new System.Drawing.Point(15, 178);
-            this.ffv1ThreadsLabel.Name = "svtThreadsLabel";
-            this.ffv1ThreadsLabel.Size = new System.Drawing.Size(95, 13);
-            this.ffv1ThreadsLabel.TabIndex = 17;
-            this.ffv1ThreadsLabel.Text = "Threads (0 = Auto)";
+            this.svtThreadsLabel.AutoSize = true;
+            this.svtThreadsLabel.Location = new System.Drawing.Point(15, 178);
+            this.svtThreadsLabel.Name = "svtThreadsLabel";
+            this.svtThreadsLabel.Size = new System.Drawing.Size(95, 13);
+            this.svtThreadsLabel.TabIndex = 17;
+            this.svtThreadsLabel.Text = "Threads (0 = Auto)";
             // 
             // svtNbThreads
             // 
-            this.ffv1NbThreads.Location = new System.Drawing.Point(117, 176);
-            this.ffv1NbThreads.Name = "svtNbThreads";
-            this.ffv1NbThreads.Size = new System.Drawing.Size(43, 20);
-            this.ffv1NbThreads.TabIndex = 18;
-            this.ffv1NbThreads.ValueChanged += new System.EventHandler(this.updateEvent);
+            this.svtNbThreads.Location = new System.Drawing.Point(117, 176);
+            this.svtNbThreads.Name = "svtNbThreads";
+            this.svtNbThreads.Size = new System.Drawing.Size(43, 20);
+            this.svtNbThreads.TabIndex = 18;
+            this.svtNbThreads.ValueChanged += new System.EventHandler(this.updateEvent);
             // 
-            // svtCodecGeneralGroupbox
+            // ffv1CodecGeneralGroupbox
             // 
             this.ffv1CodecGeneralGroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -203,7 +208,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.ffv1CodecGeneralGroupbox.Controls.Add(this.svtEncodingMode);
             this.ffv1CodecGeneralGroupbox.Controls.Add(this.svtBitrateQuantizerLabel);
             this.ffv1CodecGeneralGroupbox.Location = new System.Drawing.Point(6, 6);
-            this.ffv1CodecGeneralGroupbox.Name = "svtCodecGeneralGroupbox";
+            this.ffv1CodecGeneralGroupbox.Name = "ffv1CodecGeneralGroupbox";
             this.ffv1CodecGeneralGroupbox.Size = new System.Drawing.Size(315, 48);
             this.ffv1CodecGeneralGroupbox.TabIndex = 46;
             this.ffv1CodecGeneralGroupbox.TabStop = false;
@@ -325,19 +330,40 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtTunes.TabIndex = 0;
             this.svtTunes.SelectedIndexChanged += new System.EventHandler(this.svtTunes_SelectedIndexChanged);
             // 
+            // PsyTabPage
+            // 
+            this.PsyTabPage.Location = new System.Drawing.Point(4, 22);
+            this.PsyTabPage.Name = "PsyTabPage";
+            this.PsyTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.PsyTabPage.Size = new System.Drawing.Size(482, 262);
+            this.PsyTabPage.TabIndex = 7;
+            this.PsyTabPage.Text = "Psy";
+            this.PsyTabPage.UseVisualStyleBackColor = true;
+            // 
+            // chAdvanced
+            // 
+            this.chAdvanced.AutoSize = true;
+            this.chAdvanced.Location = new System.Drawing.Point(18, 220);
+            this.chAdvanced.Name = "chAdvanced";
+            this.chAdvanced.Size = new System.Drawing.Size(181, 17);
+            this.chAdvanced.TabIndex = 49;
+            this.chAdvanced.Text = "Advanced Psychovisual Settings";
+            this.chAdvanced.UseVisualStyleBackColor = true;
+            this.chAdvanced.CheckedChanged += new System.EventHandler(this.chAdvanced_CheckedChanged);
+            // 
             // svtav1psyConfigurationPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Name = "svtav1psyConfigurationPanel";
-            this.Size = new System.Drawing.Size(490, 340);
+            this.Size = new System.Drawing.Size(490, 382);
             this.tabControl1.ResumeLayout(false);
             this.mainTabPage.ResumeLayout(false);
             this.mainTabPage.PerformLayout();
             this.MiscTabPage.ResumeLayout(false);
             this.gbffv1CustomCmd.ResumeLayout(false);
             this.gbffv1CustomCmd.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ffv1NbThreads)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.svtNbThreads)).EndInit();
             this.ffv1CodecGeneralGroupbox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.svtBitrateQuantizer)).EndInit();
             this.gbPresets.ResumeLayout(false);
@@ -359,8 +385,8 @@ namespace MeGUI.packages.video.svtav1psy
         private System.Windows.Forms.TabPage MiscTabPage;
         private System.Windows.Forms.GroupBox gbffv1CustomCmd;
         private System.Windows.Forms.TextBox customCommandlineOptions;
-        private System.Windows.Forms.Label ffv1ThreadsLabel;
-        private System.Windows.Forms.NumericUpDown ffv1NbThreads;
+        private System.Windows.Forms.Label svtThreadsLabel;
+        private System.Windows.Forms.NumericUpDown svtNbThreads;
         private System.Windows.Forms.GroupBox ffv1CodecGeneralGroupbox;
         private System.Windows.Forms.ComboBox svtEncodingMode;
         private System.Windows.Forms.NumericUpDown svtBitrateQuantizer;
@@ -370,5 +396,7 @@ namespace MeGUI.packages.video.svtav1psy
         private System.Windows.Forms.TrackBar tbsvtPresets;
         private System.Windows.Forms.GroupBox gbTunes;
         private System.Windows.Forms.ComboBox svtTunes;
+        private System.Windows.Forms.TabPage PsyTabPage;
+        private System.Windows.Forms.CheckBox chAdvanced;
     }
 }

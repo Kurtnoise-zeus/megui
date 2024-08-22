@@ -218,6 +218,7 @@ namespace MeGUI.packages.video.svtav1psy
                 xs.Preset = tbsvtPresets.Value;
                 xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;
                 xs.BitrateQuantizer = (int)svtBitrateQuantizer.Value;
+                xs.QuantizerCRF = svtBitrateQuantizer.Value;
                 xs.svtAv1PsyTuning = getPsyTuning();
                 return xs;
             }
@@ -232,6 +233,7 @@ namespace MeGUI.packages.video.svtav1psy
                 tbsvtPresets.Value = xs.Preset;
                 svtTunes.SelectedItem = EnumProxy.Create(xs.svtAv1PsyTuning);
                 svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
+                xs.QuantizerCRF = svtBitrateQuantizer.Value;
                 svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 1) ? xs.BitrateQuantizer : xs.QuantizerCRF;
                 doEncodingModeAdjustments();
                 updating = false;
@@ -474,6 +476,16 @@ namespace MeGUI.packages.video.svtav1psy
         private void svtBitrateQuantizer_ValueChanged(object sender, EventArgs e)
         {
             genericUpdate();
+        }
+
+        private void chAdvanced_CheckedChanged(object sender, EventArgs e)
+        {
+                if (tabControl1.TabPages.Contains(PsyTabPage))
+                    tabControl1.TabPages.Remove(PsyTabPage);
+                if (tabControl1.TabPages.Contains(MiscTabPage))
+                    tabControl1.TabPages.Remove(MiscTabPage);
+            genericUpdate();
+
         }
     }
 }
