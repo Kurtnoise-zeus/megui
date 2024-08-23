@@ -777,7 +777,6 @@ namespace MeGUI
             this.cbAutoUpdateServerSubList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbAutoUpdateServerSubList.FormattingEnabled = true;
             this.cbAutoUpdateServerSubList.Items.AddRange(new object[] {
-            "Use stable update server",
             "Use development update server",
             "Use custom update server"});
             this.cbAutoUpdateServerSubList.Location = new System.Drawing.Point(9, 47);

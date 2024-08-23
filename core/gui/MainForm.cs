@@ -1326,10 +1326,8 @@ namespace MeGUI
             if (MainForm.Instance.Settings.AutoUpdate)
             {
                 if (MainForm.Instance.Settings.AutoUpdateServerSubList == 0)
-                    strUpdateCheck = "stable update server";
-                else if (MainForm.Instance.Settings.AutoUpdateServerSubList == 1)
                     strUpdateCheck = "development update server";
-                else if (MainForm.Instance.Settings.AutoUpdateServerSubList == 2)
+                else if (MainForm.Instance.Settings.AutoUpdateServerSubList == 1)
                     strUpdateCheck = "custom update server";
             }
             i.LogValue("Update Check", strUpdateCheck, false);
