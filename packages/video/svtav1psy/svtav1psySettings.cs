@@ -68,7 +68,7 @@ namespace MeGUI
             base.FixFileNames(substitutionTable);
         }
 
-        int nbThreads, preset;
+        int preset;
 		decimal quantizerCrf;
         svtAv1PsyTuningModes psyTuningMode;
 
@@ -80,7 +80,6 @@ namespace MeGUI
         public svtav1psySettings():base(ID, VideoEncoderType.SVTAV1PSY)
 		{
             psyTuningMode = svtAv1PsyTuningModes.NONE;
-            nbThreads = 1;
             quantizerCrf = 35;
             VideoEncodingType = VideoEncodingMode.quality;
             base.MaxNumberOfPasses = 2;
@@ -105,11 +104,6 @@ namespace MeGUI
             set { preset = value; }
         }
 
-        public int NBThreads
-        {
-            get { return nbThreads; }
-            set { nbThreads = value; }
-        }
         #endregion
         public override bool UsesSAR
         {

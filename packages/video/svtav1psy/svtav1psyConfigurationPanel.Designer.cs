@@ -57,8 +57,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.MiscTabPage = new System.Windows.Forms.TabPage();
             this.gbffv1CustomCmd = new System.Windows.Forms.GroupBox();
             this.customCommandlineOptions = new System.Windows.Forms.TextBox();
-            this.svtThreadsLabel = new System.Windows.Forms.Label();
-            this.svtNbThreads = new System.Windows.Forms.NumericUpDown();
             this.ffv1CodecGeneralGroupbox = new System.Windows.Forms.GroupBox();
             this.svtBitrateQuantizer = new System.Windows.Forms.NumericUpDown();
             this.svtEncodingMode = new System.Windows.Forms.ComboBox();
@@ -74,7 +72,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.mainTabPage.SuspendLayout();
             this.MiscTabPage.SuspendLayout();
             this.gbffv1CustomCmd.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.svtNbThreads)).BeginInit();
             this.ffv1CodecGeneralGroupbox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.svtBitrateQuantizer)).BeginInit();
             this.gbPresets.SuspendLayout();
@@ -107,8 +104,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.mainTabPage.Controls.Add(this.gbPresets);
             this.mainTabPage.Controls.Add(this.ffv1CodecGeneralGroupbox);
             this.mainTabPage.Controls.Add(this.helpButton1);
-            this.mainTabPage.Controls.Add(this.svtThreadsLabel);
-            this.mainTabPage.Controls.Add(this.svtNbThreads);
             this.mainTabPage.Size = new System.Drawing.Size(482, 262);
             // 
             // label3
@@ -183,23 +178,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.customCommandlineOptions.Size = new System.Drawing.Size(464, 34);
             this.customCommandlineOptions.TabIndex = 0;
             // 
-            // svtThreadsLabel
-            // 
-            this.svtThreadsLabel.AutoSize = true;
-            this.svtThreadsLabel.Location = new System.Drawing.Point(15, 178);
-            this.svtThreadsLabel.Name = "svtThreadsLabel";
-            this.svtThreadsLabel.Size = new System.Drawing.Size(95, 13);
-            this.svtThreadsLabel.TabIndex = 17;
-            this.svtThreadsLabel.Text = "Threads (0 = Auto)";
-            // 
-            // svtNbThreads
-            // 
-            this.svtNbThreads.Location = new System.Drawing.Point(117, 176);
-            this.svtNbThreads.Name = "svtNbThreads";
-            this.svtNbThreads.Size = new System.Drawing.Size(43, 20);
-            this.svtNbThreads.TabIndex = 18;
-            this.svtNbThreads.ValueChanged += new System.EventHandler(this.updateEvent);
-            // 
             // ffv1CodecGeneralGroupbox
             // 
             this.ffv1CodecGeneralGroupbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -259,14 +237,14 @@ namespace MeGUI.packages.video.svtav1psy
             // svtBitrateQuantizerLabel
             // 
             this.svtBitrateQuantizerLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.svtBitrateQuantizerLabel.Location = new System.Drawing.Point(179, 19);
+            this.svtBitrateQuantizerLabel.Location = new System.Drawing.Point(178, 19);
             this.svtBitrateQuantizerLabel.Margin = new System.Windows.Forms.Padding(3);
             this.svtBitrateQuantizerLabel.Name = "svtBitrateQuantizerLabel";
             this.svtBitrateQuantizerLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.svtBitrateQuantizerLabel.Size = new System.Drawing.Size(46, 23);
+            this.svtBitrateQuantizerLabel.Size = new System.Drawing.Size(70, 23);
             this.svtBitrateQuantizerLabel.TabIndex = 47;
             this.svtBitrateQuantizerLabel.Text = "Bitrate";
-            this.svtBitrateQuantizerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.svtBitrateQuantizerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // gbPresets
             // 
@@ -363,7 +341,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.MiscTabPage.ResumeLayout(false);
             this.gbffv1CustomCmd.ResumeLayout(false);
             this.gbffv1CustomCmd.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.svtNbThreads)).EndInit();
             this.ffv1CodecGeneralGroupbox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.svtBitrateQuantizer)).EndInit();
             this.gbPresets.ResumeLayout(false);
@@ -385,8 +362,6 @@ namespace MeGUI.packages.video.svtav1psy
         private System.Windows.Forms.TabPage MiscTabPage;
         private System.Windows.Forms.GroupBox gbffv1CustomCmd;
         private System.Windows.Forms.TextBox customCommandlineOptions;
-        private System.Windows.Forms.Label svtThreadsLabel;
-        private System.Windows.Forms.NumericUpDown svtNbThreads;
         private System.Windows.Forms.GroupBox ffv1CodecGeneralGroupbox;
         private System.Windows.Forms.ComboBox svtEncodingMode;
         private System.Windows.Forms.NumericUpDown svtBitrateQuantizer;
