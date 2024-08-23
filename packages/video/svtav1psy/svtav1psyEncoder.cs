@@ -106,39 +106,52 @@ namespace MeGUI
             // Progress & Input
             sb.Append("--progress 3 -i - ");
 
+            // get number of frames to encode
+            oSettingsHandler.getFrames(ref numberOfFrames);
+            if (numberOfFrames != null)
+                sb.Append("--frames " + numberOfFrames.ToString() + " ");
+
+            // Tunings
+            if (!xs.CustomEncoderOptions.Contains("--tune "))
+            {
+                if (xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopass1 ||
+                    xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopass2 ||
+                    xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopassAutomated ||
+                    xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepass1 ||
+                    xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepass2 ||
+                    xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepassAutomated)
+                    xs.svtAv1PsyTuning = svtav1psySettings.svtAv1PsyTuningModes.PSNR; // multi pass encodings do not support default tunings - force it to PSNR
+
+                switch (xs.svtAv1PsyTuning)
+                {
+                    case svtav1psySettings.svtAv1PsyTuningModes.VQ: sb.Append("--tune 0 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.PSNR: sb.Append("--tune 1 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.SSIM: sb.Append("--tune 2 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
+                    case svtav1psySettings.svtAv1PsyTuningModes.STILLPICTURE: sb.Append("--tune 4 "); break;
+                    default: break;
+                }
+            }
+
             // Presets
             if (!xs.CustomEncoderOptions.Contains("--preset "))
             {
                 switch (xs.Preset)
                 {
-                    case 0:  sb.Append("--preset 0 "); break;
-                    case 1:  sb.Append("--preset 1 "); break;
-                    case 2:  sb.Append("--preset 2 "); break;
-                    case 3:  sb.Append("--preset 3 "); break;
-                    case 4:  sb.Append("--preset 4 "); break;
-                    case 5:  sb.Append("--preset 5 "); break; 
-                    case 6:  sb.Append("--preset 6 "); break;
-                    case 7:  sb.Append("--preset 7 "); break;
-                    case 8:  sb.Append("--preset 8 "); break;
-                    case 9:  sb.Append("--preset 9 "); break;
+                    case 0: sb.Append("--preset 0 "); break;
+                    case 1: sb.Append("--preset 1 "); break;
+                    case 2: sb.Append("--preset 2 "); break;
+                    case 3: sb.Append("--preset 3 "); break;
+                    case 4: sb.Append("--preset 4 "); break;
+                    case 5: sb.Append("--preset 5 "); break;
+                    case 6: sb.Append("--preset 6 "); break;
+                    case 7: sb.Append("--preset 7 "); break;
+                    case 8: sb.Append("--preset 8 "); break;
+                    case 9: sb.Append("--preset 9 "); break;
                     case 10: sb.Append("--preset 10 "); break; // default value
                     case 11: sb.Append("--preset 11 "); break;
                     case 12: sb.Append("--preset 12 "); break;
                     case 13: sb.Append("--preset 13 "); break;
-                    default: break;
-                }
-            }
-
-            // Tunings
-            if (!xs.CustomEncoderOptions.Contains("--tune "))
-            {
-                switch (xs.svtAv1PsyTuning)
-                {
-                    case svtav1psySettings.svtAv1PsyTuningModes.VQ:             sb.Append("--tune 0 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.PSNR:           sb.Append("--tune 1 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.SSIM:           sb.Append("--tune 2 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.STILLPICTURE:   sb.Append("--tune 4 "); break;
                     default: break;
                 }
             }
@@ -182,22 +195,11 @@ namespace MeGUI
             }
 
             /*
-            // Threads
-            if (!xs.CustomEncoderOptions.Contains("-threads "))
-                if (xs.NbThreads > 0)
-                    sb.Append("-threads " + xs.NbThreads + " ");
-
             // bit-depth
             if (xs.FFV110Bits)
                 sb.Append("-pix_fmt yuv420p10le ");
             */
             #endregion
-
-            // get number of frames to encode
-            oSettingsHandler.getFrames(ref numberOfFrames);
-            if (numberOfFrames != null)
-                sb.Append("--frames " + numberOfFrames.ToString() + " ");
-
             xs.CustomEncoderOptions = oSettingsHandler.getCustomCommandLine();
             if (!String.IsNullOrEmpty(xs.CustomEncoderOptions)) // add custom encoder options
                 sb.Append(xs.CustomEncoderOptions + " ");
