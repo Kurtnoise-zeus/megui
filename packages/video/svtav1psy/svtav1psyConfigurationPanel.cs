@@ -478,14 +478,5 @@ namespace MeGUI.packages.video.svtav1psy
             genericUpdate();
         }
 
-        private void chAdvanced_CheckedChanged(object sender, EventArgs e)
-        {
-                if (tabControl1.TabPages.Contains(PsyTabPage))
-                    tabControl1.TabPages.Remove(PsyTabPage);
-                if (tabControl1.TabPages.Contains(MiscTabPage))
-                    tabControl1.TabPages.Remove(MiscTabPage);
-            genericUpdate();
-
-        }
     }
 }

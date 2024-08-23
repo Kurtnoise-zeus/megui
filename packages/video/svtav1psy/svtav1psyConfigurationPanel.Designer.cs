@@ -66,8 +66,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.tbsvtPresets = new System.Windows.Forms.TrackBar();
             this.gbTunes = new System.Windows.Forms.GroupBox();
             this.svtTunes = new System.Windows.Forms.ComboBox();
-            this.PsyTabPage = new System.Windows.Forms.TabPage();
-            this.chAdvanced = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.mainTabPage.SuspendLayout();
             this.MiscTabPage.SuspendLayout();
@@ -81,13 +79,11 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.PsyTabPage);
             this.tabControl1.Controls.Add(this.MiscTabPage);
             this.tabControl1.Size = new System.Drawing.Size(490, 288);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Controls.SetChildIndex(this.MiscTabPage, 0);
-            this.tabControl1.Controls.SetChildIndex(this.PsyTabPage, 0);
             this.tabControl1.Controls.SetChildIndex(this.mainTabPage, 0);
             // 
             // commandline
@@ -99,7 +95,6 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             // mainTabPage
             // 
-            this.mainTabPage.Controls.Add(this.chAdvanced);
             this.mainTabPage.Controls.Add(this.gbTunes);
             this.mainTabPage.Controls.Add(this.gbPresets);
             this.mainTabPage.Controls.Add(this.ffv1CodecGeneralGroupbox);
@@ -308,27 +303,6 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtTunes.TabIndex = 0;
             this.svtTunes.SelectedIndexChanged += new System.EventHandler(this.svtTunes_SelectedIndexChanged);
             // 
-            // PsyTabPage
-            // 
-            this.PsyTabPage.Location = new System.Drawing.Point(4, 22);
-            this.PsyTabPage.Name = "PsyTabPage";
-            this.PsyTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PsyTabPage.Size = new System.Drawing.Size(482, 262);
-            this.PsyTabPage.TabIndex = 7;
-            this.PsyTabPage.Text = "Psy";
-            this.PsyTabPage.UseVisualStyleBackColor = true;
-            // 
-            // chAdvanced
-            // 
-            this.chAdvanced.AutoSize = true;
-            this.chAdvanced.Location = new System.Drawing.Point(18, 220);
-            this.chAdvanced.Name = "chAdvanced";
-            this.chAdvanced.Size = new System.Drawing.Size(181, 17);
-            this.chAdvanced.TabIndex = 49;
-            this.chAdvanced.Text = "Advanced Psychovisual Settings";
-            this.chAdvanced.UseVisualStyleBackColor = true;
-            this.chAdvanced.CheckedChanged += new System.EventHandler(this.chAdvanced_CheckedChanged);
-            // 
             // svtav1psyConfigurationPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -371,7 +345,5 @@ namespace MeGUI.packages.video.svtav1psy
         private System.Windows.Forms.TrackBar tbsvtPresets;
         private System.Windows.Forms.GroupBox gbTunes;
         private System.Windows.Forms.ComboBox svtTunes;
-        private System.Windows.Forms.TabPage PsyTabPage;
-        private System.Windows.Forms.CheckBox chAdvanced;
     }
 }
