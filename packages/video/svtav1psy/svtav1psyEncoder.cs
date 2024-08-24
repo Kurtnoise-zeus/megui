@@ -36,7 +36,7 @@ namespace MeGUI
             if (j is VideoJob && (j as VideoJob).Settings is svtav1psySettings)
             {
                 UpdateCacher.CheckPackage("ffmpeg");
-                //UpdateCacher.CheckPackage("svtav1psy");
+                UpdateCacher.CheckPackage("svtav1psy");
                 return new svtav1psyEncoder("cmd.exe");
             }
             return null;
