@@ -760,7 +760,7 @@ namespace MeGUI.packages.video.x265
                 xs.FakeInterlaced = fakeInterlaced.Checked;
                 xs.x265PresetLevel = (x265Settings.x265PresetLevelModes)this.tbx265Presets.Value;
                 xs.x265PsyTuning = getPsyTuning();
-                xs.X265AdvancedSettings = advancedSettings.Checked;
+                xs.AdvancedSettings = advancedSettings.Checked;
                 xs.NoMBTree = mbtree.Checked;
                 xs.Lookahead = (int)lookahead.Value;
                 xs.NoPsy = nopsy.Checked;
@@ -864,7 +864,7 @@ namespace MeGUI.packages.video.x265
                 fakeInterlaced.Checked = xs.FakeInterlaced;
                 numAQStrength.Value = xs.AQstrength;
                 NoiseReduction.Text = xs.NoiseReduction.ToString();
-                advancedSettings.Checked = xs.X265AdvancedSettings;
+                advancedSettings.Checked = xs.AdvancedSettings;
                 lookahead.Value = xs.Lookahead;
                 mbtree.Checked = xs.NoMBTree;
                 nopsy.Checked = xs.NoPsy;
