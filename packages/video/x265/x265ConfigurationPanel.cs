@@ -760,7 +760,7 @@ namespace MeGUI.packages.video.x265
                 xs.FakeInterlaced = fakeInterlaced.Checked;
                 xs.x265PresetLevel = (x265Settings.x265PresetLevelModes)this.tbx265Presets.Value;
                 xs.x265PsyTuning = getPsyTuning();
-                xs.x265AdvancedSettings = advancedSettings.Checked;
+                xs.X265AdvancedSettings = advancedSettings.Checked;
                 xs.NoMBTree = mbtree.Checked;
                 xs.Lookahead = (int)lookahead.Value;
                 xs.NoPsy = nopsy.Checked;
@@ -864,7 +864,7 @@ namespace MeGUI.packages.video.x265
                 fakeInterlaced.Checked = xs.FakeInterlaced;
                 numAQStrength.Value = xs.AQstrength;
                 NoiseReduction.Text = xs.NoiseReduction.ToString();
-                advancedSettings.Checked = xs.x265AdvancedSettings;
+                advancedSettings.Checked = xs.X265AdvancedSettings;
                 lookahead.Value = xs.Lookahead;
                 mbtree.Checked = xs.NoMBTree;
                 nopsy.Checked = xs.NoPsy;
@@ -1152,7 +1152,7 @@ namespace MeGUI.packages.video.x265
 
         private void advancedSettings_CheckedChanged(object sender, EventArgs e)
         {
-            /*
+
             if (advancedSettings.Checked)
             {
                 if (!tabControl1.TabPages.Contains(FrameTypeTabPage))
@@ -1162,17 +1162,20 @@ namespace MeGUI.packages.video.x265
                 if (!tabControl1.TabPages.Contains(AnalysisTabPage))
                     tabControl1.TabPages.Add(AnalysisTabPage);
                 if (!tabControl1.TabPages.Contains(MiscTabPage))
-                    tabControl1.TabPages.Add(MiscTabPage);*/
-            if (tabControl1.TabPages.Contains(FrameTypeTabPage))
-                tabControl1.TabPages.Remove(FrameTypeTabPage);
-            if (tabControl1.TabPages.Contains(RCTabPage))
-                tabControl1.TabPages.Remove(RCTabPage);
-            if (tabControl1.TabPages.Contains(AnalysisTabPage))
-                tabControl1.TabPages.Remove(AnalysisTabPage);
-            //if (tabControl1.TabPages.Contains(MiscTabPage))
-            //    tabControl1.TabPages.Remove(MiscTabPage);
+                    tabControl1.TabPages.Add(MiscTabPage);
+            }
+            else
+            {
+                if (tabControl1.TabPages.Contains(FrameTypeTabPage))
+                    tabControl1.TabPages.Remove(FrameTypeTabPage);
+                if (tabControl1.TabPages.Contains(RCTabPage))
+                    tabControl1.TabPages.Remove(RCTabPage);
+                if (tabControl1.TabPages.Contains(AnalysisTabPage))
+                    tabControl1.TabPages.Remove(AnalysisTabPage);
+                if (tabControl1.TabPages.Contains(MiscTabPage))
+                    tabControl1.TabPages.Remove(MiscTabPage);
                 x265EncodingMode.Visible = true;
-                //cbTarget.Visible = false;
+            }
             genericUpdate();
         }
 

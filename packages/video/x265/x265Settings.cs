@@ -550,7 +550,7 @@ namespace MeGUI
             }
             set { range = value; }
         }
-        public bool x265AdvancedSettings
+        public bool X265AdvancedSettings
         {
             get { return advSet; }
             set { advSet = value; }
@@ -765,7 +765,7 @@ namespace MeGUI
                 this.MacroBlockOptions != otherSettings.MacroBlockOptions ||
                 this.x265PresetLevel != otherSettings.x265PresetLevel ||
                 this.x265PsyTuning != otherSettings.x265PsyTuning ||
-                this.x265AdvancedSettings != otherSettings.x265AdvancedSettings ||
+                this.X265AdvancedSettings != otherSettings.X265AdvancedSettings ||
                 this.Lookahead != otherSettings.Lookahead ||
                 this.NoMBTree != otherSettings.NoMBTree ||
                 this.ThreadInput != otherSettings.ThreadInput ||

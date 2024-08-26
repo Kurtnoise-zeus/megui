@@ -2277,7 +2277,6 @@ namespace MeGUI.packages.video.x265
             // advancedSettings
             // 
             this.advancedSettings.AutoSize = true;
-            this.advancedSettings.Enabled = false;
             this.advancedSettings.Location = new System.Drawing.Point(14, 92);
             this.advancedSettings.Name = "advancedSettings";
             this.advancedSettings.Size = new System.Drawing.Size(146, 17);
