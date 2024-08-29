@@ -276,22 +276,24 @@ namespace MeGUI
 
                 log.LogValue("File already exists. New muxed output filename", muxedOutput);
             }
- 
-            if (aStreams == null)
-                return log;
 
-            for (int i = 0; i < aStreams.Length; i++)
-			{
-				string name = Path.GetFullPath(aStreams[i].Output);
-                log.LogValue("Encodable audio stream " + i, name);
-				if (name.Equals(videoOutput) || name.Equals(muxedOutput)) // audio will be overwritten -> no good
-				{
-					name = Path.Combine(Path.GetDirectoryName(name), Path.GetFileNameWithoutExtension(name) + i.ToString() + Path.GetExtension(name));
-					aStreams[i].Output = name;
-                    log.LogValue("Stream has the same name as video stream. New audio stream output", name);
-				}
-			}
-            return log;
+            if (aStreams == null)
+                log.LogValue("No Audio Streams found", aStreams);
+            else
+            {
+                for (int i = 0; i < aStreams.Length; i++)
+                {
+                    string name = Path.GetFullPath(aStreams[i].Output);
+                    log.LogValue("Encodable audio stream " + i, name);
+                    if (name.Equals(videoOutput) || name.Equals(muxedOutput)) // audio will be overwritten -> no good
+                    {
+                        name = Path.Combine(Path.GetDirectoryName(name), Path.GetFileNameWithoutExtension(name) + i.ToString() + Path.GetExtension(name));
+                        aStreams[i].Output = name;
+                        log.LogValue("Stream has the same name as video stream. New audio stream output", name);
+                    }
+                }
+            }
+             return log;
 
 		}
         #endregion
