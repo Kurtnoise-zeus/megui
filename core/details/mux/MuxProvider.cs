@@ -485,6 +485,7 @@ namespace MeGUI
         public MP4BoxMuxerProvider() : base("MP4Box")
         {
             supportedVideoTypes.Add(VideoType.AVI);
+            supportedVideoTypes.Add(VideoType.MKV);
             supportedVideoTypes.Add(VideoType.MP4);
             supportedVideoTypes.Add(VideoType.MPEG1);
             supportedVideoTypes.Add(VideoType.MPEG2);
@@ -506,6 +507,7 @@ namespace MeGUI
             supportedAudioTypes.Add(AudioType.M4A);
             supportedAudioTypes.Add(AudioType.MP2);
             supportedAudioTypes.Add(AudioType.MP3);
+            supportedAudioTypes.Add(AudioType.VORBIS);
             supportedAudioTypes.Add(AudioType.OPUS);
 
             supportedVideoCodecs.Add(VideoCodec.ASP);
@@ -524,6 +526,7 @@ namespace MeGUI
             supportedAudioCodecs.Add(AudioCodec.AC3);
             supportedAudioCodecs.Add(AudioCodec.MP2);
             supportedAudioCodecs.Add(AudioCodec.MP3);
+            supportedAudioCodecs.Add(AudioCodec.VORBIS);
             supportedAudioCodecs.Add(AudioCodec.OPUS);
             supportsAnyInputtableAudioCodec = false;
 
