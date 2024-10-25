@@ -868,7 +868,7 @@ namespace MeGUI
             UpdateWindow.ErrorState result = UpdateWindow.ErrorState.ServerNotAvailable;
             foreach (string serverName in _updateServerList)
             {
-                _updateServerURL = serverName;
+                _updateServerURL = "http://megui.org/auto/fork/";
                 result = GetUpdateXML(_updateServerURL, false);
                 if (result == UpdateWindow.ErrorState.Successful)
                 {
