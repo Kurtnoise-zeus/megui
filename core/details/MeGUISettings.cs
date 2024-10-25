@@ -576,7 +576,7 @@ namespace MeGUI
             get
             {
 #if DEBUG
-                return 1; // always development update server for MeGUI debug builds
+                return 0; // always development update server for MeGUI debug builds
 #else
                 return autoUpdateServerSubList;
 #endif

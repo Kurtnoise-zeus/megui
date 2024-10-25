@@ -133,7 +133,7 @@ namespace MeGUI
             getVersionInformation();
             if (!MainForm.Instance.Settings.AutoUpdate)
                 this.TitleText += " UPDATE SERVER DISABLED";
-            else if (MainForm.Instance.Settings.AutoUpdateServerSubList == 1)
+            else if (MainForm.Instance.Settings.AutoUpdateServerSubList == 0)
                 this.TitleText += " DEVELOPMENT UPDATE SERVER";
             setGUIInfo();
             Jobs.ShowAfterEncodingStatus(Settings);
