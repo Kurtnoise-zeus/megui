@@ -124,7 +124,10 @@ namespace MeGUI
             this.Icon = trayIcon.Icon;
             this.TitleText = Application.ProductName + " " + new System.Version(Application.ProductVersion).Build;
             if (new System.Version(Application.ProductVersion).Revision != 0)
-                this.TitleText += "." + (new System.Version(Application.ProductVersion).Revision);
+                this.TitleText += "." + (new System.Version(Application.ProductVersion).Major) + 
+                                  "." + (new System.Version(Application.ProductVersion).Minor) +
+                                  "." + (new System.Version(Application.ProductVersion).Build) +
+                                  "." + (new System.Version(Application.ProductVersion).Revision);
             if (MainForm.Instance.Settings.IsMeGUIx64)
                 this.TitleText += " x64";
             getVersionInformation();
@@ -1307,18 +1310,22 @@ namespace MeGUI
         private void getVersionInformation()
         {
             bool bDebug = false;
+            string AppProductVersion = "";
 #if DEBUG
             bDebug = true;
 #endif
             LogItem i = Log.Info("Versions");
+            AppProductVersion += (new System.Version(Application.ProductVersion).Major) +
+                  "." + (new System.Version(Application.ProductVersion).Minor) +
+                  "." + (new System.Version(Application.ProductVersion).Build) +
+                  "." + (new System.Version(Application.ProductVersion).Revision);
+
             if (!MainForm.Instance.Settings.IsMeGUIx64)
-                i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + " x86" + (bDebug ? " (DEBUG)" : string.Empty), false);
+                i.LogValue("MeGUI", AppProductVersion + " x86" + (bDebug ? " (DEBUG)" : string.Empty), false);
             else
             {
                 if (new System.Version(Application.ProductVersion).Revision != 0)
-                    i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + "." + (new System.Version(Application.ProductVersion).Revision) + " x64" + (bDebug ? " (DEBUG)" : string.Empty), false);
-                else
-                    i.LogValue("MeGUI", new System.Version(Application.ProductVersion).Build + " x64" + (bDebug ? " (DEBUG)" : string.Empty), false);
+                    i.LogValue("MeGUI", AppProductVersion + " x64" + (bDebug ? " (DEBUG)" : string.Empty), false);
             }
             if (File.Exists(Path.ChangeExtension(Application.ExecutablePath, ".pdb")))
                 i.LogValue("MeGUI Debug Data", "available", false);
