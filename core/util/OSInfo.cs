@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Lifetime;
 using System.Threading;
 
 namespace MeGUI
@@ -425,8 +426,18 @@ namespace MeGUI
                                                     {
                                                         foreach (ManagementObject objMgmt in objOS.Get())
                                                         {
-                                                            osName += objMgmt.Properties["Caption"].Value.ToString();
+                                                            osName = objMgmt.Properties["Caption"].Value.ToString();
                                                         }
+                                                    }
+
+                                                    string release = string.Empty;
+                                                    switch (osVersionInfo.dwBuildNumber)
+                                                    {
+                                                        case 22000: osName += " 21H2"; break;
+                                                        case 22621: osName += " 22H2"; break;
+                                                        case 22631: osName += " 23H2"; break;
+                                                        case 26100: osName += " 24H2"; break;
+                                                        default: osName += string.IsNullOrEmpty(release) ? string.Empty : " " + release; break;
                                                     }
                                                 }
 
