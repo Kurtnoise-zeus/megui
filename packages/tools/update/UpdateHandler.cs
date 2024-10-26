@@ -230,15 +230,15 @@ namespace MeGUI
             if (UpdateCacher.VerifyLocalCacheFile(localFilename, ref result))
                 return result;
 
-            // if auto update is disabled ask if a download try should be made
-            if (MainForm.Instance.Settings.AutoUpdate == false && (!bManuallyStarted || (bManuallyStarted && packageName.Equals("update definition"))))
-            {
-                string strMessage = "The package " + packageName + " is not available offline.\n\nDo you want to search now online for updates?";
-                if (packageName.Equals("update definition"))
-                    strMessage = "The update definition is not available offline or may be outdated.\n\nDo you want to search now online for updates?";
-                if (MessageBox.Show(strMessage, "MeGUI package missing", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                    return UpdateWindow.ErrorState.CouldNotDownloadFile;
-            }
+            //// if auto update is disabled ask if a download try should be made
+            //if (MainForm.Instance.Settings.AutoUpdate == false && (!bManuallyStarted || (bManuallyStarted && packageName.Equals("update definition"))))
+            //{
+            //    string strMessage = "The package " + packageName + " is not available offline.\n\nDo you want to search now online for updates?";
+            //    if (packageName.Equals("update definition"))
+            //        strMessage = "The update definition is not available offline or may be outdated.\n\nDo you want to search now online for updates?";
+            //    if (MessageBox.Show(strMessage, "MeGUI package missing", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            //        return UpdateWindow.ErrorState.CouldNotDownloadFile;
+            //}
 
             lock (this)
             {
