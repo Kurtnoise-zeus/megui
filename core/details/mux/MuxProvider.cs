@@ -502,6 +502,7 @@ namespace MeGUI
             supportedVideoTypes.Add(VideoType.VC1);
 
             supportedAudioTypes.Add(AudioType.AC3);
+            supportedAudioTypes.Add(AudioType.DTS);
             supportedAudioTypes.Add(AudioType.RAWAAC);
             supportedAudioTypes.Add(AudioType.MP4AAC);
             supportedAudioTypes.Add(AudioType.M4A);
@@ -524,6 +525,7 @@ namespace MeGUI
 
             supportedAudioCodecs.Add(AudioCodec.AAC);
             supportedAudioCodecs.Add(AudioCodec.AC3);
+            supportedAudioCodecs.Add(AudioCodec.DTS);
             supportedAudioCodecs.Add(AudioCodec.MP2);
             supportedAudioCodecs.Add(AudioCodec.MP3);
             supportedAudioCodecs.Add(AudioCodec.VORBIS);
