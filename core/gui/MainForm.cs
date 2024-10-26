@@ -128,6 +128,9 @@ namespace MeGUI
                                   "." + (new System.Version(Application.ProductVersion).Minor) +
                                   "." + (new System.Version(Application.ProductVersion).Build) +
                                   "." + (new System.Version(Application.ProductVersion).Revision);
+
+            this.TitleText += " " + DateTime.Now.ToString("yyyyMMdd");
+
             if (MainForm.Instance.Settings.IsMeGUIx64)
                 this.TitleText += " x64";
             getVersionInformation();
@@ -1318,7 +1321,8 @@ namespace MeGUI
             AppProductVersion += (new System.Version(Application.ProductVersion).Major) +
                   "." + (new System.Version(Application.ProductVersion).Minor) +
                   "." + (new System.Version(Application.ProductVersion).Build) +
-                  "." + (new System.Version(Application.ProductVersion).Revision);
+                  "." + (new System.Version(Application.ProductVersion).Revision) +
+                  " " + DateTime.Now.ToString("yyyyMMdd");
 
             if (!MainForm.Instance.Settings.IsMeGUIx64)
                 i.LogValue("MeGUI", AppProductVersion + " x86" + (bDebug ? " (DEBUG)" : string.Empty), false);
