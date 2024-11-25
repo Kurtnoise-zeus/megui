@@ -104,7 +104,6 @@ namespace MeGUI
         private HeaderType _sendWavHeaderToEncoderStdIn;
 
         private int _sampleRate;
-        private int _iChannelMask = -1;
 
         private ManualResetEvent _mre = new System.Threading.ManualResetEvent(true); // lock used to pause encoding
         private Thread _encoderThread = null;
@@ -181,70 +180,6 @@ namespace MeGUI
             {
                 // Do Nothing
             }
-        }
-
-        private static uint GetSpeakerMask(int channelCount)
-        {
-            // Assume setup of: FL, FR, FC, LFE, BL, BR, SL & SR. Otherwise MCL will use: FL, FR, FC, LFE, BL, BR, FLoC & FRoC.
-            if (channelCount == 8)
-            {
-                return 0x63F;
-            }
-
-            // Otherwise follow MCL.
-            uint mask = 0;
-            var channels = Enum.GetValues(typeof(Channels)).Cast<uint>().ToArray();
-
-            for (var i = 0; i < channelCount; i++)
-            {
-                mask += channels[i];
-            }
-
-            return mask;
-        }
-
-        private static uint GetSMask(string chLayout)
-        {
-            uint m = 0;
-            string[] cll = chLayout.Split();
-
-            foreach (var cl in cll)
-            {
-                m += (String.IsNullOrEmpty(cl) ? 3 : MaskValue(cl)); // assume Stereo if chLayout is empty
-            }
-
-            return m;
-        }
-
-        private static uint MaskValue(string chLayout)
-        {
-            uint m = 0;
-
-            switch (chLayout)
-            {
-                case "L": m += 0x1; break;
-                case "R": m += 0x2; break;
-                case "C": m += 0x4; break;
-                case "LFE": m += 0x8; break;
-                case "Bfl": m += 0x10; break;
-                case "Bfr": m += 0x20; break;
-                case "Lc": m += 0x40; break;
-                case "Rc": m += 0x80; break;
-                case "Cb": m += 0x100; break;
-                case "Ls": m += 0x200; break;
-                case "Rs": m += 0x400; break;
-                case "Tc": m += 0x800; break;
-                case "Tfl": m += 0x1000; break;
-                case "Tfc": m += 0x2000; break;
-                case "Tfr": m += 0x4000; break;
-                case "Tbl": m += 0x8000; break;
-                case "Tbc": m += 0x10000; break;
-                case "Tbr": m += 0x20000; break;
-                default: m += 0; break;
-
-            }
-
-            return m;
         }
 
         private void CreateTemporallyEqFiles(string tempPath)
