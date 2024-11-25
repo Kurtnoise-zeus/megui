@@ -119,6 +119,7 @@ namespace MeGUI
 #if CSC
 			name = "";
 #endif
+            DateTime BuildDate = new DateTime(2024,11,25);
             string[] resources = myAssembly.GetManifestResourceNames();
             this.trayIcon.Icon = new Icon(myAssembly.GetManifestResourceStream(name + "App.ico"));
             this.Icon = trayIcon.Icon;
@@ -129,7 +130,7 @@ namespace MeGUI
                                   "." + (new System.Version(Application.ProductVersion).Build) +
                                   "." + (new System.Version(Application.ProductVersion).Revision);
 
-            this.TitleText += " " + DateTime.Now.ToString("yyyyMMdd");
+            this.TitleText += " " + BuildDate.ToString("yyyyMMdd");
 
             if (MainForm.Instance.Settings.IsMeGUIx64)
                 this.TitleText += " x64";
