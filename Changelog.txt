@@ -1,3 +1,12 @@
+Changelog version 6666 20241125
+
+- Updated AvisynthWrapper and MediaInfo libraries.
+- Fixed issues within channel mask in audio transcoding.
+- Updated 7.1 & 6.1 avs downmix avs functions for audio transcoding.
+- Allowed dts audio streams as input for MP4 Muxer.
+- Added Windows 11 Build Revision Information.
+
+
 Changelog version 6666.2308
 
 - Introduced svt-av1-psy Video Encoder (https://github.com/gianni-rosato/svt-av1-psy)
