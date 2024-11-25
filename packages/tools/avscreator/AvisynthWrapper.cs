@@ -119,6 +119,7 @@ namespace MeGUI
 			public int nchannels;
 			public int num_audio_frames;
 			public long num_audio_samples;
+            public int channelMask;
 		}
 
         [DllImport("AvisynthWrapper", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Ansi)]
@@ -391,6 +392,15 @@ namespace MeGUI
 				return (short)_vi.nchannels;
 			}
 		}
+
+        public int ChannelMask
+        {
+            get
+            {
+                return _vi.channelMask;
+            }
+
+        }
 
         public AviSynthColorspace PixelType
         {
