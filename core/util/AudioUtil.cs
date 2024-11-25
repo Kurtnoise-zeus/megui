@@ -103,6 +103,21 @@ namespace MeGUI
             }
         }
 
+        public static int AVSFileChannelMask(String strAVSScript)
+        {
+            try
+            {
+                if (!Path.GetExtension(strAVSScript).ToLowerInvariant().Equals(".avs"))
+                    return 0;
+                using (AviSynthClip a = AviSynthScriptEnvironment.OpenScriptFile(strAVSScript))
+                    return a.ChannelMask;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public static string getChannelPositionsFromAVSFile(String strAVSFile)
         {
             string strChannelPositions = String.Empty;

@@ -508,6 +508,7 @@ namespace MeGUI
                         inputLog.LogValue("Channels", a.ChannelsCount);
                         inputLog.LogValue("Bits per sample", a.BitsPerSample);
                         inputLog.LogValue("Sample rate", a.AudioSampleRate);
+                        inputLog.LogValue("Channel Mask", a.ChannelMask);
                         
                         const int MAX_SAMPLES_PER_ONCE = 4096;
                         int frameSample = 0;
@@ -519,7 +520,7 @@ namespace MeGUI
                             using (Stream target = _encoderProcess.StandardInput.BaseStream)
                             {
                                 // let's write WAV Header
-                                WriteHeader(target, a, _sendWavHeaderToEncoderStdIn, _iChannelMask);
+                                WriteHeader(target, a, _sendWavHeaderToEncoderStdIn, a.ChannelMask);
                                 _sampleRate = a.AudioSampleRate;
                                 GCHandle h = GCHandle.Alloc(frameBuffer, GCHandleType.Pinned);
                                 IntPtr address = h.AddrOfPinnedObject();
@@ -716,7 +717,7 @@ namespace MeGUI
             uint HeaderSize = (uint)(WExtHeader ? 60 : 36);
             int[] defmask = { 0, 4, 3, 11, 263, 1543, 1551, 1807, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-            if (Greater4GB && headerType == HeaderType.W64)
+            if (Greater4GB || headerType == HeaderType.W64)
             {
                 // W64
                 HeaderSize = (uint)(WExtHeader ? 128 : 112);
@@ -765,7 +766,7 @@ namespace MeGUI
                 target.Write(BitConverter.GetBytes((uint)0x719B3800), 0, 4);
             }
             // data chunk
-            if (Greater4GB && headerType == HeaderType.W64)
+            if (Greater4GB || headerType == HeaderType.W64)
             {
                 // W64
                 if (!WExtHeader)
@@ -1102,6 +1103,7 @@ namespace MeGUI
             int iChannelCount = 0;
             int iAVSChannelCount = 0;
             int iAVSAudioSampleRate = 0;
+            int iChannelMask = 0;
 
             using (MediaInfoFile oInfo = new MediaInfoFile(audioJob.Input, ref _log))
             {
@@ -1239,8 +1241,9 @@ namespace MeGUI
                 // get real detected channel count from AVS 
                 using (AvsFile avi = AvsFile.ParseScript(script.ToString()))
                 {
-                    iAVSChannelCount = avi.Clip.ChannelsCount;
+                    iAVSChannelCount    = avi.Clip.ChannelsCount;
                     iAVSAudioSampleRate = avi.Clip.AudioSampleRate;
+                    iChannelMask        = avi.Clip.ChannelMask;
                 }
 
                 // get the channel information from source file
@@ -1277,31 +1280,12 @@ namespace MeGUI
                     strChannelPositions = x[iCount].Trim();
             }
 
-            script.AppendFormat(@"# Detected Channels: {0}{1}", iChannelCount, Environment.NewLine);
-            script.AppendFormat(@"# Detected Channels Layout: {0}{1}", strChannelPositions, Environment.NewLine);
+            script.AppendFormat(@"# Detected Channels from input file : {0}{1}", iChannelCount, Environment.NewLine);
+            script.AppendFormat(@"# Detected Channels Layout from input file : {0}{1}", strChannelPositions, Environment.NewLine);
 
             if (MainForm.Instance.Settings.AviSynthPlus)
             {
-                script.Append(@"# Checking Channel Mask..." + Environment.NewLine);
-                script.AppendFormat("CheckingChannelMask(last){0}", Environment.NewLine);
-                script.AppendLine(@"function CheckingChannelMask(clip a)
-  {
-	cm = GetChannelMask(a)
-	nc = AudioChannels(a)
-	cm0 = cm
-	nc0 = 0  #AudioChannels
-	for (i=1, 18) {
-		nc0 = nc0 + cm0 % 2
-		cm0 = int(cm0 / 2)
-	}
-
-	if (nc0 != nc ) {
-	   cm2 = Select(nc, 3, 4, 3, 7, 263, 55, 63, 319, 1599) # standard values
-		return SetChannelMask(a, true, cm2)
-	} else {
-	return a
-	}
-}");
+                script.AppendFormat(@"# Detected ChannelMask from input file : {0}{1}", iChannelMask, Environment.NewLine);
             }
 
             if (iAVSChannelCount != iChannelCount)
@@ -1673,7 +1657,6 @@ namespace MeGUI
                 FlacSettings oSettings = audioJob.Settings as FlacSettings;
                 _encoderExecutablePath = this._settings.Flac.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.W64;
-                _iChannelMask = 1;
 
                 script.Append("AudioBits(last)>24?ConvertAudioTo24bit(last):last " + Environment.NewLine);
 
@@ -1725,6 +1708,8 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.OggEnc.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
 
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
+
                 if (!oSettings.CustomEncoderOptions.Contains("--ignorelength"))
                     sb.Append(" --ignorelength");
                 if (!oSettings.CustomEncoderOptions.Contains("--quality "))
@@ -1739,6 +1724,8 @@ namespace MeGUI
                 NeroAACSettings oSettings = audioJob.Settings as NeroAACSettings;
                 _encoderExecutablePath = this._settings.NeroAacEnc.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
+
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
                 sb.Append(" -ignorelength");
                 if (oSettings.BitrateMode != BitrateManagementMode.VBR && !oSettings.CustomEncoderOptions.Contains("-he") && !oSettings.CustomEncoderOptions.Contains("-hev2") && !oSettings.CustomEncoderOptions.Contains("-lc"))
@@ -1815,6 +1802,8 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.QAAC.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
 
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
+
                 if (!oSettings.CustomEncoderOptions.Contains("--ignorelength"))
                     sb.Append(" --ignorelength");
                 if (!oSettings.CustomEncoderOptions.Contains("--threading"))
@@ -1860,6 +1849,8 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.Exhale.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
 
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
+
                 switch (oSettings.Profile)
                 {
                     case ExhaleProfile.xHEAAC: sb.Append(" " + oSettings.Quality); break;
@@ -1889,6 +1880,8 @@ namespace MeGUI
                 _encoderExecutablePath = this._settings.Opus.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
 
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
+
                 if (!oSettings.CustomEncoderOptions.Contains("--ignorelength"))
                     sb.Append(" --ignorelength");
 
@@ -1915,6 +1908,8 @@ namespace MeGUI
                 FDKAACSettings oSettings = audioJob.Settings as FDKAACSettings;
                 _encoderExecutablePath = this._settings.Fdkaac.Path;
                 _sendWavHeaderToEncoderStdIn = HeaderType.WAV;
+
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
                 if (!oSettings.CustomEncoderOptions.Contains("--ignorelength"))
                     sb.Append(" --ignorelength");
