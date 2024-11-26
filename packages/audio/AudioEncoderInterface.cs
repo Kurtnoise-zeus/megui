@@ -1903,7 +1903,7 @@ namespace MeGUI
                             sb.Append(" -b:a " + oSettings.Bitrate + "k");
                             break;
                         case FFAACMode.VBR:
-                            sb.Append(" -q:a " + (Math.Max(oSettings.Quality / 50.0, 0.1)).ToString("en-us")); // https://sourceforge.net/p/megui/bugs/957/
+                            sb.Append(" -q:a " + (Math.Max(oSettings.Quality / 50.0, 0.1)).ToString(CultureInfo.InvariantCulture)); // https://sourceforge.net/p/megui/bugs/957/
                             break;
                     }
                 }
