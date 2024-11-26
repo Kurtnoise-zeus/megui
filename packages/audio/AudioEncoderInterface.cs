@@ -383,6 +383,11 @@ namespace MeGUI
                 if (line.ToLowerInvariant().StartsWith("\tencoding ["))
                     return;
             }
+            else if (audioJob.Settings is OpusSettings)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(line.ToLowerInvariant(), @"[|\/-]"))
+                    return;
+            }
             else if (audioJob.Settings is NeroAACSettings)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(line.ToLowerInvariant(), @"^processed\s?[0-9]{0,5}\s?seconds..."))
