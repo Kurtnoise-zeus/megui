@@ -1614,7 +1614,7 @@ namespace MeGUI
 
                 script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
-                sb.Append(" -i - -y");
+                sb.Append(" -hide_banner -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec "))
                     sb.Append(" -acodec ac3");
                 if (!oSettings.CustomEncoderOptions.Contains("-ab "))
@@ -1632,7 +1632,7 @@ namespace MeGUI
 
                 script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
-                sb.Append(" -i - -y");
+                sb.Append(" -hide_banner -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec "))
                     sb.Append(" -acodec mp2");
                 if (!oSettings.CustomEncoderOptions.Contains("-ab "))
@@ -1896,7 +1896,7 @@ namespace MeGUI
 
                 script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine); 
 
-                sb.Append(" -i - -y");
+                sb.Append(" -hide_banner -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec ") && !oSettings.CustomEncoderOptions.Contains("-codec:a "))
                     sb.Append(" -codec:a aac");
 
