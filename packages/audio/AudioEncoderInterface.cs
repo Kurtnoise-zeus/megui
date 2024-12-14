@@ -48,37 +48,6 @@ namespace MeGUI
             WAV = 1,
             W64 = 2
         }
-
-        [Flags]
-        public enum Channels : uint
-        { // from avisynth.h >> https://github.com/AviSynth/AviSynthPlus/blob/master/avs_core/include/avisynth.h
-            MASK_SPEAKER_FRONT_LEFT            = 0x1,
-            MASK_SPEAKER_FRONT_RIGHT           = 0x2,
-            MASK_SPEAKER_FRONT_CENTER          = 0x4,
-            MASK_SPEAKER_LOW_FREQUENCY         = 0x8,
-            MASK_SPEAKER_BACK_LEFT             = 0x10,
-            MASK_SPEAKER_BACK_RIGHT            = 0x20,
-            MASK_SPEAKER_FRONT_LEFT_OF_CENTER  = 0x40,
-            MASK_SPEAKER_FRONT_RIGHT_OF_CENTER = 0x80,
-            MASK_SPEAKER_BACK_CENTER           = 0x100,
-            MASK_SPEAKER_SIDE_LEFT             = 0x200,
-            MASK_SPEAKER_SIDE_RIGHT            = 0x400,
-            MASK_SPEAKER_TOP_CENTER            = 0x800,
-            MASK_SPEAKER_TOP_FRONT_LEFT        = 0x1000,
-            MASK_SPEAKER_TOP_FRONT_CENTER      = 0x2000,
-            MASK_SPEAKER_TOP_FRONT_RIGHT       = 0x4000,
-            MASK_SPEAKER_TOP_BACK_LEFT         = 0x8000,
-            MASK_SPEAKER_TOP_BACK_CENTER       = 0x10000,
-            MASK_SPEAKER_TOP_BACK_RIGHT        = 0x20000,
-            // Bit mask locations used up for the above positions
-            MASK_SPEAKER_DEFINED               = 0x0003FFFF,
-            // Bit mask locations reserved for future use
-            MASK_SPEAKER_RESERVED              = 0x7FFC0000,
-            // Used to specify that any possible permutation of speaker configurations
-            // Due to lack of available bits this one is put differently into image_type
-            MASK_SPEAKER_ALL                   = 0x80000000
-        }
-
         private static IJobProcessor init(MainForm mf, Job j)
         {
             if (j is AudioJob &&
