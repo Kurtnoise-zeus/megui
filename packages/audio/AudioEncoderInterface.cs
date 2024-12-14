@@ -29,6 +29,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
@@ -231,6 +232,48 @@ namespace MeGUI
 -96
 -96
 ");
+        }
+
+        private string GetChannelLayoutFromMask(int mask)
+        {
+            string clfm = "N/A";
+
+            switch (mask)
+            {
+                case 4:      clfm = "Mono (FC)"; break;
+                case 12:     clfm = "1.1 (FC/LFE)"; break;
+                case 3:      clfm = "Stereo (FL/FR)"; break;
+                case 11:     clfm = "2.1 (FL/FR/LFE)"; break;
+                case 7:      clfm = "3.0 (FL/FR/FC)"; break;
+                case 259:    clfm = "3.0 (back) (FL/FR/BC)"; break;
+                case 15:     clfm = "3.1 (FL/FR/FC/LFE)"; break;
+                case 263:    clfm = "4.0 (FL/FR/FC/BC)"; break;
+                case 51:     clfm = "Quad (FL/FR/BL/BR)"; break;
+                case 1539:   clfm = "Quad (side) (FL/FR/SL/SR)"; break;
+                case 59:     clfm = "Quad.1 (FL/FR/LFE/BL/BR)"; break;
+                case 55:     clfm = "5.0 (FL/FR/FC/BL/BR)"; break;
+                case 1543:   clfm = "5.0 (side) (FL/FR/FC/BL/BR)"; break;
+                case 271:    clfm = "4.1 (FL/FR/FC/LFE/BC)"; break;
+                case 63:     clfm = "5.1 (FL/FR/FC/LFE//BL/BR)"; break;
+                case 1551:   clfm = "5.1 (side) (FL/FR/FC/LFE/SL/SR)"; break;
+                case 1799:   clfm = "6.0 (FL/FR/FC/BC/SL/SR)"; break;
+                case 1731:   clfm = "6.0 (front) (FL/FR/FLC/FRC/SL/SR)"; break;
+                case 311:    clfm = "Hexagonal (FL/FR/FC/BL/BR/BC)"; break;
+                case 1807:   clfm = "6.1 (FL/FR/FC/LFE/BC/SL/SR)"; break;
+                case 319:    clfm = "6.1 (back) (FL/FR/FC/LFE/BL/BR/BC)"; break;
+                case 1735:   clfm = "6.1 (front) (FL/FR/LFE/FLC/FRC/SL/SR)"; break;
+                case 1599:   clfm = "7.1 (FL/FR/FC/LFE/BL/BR/SL/SR)"; break;
+                case 255:    clfm = "7.1 (wide) (FL/FR/FC/LFE/BL/BR/FLC/FRC)"; break;
+                case 1743:   clfm = "7.1 (wide-side) (FL/FR/FC/LFE/FLC/FRC/SL/SR)"; break;
+                case 1847:   clfm = "Octagonal (FL/FR/FC/bl:br:BC/SL/SR)"; break;
+                case 184371: clfm = "Cube (FL/FR/BL/BR/TFL/TFR/TBL/TBR)"; break;
+                case 20543:  clfm = "7.1 (top) (FL/FR/FC/LFE/BL/BR/TFL/TFR)"; break;
+                case 22031:  clfm = "5.1.2 (front) (FL/FR/FC/LFE/SL/SR/TFL/TFR)"; break;
+                case 165391: clfm = "5.1.2 (side) (FL/FR/FC/LFE/SL/SR/TBL/TBR)"; break;
+                default:     clfm = "All"; break;
+            }
+
+            return clfm;
         }
 
         private bool bShowError = false;
@@ -1191,12 +1234,15 @@ namespace MeGUI
             }
 
             script.AppendFormat(@"# Detected Channels from input file : {0}{1}", iChannelCount, Environment.NewLine);
-            script.AppendFormat(@"# Detected Channels Layout from input file : {0}{1}", strChannelPositions, Environment.NewLine);
 
             if (MainForm.Instance.Settings.AviSynthPlus)
             {
-                script.AppendFormat(@"# Detected ChannelMask from input file : {0}{1}", iChannelMask, Environment.NewLine);
+                script.AppendFormat(@"# Detected Channel Mask from input file : {0}{1}", iChannelMask, Environment.NewLine);
+                script.AppendFormat(@"# Detected Channels Layout from input file : {0}{1}", GetChannelLayoutFromMask(iChannelMask), Environment.NewLine);
             }
+            else
+                script.AppendFormat(@"# Detected Channels Layout from input file : {0}{1}", strChannelPositions, Environment.NewLine);
+
 
             if (iAVSChannelCount != iChannelCount)
                 _log.LogEvent("Channel count mismatch! The input file is reporting " + iChannelCount + " channels and the AviSynth script is reporting " + iAVSChannelCount + " channels", ImageType.Warning);
