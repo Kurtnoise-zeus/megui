@@ -1264,22 +1264,22 @@ namespace MeGUI
 
         private void mnuForum_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://forum.doom9.org/forumdisplay.php?f=78");
+            System.Diagnostics.Process.Start("https://forum.doom9.org/showthread.php?t=185399");
         }
 
         private void mnuHome_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://sourceforge.net/projects/megui");
+            System.Diagnostics.Process.Start("https://github.com/Kurtnoise-zeus/megui");
         }
 
         private void mnuBugTracker_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://sourceforge.net/tracker/?group_id=156112&atid=798476");
+            System.Diagnostics.Process.Start("https://github.com/Kurtnoise-zeus/megui/issues");
         }
 
         private void mnuFeaturesReq_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://sourceforge.net/tracker/?group_id=156112&atid=798479");
+            System.Diagnostics.Process.Start("https://github.com/Kurtnoise-zeus/megui/issues");
         }
 
         private void mnuDoc_Click(object sender, EventArgs e)
