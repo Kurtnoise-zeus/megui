@@ -535,6 +535,7 @@ namespace MeGUI
             supportedSubtitleTypes.Add(SubtitleType.SUBRIP);
             supportedSubtitleTypes.Add(SubtitleType.VOBSUB);
             supportedSubtitleTypes.Add(SubtitleType.TTXT);
+            supportedSubtitleTypes.Add(SubtitleType.WEBVTT);
 
             supportedChapterTypes.Add(ChapterType.OGG_TXT);
 
@@ -597,6 +598,7 @@ namespace MeGUI
             supportedAudioTypes.Add(AudioType.FLAC);
             supportedAudioTypes.Add(AudioType.THD);
             supportedAudioTypes.Add(AudioType.THDAC3);
+            supportedAudioTypes.Add(AudioType.MKA);
 
             supportedVideoCodecs.Add(VideoCodec.ASP);
             supportedVideoCodecs.Add(VideoCodec.AVC);
@@ -626,6 +628,7 @@ namespace MeGUI
             supportedSubtitleTypes.Add(SubtitleType.SSA);
             supportedSubtitleTypes.Add(SubtitleType.ASS);
             supportedSubtitleTypes.Add(SubtitleType.BDSUP);
+            supportedSubtitleTypes.Add(SubtitleType.WEBVTT);
 
             supportedChapterTypes.Add(ChapterType.OGG_TXT);
             supportedChapterTypes.Add(ChapterType.MKV_XML);
