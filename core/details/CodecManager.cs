@@ -364,6 +364,7 @@ namespace MeGUI
         public static readonly AudioType MP3    = new AudioType("MP3", "MP3 Files", "mp3", null, AudioCodec.MP3);
         public static readonly AudioType MP4AAC = new AudioType("MP4-AAC", "MP4 AAC Files", "mp4", ContainerType.MP4, AudioCodec.AAC);
         public static readonly AudioType M4A    = new AudioType("M4A", "MP4 Audio Files", "m4a", ContainerType.MP4, AudioCodec.AAC);
+        public static readonly AudioType MKA    = new AudioType("MKA", "Matroska Audio Files", "mka", ContainerType.MKV, new AudioCodec[] { AudioCodec.AAC, AudioCodec.AC3, AudioCodec.DTS, AudioCodec.EAC3, AudioCodec.FLAC, AudioCodec.MP2, AudioCodec.MP3, AudioCodec.OPUS, AudioCodec.VORBIS });
         public static readonly AudioType OPUS   = new AudioType("OPUS", "Opus Audio Files", "opus", null, AudioCodec.OPUS);
         public static readonly AudioType PCM    = new AudioType("PCM", "PCM Files", "pcm", null, AudioCodec.PCM);
         public static readonly AudioType RAWAAC = new AudioType("Raw-AAC", "RAW AAC Files", "aac", null, AudioCodec.AAC);
@@ -472,22 +473,24 @@ namespace MeGUI
                 throw new Exception("Failed to register a video type");
             if (!(
                 AudioTypes.Register(AudioType.AC3)    &&
-                AudioTypes.Register(AudioType.MP3)    &&
+                AudioTypes.Register(AudioType.AVS)    &&
                 AudioTypes.Register(AudioType.DTS)    &&
-                AudioTypes.Register(AudioType.WAV)    &&
-                AudioTypes.Register(AudioType.W64)    &&
-                AudioTypes.Register(AudioType.PCM)    &&
-                AudioTypes.Register(AudioType.MP2)    &&
-                AudioTypes.Register(AudioType.MP4AAC) &&
-                AudioTypes.Register(AudioType.M4A)    &&
-                AudioTypes.Register(AudioType.RAWAAC) &&
-                AudioTypes.Register(AudioType.VORBIS) &&
                 AudioTypes.Register(AudioType.EAC3)   &&
                 AudioTypes.Register(AudioType.FLAC)   &&
-                AudioTypes.Register(AudioType.AVS)    &&
+                AudioTypes.Register(AudioType.MP2)    &&
+                AudioTypes.Register(AudioType.MP3)    &&
+                AudioTypes.Register(AudioType.MP4AAC) &&
+                AudioTypes.Register(AudioType.M4A)    &&
+                AudioTypes.Register(AudioType.MKA)    &&
                 AudioTypes.Register(AudioType.OPUS)   &&
+                AudioTypes.Register(AudioType.PCM)    &&
+                AudioTypes.Register(AudioType.RAWAAC) &&
+                AudioTypes.Register(AudioType.VORBIS) &&
                 AudioTypes.Register(AudioType.THD)    &&
-                AudioTypes.Register(AudioType.THDAC3)))
+                AudioTypes.Register(AudioType.THDAC3) &&
+                AudioTypes.Register(AudioType.WAV)    &&
+                AudioTypes.Register(AudioType.W64)    
+                ))
                 throw new Exception("Failed to register an audio type");
             if (!(
                 SubtitleTypes.Register(SubtitleType.ASS)    &&
