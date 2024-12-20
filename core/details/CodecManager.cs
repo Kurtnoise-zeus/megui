@@ -367,9 +367,9 @@ namespace MeGUI
         public static readonly AudioType RAWAAC = new AudioType("Raw-AAC", "RAW AAC Files", "aac", null, AudioCodec.AAC);
         public static readonly AudioType THD    = new AudioType("THD", "TrueHD Files", "thd", null, AudioCodec.THD);
         public static readonly AudioType THDAC3 = new AudioType("THDAC3", "TrueHD+AC3 Files", "thd+ac3", null, AudioCodec.THDAC3);
+        public static readonly AudioType VORBIS = new AudioType("Ogg", "Ogg Vorbis Files", "ogg", null, AudioCodec.VORBIS);
         public static readonly AudioType WAV    = new AudioType("WAV", "WAV Files", "wav", null, AudioCodec.PCM);
         public static readonly AudioType W64    = new AudioType("W64", "W64 Files", "w64", null, AudioCodec.PCM);
-        public static readonly AudioType VORBIS = new AudioType("Ogg", "Ogg Vorbis Files", "ogg", null, AudioCodec.VORBIS);
     }
 
     public class SubtitleType : OutputType
@@ -380,8 +380,8 @@ namespace MeGUI
         public static readonly SubtitleType BDSUP  = new SubtitleType("BDSup", "Blu-ray Sup Subtitle Files", "sup", null);
         public static readonly SubtitleType SSA    = new SubtitleType("SubStationAlpha", "SubStation Alpha Subtitle Files", "ssa", null);
         public static readonly SubtitleType SUBRIP = new SubtitleType("Subrip", "Subrip Subtitle Files", "srt", null);
-        public static readonly SubtitleType VOBSUB = new SubtitleType("Vobsub", "Vobsub Subtitle Files", "idx", null);
         public static readonly SubtitleType TTXT   = new SubtitleType("TTXT", "Time Text Subtitles Files", "ttxt", null);
+        public static readonly SubtitleType VOBSUB = new SubtitleType("Vobsub", "Vobsub Subtitle Files", "idx", null);
     }
 
     public class ChapterType : OutputType
