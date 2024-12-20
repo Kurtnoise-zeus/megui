@@ -207,21 +207,20 @@ namespace MeGUI
             this.id = id;
             this.codec = codec;
         }
+        public static readonly AudioEncoderType EXHALE = new AudioEncoderType("EXHALE", AudioCodec.AAC);
+        public static readonly AudioEncoderType FFAAC  = new AudioEncoderType("FFAAC", AudioCodec.AAC);
+        public static readonly AudioEncoderType FFAC3  = new AudioEncoderType("FFAC3", AudioCodec.AC3);
+        public static readonly AudioEncoderType FFMP2  = new AudioEncoderType("FFMP2", AudioCodec.MP2);
+        public static readonly AudioEncoderType FDKAAC = new AudioEncoderType("FDK-AAC", AudioCodec.AAC);
+        public static readonly AudioEncoderType FLAC   = new AudioEncoderType("FLAC", AudioCodec.FLAC);
         public static readonly AudioEncoderType LAME   = new AudioEncoderType("LAME",       AudioCodec.MP3);
         public static readonly AudioEncoderType NAAC   = new AudioEncoderType("NAAC",       AudioCodec.AAC);
-        public static readonly AudioEncoderType VORBIS = new AudioEncoderType("VORBIS",     AudioCodec.VORBIS);
-        public static readonly AudioEncoderType FFAC3  = new AudioEncoderType("FFAC3",      AudioCodec.AC3);
-        public static readonly AudioEncoderType FFMP2  = new AudioEncoderType("FFMP2",      AudioCodec.MP2);
-        public static readonly AudioEncoderType FLAC   = new AudioEncoderType("FLAC",       AudioCodec.FLAC);
+        public static readonly AudioEncoderType OPUS   = new AudioEncoderType("OPUS", AudioCodec.OPUS);
         public static readonly AudioEncoderType QAAC   = new AudioEncoderType("QAAC",       AudioCodec.AAC);
-        public static readonly AudioEncoderType OPUS   = new AudioEncoderType("OPUS",       AudioCodec.OPUS);
-        public static readonly AudioEncoderType FDKAAC = new AudioEncoderType("FDK-AAC",    AudioCodec.AAC); 
-        public static readonly AudioEncoderType FFAAC  = new AudioEncoderType("FFAAC",      AudioCodec.AAC);
-        public static readonly AudioEncoderType EXHALE = new AudioEncoderType("EXHALE",     AudioCodec.AAC);
-
+        public static readonly AudioEncoderType VORBIS = new AudioEncoderType("VORBIS", AudioCodec.VORBIS);
     }
     #endregion
-    
+
     class CodecManager
     {
         public static GenericRegisterer<VideoCodec> VideoCodecs = new GenericRegisterer<VideoCodec>();
@@ -354,33 +353,33 @@ namespace MeGUI
             set { supportedCodecs = value; }
         }
 
+        public static readonly AudioType AC3    = new AudioType("AC3", "AC3 Files", "ac3", null, AudioCodec.AC3);
+        public static readonly AudioType AVS    = new AudioType("AVS", "AviSynth Script Files", "avs", null, AudioCodec.PCM);
+        public static readonly AudioType DTS    = new AudioType("DTS", "DTS Files", "dts", null, AudioCodec.DTS);
+        public static readonly AudioType EAC3   = new AudioType("EAC3", "EAC3 Files", "eac3", null, AudioCodec.EAC3);
+        public static readonly AudioType FLAC   = new AudioType("FLAC", "FLAC Audio Lossless Files", "flac", null, AudioCodec.FLAC);
+        public static readonly AudioType MP2    = new AudioType("MP2", "MP2 Files", "mp2", null, AudioCodec.MP2);
+        public static readonly AudioType MP3    = new AudioType("MP3", "MP3 Files", "mp3", null, AudioCodec.MP3);
         public static readonly AudioType MP4AAC = new AudioType("MP4-AAC", "MP4 AAC Files", "mp4", ContainerType.MP4, AudioCodec.AAC);
         public static readonly AudioType M4A    = new AudioType("M4A", "MP4 Audio Files", "m4a", ContainerType.MP4, AudioCodec.AAC);
-        public static readonly AudioType RAWAAC = new AudioType("Raw-AAC", "RAW AAC Files", "aac", null, AudioCodec.AAC);
-        public static readonly AudioType MP3    = new AudioType("MP3", "MP3 Files", "mp3", null, AudioCodec.MP3);
-        public static readonly AudioType VORBIS = new AudioType("Ogg", "Ogg Vorbis Files", "ogg", null, AudioCodec.VORBIS);
-        public static readonly AudioType AC3    = new AudioType("AC3", "AC3 Files", "ac3", null, AudioCodec.AC3);
-        public static readonly AudioType MP2    = new AudioType("MP2", "MP2 Files", "mp2", null, AudioCodec.MP2);
-        public static readonly AudioType DTS    = new AudioType("DTS", "DTS Files", "dts", null, AudioCodec.DTS);
-        public static readonly AudioType WAV    = new AudioType("WAV", "WAV Files", "wav", null, AudioCodec.PCM);
-        public static readonly AudioType W64    = new AudioType("W64", "W64 Files", "w64", null, AudioCodec.PCM);
+        public static readonly AudioType OPUS   = new AudioType("OPUS", "Opus Audio Files", "opus", null, AudioCodec.OPUS);
         public static readonly AudioType PCM    = new AudioType("PCM", "PCM Files", "pcm", null, AudioCodec.PCM);
-        public static readonly AudioType EAC3   = new AudioType("EAC3", "EAC3 Files", "eac3", null, AudioCodec.EAC3);
+        public static readonly AudioType RAWAAC = new AudioType("Raw-AAC", "RAW AAC Files", "aac", null, AudioCodec.AAC);
         public static readonly AudioType THD    = new AudioType("THD", "TrueHD Files", "thd", null, AudioCodec.THD);
         public static readonly AudioType THDAC3 = new AudioType("THDAC3", "TrueHD+AC3 Files", "thd+ac3", null, AudioCodec.THDAC3);
-        public static readonly AudioType FLAC   = new AudioType("FLAC", "FLAC Audio Lossless Files", "flac", null, AudioCodec.FLAC);
-        public static readonly AudioType AVS    = new AudioType("AVS", "AviSynth Script Files", "avs", null, AudioCodec.PCM);
-        public static readonly AudioType OPUS   = new AudioType("OPUS", "Opus Audio Files", "opus", null, AudioCodec.OPUS);
+        public static readonly AudioType WAV    = new AudioType("WAV", "WAV Files", "wav", null, AudioCodec.PCM);
+        public static readonly AudioType W64    = new AudioType("W64", "W64 Files", "w64", null, AudioCodec.PCM);
+        public static readonly AudioType VORBIS = new AudioType("Ogg", "Ogg Vorbis Files", "ogg", null, AudioCodec.VORBIS);
     }
 
     public class SubtitleType : OutputType
     {
         public SubtitleType(string name, string filterName, string extension, ContainerType containerType)
             : base(name, filterName, extension, containerType) { }
-        public static readonly SubtitleType SSA    = new SubtitleType("SubStationAlpha", "SubStation Alpha Subtitle Files", "ssa", null);
         public static readonly SubtitleType ASS    = new SubtitleType("Advanced SubStationAlpha", "Advanced SubStation Alpha Subtitle Files", "ass", null);
+        public static readonly SubtitleType BDSUP  = new SubtitleType("BDSup", "Blu-ray Sup Subtitle Files", "sup", null);
+        public static readonly SubtitleType SSA    = new SubtitleType("SubStationAlpha", "SubStation Alpha Subtitle Files", "ssa", null);
         public static readonly SubtitleType SUBRIP = new SubtitleType("Subrip", "Subrip Subtitle Files", "srt", null);
-        public static readonly SubtitleType BDSUP  = new SubtitleType("BDSup", "Blu-ray Sup Subtitle Files", "sup", null); 
         public static readonly SubtitleType VOBSUB = new SubtitleType("Vobsub", "Vobsub Subtitle Files", "idx", null);
         public static readonly SubtitleType TTXT   = new SubtitleType("TTXT", "Time Text Subtitles Files", "ttxt", null);
     }
@@ -398,14 +397,14 @@ namespace MeGUI
         public DeviceType(string name, string filterName, string extension, ContainerType containerType)
             : base(name, filterName, extension, containerType) { }
         public static readonly DeviceType APPLETV = new DeviceType("Apple TV", "Apple TV", "Apple TV", ContainerType.MP4);
+        public static readonly DeviceType AVCHD   = new DeviceType("AVCHD", "AVCHD", "AVCHD", ContainerType.M2TS);
+        public static readonly DeviceType BD      = new DeviceType("Blu-ray", "Blu-ray", "Blu-ray", ContainerType.M2TS);
         public static readonly DeviceType IPAD    = new DeviceType("iPad", "iPad", "iPad", ContainerType.MP4);
         public static readonly DeviceType IPOD    = new DeviceType("iPod", "iPod", "iPod", ContainerType.MP4);
         public static readonly DeviceType IPHONE  = new DeviceType("iPhone", "iPhone", "iPhone", ContainerType.MP4);
         public static readonly DeviceType ISMA    = new DeviceType("ISMA", "ISMA", "ISMA", ContainerType.MP4);
-        public static readonly DeviceType PSP     = new DeviceType("PSP", "PSP", "PSP", ContainerType.MP4);
-        public static readonly DeviceType BD      = new DeviceType("Blu-ray", "Blu-ray", "Blu-ray", ContainerType.M2TS);
-        public static readonly DeviceType AVCHD   = new DeviceType("AVCHD", "AVCHD", "AVCHD", ContainerType.M2TS);
         public static readonly DeviceType PC      = new DeviceType("PC", "PC", "PC", ContainerType.AVI);
+        public static readonly DeviceType PSP     = new DeviceType("PSP", "PSP", "PSP", ContainerType.MP4);
     }
 
     public class ContainerType : OutputFileType
@@ -426,10 +425,10 @@ namespace MeGUI
             set { mediaInfoRegex = value; }
         }
 
-        public static readonly ContainerType MP4        = new ContainerType("MP4", "MP4 Files", "mp4", "(mpeg-4)|(3gpp)");
-        public static readonly ContainerType MKV        = new ContainerType("MKV", "Matroska Files", "mkv", "matroska");
-        public static readonly ContainerType AVI        = new ContainerType("AVI", "AVI Files", "avi", "avi");
-        public static readonly ContainerType M2TS       = new ContainerType("M2TS", "M2TS Files", "m2ts", "(bdav)|(mpeg-ts)");
+        public static readonly ContainerType AVI  = new ContainerType("AVI", "AVI Files", "avi", "avi");
+        public static readonly ContainerType M2TS = new ContainerType("M2TS", "M2TS Files", "m2ts", "(bdav)|(mpeg-ts)");
+        public static readonly ContainerType MKV  = new ContainerType("MKV", "Matroska Files", "mkv", "matroska");
+        public static readonly ContainerType MP4  = new ContainerType("MP4", "MP4 Files", "mp4", "(mpeg-4)|(3gpp)");
         public static readonly ContainerType[] Containers = new ContainerType[] { MP4, MKV, AVI, M2TS };
 
         public static ContainerType ByName(string id)
