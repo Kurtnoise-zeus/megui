@@ -137,6 +137,7 @@ namespace MeGUI
         public static readonly SubtitleCodec SSA        = new SubtitleCodec("SSA", "ssa");
         public static readonly SubtitleCodec TTXT       = new SubtitleCodec("TTXT", "ttxt");
         public static readonly SubtitleCodec VOBSUB     = new SubtitleCodec("VOBSUB", "(vobsub)|(rle)");
+        public static readonly SubtitleCodec WEBVTT     = new SubtitleCodec("VTT", "webVTT");
         public static readonly SubtitleCodec UNKNOWN    = new SubtitleCodec("UNKNOWN", ".*");
     }
     #endregion
@@ -270,6 +271,7 @@ namespace MeGUI
                 SubtitleCodecs.Register(SubtitleCodec.SSA) &&
                 SubtitleCodecs.Register(SubtitleCodec.TTXT) &&
                 SubtitleCodecs.Register(SubtitleCodec.VOBSUB) &&
+                SubtitleCodecs.Register(SubtitleCodec.WEBVTT) &&
                 SubtitleCodecs.Register(SubtitleCodec.UNKNOWN) // must be the last line to serve as catch-all
                 ))
                 throw new Exception("Failed to register a standard video codec");
@@ -382,6 +384,7 @@ namespace MeGUI
         public static readonly SubtitleType SUBRIP = new SubtitleType("Subrip", "Subrip Subtitle Files", "srt", null);
         public static readonly SubtitleType TTXT   = new SubtitleType("TTXT", "Time Text Subtitles Files", "ttxt", null);
         public static readonly SubtitleType VOBSUB = new SubtitleType("Vobsub", "Vobsub Subtitle Files", "idx", null);
+        public static readonly SubtitleType WEBVTT = new SubtitleType("WebVTT", "WebVTT Subtitle Files", "vtt", null);
     }
 
     public class ChapterType : OutputType
@@ -492,6 +495,7 @@ namespace MeGUI
                 SubtitleTypes.Register(SubtitleType.SUBRIP) &&
                 SubtitleTypes.Register(SubtitleType.BDSUP)  &&
                 SubtitleTypes.Register(SubtitleType.VOBSUB) &&
+                SubtitleTypes.Register(SubtitleType.WEBVTT) &&
                 SubtitleTypes.Register(SubtitleType.TTXT)))
                 throw new Exception("Failed to register a subtitle type");
             if (!(
