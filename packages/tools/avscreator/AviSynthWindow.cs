@@ -99,7 +99,7 @@ namespace MeGUI
             this.cbNvDeInt.DataSource = ScriptServer.ListOfNvDeIntType;
             this.cbNvDeInt.BindingContext = new BindingContext();
 
-            sourceType = PossibleSources.directShow;
+            sourceType = PossibleSources.bestsource;
             deintFieldOrder.SelectedIndex = -1;
             deintSourceType.SelectedIndex = -1;
             cbNvDeInt.SelectedIndex = 0;
@@ -484,8 +484,8 @@ namespace MeGUI
                                 OpenDirectShow(videoInput);
                                 break;
                             case 3:
-                                sourceType = PossibleSources.directShow;
-                                OpenDirectShow(videoInput);
+                                sourceType = PossibleSources.bestsource;
+                                OpenBestSource(videoInput);
                                 break;
                             default:
                                 MessageBox.Show("Unable to render the file.\r\nYou probably don't have the correct filters installed.", "DirectShow Error", MessageBoxButtons.OK);
@@ -561,6 +561,7 @@ namespace MeGUI
                     this.tabSources.SelectedTab = tabPage1;
                     break;
                 case PossibleSources.directShow:
+                case PossibleSources.bestsource:
                     this.mpeg2Deblocking.Checked = false;
                     this.mpeg2Deblocking.Enabled = false;
                     this.colourCorrect.Enabled = false;
@@ -687,7 +688,54 @@ namespace MeGUI
                 this.deinterlaceType.BindingContext = new BindingContext();
             }
         }
-        
+
+        /// <summary>
+        /// Check whether direct show can render the avi and then open it through an avisynth script.
+        /// The avs is being used in order to allow more preview flexibility later.
+        /// </summary>
+        /// <param name="fileName">Input video file</param>     
+        private void OpenBestSource(string fileName)
+        {
+            if (!File.Exists(fileName))
+            {
+                MessageBox.Show(fileName + " could not be found", "File Not Found", MessageBoxButtons.OK);
+                return;
+            }
+
+            string tempAvs;
+            if (sourceType == PossibleSources.avisource)
+            {
+                tempAvs = "AVISource(\"" + fileName + "\", audio=false)" + VideoUtil.getAssumeFPS(0, fileName);
+            }
+            else
+            {
+                string frameRateString = null;
+                try
+                {
+                    using (MediaInfoFile info = new MediaInfoFile(fileName))
+                    {
+                        if (info.VideoInfo.HasVideo && info.VideoInfo.FPS > 0)
+                            frameRateString = info.VideoInfo.FPS.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                }
+                catch (Exception)
+                { }
+
+                tempAvs = string.Format("BSVideoSource(\"{0}\")",fileName);
+
+                if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
+                    tempAvs += "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" + tempAvs;
+
+                if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
+                    tempAvs += "\r\nConvertBits(8)";
+
+                avisynthScript.Text = tempAvs;
+            }
+            file?.Dispose();
+            OpenVideo(tempAvs, fileName, true);
+
+        }
+
         /// <summary>
         /// Check whether direct show can render the avi and then open it through an avisynth script.
         /// The avs is being used in order to allow more preview flexibility later.
@@ -1550,7 +1598,7 @@ namespace MeGUI
         }
     }
     public delegate void OpenScriptCallback(string avisynthScript, MediaInfoFile oInfo);
-    public enum PossibleSources { d2v, dgm, dgi, vdr, directShow, avs, ffindex, lsmash, avisource };
+    public enum PossibleSources { d2v, dgm, dgi, vdr, directShow, avs, ffindex, lsmash, avisource, bestsource };
     public enum mod16Method : int { none = -1, resize = 0, overcrop, nonMod16, mod4Horizontal, undercrop };
     public enum modValue : int { mod16 = 0, mod8, mod4, mod2 };
 

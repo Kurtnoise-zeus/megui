@@ -235,6 +235,21 @@ namespace MeGUI
                     if (flipVertical)
                         inputLine = inputLine + "\r\nFlipVertical()";
                     break;
+                case PossibleSources.bestsource:
+                    inputLine = String.Empty;
+                    bool fpsdetails = VideoUtil.GetFPSDetails(fps, input, out int fpsnum, out int fpsden);
+
+                    if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
+                        inputLine = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+                    inputLine += "BSVideoSource(\"" + input + "\"" + ((fpsdetails == true) ? ", fpsnum=" + fpsnum.ToString() + ", fpsden=" + fpsden.ToString() : String.Empty)
+                        + ", timecodes=\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "timecodes_v2.txt") + "\")";
+
+                    if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
+                        inputLine += "\r\nConvertBits(8)";
+                    if (flipVertical)
+                        inputLine = inputLine + "\r\nFlipVertical()";
+                    break;
+
             }
             return inputLine;
         }

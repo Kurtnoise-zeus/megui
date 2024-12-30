@@ -1340,6 +1340,33 @@ namespace MeGUI
             return true;
         }
 
+        /// <summary>checks if the file is readable by BestSource</summary>
+        /// <returns>true if readable, false if not</returns>
+        public bool isBestSourceReadable()
+        {
+            //// check if the file is a video file
+            //if (!_VideoInfo.HasVideo)
+            //    return false;
+
+            try
+            {
+                string tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+
+                tempAvs += "BSVideoSource(\"" + _file + "\")\r\n";
+
+                IMediaFile iMediaFile = AvsFile.ParseScript(tempAvs);
+                if (iMediaFile != null)
+                    iMediaFile.Dispose();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
         /// <summary>gets the recommended indexer</summary>
         /// <param name="oType">the recommended indexer</param>
         /// <returns>true if a indexer can be recommended, false if no indexer is available</returns>

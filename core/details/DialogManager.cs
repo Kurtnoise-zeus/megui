@@ -226,7 +226,9 @@ namespace MeGUI
                 // they cannot be used
                 if (iFile.isAVISourceIndexable(false))
                     iResult = 2;
-                else if (iFile.isDirectShowSourceIndexable())
+                //else if (iFile.isDirectShowSourceIndexable())
+                //    iResult = 3;
+                else if (iFile.isBestSourceReadable())
                     iResult = 3;
                 return iResult;
             }
@@ -256,17 +258,23 @@ namespace MeGUI
                     return iResult;
                 }
             }
+            else iResult = 3;
 
-            string strText = string.Empty;
-            if (MainForm.Instance.Settings.EnableDirectShowSource)
-                strText = "\r\n\r\nDirectShowSource or AVISource is not supported.";
-            else
-                strText = "\r\n\r\nDirectShowSource or AVISource is not recommended\r\nand has to be enabled in the settings if required.";
+            if (iResult != 3)
+            {
+                string strText = string.Empty;
+                if (MainForm.Instance.Settings.EnableDirectShowSource)
+                    strText = "\r\n\r\nDirectShowSource or AVISource is not supported.";
+                else
+                    strText = "\r\n\r\nDirectShowSource or AVISource is not recommended\r\nand has to be enabled in the settings if required.";
 
-            iResult = askAbout2("Do you want to open this file with\r\n" +
-                "- One Click Encoder (fully automated, easy to use) or\r\n" +
-                "- File Indexer (manual, advanced)?" + strText, "Please choose your preferred tool",
-                "One Click Encoder", "File Indexer", MessageBoxIcon.Question);
+                iResult = askAbout2("Do you want to open this file with\r\n" +
+                    "- One Click Encoder (fully automated, easy to use) or\r\n" +
+                    "- File Indexer (manual, advanced)?" + strText, "Please choose your preferred tool",
+                    "One Click Encoder", "File Indexer", MessageBoxIcon.Question);
+                return iResult;
+            }
+
             return iResult;
         }
 
