@@ -1,6 +1,6 @@
 // ****************************************************************************
 // 
-// Copyright (C) 2005-2024 Doom9 & al
+// Copyright (C) 2005-2025 Doom9 & al
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -84,6 +84,18 @@ namespace MeGUI
         nvDeInterlacerDouble
     }
 
+    public enum HwdDevice
+    {
+        [EnumTitle("None", "")]
+        hwdDeviceNone = 0,
+        [EnumTitle("d3d11va", ", hwdevice=\"" + "d3d11va" + "\"")]
+        hwdDeviceD3d11,
+        [EnumTitle("Cuda", ", hwdevice=\"" + "d3d11va" + "\"" )]
+        hwdDeviceCuda,
+        [EnumTitle("Vulkan", ", hwdevice=\"" + "vulkan" + "\"")]
+        hwdDeviceVulkan
+    }
+
     public enum UserSourceType
     {
         [EnumTitle("Progressive", SourceType.PROGRESSIVE)]
@@ -142,7 +154,7 @@ namespace MeGUI
 
         public static string GetInputLine(string input, string indexFile, bool interlaced, PossibleSources sourceType,
             bool colormatrix, bool mpeg2deblock, bool flipVertical, double fps, bool dss2,
-            NvDeinterlacerType nvDeintType, int nvHorizontalResolution, int nvVerticalResolution, CropValues nvCropValues)
+            NvDeinterlacerType nvDeintType, int nvHorizontalResolution, int nvVerticalResolution, CropValues nvCropValues, HwdDevice hwdDevice)
         {
             string inputLine = "#input";
             string strDLLPath = "";
@@ -236,6 +248,8 @@ namespace MeGUI
                         inputLine = inputLine + "\r\nFlipVertical()";
                     break;
                 case PossibleSources.bestsource:
+                    UpdateCacher.CheckPackage("bestsource");
+
                     inputLine = String.Empty;
                     bool fpsdetails = VideoUtil.GetFPSDetails(fps, input, out int fpsnum, out int fpsden);
 

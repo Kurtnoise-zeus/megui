@@ -1,6 +1,6 @@
 ﻿// ****************************************************************************
 // 
-// Copyright (C) 2005-2024 Doom9 & al
+// Copyright (C) 2005-2025 Doom9 & al
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -110,6 +110,11 @@ namespace MeGUI
             this.nvResize = new System.Windows.Forms.CheckBox();
             this.cbNvDeInt = new System.Windows.Forms.ComboBox();
             this.nvDeInt = new System.Windows.Forms.CheckBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chhwdevice = new System.Windows.Forms.CheckBox();
+            this.chTimecodesv2 = new System.Windows.Forms.CheckBox();
+            this.cbhwdevice = new System.Windows.Forms.ComboBox();
             this.deinterlacingGroupBox = new System.Windows.Forms.GroupBox();
             this.deintM = new System.Windows.Forms.NumericUpDown();
             this.deintFieldOrder = new System.Windows.Forms.ComboBox();
@@ -163,6 +168,8 @@ namespace MeGUI
             ((System.ComponentModel.ISupportInitialize)(this.fpsBox)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.dgOptions.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.deinterlacingGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.deintM)).BeginInit();
             this.filtersGroupbox.SuspendLayout();
@@ -561,6 +568,7 @@ namespace MeGUI
             this.avsProfile.ProfileSet = "AviSynth";
             this.avsProfile.Size = new System.Drawing.Size(348, 22);
             this.avsProfile.TabIndex = 22;
+            this.avsProfile.UpdateSelectedProfile = true;
             this.avsProfile.SelectedProfileChanged += new System.EventHandler(this.ProfileChanged);
             // 
             // arChooser
@@ -731,6 +739,7 @@ namespace MeGUI
             this.tabSources.Controls.Add(this.tabPage1);
             this.tabSources.Controls.Add(this.tabPage2);
             this.tabSources.Controls.Add(this.tabPage3);
+            this.tabSources.Controls.Add(this.tabPage4);
             this.tabSources.Location = new System.Drawing.Point(3, 3);
             this.tabSources.Name = "tabSources";
             this.tabSources.SelectedIndex = 0;
@@ -920,6 +929,66 @@ namespace MeGUI
             this.nvDeInt.UseVisualStyleBackColor = true;
             this.nvDeInt.CheckedChanged += new System.EventHandler(this.nvDeInt_CheckedChanged);
             this.nvDeInt.Click += new System.EventHandler(this.nvDeInt_Click);
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.groupBox2);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(441, 90);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "BestSource";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.chhwdevice);
+            this.groupBox2.Controls.Add(this.chTimecodesv2);
+            this.groupBox2.Controls.Add(this.cbhwdevice);
+            this.groupBox2.Location = new System.Drawing.Point(8, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(427, 81);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            // 
+            // chhwdevice
+            // 
+            this.chhwdevice.AutoSize = true;
+            this.chhwdevice.Location = new System.Drawing.Point(25, 16);
+            this.chhwdevice.Name = "chhwdevice";
+            this.chhwdevice.Size = new System.Drawing.Size(120, 17);
+            this.chhwdevice.TabIndex = 6;
+            this.chhwdevice.Text = "Hardware Decoding";
+            this.chhwdevice.UseVisualStyleBackColor = true;
+            this.chhwdevice.CheckedChanged += new System.EventHandler(this.chhwdevice_CheckedChanged);
+            // 
+            // chTimecodesv2
+            // 
+            this.chTimecodesv2.AutoSize = true;
+            this.chTimecodesv2.Location = new System.Drawing.Point(25, 41);
+            this.chTimecodesv2.Name = "chTimecodesv2";
+            this.chTimecodesv2.Size = new System.Drawing.Size(139, 17);
+            this.chTimecodesv2.TabIndex = 5;
+            this.chTimecodesv2.Text = "Write Timecodes v2 File";
+            this.chTimecodesv2.UseVisualStyleBackColor = true;
+            this.chTimecodesv2.CheckedChanged += new System.EventHandler(this.RefreshScript);
+            // 
+            // cbhwdevice
+            // 
+            this.cbhwdevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbhwdevice.Enabled = false;
+            this.cbhwdevice.FormattingEnabled = true;
+            this.cbhwdevice.Items.AddRange(new object[] {
+            "none",
+            "d3d11va",
+            "cuda",
+            "vulkan"});
+            this.cbhwdevice.Location = new System.Drawing.Point(151, 14);
+            this.cbhwdevice.Name = "cbhwdevice";
+            this.cbhwdevice.Size = new System.Drawing.Size(121, 21);
+            this.cbhwdevice.TabIndex = 4;
+            this.cbhwdevice.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // deinterlacingGroupBox
             // 
@@ -1281,6 +1350,9 @@ namespace MeGUI
             this.tabPage3.ResumeLayout(false);
             this.dgOptions.ResumeLayout(false);
             this.dgOptions.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.deinterlacingGroupBox.ResumeLayout(false);
             this.deinterlacingGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.deintM)).EndInit();
@@ -1381,5 +1453,10 @@ namespace MeGUI
         private Button openSubtitlesButton;
         private Button deleteSubtitle;
         private Label label9;
+        private TabPage tabPage4;
+        private GroupBox groupBox2;
+        private CheckBox chTimecodesv2;
+        private ComboBox cbhwdevice;
+        private CheckBox chhwdevice;
     }
 }

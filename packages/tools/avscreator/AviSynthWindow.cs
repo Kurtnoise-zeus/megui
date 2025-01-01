@@ -1,6 +1,6 @@
 // ****************************************************************************
 // 
-// Copyright (C) 2005-2024 Doom9 & al
+// Copyright (C) 2005-2025 Doom9 & al
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -304,9 +304,10 @@ namespace MeGUI
 
         private string _tempInputLine;
         private string _tempInputFileName, _tempInputIndexFile;
-        private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop;
+        private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop, _tempHwDecoding;
         private PossibleSources _tempInputSourceType;
         private NvDeinterlacerType _tempNvDeintType;
+        private HwdDevice _tempHwdDevice;
         private CropValues _tempCropValues;
         private double _tempFPS;
         private decimal _tempNvHorizontalResolution, _tempNvVerticalResolution;
@@ -317,7 +318,7 @@ namespace MeGUI
                 _tempFlipVertical != flipVertical.Checked || _tempFPS != (double)fpsBox.Value || _tempDSS2 != dss2.Checked || _tempNvDeint != nvDeInt.Checked ||
                 _tempNvDeintType != (NvDeinterlacerType)(cbNvDeInt.SelectedItem as EnumProxy).RealValue || _tempNvResize != nvResize.Checked ||  _tempCrop != crop.Checked ||
                 (nvResize.Checked && resize.Checked && (_tempNvHorizontalResolution != horizontalResolution.Value || _tempNvVerticalResolution != verticalResolution.Value)) ||
-                (nvResize.Checked && crop.Checked && _tempCropValues != Cropping))
+                (nvResize.Checked && crop.Checked && _tempCropValues != Cropping || _tempHwdDevice != (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue))
             {
                 _tempInputFileName = this.input.Filename;
                 _tempInputIndexFile = this.indexFile;
@@ -336,6 +337,9 @@ namespace MeGUI
                 _tempNvVerticalResolution = verticalResolution.Value;
                 _tempCrop = crop.Checked;
                 _tempCropValues = Cropping;
+                _tempHwDecoding = chhwdevice.Checked;
+                _tempHwdDevice = (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue;
+
 
                 _tempInputLine = ScriptServer.GetInputLine(
                                                     _tempInputFileName,
@@ -350,7 +354,8 @@ namespace MeGUI
                                                     nvDeInt.Checked ? _tempNvDeintType : NvDeinterlacerType.nvDeInterlacerNone,
                                                     (_tempNvResize && _tempResize) ? (int)_tempNvHorizontalResolution : 0,
                                                     (_tempNvResize && _tempResize) ? (int)_tempNvVerticalResolution: 0,
-                                                    (_tempNvResize && _tempCrop) ? _tempCropValues : null);
+                                                    (_tempNvResize && _tempCrop) ? _tempCropValues : null,
+                                                    chhwdevice.Checked ? _tempHwdDevice : HwdDevice.hwdDeviceNone);
             }
             
             return _tempInputLine;
@@ -1156,7 +1161,7 @@ namespace MeGUI
 
                 string source = ScriptServer.GetInputLine(
                     input.Filename, indexFile, false, sourceType, false, false, false,
-                    0, false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null);
+                    0, false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone);
 
                 // get number of frames
                 int numFrames = 0;
@@ -1373,6 +1378,16 @@ namespace MeGUI
         private void InputDARChanged(object sender, string val)
         {
             UpdateEverything(sender != null, false, false);
+        }
+
+        private void chhwdevice_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chhwdevice.Checked)
+                cbhwdevice.Enabled = true;
+            else
+                cbhwdevice.Enabled = false;
+            if (sender != null && e != null)
+                ShowScript(false);
         }
 
         private void UpdateEverything(object sender, EventArgs e)
