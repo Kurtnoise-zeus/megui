@@ -98,6 +98,9 @@ namespace MeGUI
             this.cbNvDeInt.Items.Clear();
             this.cbNvDeInt.DataSource = ScriptServer.ListOfNvDeIntType;
             this.cbNvDeInt.BindingContext = new BindingContext();
+            this.cbhwdevice.Items.Clear();
+            this.cbhwdevice.DataSource = ScriptServer.ListOfHwDeviceType;
+            this.cbhwdevice.BindingContext = new BindingContext();
 
             sourceType = PossibleSources.bestsource;
             deintFieldOrder.SelectedIndex = -1;
@@ -105,6 +108,7 @@ namespace MeGUI
             cbNvDeInt.SelectedIndex = 0;
             cbCharset.SelectedIndex = 0;
             modValueBox.SelectedIndex = 0;
+            cbhwdevice.SelectedIndex = 0;
             bAllowUpsizing = false;
 
             this.originalScript = String.Empty;

@@ -138,6 +138,8 @@ namespace MeGUI
 
         public static readonly IList ListOfNvDeIntType = EnumProxy.CreateArray(typeof(NvDeinterlacerType));
 
+        public static readonly IList ListOfHwDeviceType = EnumProxy.CreateArray(typeof(HwdDevice));
+
         public static MainForm mainForm;
         
 

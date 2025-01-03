@@ -1648,7 +1648,7 @@ namespace MeGUI
                     {
                         videoSourceFile = AvsFile.ParseScript(ScriptServer.GetInputLine(
                             _file, null, false, PossibleSources.directShow, false, false, false, VideoInfo.FPS,
-                            false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null), true);
+                            false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone), true);
                         videoReader = null;
                     }
                     if (videoReader == null)
