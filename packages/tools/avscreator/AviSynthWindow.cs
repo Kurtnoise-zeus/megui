@@ -759,9 +759,10 @@ namespace MeGUI
                 catch (Exception)
                 { }
 
-                //if (!String.IsNullOrEmpty(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path)))
-                    tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
-                tempAvs += string.Format("BSVideoSource(\"{0}\")", fileName);
+                tempAvs = string.Format("BSVideoSource(\"{0}\")", fileName);
+
+                if (MainForm.Instance.Settings.PortableAviSynth)
+                    tempAvs += "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" + tempAvs;
 
                 if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
                     tempAvs += "\r\nConvertBits(8)";

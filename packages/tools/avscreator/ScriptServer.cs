@@ -255,8 +255,8 @@ namespace MeGUI
                     inputLine = String.Empty;
                     bool fpsdetails = VideoUtil.GetFPSDetails(fps, input, out int fpsnum, out int fpsden);
 
-                    //if (!String.IsNullOrEmpty(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path)))
-                    inputLine = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+                    if (MainForm.Instance.Settings.PortableAviSynth)
+                        inputLine = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
 
                     inputLine += "BSVideoSource(\"" + input + "\"" + ((fpsdetails == true) ? ", fpsnum=" + fpsnum.ToString() + ", fpsden=" + fpsden.ToString() : String.Empty);
 

@@ -1326,6 +1326,7 @@ namespace MeGUI
             try
             {
                 string tempAvs = "DirectShowSource(\"" + _file + "\", audio=false)";
+
                 if (MainForm.Instance.Settings.PortableAviSynth)
                     tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path), @"plugins\directshowsource.dll") + "\")\r\n" + tempAvs;
                 IMediaFile iMediaFile = AvsFile.ParseScript(tempAvs);
@@ -1345,18 +1346,14 @@ namespace MeGUI
         public bool isBestSourceReadable()
         {
             //// check if the file is a video file
-            //if (!_VideoInfo.HasVideo)
-            //    return false;
+            if (!_VideoInfo.HasVideo)
+                return false;
 
             try
             {
-                //string tempAvs = string.Format("BSVideoSource(\"{0}\")", _file);
-
-                //if (!String.IsNullOrEmpty(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path)))
-                 string   tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" ;
-
-                tempAvs += string.Format("BSVideoSource(\"{0}\")", _file);
-
+                string tempAvs = string.Format("BSVideoSource(\"{0}\")", _file);
+                if (MainForm.Instance.Settings.PortableAviSynth)
+                    tempAvs += "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" + tempAvs;
                 IMediaFile iMediaFile = AvsFile.ParseScript(tempAvs);
                 if (iMediaFile != null)
                     iMediaFile.Dispose();
