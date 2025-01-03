@@ -578,7 +578,7 @@ namespace MeGUI
 
             inputLine = ScriptServer.GetInputLine(
                 inputFile, indexFile, false, oPossibleSource, false, false, false, 0, 
-                avsSettings.DSS2, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone);
+                avsSettings.DSS2, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone, false);
 
             if (IsJobStopped())
                 return "";
@@ -615,7 +615,7 @@ namespace MeGUI
             // get final input filter line
             inputLine = ScriptServer.GetInputLine(
                 inputFile, indexFile, interlaced, oPossibleSource, avsSettings.ColourCorrect, avsSettings.MPEG2Deblock,
-                false, 0, avsSettings.DSS2, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone);
+                false, 0, avsSettings.DSS2, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone,false);
 
             // get crop & resize lines
             if (!keepInputResolution)

@@ -1350,9 +1350,12 @@ namespace MeGUI
 
             try
             {
-                string tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+                //string tempAvs = string.Format("BSVideoSource(\"{0}\")", _file);
 
-                tempAvs += "BSVideoSource(\"" + _file + "\")\r\n";
+                //if (!String.IsNullOrEmpty(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path)))
+                 string   tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" ;
+
+                tempAvs += string.Format("BSVideoSource(\"{0}\")", _file);
 
                 IMediaFile iMediaFile = AvsFile.ParseScript(tempAvs);
                 if (iMediaFile != null)
@@ -1648,7 +1651,7 @@ namespace MeGUI
                     {
                         videoSourceFile = AvsFile.ParseScript(ScriptServer.GetInputLine(
                             _file, null, false, PossibleSources.directShow, false, false, false, VideoInfo.FPS,
-                            false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone), true);
+                            false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone, false), true);
                         videoReader = null;
                     }
                     if (videoReader == null)

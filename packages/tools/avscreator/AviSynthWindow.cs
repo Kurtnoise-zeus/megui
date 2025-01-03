@@ -308,7 +308,7 @@ namespace MeGUI
 
         private string _tempInputLine;
         private string _tempInputFileName, _tempInputIndexFile;
-        private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop, _tempHwDecoding;
+        private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop, _tempHwDecoding, _tempTimecodesv2;
         private PossibleSources _tempInputSourceType;
         private NvDeinterlacerType _tempNvDeintType;
         private HwdDevice _tempHwdDevice;
@@ -322,7 +322,8 @@ namespace MeGUI
                 _tempFlipVertical != flipVertical.Checked || _tempFPS != (double)fpsBox.Value || _tempDSS2 != dss2.Checked || _tempNvDeint != nvDeInt.Checked ||
                 _tempNvDeintType != (NvDeinterlacerType)(cbNvDeInt.SelectedItem as EnumProxy).RealValue || _tempNvResize != nvResize.Checked ||  _tempCrop != crop.Checked ||
                 (nvResize.Checked && resize.Checked && (_tempNvHorizontalResolution != horizontalResolution.Value || _tempNvVerticalResolution != verticalResolution.Value)) ||
-                (nvResize.Checked && crop.Checked && _tempCropValues != Cropping || _tempHwdDevice != (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue))
+                (nvResize.Checked && crop.Checked && _tempCropValues != Cropping || _tempHwdDevice != (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue) ||
+                _tempTimecodesv2 != chTimecodesv2.Checked)
             {
                 _tempInputFileName = this.input.Filename;
                 _tempInputIndexFile = this.indexFile;
@@ -343,6 +344,7 @@ namespace MeGUI
                 _tempCropValues = Cropping;
                 _tempHwDecoding = chhwdevice.Checked;
                 _tempHwdDevice = (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue;
+                _tempTimecodesv2 = chTimecodesv2.Checked;
 
 
                 _tempInputLine = ScriptServer.GetInputLine(
@@ -359,7 +361,9 @@ namespace MeGUI
                                                     (_tempNvResize && _tempResize) ? (int)_tempNvHorizontalResolution : 0,
                                                     (_tempNvResize && _tempResize) ? (int)_tempNvVerticalResolution: 0,
                                                     (_tempNvResize && _tempCrop) ? _tempCropValues : null,
-                                                    chhwdevice.Checked ? _tempHwdDevice : HwdDevice.hwdDeviceNone);
+                                                    chhwdevice.Checked ? _tempHwdDevice : HwdDevice.hwdDeviceNone,
+                                                    _tempTimecodesv2 
+                                                    );
             }
             
             return _tempInputLine;
@@ -541,6 +545,8 @@ namespace MeGUI
                     this.flipVertical.Checked = false;
                     this.dgOptions.Enabled = false;
                     this.dss2.Enabled = false;
+                    this.chhwdevice.Enabled = false;
+                    this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage1;
                     break;
                 case PossibleSources.vdr:
@@ -555,6 +561,8 @@ namespace MeGUI
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
                     this.dgOptions.Enabled = false;
+                    this.chhwdevice.Enabled = false;
+                    this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage1;
                     break;
                 case PossibleSources.ffindex:
@@ -567,10 +575,11 @@ namespace MeGUI
                     this.fpsBox.Enabled = false;
                     this.flipVertical.Enabled = true;
                     this.dgOptions.Enabled = false;
+                    this.chhwdevice.Enabled = false;
+                    this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage1;
                     break;
                 case PossibleSources.directShow:
-                case PossibleSources.bestsource:
                     this.mpeg2Deblocking.Checked = false;
                     this.mpeg2Deblocking.Enabled = false;
                     this.colourCorrect.Enabled = false;
@@ -579,6 +588,8 @@ namespace MeGUI
                     this.fpsBox.Enabled = true;
                     this.flipVertical.Enabled = true;
                     this.dgOptions.Enabled = false;
+                    this.chhwdevice.Enabled = false;
+                    this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage2;
                     break;
                 case PossibleSources.dgi:
@@ -591,6 +602,8 @@ namespace MeGUI
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
                     this.dgOptions.Enabled = true;
+                    this.chhwdevice.Enabled = false;
+                    this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage3;
                     break;
                 case PossibleSources.dgm:
@@ -603,7 +616,23 @@ namespace MeGUI
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
                     this.dgOptions.Enabled = false;
+                    this.chhwdevice.Enabled = false;
+                    this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage3;
+                    break;
+                case PossibleSources.bestsource:
+                    this.mpeg2Deblocking.Checked = false;
+                    this.mpeg2Deblocking.Enabled = false;
+                    this.colourCorrect.Enabled = false;
+                    this.colourCorrect.Checked = false;
+                    this.flipVertical.Enabled = false;
+                    this.flipVertical.Checked = false;
+                    this.dss2.Enabled = false;
+                    this.fpsBox.Enabled = false;
+                    this.dgOptions.Enabled = false;
+                    this.chhwdevice.Enabled = true;
+                    this.chTimecodesv2.Enabled = true;
+                    this.tabSources.SelectedTab = tabPage4;
                     break;
             }
         }
@@ -730,10 +759,9 @@ namespace MeGUI
                 catch (Exception)
                 { }
 
-                tempAvs = string.Format("BSVideoSource(\"{0}\")",fileName);
-
-                if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
-                    tempAvs += "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" + tempAvs;
+                //if (!String.IsNullOrEmpty(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path)))
+                    tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+                tempAvs += string.Format("BSVideoSource(\"{0}\")", fileName);
 
                 if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
                     tempAvs += "\r\nConvertBits(8)";
@@ -1165,7 +1193,7 @@ namespace MeGUI
 
                 string source = ScriptServer.GetInputLine(
                     input.Filename, indexFile, false, sourceType, false, false, false,
-                    0, false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone);
+                    0, false, NvDeinterlacerType.nvDeInterlacerNone, 0, 0, null, HwdDevice.hwdDeviceNone, false);
 
                 // get number of frames
                 int numFrames = 0;

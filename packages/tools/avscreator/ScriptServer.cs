@@ -90,7 +90,7 @@ namespace MeGUI
         hwdDeviceNone = 0,
         [EnumTitle("d3d11va", ", hwdevice=\"" + "d3d11va" + "\"")]
         hwdDeviceD3d11,
-        [EnumTitle("Cuda", ", hwdevice=\"" + "d3d11va" + "\"" )]
+        [EnumTitle("Cuda", ", hwdevice=\"" + "cuda" + "\"" )]
         hwdDeviceCuda,
         [EnumTitle("Vulkan", ", hwdevice=\"" + "vulkan" + "\"")]
         hwdDeviceVulkan
@@ -156,7 +156,7 @@ namespace MeGUI
 
         public static string GetInputLine(string input, string indexFile, bool interlaced, PossibleSources sourceType,
             bool colormatrix, bool mpeg2deblock, bool flipVertical, double fps, bool dss2,
-            NvDeinterlacerType nvDeintType, int nvHorizontalResolution, int nvVerticalResolution, CropValues nvCropValues, HwdDevice hwdDevice)
+            NvDeinterlacerType nvDeintType, int nvHorizontalResolution, int nvVerticalResolution, CropValues nvCropValues, HwdDevice hwdDevice, bool timecodesv2)
         {
             string inputLine = "#input";
             string strDLLPath = "";
@@ -255,13 +255,25 @@ namespace MeGUI
                     inputLine = String.Empty;
                     bool fpsdetails = VideoUtil.GetFPSDetails(fps, input, out int fpsnum, out int fpsden);
 
-                    if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
-                        inputLine = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
-                    inputLine += "BSVideoSource(\"" + input + "\"" + ((fpsdetails == true) ? ", fpsnum=" + fpsnum.ToString() + ", fpsden=" + fpsden.ToString() : String.Empty)
-                        + ", timecodes=\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "timecodes_v2.txt") + "\")";
+                    //if (!String.IsNullOrEmpty(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path)))
+                    inputLine = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+
+                    inputLine += "BSVideoSource(\"" + input + "\"" + ((fpsdetails == true) ? ", fpsnum=" + fpsnum.ToString() + ", fpsden=" + fpsden.ToString() : String.Empty);
+
+                    if (hwdDevice != (HwdDevice.hwdDeviceNone))
+                        inputLine += ScriptServer.GetGetHwdDevice(true, hwdDevice);
+
+                    if (timecodesv2)
+                        inputLine += ", timecodes=\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "timecodes_v2.txt");
+
+                    if (hwdDevice != (HwdDevice.hwdDeviceNone) || timecodesv2)
+                        inputLine += "\")";
+                    else
+                        inputLine += ")";
 
                     if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
                         inputLine += "\r\nConvertBits(8)";
+                    
                     if (flipVertical)
                         inputLine = inputLine + "\r\nFlipVertical()";
                     break;
@@ -376,6 +388,18 @@ namespace MeGUI
                     nvDeInterlacerLine = p.Tag.ToString();
             }
             return nvDeInterlacerLine;
+        }
+
+        public static string GetGetHwdDevice(bool hwd, HwdDevice type)
+        {
+            string hwdevice = "";
+            if (hwd)
+            {
+                EnumProxy p = EnumProxy.Create(type);
+                if (p.Tag != null)
+                    hwdevice = p.Tag.ToString();
+            }
+            return hwdevice;
         }
 
 
