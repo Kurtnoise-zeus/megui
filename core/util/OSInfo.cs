@@ -18,6 +18,7 @@
 // 
 // ****************************************************************************
 
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -557,63 +558,113 @@ namespace MeGUI
         {
             string fv = "unknown";
             string componentsKeyName = "SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\";
-            using (Microsoft.Win32.RegistryKey componentsKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(componentsKeyName))
+
+            using (Microsoft.Win32.RegistryKey ndpKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"))
             {
-                try
+                if (ndpKey != null)
                 {
-                    string[] instComps = componentsKey.GetSubKeyNames();
-                    ArrayList versions = new ArrayList();
+                    int value = (int)(ndpKey.GetValue("Release") ?? 0);
 
-                    foreach (string instComp in instComps)
+                    if (value >= 533320)
+                        return fv = "4.8.1";
+
+                    if (value >= 528040)
+                        return fv = "4.8.0";
+
+                    if (value >= 461808)
+                        return fv = "4.7.2";
+
+                    if (value >= 461308)
+                        return fv = "4.7.1";
+
+                    if (value >= 460798)
+                        return fv = "4.7.0";
+
+                    if (value >= 394802)
+                        return fv = "4.6.2";
+
+                    if (value >= 394254)
+                        return fv = "4.6.1";
+
+                    if (value >= 393295)
+                        return fv = "4.6.0";
+
+                    if (value >= 379893)
+                        return fv = "4.5.2";
+
+                    if (value >= 378675)
+                        return fv = "4.5.1";
+
+                    if (value >= 378389)
+                        return fv = "4.5.0";
+
+                    throw new NotSupportedException($"No 4.5 or later framework version detected, framework key value: {value}");
+                }
+
+                throw new NotSupportedException(@"No registry key found under 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' to determine running framework version");
+            }
+
+
+            if (fv == "unknown")
+            {
+                using (Microsoft.Win32.RegistryKey componentsKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(componentsKeyName))
+                {
+                    try
                     {
-                        if (!instComp.StartsWith("v"))
-                            continue;
+                        string[] instComps = componentsKey.GetSubKeyNames();
+                        ArrayList versions = new ArrayList();
 
-                        bool bFound = false;
-                        Microsoft.Win32.RegistryKey key = componentsKey.OpenSubKey(instComp);
-                        string version = (string)key.GetValue("Version", "");
+                        foreach (string instComp in instComps)
+                        {
+                            if (!instComp.StartsWith("v"))
+                                continue;
 
-                        if (!String.IsNullOrEmpty(version))
-                        {
-                            versions.Add(version);
-                            continue;
-                        }
-                        else
-                        {
-                            foreach (string strRegKey in key.GetSubKeyNames())
+                            bool bFound = false;
+                            Microsoft.Win32.RegistryKey key = componentsKey.OpenSubKey(instComp);
+                            string version = (string)key.GetValue("Version", "");
+
+                            if (!String.IsNullOrEmpty(version))
                             {
-                                Microsoft.Win32.RegistryKey strKey = key.OpenSubKey(strRegKey);
-                                version = (string)strKey.GetValue("Version", "");
-                                if (!String.IsNullOrEmpty(version))
+                                versions.Add(version);
+                                continue;
+                            }
+                            else
+                            {
+                                foreach (string strRegKey in key.GetSubKeyNames())
                                 {
-                                    bFound = true;
-                                    versions.Add(version);
+                                    Microsoft.Win32.RegistryKey strKey = key.OpenSubKey(strRegKey);
+                                    version = (string)strKey.GetValue("Version", "");
+                                    if (!String.IsNullOrEmpty(version))
+                                    {
+                                        bFound = true;
+                                        versions.Add(version);
+                                    }
                                 }
                             }
+                            if (!bFound)
+                            {
+                                string install = key.GetValue("Install", "").ToString();
+                                version = instComp.Substring(1);
+                                if (!version.Equals("4") && install.Equals("1"))
+                                    versions.Add(version);
+                            }
                         }
-                        if (!bFound)
+                        versions.Sort();
+
+                        foreach (string version in versions)
                         {
-                            string install = key.GetValue("Install", "").ToString();
-                            version = instComp.Substring(1);
-                            if (!version.Equals("4") && install.Equals("1"))
-                                versions.Add(version);
+                            if (!String.IsNullOrEmpty(getSpecificVersion) && (version.StartsWith(getSpecificVersion) || DotNetVersionFormated(version).StartsWith(getSpecificVersion)))
+                                return DotNetVersionFormated(version);
+                            fv = version;
                         }
-                    }
-                    versions.Sort();
 
-                    foreach (string version in versions)
+                        if (!String.IsNullOrEmpty(getSpecificVersion))
+                            return null;
+                    }
+                    catch
                     {
-                        if (!String.IsNullOrEmpty(getSpecificVersion) && (version.StartsWith(getSpecificVersion) || DotNetVersionFormated(version).StartsWith(getSpecificVersion)))
-                            return DotNetVersionFormated(version);
-                        fv = version;
-                    }
-
-                    if (!String.IsNullOrEmpty(getSpecificVersion))
                         return null;
-                }
-                catch
-                {
-                    return null;
+                    }
                 }
             }
             return DotNetVersionFormated(fv);
