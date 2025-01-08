@@ -234,46 +234,48 @@ namespace MeGUI
 ");
         }
 
-        private string GetChannelLayoutFromMask(int mask)
+        private static string GetChannelLayoutFromMask(int mask)
         {
-            string clfm = "N/A";
-
-            switch (mask)
+            Dictionary<int, string> ChannelMask = new Dictionary<int, string>
             {
-                case 4:      clfm = "Mono (FC)"; break;
-                case 12:     clfm = "1.1 (FC/LFE)"; break;
-                case 3:      clfm = "Stereo (FL/FR)"; break;
-                case 11:     clfm = "2.1 (FL/FR/LFE)"; break;
-                case 7:      clfm = "3.0 (FL/FR/FC)"; break;
-                case 259:    clfm = "3.0 (back) (FL/FR/BC)"; break;
-                case 15:     clfm = "3.1 (FL/FR/FC/LFE)"; break;
-                case 263:    clfm = "4.0 (FL/FR/FC/BC)"; break;
-                case 51:     clfm = "Quad (FL/FR/BL/BR)"; break;
-                case 1539:   clfm = "Quad (side) (FL/FR/SL/SR)"; break;
-                case 59:     clfm = "Quad.1 (FL/FR/LFE/BL/BR)"; break;
-                case 55:     clfm = "5.0 (FL/FR/FC/BL/BR)"; break;
-                case 1543:   clfm = "5.0 (side) (FL/FR/FC/BL/BR)"; break;
-                case 271:    clfm = "4.1 (FL/FR/FC/LFE/BC)"; break;
-                case 63:     clfm = "5.1 (FL/FR/FC/LFE//BL/BR)"; break;
-                case 1551:   clfm = "5.1 (side) (FL/FR/FC/LFE/SL/SR)"; break;
-                case 1799:   clfm = "6.0 (FL/FR/FC/BC/SL/SR)"; break;
-                case 1731:   clfm = "6.0 (front) (FL/FR/FLC/FRC/SL/SR)"; break;
-                case 311:    clfm = "Hexagonal (FL/FR/FC/BL/BR/BC)"; break;
-                case 1807:   clfm = "6.1 (FL/FR/FC/LFE/BC/SL/SR)"; break;
-                case 319:    clfm = "6.1 (back) (FL/FR/FC/LFE/BL/BR/BC)"; break;
-                case 1735:   clfm = "6.1 (front) (FL/FR/LFE/FLC/FRC/SL/SR)"; break;
-                case 1599:   clfm = "7.1 (FL/FR/FC/LFE/BL/BR/SL/SR)"; break;
-                case 255:    clfm = "7.1 (wide) (FL/FR/FC/LFE/BL/BR/FLC/FRC)"; break;
-                case 1743:   clfm = "7.1 (wide-side) (FL/FR/FC/LFE/FLC/FRC/SL/SR)"; break;
-                case 1847:   clfm = "Octagonal (FL/FR/FC/bl:br:BC/SL/SR)"; break;
-                case 184371: clfm = "Cube (FL/FR/BL/BR/TFL/TFR/TBL/TBR)"; break;
-                case 20543:  clfm = "7.1 (top) (FL/FR/FC/LFE/BL/BR/TFL/TFR)"; break;
-                case 22031:  clfm = "5.1.2 (front) (FL/FR/FC/LFE/SL/SR/TFL/TFR)"; break;
-                case 165391: clfm = "5.1.2 (side) (FL/FR/FC/LFE/SL/SR/TBL/TBR)"; break;
-                default:     clfm = "All"; break;
-            }
+                { 4,      "Mono (FC)" },
+                { 12,     "1.1 (FC/LFE)" },
+                { 3,      "Stereo (FL/FR)" },
+                { 11,     "2.1 (FL/FR/LFE)" },
+                { 7,      "3.0 (FL/FR/FC)" },
+                { 259,    "3.0 (back) (FL/FR/BC)" },
+                { 15,     "3.1 (FL/FR/FC/LFE)" },
+                { 263,    "4.0 (FL/FR/FC/BC)" },
+                { 51,     "Quad (FL/FR/BL/BR)" },
+                { 1539,   "Quad (side) (FL/FR/SL/SR)" },
+                { 59,     "Quad.1 (FL/FR/LFE/BL/BR)" },
+                { 55,     "5.0 (FL/FR/FC/BL/BR)" },
+                { 1543,   "5.0 (side) (FL/FR/FC/BL/BR)" },
+                { 271,    "4.1 (FL/FR/FC/LFE/BC)" },
+                { 63,     "5.1 (FL/FR/FC/LFE//BL/BR)" },
+                { 1551,   "5.1 (side) (FL/FR/FC/LFE/SL/SR)" },
+                { 1799,   "6.0 (FL/FR/FC/BC/SL/SR)" },
+                { 1731,   "6.0 (front) (FL/FR/FLC/FRC/SL/SR)" },
+                { 311,    "Hexagonal (FL/FR/FC/BL/BR/BC)" },
+                { 1807,   "6.1 (FL/FR/FC/LFE/BC/SL/SR)" },
+                { 319,    "6.1 (back) (FL/FR/FC/LFE/BL/BR/BC)" },
+                { 1735,   "6.1 (front) (FL/FR/LFE/FLC/FRC/SL/SR)" },
+                { 1599,   "7.1 (FL/FR/FC/LFE/BL/BR/SL/SR)" },
+                { 255,    "7.1 (wide) (FL/FR/FC/LFE/BL/BR/FLC/FRC)" },
+                { 1743,   "7.1 (wide-side) (FL/FR/FC/LFE/FLC/FRC/SL/SR)" },
+                { 1847,   "Octagonal (FL/FR/FC/bl:br:BC/SL/SR)" },
+                { 184371, "Cube (FL/FR/BL/BR/TFL/TFR/TBL/TBR)" },
+                { 20543,  "7.1 (top) (FL/FR/FC/LFE/BL/BR/TFL/TFR)" },
+                { 22031,  "5.1.2 (front) (FL/FR/FC/LFE/SL/SR/TFL/TFR)" },
+                { 165391, "5.1.2 (side) (FL/FR/FC/LFE/SL/SR/TBL/TBR)" }
+            };
 
-            return clfm;
+
+
+            ChannelMask.TryGetValue(mask, out string strLayout);
+            if (String.IsNullOrEmpty(strLayout))
+                strLayout = "LAYOUT_UNKNOWN";
+            return strLayout;
         }
 
         private bool bShowError = false;
