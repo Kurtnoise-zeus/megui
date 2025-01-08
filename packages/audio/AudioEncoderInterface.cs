@@ -464,6 +464,7 @@ namespace MeGUI
                         inputLog.LogValue("Bits per sample", a.BitsPerSample);
                         inputLog.LogValue("Sample rate", a.AudioSampleRate);
                         inputLog.LogValue("Channel Mask", a.ChannelMask);
+                        inputLog.LogValue("Channel Layout", GetChannelLayoutFromMask(a.ChannelMask));
                         
                         const int MAX_SAMPLES_PER_ONCE = 4096;
                         int frameSample = 0;
