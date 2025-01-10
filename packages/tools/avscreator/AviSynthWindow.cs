@@ -311,7 +311,7 @@ namespace MeGUI
         private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop, _tempHwDecoding, _tempTimecodesv2;
         private PossibleSources _tempInputSourceType;
         private NvDeinterlacerType _tempNvDeintType;
-        private HwdDevice _tempHwdDevice;
+        private HwdDevice _tempHwdDeviceType;
         private CropValues _tempCropValues;
         private double _tempFPS;
         private decimal _tempNvHorizontalResolution, _tempNvVerticalResolution;
@@ -322,7 +322,7 @@ namespace MeGUI
                 _tempFlipVertical != flipVertical.Checked || _tempFPS != (double)fpsBox.Value || _tempDSS2 != dss2.Checked || _tempNvDeint != nvDeInt.Checked ||
                 _tempNvDeintType != (NvDeinterlacerType)(cbNvDeInt.SelectedItem as EnumProxy).RealValue || _tempNvResize != nvResize.Checked ||  _tempCrop != crop.Checked ||
                 (nvResize.Checked && resize.Checked && (_tempNvHorizontalResolution != horizontalResolution.Value || _tempNvVerticalResolution != verticalResolution.Value)) ||
-                (nvResize.Checked && crop.Checked && _tempCropValues != Cropping || _tempHwdDevice != (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue) ||
+                (nvResize.Checked && crop.Checked && _tempCropValues != Cropping || _tempHwDecoding != chhwdevice.Checked || _tempHwdDeviceType != (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue) ||
                 _tempTimecodesv2 != chTimecodesv2.Checked)
             {
                 _tempInputFileName = this.input.Filename;
@@ -343,7 +343,7 @@ namespace MeGUI
                 _tempCrop = crop.Checked;
                 _tempCropValues = Cropping;
                 _tempHwDecoding = chhwdevice.Checked;
-                _tempHwdDevice = (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue;
+                _tempHwdDeviceType = (HwdDevice)(cbhwdevice.SelectedItem as EnumProxy).RealValue;
                 _tempTimecodesv2 = chTimecodesv2.Checked;
 
 
@@ -361,7 +361,7 @@ namespace MeGUI
                                                     (_tempNvResize && _tempResize) ? (int)_tempNvHorizontalResolution : 0,
                                                     (_tempNvResize && _tempResize) ? (int)_tempNvVerticalResolution: 0,
                                                     (_tempNvResize && _tempCrop) ? _tempCropValues : null,
-                                                    chhwdevice.Checked ? _tempHwdDevice : HwdDevice.hwdDeviceNone,
+                                                    chhwdevice.Checked ? _tempHwdDeviceType : HwdDevice.hwdDeviceNone,
                                                     _tempTimecodesv2 
                                                     );
             }

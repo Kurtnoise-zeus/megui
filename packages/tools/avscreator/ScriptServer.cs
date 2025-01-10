@@ -90,7 +90,7 @@ namespace MeGUI
         hwdDeviceNone = 0,
         [EnumTitle("d3d11va", ", hwdevice=\"" + "d3d11va" + "\"")]
         hwdDeviceD3d11,
-        [EnumTitle("Cuda", ", hwdevice=\"" + "cuda" + "\"" )]
+        [EnumTitle("Cuda", ", hwdevice=\"" + "cuda" + "\"")]
         hwdDeviceCuda,
         [EnumTitle("Vulkan", ", hwdevice=\"" + "vulkan" + "\"")]
         hwdDeviceVulkan
@@ -266,7 +266,7 @@ namespace MeGUI
                     if (timecodesv2)
                         inputLine += ", timecodes=\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "timecodes_v2.txt");
 
-                    if (hwdDevice != (HwdDevice.hwdDeviceNone) || timecodesv2)
+                    if (timecodesv2)
                         inputLine += "\")";
                     else
                         inputLine += ")";
