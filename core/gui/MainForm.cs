@@ -1315,6 +1315,7 @@ namespace MeGUI
         {
             bool bDebug = false;
             string AppProductVersion = "";
+            DateTime BuildDate = new DateTime(2024, 11, 25);
 #if DEBUG
             bDebug = true;
 #endif
@@ -1323,7 +1324,7 @@ namespace MeGUI
                   "." + (new System.Version(Application.ProductVersion).Minor) +
                   "." + (new System.Version(Application.ProductVersion).Build) +
                   "." + (new System.Version(Application.ProductVersion).Revision) +
-                  " " + DateTime.Now.ToString("yyyyMMdd");
+                  " " + BuildDate.ToString("yyyyMMdd");
 
             if (!MainForm.Instance.Settings.IsMeGUIx64)
                 i.LogValue("MeGUI", AppProductVersion + " x86" + (bDebug ? " (DEBUG)" : string.Empty), false);
