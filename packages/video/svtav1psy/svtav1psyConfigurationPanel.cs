@@ -59,11 +59,6 @@ namespace MeGUI.packages.video.svtav1psy
 
         private void doTuningsAdjustments()
         {
-            //if (this.x265NumberOfRefFrames.Value != x265Settings.GetDefaultNumberOfRefFrames((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning(), chkBlurayCompat.Checked))
-            //    this.x265NumberOfRefFrames.Value = x265Settings.GetDefaultNumberOfRefFrames((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning(), chkBlurayCompat.Checked);
-            //if (this.cbAQMode.SelectedIndex != x265Settings.GetDefaultAQMode((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning()))
-            //    this.cbAQMode.SelectedIndex = x265Settings.GetDefaultAQMode((x265Settings.x265PresetLevelModes)tbx265Presets.Value, getPsyTuning());
-
             switch (getPsyTuning())
             {
                 case svtav1psySettings.svtAv1PsyTuningModes.NONE:
@@ -220,6 +215,7 @@ namespace MeGUI.packages.video.svtav1psy
                 xs.BitrateQuantizer = (int)svtBitrateQuantizer.Value;
                 xs.QuantizerCRF = svtBitrateQuantizer.Value;
                 xs.svtAv1PsyTuning = getPsyTuning();
+                xs.SVT10Bits = chSvt10Bits.Checked;
                 return xs;
             }
             set
@@ -235,6 +231,7 @@ namespace MeGUI.packages.video.svtav1psy
                 svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
                 xs.QuantizerCRF = svtBitrateQuantizer.Value;
                 svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 1) ? xs.BitrateQuantizer : xs.QuantizerCRF;
+                chSvt10Bits.Checked = xs.SVT10Bits;
                 doEncodingModeAdjustments();
                 updating = false;
                 genericUpdate();
@@ -385,6 +382,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtBitrateQuantizer.Value = 35;
             this.svtTunes.SelectedIndex = 0;
             this.tbsvtPresets.Value = 10;
+            this.chSvt10Bits.Checked = false;
 
             // to update presets label
             tbsvtPresets_Scroll(null, null);
@@ -478,5 +476,10 @@ namespace MeGUI.packages.video.svtav1psy
             genericUpdate();
         }
 
+        private void chSvt10Bits_CheckedChanged(object sender, EventArgs e)
+        {
+            updateEvent(sender, e);
+            genericUpdate();
+        }
     }
 }

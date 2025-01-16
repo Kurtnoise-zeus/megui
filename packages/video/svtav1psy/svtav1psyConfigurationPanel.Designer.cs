@@ -66,6 +66,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.tbsvtPresets = new System.Windows.Forms.TrackBar();
             this.gbTunes = new System.Windows.Forms.GroupBox();
             this.svtTunes = new System.Windows.Forms.ComboBox();
+            this.chSvt10Bits = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.mainTabPage.SuspendLayout();
             this.MiscTabPage.SuspendLayout();
@@ -95,6 +96,7 @@ namespace MeGUI.packages.video.svtav1psy
             // 
             // mainTabPage
             // 
+            this.mainTabPage.Controls.Add(this.chSvt10Bits);
             this.mainTabPage.Controls.Add(this.gbTunes);
             this.mainTabPage.Controls.Add(this.gbPresets);
             this.mainTabPage.Controls.Add(this.ffv1CodecGeneralGroupbox);
@@ -303,6 +305,17 @@ namespace MeGUI.packages.video.svtav1psy
             this.svtTunes.TabIndex = 0;
             this.svtTunes.SelectedIndexChanged += new System.EventHandler(this.svtTunes_SelectedIndexChanged);
             // 
+            // chSvt10Bits
+            // 
+            this.chSvt10Bits.AutoSize = true;
+            this.chSvt10Bits.Location = new System.Drawing.Point(12, 176);
+            this.chSvt10Bits.Name = "chSvt10Bits";
+            this.chSvt10Bits.Size = new System.Drawing.Size(135, 17);
+            this.chSvt10Bits.TabIndex = 49;
+            this.chSvt10Bits.Text = "Force 10 bits Encoding";
+            this.chSvt10Bits.UseVisualStyleBackColor = true;
+            this.chSvt10Bits.CheckedChanged += new System.EventHandler(this.chSvt10Bits_CheckedChanged);
+            // 
             // svtav1psyConfigurationPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -345,5 +358,6 @@ namespace MeGUI.packages.video.svtav1psy
         private System.Windows.Forms.TrackBar tbsvtPresets;
         private System.Windows.Forms.GroupBox gbTunes;
         private System.Windows.Forms.ComboBox svtTunes;
+        private System.Windows.Forms.CheckBox chSvt10Bits;
     }
 }

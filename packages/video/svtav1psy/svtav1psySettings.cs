@@ -31,7 +31,7 @@ namespace MeGUI
 	[Serializable]
 	public class svtav1psySettings : VideoCodecSettings
 	{
-        public static string ID = "SVT-AV1-PSY";
+        public static string ID = "svt-av1-psy";
 
         public static readonly svtAv1PsyTuningModes[] SupportedPsyTuningModes = new svtAv1PsyTuningModes[]
         { svtAv1PsyTuningModes.NONE,
@@ -68,6 +68,7 @@ namespace MeGUI
             base.FixFileNames(substitutionTable);
         }
 
+        bool svt10Bits;
         int preset;
 		decimal quantizerCrf;
         svtAv1PsyTuningModes psyTuningMode;
@@ -84,6 +85,7 @@ namespace MeGUI
             VideoEncodingType = VideoEncodingMode.quality;
             base.MaxNumberOfPasses = 2;
             preset = 10;
+            svt10Bits = false;
         }
         #endregion
         #region properties
@@ -108,6 +110,12 @@ namespace MeGUI
         public override bool UsesSAR
         {
             get { return true; }
+        }
+
+        public bool SVT10Bits
+        {
+            get { return svt10Bits; }
+            set { svt10Bits = value; }
         }
         /// <summary>
         ///  Handles assessment of whether the encoding options vary between two ffv1Settings instances

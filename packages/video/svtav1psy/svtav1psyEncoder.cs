@@ -93,8 +93,13 @@ namespace MeGUI
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
 
-                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner  -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | ");
-                sb.Append("\"" + MainForm.Instance.Settings.SvtAv1Psy.Path + "\" ");
+                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner  -i \"" + input + "\" ");
+                
+                // bit-depth
+                if (xs.SVT10Bits)
+                    sb.Append("-pix_fmt yuv420p10le ");
+                
+                sb.Append("-strict -1 -f yuv4mpegpipe - | " + "\"" + MainForm.Instance.Settings.SvtAv1Psy.Path + "\" ");
             }
 
             #region main tab
@@ -194,11 +199,6 @@ namespace MeGUI
                     break;
             }
 
-            /*
-            // bit-depth
-            if (xs.FFV110Bits)
-                sb.Append("-pix_fmt yuv420p10le ");
-            */
             #endregion
             xs.CustomEncoderOptions = oSettingsHandler.getCustomCommandLine();
             if (!String.IsNullOrEmpty(xs.CustomEncoderOptions)) // add custom encoder options
