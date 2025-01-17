@@ -207,7 +207,8 @@ namespace MeGUI
             if (log != null)
             {
                 // input/output
-                if (xs.FFV1EncodingType == VideoCodecSettings.FFV1EncodingMode.twopass1)
+                if (xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopass1
+                    || xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepass1)
                     sb.Append("-f null NUL ");
                 else if (!String.IsNullOrEmpty(output))
                     sb.Append("-b " + "\"" + output + "\""); 
