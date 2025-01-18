@@ -267,6 +267,7 @@ namespace MeGUI
                     case "MPEG1": strExtension = "m1v"; break;
                     case "MPEG2": strExtension = "m2v"; break;
                     case "VC1": strExtension = "vc1"; break;
+                    case "AV1": strExtension = "ivf"; break;
                     default: strExtension = strCodec + ".unknown"; break;
                 }
 
