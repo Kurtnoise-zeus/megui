@@ -209,7 +209,7 @@ namespace MeGUI
                 // input/output
                 if (xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.twopass1
                     || xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepass1)
-                    sb.Append("-f null NUL ");
+                    sb.Append("");
                 else if (!String.IsNullOrEmpty(output))
                     sb.Append("-b " + "\"" + output + "\""); 
             }
