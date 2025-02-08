@@ -229,7 +229,6 @@ namespace MeGUI.packages.video.svtav1psy
                 tbsvtPresets.Value = xs.Preset;
                 svtTunes.SelectedItem = EnumProxy.Create(xs.svtAv1PsyTuning);
                 svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
-                xs.QuantizerCRF = svtBitrateQuantizer.Value;
                 svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 1) ? xs.BitrateQuantizer : xs.QuantizerCRF;
                 chSvt10Bits.Checked = xs.SVT10Bits;
                 doEncodingModeAdjustments();
