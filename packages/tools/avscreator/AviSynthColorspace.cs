@@ -176,10 +176,15 @@ namespace MeGUI
             arrCodecsAllowed.Add(AviSynthColorspace.I420);
             arrCodecsAllowed.Add(AviSynthColorspace.YV12);
 
-            // if avs+ is used add the available color spaces for ffmpeg+x264
-            if (!strEncoder.Equals("xvid") && MainForm.Instance.Settings.AviSynthPlus)
-                arrCodecsAllowed.Add(AviSynthColorspace.YUV420P16);
+            // try to get the bit depth
+            Dictionary<AviSynthColorspace, int> arrColorspace = GetColorSpaceDictionary();
+            if (!arrColorspace.TryGetValue(colorspace, out int iBit))
+                return colorspace;
 
+            // if avs+ is used add the available color spaces for ffmpeg+x264
+            if (!strEncoder.Equals("xvid") && !strEncoder.Equals("svtav1psy") && MainForm.Instance.Settings.AviSynthPlus)
+                arrCodecsAllowed.Add(AviSynthColorspace.YUV420P16);
+            
             if (strEncoder.Equals("ffmpeg"))
             {
                 // ffmpeg is used
@@ -213,11 +218,6 @@ namespace MeGUI
             if (strEncoder.Equals("xvid") || !MainForm.Instance.Settings.AviSynthPlus)
                 return AviSynthColorspace.YV12;
 
-            // try to get the bit depth
-            Dictionary<AviSynthColorspace, int> arrColorspace = GetColorSpaceDictionary();
-            if (!arrColorspace.TryGetValue(colorspace, out int iBit))
-                return colorspace;
-
             if (strEncoder.Equals("ffmpeg"))
             {
                 switch (iBit)
@@ -229,6 +229,14 @@ namespace MeGUI
                     case 16: colorspace = AviSynthColorspace.YUV420P16; break;
                     case 32: colorspace = AviSynthColorspace.YUV420P16; break;
                     default: colorspace = AviSynthColorspace.YV12; break;
+                }
+            }
+            else if (strEncoder.Equals("svtav1psy"))
+            { 
+               switch (iBit)
+                {
+                    case 8: colorspace = AviSynthColorspace.YV12; break;
+                    default: colorspace = AviSynthColorspace.YUV420P10; break;
                 }
             }
             else
