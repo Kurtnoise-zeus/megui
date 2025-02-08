@@ -162,6 +162,19 @@ namespace MeGUI
             return arrColorspace;
         }
 
+        public static int GetInputBitsDepth(AviSynthColorspace colorspace)
+        {
+            int iBits = 0;
+
+            // try to get the bit depth
+            Dictionary<AviSynthColorspace, int> arrColorspace = GetColorSpaceDictionary();
+            if (!arrColorspace.TryGetValue(colorspace, out iBits))
+                return iBits;
+
+            return iBits;
+        }
+
+
         /// <summary>
         /// Gets the target color space
         /// </summary>
@@ -232,8 +245,8 @@ namespace MeGUI
                 }
             }
             else if (strEncoder.Equals("svtav1psy"))
-            { 
-               switch (iBit)
+            {
+                switch (iBit)
                 {
                     case 8: colorspace = AviSynthColorspace.YV12; break;
                     default: colorspace = AviSynthColorspace.YUV420P10; break;

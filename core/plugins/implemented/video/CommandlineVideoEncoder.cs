@@ -134,6 +134,8 @@ namespace MeGUI
                 strEncoder = "svtav1psy";
 
             AviSynthColorspace colorspace_target = AviSynthColorspaceHelper.GetConvertedColorspace(strEncoder, colorspace_original);
+            int iBit = AviSynthColorspaceHelper.GetInputBitsDepth(colorspace_original);
+            log.LogValue("Bits Depth", iBit.ToString());
 
             if (colorspace_original != colorspace_target
                 && !AviSynthColorspaceHelper.IsConvertedToColorspace(job.Input, colorspace_target.ToString()))
