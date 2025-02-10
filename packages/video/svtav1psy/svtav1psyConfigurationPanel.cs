@@ -216,6 +216,7 @@ namespace MeGUI.packages.video.svtav1psy
                 xs.QuantizerCRF = svtBitrateQuantizer.Value;
                 xs.svtAv1PsyTuning = getPsyTuning();
                 xs.SVT10Bits = chSvt10Bits.Checked;
+                xs.CustomEncoderOptions = customCommandlineOptions.Text;
                 return xs;
             }
             set
@@ -231,6 +232,7 @@ namespace MeGUI.packages.video.svtav1psy
                 svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
                 svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 1) ? xs.BitrateQuantizer : xs.QuantizerCRF;
                 chSvt10Bits.Checked = xs.SVT10Bits;
+                customCommandlineOptions.Text = xs.CustomEncoderOptions;
                 doEncodingModeAdjustments();
                 updating = false;
                 genericUpdate();

@@ -174,6 +174,7 @@ namespace MeGUI.packages.video.svtav1psy
             this.customCommandlineOptions.Name = "customCommandlineOptions";
             this.customCommandlineOptions.Size = new System.Drawing.Size(464, 34);
             this.customCommandlineOptions.TabIndex = 0;
+            this.customCommandlineOptions.TextChanged += new System.EventHandler(this.updateEvent);
             // 
             // ffv1CodecGeneralGroupbox
             // 
