@@ -1315,7 +1315,7 @@ namespace MeGUI
         {
             bool bDebug = false;
             string AppProductVersion = "";
-            DateTime BuildDate = new DateTime(2024, 11, 25);
+            DateTime BuildDate = new DateTime(2025, 02, 10);
 #if DEBUG
             bDebug = true;
 #endif
