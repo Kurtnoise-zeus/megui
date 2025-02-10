@@ -119,7 +119,7 @@ namespace MeGUI
 #if CSC
 			name = "";
 #endif
-            DateTime BuildDate = new DateTime(2024,11,25);
+            DateTime BuildDate = new DateTime(2025,02,10);
             string[] resources = myAssembly.GetManifestResourceNames();
             this.trayIcon.Icon = new Icon(myAssembly.GetManifestResourceStream(name + "App.ico"));
             this.Icon = trayIcon.Icon;

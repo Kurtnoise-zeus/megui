@@ -1,3 +1,17 @@
+Changelog version 6666 20250210
+
+- Updated MediaInfo libraries.
+- Fixed FFmpeg AAC VBR Mode.
+- Improved Standard Error Output Logging for Opus Transcoding.
+- Updated url to the github & forum entries.
+- Allowed WebVTT subtitle format for MP4/MKV muxing.
+- Added AV1 as supported VideoCodec for MKV Muxer.
+- Added BSBideoSource support in AVS Script Creator.
+- Targeted Project as .Net Framework 4.8.1.
+- Fixed several issues for svt-av1-psy Video Encoder.
+- Added input Bits Depth information into the log. 
+
+
 Changelog version 6666 20241125
 
 - Updated AvisynthWrapper and MediaInfo libraries.
