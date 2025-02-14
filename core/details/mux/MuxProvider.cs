@@ -510,6 +510,9 @@ namespace MeGUI
             supportedAudioTypes.Add(AudioType.MP3);
             supportedAudioTypes.Add(AudioType.VORBIS);
             supportedAudioTypes.Add(AudioType.OPUS);
+            supportedAudioTypes.Add(AudioType.EAC3);
+            supportedAudioTypes.Add(AudioType.FLAC);
+
 
             supportedVideoCodecs.Add(VideoCodec.ASP);
             supportedVideoCodecs.Add(VideoCodec.AV1);
