@@ -1733,6 +1733,7 @@ namespace MeGUI
             lame.UpdateInformation("lame", "LAME", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\lame\lame.exe"));
             lsmash.UpdateInformation("lsmash", "L-SMASH Works", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\lsmash\LSMASHSource.dll"));
             bestsource.UpdateInformation("bestsource", "BestSource Avisynth Plugin", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\bestsource\BestSource.dll"));
+            bestsource.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\bestsource\BestSource.dll"));
             mediainfo.UpdateInformation("mediainfo", "MediaInfo", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"MediaInfo.dll"));
             mediainfo.Required = true;
             megui_core.UpdateInformation("core", "MeGUI", Application.ExecutablePath);

@@ -1351,9 +1351,14 @@ namespace MeGUI
 
             try
             {
-                string tempAvs = string.Format("BSVideoSource(\"{0}\")", _file);
-                if (MainForm.Instance.Settings.PortableAviSynth)
-                    tempAvs += "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n" + tempAvs;
+                string tempAvs = "";
+                if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
+                {
+                    tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
+                    tempAvs += string.Format("BSVideoSource(\"{0}\")", _file);
+                }
+                else tempAvs = string.Format("BSVideoSource(\"{0}\")", _file);
+
                 IMediaFile iMediaFile = AvsFile.ParseScript(tempAvs);
                 if (iMediaFile != null)
                     iMediaFile.Dispose();
