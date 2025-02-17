@@ -301,7 +301,7 @@ namespace MeGUI
 
         private void SetZoomButtons()
         {
-            if (zoomFactor >= 100)
+            if (zoomFactor >= 1000)
             {
                 zoomInButton.Enabled = false;
                 zoomOutButton.Enabled = true;
@@ -326,14 +326,14 @@ namespace MeGUI
 
         private void zoomInButton_Click(object sender, EventArgs e)
         {
-            if (zoomFactor > 100)
+            if (zoomFactor > 1000)
                 return;
 
-            if (zoomFactor < 100)
+            if (zoomFactor < 1000)
             {
                 zoomFactor += zoomFactorStepSize;
-                if (zoomFactor > 100)
-                    zoomFactor = 100;
+                if (zoomFactor > 1000)
+                    zoomFactor = 1000;
                 SetZoomButtons();
                 zoomWidth = (int)(zoomMaxWidth * zoomFactor / 100);
                 resize(zoomWidth, showPAR.Checked);
@@ -346,7 +346,7 @@ namespace MeGUI
 
         private void zoomOutButton_Click(object sender, EventArgs e)
         {
-            if (zoomFactor > 100)
+            if (zoomFactor > 1000)
             {
                 btnFitScreen_Click(null, null);
                 return;
