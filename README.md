@@ -35,4 +35,6 @@ From time to time, I upload directly on [github Release page](https://github.com
 - [ ] Add Demuxers tool
 - [ ] ...
 
+## Repository Activity
 
+![Repository Activities](https://repobeats.axiom.co/api/embed/c013ca5965300e42e4021ac7fb736d5b5cc9ed58.svg "Repobeats analytics image")
