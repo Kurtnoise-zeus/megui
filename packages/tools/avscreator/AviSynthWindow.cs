@@ -602,6 +602,8 @@ namespace MeGUI
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
                     this.dgOptions.Enabled = true;
+                    this.nvDeInt.Enabled = true;
+                    this.nvResize.Enabled = true;
                     this.chhwdevice.Enabled = false;
                     this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage3;
