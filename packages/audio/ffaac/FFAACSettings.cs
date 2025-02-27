@@ -11,11 +11,7 @@ namespace MeGUI
         [EnumTitle("MPEG-4 LC-AAC")]
         M4LC,
         [EnumTitle("MPEG-2 PNS-AAC")]
-        M4PNS,
-        [EnumTitle("MPEG-4 LTP-AAC")]
-        M4LTP,
-        [EnumTitle("MPEG-4 AAC MAIN")]
-        M4MAIN,
+        M4PNS
     }
 
     public enum FFAACMode
@@ -31,7 +27,7 @@ namespace MeGUI
         public static readonly string ID = "FFmpeg AAC";
 
         public static readonly object[] SupportedBitrates = new object[] { 32, 64, 128, 160, 192, 224, 256, 320, 528 };
-        public static readonly FFAACProfile[] SupportedProfiles = new FFAACProfile[] { FFAACProfile.M4LC, FFAACProfile.M4PNS, FFAACProfile.M4LTP, FFAACProfile.M4MAIN};
+        public static readonly FFAACProfile[] SupportedProfiles = new FFAACProfile[] { FFAACProfile.M4LC, FFAACProfile.M4PNS};
         public static readonly FFAACMode[] SupportedModes = new FFAACMode[] { FFAACMode.CBR, FFAACMode.VBR };
 
 

@@ -2515,8 +2515,6 @@ function c3_dpl2(clip a)
                     {
                         case FFAACProfile.M4LC: sb.Append(" -profile:a aac_low"); break; // default
                         case FFAACProfile.M4PNS: sb.Append(" -profile:a mpeg2_aac_low"); break;
-                        case FFAACProfile.M4LTP: sb.Append(" -profile:a aac_ltp"); break;
-                        case FFAACProfile.M4MAIN: sb.Append(" -profile:a aac_main"); break;
                     }
                 }
 
