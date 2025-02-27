@@ -33,13 +33,7 @@ namespace MeGUI
         [EnumTitle("MPEG-4 AAC LD")]
         M4LD,
         [EnumTitle("MPEG-4 AAC ELD")]
-        M4ELD,
-        [EnumTitle("MPEG-2 LC-AAC")]
-        M2LC,
-        [EnumTitle("MPEG-2 HE-AAC")]
-        M2HE,
-        [EnumTitle("MPEG-2 HE-AAC v2")]
-        M2HE2
+        M4ELD
     }
 
     public enum FdkAACMode
@@ -54,9 +48,8 @@ namespace MeGUI
     {
         public static string ID = "FDK-AAC";
 
-        public static readonly object[] SupportedBitrates = new object[] { 64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640};
-        public static readonly FdkAACProfile[] SupportedProfiles = new FdkAACProfile[] { FdkAACProfile.M4LC, FdkAACProfile.M4HE, FdkAACProfile.M4HE2, FdkAACProfile.M4LD, FdkAACProfile.M4ELD, FdkAACProfile.M2LC, FdkAACProfile.M2HE, FdkAACProfile.M2HE2 };
-        public static readonly FdkAACMode[] SupportedModes = new FdkAACMode[] { FdkAACMode.CBR, FdkAACMode.VBR };
+        public static readonly object[] SupportedBitrates = new object[] { 32, 48, 64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640 };
+        public static readonly FdkAACProfile[] SupportedProfiles = new FdkAACProfile[] { FdkAACProfile.M4LC, FdkAACProfile.M4HE, FdkAACProfile.M4HE2, FdkAACProfile.M4LD, FdkAACProfile.M4ELD }; public static readonly FdkAACMode[] SupportedModes = new FdkAACMode[] { FdkAACMode.CBR, FdkAACMode.VBR };
 
 
         public FDKAACSettings()

@@ -2475,9 +2475,6 @@ function c3_dpl2(clip a)
                         case FdkAACProfile.M4LD: sb.Append(" -p 23"); break;
                         case FdkAACProfile.M4HE2: sb.Append(" -p 29"); break;
                         case FdkAACProfile.M4ELD: sb.Append(" -p 39"); break;
-                        case FdkAACProfile.M2LC: sb.Append(" -p 129"); break;
-                        case FdkAACProfile.M2HE: sb.Append(" -p 132"); break;
-                        case FdkAACProfile.M2HE2: sb.Append(" -p 156"); break;
                     }
                 }
 
