@@ -1719,10 +1719,9 @@ function c71_c51(clip a)
     back  = GetChannel(a, 5, 6)
     side  = GetChannel(a, 7, 8)
     mix   = MixAudio(back, side, 0.5, 0.5).ConvertAudioTo32bit()
-    mix   = mix.SoxFilter(""""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"""").ConvertAudioToFloat()
+    mix   = mix.SoxFilter(""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"").ConvertAudioToFloat()
     return MergeChannels(front, mix)
-}
-" + Environment.NewLine);
+}" + Environment.NewLine);
                                         break;
                                     case 7:
                                         script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
@@ -1756,7 +1755,7 @@ function c71_c51(clip a)
     back  = GetChannel(a, 5, 6)
     side  = GetChannel(a, 7, 8)
     mix   = MixAudio(back, side, 0.5, 0.5).ConvertAudioTo32bit()
-    mix   = mix.SoxFilter(""""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"""").ConvertAudioToFloat()
+    mix   = mix.SoxFilter(""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"").ConvertAudioToFloat()
     return MergeChannels(front, mix)
 }" + Environment.NewLine);
                                         break;
