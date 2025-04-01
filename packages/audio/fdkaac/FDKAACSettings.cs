@@ -49,7 +49,8 @@ namespace MeGUI
         public static string ID = "FDK-AAC";
 
         public static readonly object[] SupportedBitrates = new object[] { 32, 48, 64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640 };
-        public static readonly FdkAACProfile[] SupportedProfiles = new FdkAACProfile[] { FdkAACProfile.M4LC, FdkAACProfile.M4HE, FdkAACProfile.M4HE2, FdkAACProfile.M4LD, FdkAACProfile.M4ELD }; public static readonly FdkAACMode[] SupportedModes = new FdkAACMode[] { FdkAACMode.CBR, FdkAACMode.VBR };
+        public static readonly FdkAACProfile[] SupportedProfiles = new FdkAACProfile[] { FdkAACProfile.M4LC, FdkAACProfile.M4HE, FdkAACProfile.M4HE2, FdkAACProfile.M4LD, FdkAACProfile.M4ELD };
+        public static readonly FdkAACMode[] SupportedModes = new FdkAACMode[] { FdkAACMode.CBR, FdkAACMode.VBR };
 
 
         public FDKAACSettings()
