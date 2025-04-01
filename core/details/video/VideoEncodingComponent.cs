@@ -222,6 +222,11 @@ namespace MeGUI
                     mJob.MuxType = MuxerType.MKVMERGE;
                     mJob.Output = Path.ChangeExtension(videoOutput, "mkv");
                 }
+                else if (fileType.Text.Equals("WEBM"))
+                {
+                    mJob.MuxType = MuxerType.MKVMERGE;
+                    mJob.Output = Path.ChangeExtension(videoOutput, "webm");
+                }
                 else
                 {
                     mJob.MuxType = MuxerType.MP4BOX;
@@ -496,6 +501,13 @@ namespace MeGUI
                 Array.Resize(ref vArray, vArray.Length + 2);
                 vArray[vArray.Length - 2] = VideoType.MKV;
                 vArray[vArray.Length - 1] = VideoType.MP4;
+            }
+            else if (lastCodec == VideoEncoderType.SVTAV1PSY)
+            {
+                Array.Resize(ref vArray, vArray.Length + 3);
+                vArray[vArray.Length - 1] = VideoType.MKV;
+                vArray[vArray.Length - 1] = VideoType.MP4;
+                vArray[vArray.Length - 1] = VideoType.WEBM;
             }
 
             Util.ChangeItemsKeepingSelectedSame(fileType, vArray);

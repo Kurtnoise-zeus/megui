@@ -18,6 +18,7 @@
 // 
 // ****************************************************************************
 
+using MeGUI;
 using System;
 using System.Collections.Generic;
 
@@ -655,6 +656,48 @@ namespace MeGUI
             return new MkvMergeMuxer(settings.MkvMerge.Path);
         }
     }
+
+    public class WebmMuxerProvider : MuxerProvider
+    {
+        public WebmMuxerProvider() : base("WebMmkvmerge")
+        {
+            supportedVideoTypes.Add(VideoType.RAWAV1);
+            supportedVideoTypes.Add(VideoType.VP8);
+            supportedVideoTypes.Add(VideoType.VP9);
+            supportedVideoTypes.Add(VideoType.WEBM);
+
+            supportedAudioTypes.Add(AudioType.OPUS);
+            supportedAudioTypes.Add(AudioType.VORBIS);
+            
+            supportedVideoCodecs.Add(VideoCodec.AV1);
+            supportedVideoCodecs.Add(VideoCodec.VP8);
+            supportedVideoCodecs.Add(VideoCodec.VP9);
+            
+            supportsAnyInputtableVideoCodec = false;
+
+            supportedAudioCodecs.Add(AudioCodec.OPUS);
+            supportedAudioCodecs.Add(AudioCodec.VORBIS);
+            supportsAnyInputtableAudioCodec = false;
+
+            supportedChapterTypes.Add(ChapterType.MKV_XML);
+            supportedChapterTypes.Add(ChapterType.OGG_TXT);
+            
+            supportedContainerOutputTypes.Add(ContainerType.WEBM);
+
+            supportedContainerInputTypes.Add(ContainerType.WEBM);
+
+            maxFilesOfType = new int[] { 1, -1, 0, 1, 0 };
+            base.type = MuxerType.MKVMERGE;
+            name = "WEBM Muxer";
+            shortcut = System.Windows.Forms.Shortcut.Ctrl6;
+        }
+
+        public override IJobProcessor GetMuxer(MeGUISettings meguiSettings)
+        {
+            return new MkvMergeMuxer(meguiSettings.MkvMerge.Path);
+        }
+    }
+
 
     public class AVIMuxGUIMuxerProvider : MuxerProvider
     {

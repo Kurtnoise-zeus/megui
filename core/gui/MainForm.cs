@@ -994,6 +994,7 @@ namespace MeGUI
             PackageSystem.MuxerProviders.Register(new FFmpegMuxerProvider());
             PackageSystem.MuxerProviders.Register(new MKVMergeMuxerProvider());
             PackageSystem.MuxerProviders.Register(new MP4BoxMuxerProvider());
+            PackageSystem.MuxerProviders.Register(new WebmMuxerProvider());
 
             PackageSystem.Tools.Register(new MeGUI.packages.tools.cutter.Cutter.CutterTool());
             PackageSystem.Tools.Register(new AviSynthWindowTool());

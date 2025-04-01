@@ -74,10 +74,13 @@ namespace MeGUI
             }
         }
         #endregion
+        private bool IsOutWebM() => Path.GetExtension(Job.Settings.MuxedOutput.ToLower()) == ".webm";
 
         protected override void checkJobIO()
         {
             Su.Status = "Muxing MKV...";
+            if (IsOutWebM())
+                Su.Status = "Muxing WebM...";
             base.checkJobIO();
         }
 
@@ -358,6 +361,9 @@ namespace MeGUI
 
                 sb.Append(" --engage no_cue_duration --engage no_cue_relative_position --ui-language en");
 
+                if (IsOutWebM())
+                    sb.Append(" --webm");
+                
                 return sb.ToString();
             }
         }

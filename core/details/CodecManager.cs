@@ -320,6 +320,7 @@ namespace MeGUI
         public static readonly VideoType M2TS     = new VideoType("M2TS", "M2TS Files", "m2ts", ContainerType.M2TS, new VideoCodec[] { VideoCodec.AVC, VideoCodec.HEVC, VideoCodec.MPEG2, VideoCodec.VC1 });
         public static readonly VideoType MKV      = new VideoType("MKV", "Matroska Files", "mkv", ContainerType.MKV, new VideoCodec[] { VideoCodec.ASP, VideoCodec.AVC, VideoCodec.HFYU, VideoCodec.MPEG1, VideoCodec.MPEG2, VideoCodec.VC1 });
         public static readonly VideoType MP4      = new VideoType("MP4", "MP4 Files", "mp4", ContainerType.MP4, new VideoCodec[] { VideoCodec.ASP, VideoCodec.AVC, VideoCodec.HEVC, VideoCodec.MPEG1, VideoCodec.MPEG2 });
+        public static readonly VideoType WEBM     = new VideoType("WEBM", "WebM Files", "webm", ContainerType.WEBM, new VideoCodec[] { VideoCodec.VP8, VideoCodec.VP9, VideoCodec.AV1 });
         public static readonly VideoType MPEG1    = new VideoType("MPEG1", "MPEG-1 Files", "m1v", null, VideoCodec.MPEG1);
         public static readonly VideoType MPEG2    = new VideoType("MPEG2", "MPEG-2 Files", "m2v", null, VideoCodec.MPEG2);
         public static readonly VideoType RAWASP   = new VideoType("RAWASP", "RAW MPEG-4 ASP Files", "m4v", null, VideoCodec.ASP);
@@ -433,7 +434,8 @@ namespace MeGUI
         public static readonly ContainerType M2TS = new ContainerType("M2TS", "M2TS Files", "m2ts", "(bdav)|(mpeg-ts)");
         public static readonly ContainerType MKV  = new ContainerType("MKV", "Matroska Files", "mkv", "matroska");
         public static readonly ContainerType MP4  = new ContainerType("MP4", "MP4 Files", "mp4", "(mpeg-4)|(3gpp)");
-        public static readonly ContainerType[] Containers = new ContainerType[] { MP4, MKV, AVI, M2TS };
+        public static readonly ContainerType WEBM = new ContainerType("WEBM", "WebM Files", "webm", "webm");
+        public static readonly ContainerType[] Containers = new ContainerType[] { MP4, MKV, AVI, M2TS, WEBM };
 
         public static ContainerType ByName(string id)
         {
@@ -460,6 +462,7 @@ namespace MeGUI
                 VideoTypes.Register(VideoType.AVI)     &&
                 VideoTypes.Register(VideoType.MKV)     &&
                 VideoTypes.Register(VideoType.MP4)     &&
+                VideoTypes.Register(VideoType.WEBM)    &&
                 VideoTypes.Register(VideoType.RAWASP)  &&
                 VideoTypes.Register(VideoType.RAWAV1)  &&
                 VideoTypes.Register(VideoType.RAWAVC)  &&
@@ -505,7 +508,8 @@ namespace MeGUI
                 ContainerTypes.Register(ContainerType.AVI) &&
                 ContainerTypes.Register(ContainerType.MKV) &&
                 ContainerTypes.Register(ContainerType.MP4) &&
-                ContainerTypes.Register(ContainerType.M2TS)))
+                ContainerTypes.Register(ContainerType.M2TS) &&
+                ContainerTypes.Register(ContainerType.WEBM)))
                 throw new Exception("Failed to register a container type");
             if (!(
 	            ChapterTypes.Register(ChapterType.OGG_TXT) &&

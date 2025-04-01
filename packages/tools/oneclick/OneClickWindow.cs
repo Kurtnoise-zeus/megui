@@ -772,6 +772,8 @@ namespace MeGUI
                     muxer = new TSMuxerProvider();
                 else if (dpp.Container == ContainerType.MP4)
                     muxer = new MP4BoxMuxerProvider();
+                else if (dpp.Container == ContainerType.WEBM)
+                    muxer = new WebmMuxerProvider();
 
                 VideoCodec vCodec = _videoInputInfo.VideoInfo.Codec;
                 if (!muxer.SupportsVideoCodec(vCodec))
