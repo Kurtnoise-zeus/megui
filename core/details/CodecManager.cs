@@ -137,7 +137,7 @@ namespace MeGUI
         public static readonly SubtitleCodec SSA        = new SubtitleCodec("SSA", "ssa");
         public static readonly SubtitleCodec TTXT       = new SubtitleCodec("TTXT", "ttxt");
         public static readonly SubtitleCodec VOBSUB     = new SubtitleCodec("VOBSUB", "(vobsub)|(rle)");
-        public static readonly SubtitleCodec WEBVTT     = new SubtitleCodec("VTT", "webVTT");
+        public static readonly SubtitleCodec WEBVTT     = new SubtitleCodec("WEBVTT", "(s_text/webvtt)|(vtt)");
         public static readonly SubtitleCodec UNKNOWN    = new SubtitleCodec("UNKNOWN", ".*");
     }
     #endregion

@@ -1601,6 +1601,16 @@ namespace MeGUI
             if (String.IsNullOrEmpty(description))
                 return SubtitleCodec.UNKNOWN;
 
+            /***
+             *  The subtitle format of webvtt and srt both contain the string "text",
+             *  which causes the regular expression to never match webvtt.
+             *
+             * srt: Timed Text (in mp4), 	       UTF-8 (in mkv)
+             * webvtt: S_TEXT/WEBVTT (in mkv),     wvtt (in mp4)
+             ***/
+            if (description.ToUpperInvariant().Contains("VTT"))
+                return SubtitleCodec.WEBVTT;
+
             foreach (SubtitleCodec _codec in CodecManager.SubtitleCodecs.Values)
             {
                 if (string.IsNullOrEmpty(_codec.MediaInfoRegex))
