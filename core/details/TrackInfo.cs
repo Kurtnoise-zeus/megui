@@ -250,6 +250,7 @@ namespace MeGUI
                     case "REAL": strExtension = "ra"; break;
                     case "AAC": strExtension = "aac"; break;
                     case "AVS": strExtension = "avs"; break;
+                    case "OPUS": strExtension = "opus"; break;
 
                     // subtitle
                     case "ASS": strExtension = "ass"; break;
@@ -258,6 +259,7 @@ namespace MeGUI
                     case "SSA": strExtension = "ssa"; break;
                     case "TTXT": strExtension = "ttxt"; break;
                     case "VOBSUB": strExtension = "idx"; break;
+                    case "WEBVTT": strExtension = "vtt"; break;
 
                     // video
                     case "ASP": strExtension = "avi"; break;
@@ -267,6 +269,8 @@ namespace MeGUI
                     case "MPEG1": strExtension = "m1v"; break;
                     case "MPEG2": strExtension = "m2v"; break;
                     case "VC1": strExtension = "vc1"; break;
+                    case "VP8": strExtension = "ivf"; break;
+                    case "VP9": strExtension = "ivf"; break;
                     case "AV1": strExtension = "ivf"; break;
                     default: strExtension = strCodec + ".unknown"; break;
                 }
