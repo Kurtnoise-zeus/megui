@@ -179,6 +179,7 @@ namespace MeGUI
             scriptRefresh--;
             OpenVideoSource(videoInput, indexFile);
             UpdateEverything(true, true, resize.Checked);
+            previewButton_Click(true, null);
         }
 
 		protected override void OnClosing(CancelEventArgs e)
