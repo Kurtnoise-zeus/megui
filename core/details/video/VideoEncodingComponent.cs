@@ -505,8 +505,8 @@ namespace MeGUI
             else if (lastCodec == VideoEncoderType.SVTAV1PSY)
             {
                 Array.Resize(ref vArray, vArray.Length + 3);
-                vArray[vArray.Length - 1] = VideoType.MKV;
-                vArray[vArray.Length - 1] = VideoType.MP4;
+                vArray[vArray.Length - 3] = VideoType.MKV;
+                vArray[vArray.Length - 2] = VideoType.MP4;
                 vArray[vArray.Length - 1] = VideoType.WEBM;
             }
             else if (lastCodec == VideoEncoderType.FFV1)

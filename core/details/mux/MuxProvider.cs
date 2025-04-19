@@ -1386,8 +1386,6 @@ namespace MeGUI
         public SVTAV1PSYEncoderProvider()
         {
             supportedCodecs.Add(VideoCodec.AV1);
-            supportedTypes.Add(VideoType.MKV);
-            supportedTypes.Add(VideoType.MP4);
             supportedTypes.Add(VideoType.RAWAV1);
             supportedEncoderTypes.Add(VideoEncoderType.SVTAV1PSY);
         }
