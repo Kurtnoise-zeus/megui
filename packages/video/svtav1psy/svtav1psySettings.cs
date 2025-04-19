@@ -31,7 +31,7 @@ namespace MeGUI
 	[Serializable]
 	public class svtav1psySettings : VideoCodecSettings
 	{
-        public static string ID = "svt-av1-psy";
+        public static string ID = "svtav1psy";
 
         public static readonly svtAv1PsyTuningModes[] SupportedPsyTuningModes = new svtAv1PsyTuningModes[]
         { svtAv1PsyTuningModes.NONE,

@@ -59,18 +59,8 @@ namespace MeGUI
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.otherGroupBox = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cbStandbySettings = new System.Windows.Forms.ComboBox();
-            this.chkDirectShowSource = new System.Windows.Forms.CheckBox();
             this.chkDebugInformation = new System.Windows.Forms.CheckBox();
-            this.lblMinimumLength = new System.Windows.Forms.Label();
-            this.minimumTitleLength = new System.Windows.Forms.NumericUpDown();
-            this.cbUseIncludedAviSynth = new System.Windows.Forms.CheckBox();
             this.cbUseITUValues = new System.Windows.Forms.CheckBox();
-            this.acceptableFPSError = new System.Windows.Forms.NumericUpDown();
-            this.label15 = new System.Windows.Forms.Label();
-            this.resetDialogs = new System.Windows.Forms.Button();
-            this.configSourceDetector = new System.Windows.Forms.Button();
             this.openProgressWindow = new System.Windows.Forms.CheckBox();
             this.deleteIntermediateFiles = new System.Windows.Forms.CheckBox();
             this.deleteAbortedOutput = new System.Windows.Forms.CheckBox();
@@ -79,12 +69,29 @@ namespace MeGUI
             this.openFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.lblMinimumLength = new System.Windows.Forms.Label();
+            this.minimumTitleLength = new System.Windows.Forms.NumericUpDown();
+            this.acceptableFPSError = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
+            this.resetDialogs = new System.Windows.Forms.Button();
+            this.configSourceDetector = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.defaultLanguage2 = new System.Windows.Forms.ComboBox();
             this.defaultLanguage1 = new System.Windows.Forms.ComboBox();
             this.gbDefaultOutput = new System.Windows.Forms.GroupBox();
+            this.targetSizeSCBox1 = new MeGUI.core.gui.TargetSizeSCBox();
             this.btnClearOutputDirecoty = new System.Windows.Forms.Button();
             this.clearDefaultOutputDir = new System.Windows.Forms.Button();
+            this.defaultOutputDir = new MeGUI.FileBar();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.cbHwdDecoder = new System.Windows.Forms.ComboBox();
+            this.chkEnableHwd = new System.Windows.Forms.CheckBox();
+            this.chkInput8Bit = new System.Windows.Forms.CheckBox();
+            this.lblffmsThreads = new System.Windows.Forms.Label();
+            this.ffmsThreads = new System.Windows.Forms.NumericUpDown();
+            this.cbUseIncludedAviSynth = new System.Windows.Forms.CheckBox();
+            this.chkDirectShowSource = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -144,20 +151,18 @@ namespace MeGUI
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.useFDKAac = new System.Windows.Forms.CheckBox();
             this.lblFDK = new System.Windows.Forms.Label();
+            this.fdkaacLocation = new MeGUI.FileBar();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.chkInput8Bit = new System.Windows.Forms.CheckBox();
             this.chk64Bit = new System.Windows.Forms.CheckBox();
             this.chx264ExternalMuxer = new System.Windows.Forms.CheckBox();
             this.useQAAC = new System.Windows.Forms.CheckBox();
-            this.lblForcedName = new System.Windows.Forms.Label();
-            this.txtForcedName = new System.Windows.Forms.TextBox();
-            this.lblffmsThreads = new System.Windows.Forms.Label();
-            this.ffmsThreads = new System.Windows.Forms.NumericUpDown();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.useNeroAacEnc = new System.Windows.Forms.CheckBox();
             this.lblNero = new System.Windows.Forms.Label();
+            this.neroaacencLocation = new MeGUI.FileBar();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnClearMP4TempDirectory = new System.Windows.Forms.Button();
+            this.tempDirMP4 = new MeGUI.FileBar();
             this.vobGroupBox = new System.Windows.Forms.GroupBox();
             this.useDGIndexIM = new System.Windows.Forms.CheckBox();
             this.useDGIndexNV = new System.Windows.Forms.CheckBox();
@@ -169,20 +174,22 @@ namespace MeGUI
             this.autoEncodeDefaultsButton = new System.Windows.Forms.Button();
             this.toolTipHelp = new System.Windows.Forms.ToolTip(this.components);
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
-            this.targetSizeSCBox1 = new MeGUI.core.gui.TargetSizeSCBox();
-            this.defaultOutputDir = new MeGUI.FileBar();
-            this.fdkaacLocation = new MeGUI.FileBar();
-            this.neroaacencLocation = new MeGUI.FileBar();
-            this.tempDirMP4 = new MeGUI.FileBar();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cbStandbySettings = new System.Windows.Forms.ComboBox();
+            this.lblForcedName = new System.Windows.Forms.Label();
+            this.txtForcedName = new System.Windows.Forms.TextBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
             groupBox1.SuspendLayout();
             this.otherGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minimumTitleLength)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.acceptableFPSError)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minimumTitleLength)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.acceptableFPSError)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.gbDefaultOutput.SuspendLayout();
+            this.groupBox13.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ffmsThreads)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbVideoPreview.SuspendLayout();
@@ -200,7 +207,6 @@ namespace MeGUI
             this.tabPage2.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ffmsThreads)).BeginInit();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.vobGroupBox.SuspendLayout();
@@ -214,7 +220,7 @@ namespace MeGUI
             groupBox1.Controls.Add(this.runCommand);
             groupBox1.Controls.Add(this.shutdown);
             groupBox1.Controls.Add(this.donothing);
-            groupBox1.Location = new System.Drawing.Point(4, 187);
+            groupBox1.Location = new System.Drawing.Point(4, 241);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new System.Drawing.Size(263, 95);
             groupBox1.TabIndex = 2;
@@ -277,7 +283,7 @@ namespace MeGUI
             // 
             this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(473, 418);
+            this.saveButton.Location = new System.Drawing.Point(473, 468);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(48, 23);
             this.saveButton.TabIndex = 2;
@@ -287,7 +293,7 @@ namespace MeGUI
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(544, 418);
+            this.cancelButton.Location = new System.Drawing.Point(544, 468);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(48, 23);
             this.cancelButton.TabIndex = 3;
@@ -295,179 +301,46 @@ namespace MeGUI
             // 
             // otherGroupBox
             // 
-            this.otherGroupBox.Controls.Add(this.label7);
-            this.otherGroupBox.Controls.Add(this.cbStandbySettings);
-            this.otherGroupBox.Controls.Add(this.chkDirectShowSource);
             this.otherGroupBox.Controls.Add(this.chkDebugInformation);
-            this.otherGroupBox.Controls.Add(this.lblMinimumLength);
-            this.otherGroupBox.Controls.Add(this.minimumTitleLength);
-            this.otherGroupBox.Controls.Add(this.cbUseIncludedAviSynth);
             this.otherGroupBox.Controls.Add(this.cbUseITUValues);
-            this.otherGroupBox.Controls.Add(this.acceptableFPSError);
-            this.otherGroupBox.Controls.Add(this.label15);
-            this.otherGroupBox.Controls.Add(this.resetDialogs);
-            this.otherGroupBox.Controls.Add(this.configSourceDetector);
             this.otherGroupBox.Controls.Add(this.openProgressWindow);
             this.otherGroupBox.Controls.Add(this.deleteIntermediateFiles);
             this.otherGroupBox.Controls.Add(this.deleteAbortedOutput);
             this.otherGroupBox.Controls.Add(this.openScript);
             this.otherGroupBox.Location = new System.Drawing.Point(2, 6);
             this.otherGroupBox.Name = "otherGroupBox";
-            this.otherGroupBox.Size = new System.Drawing.Size(579, 275);
+            this.otherGroupBox.Size = new System.Drawing.Size(262, 167);
             this.otherGroupBox.TabIndex = 1;
             this.otherGroupBox.TabStop = false;
             this.otherGroupBox.Tag = "";
             this.otherGroupBox.Text = " Main Settings ";
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(170, 119);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(107, 13);
-            this.label7.TabIndex = 28;
-            this.label7.Text = "while a job is running";
-            // 
-            // cbStandbySettings
-            // 
-            this.cbStandbySettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbStandbySettings.FormattingEnabled = true;
-            this.cbStandbySettings.Location = new System.Drawing.Point(12, 117);
-            this.cbStandbySettings.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.cbStandbySettings.Name = "cbStandbySettings";
-            this.cbStandbySettings.Size = new System.Drawing.Size(155, 21);
-            this.cbStandbySettings.TabIndex = 27;
-            // 
-            // chkDirectShowSource
-            // 
-            this.chkDirectShowSource.AutoSize = true;
-            this.chkDirectShowSource.Location = new System.Drawing.Point(12, 96);
-            this.chkDirectShowSource.Name = "chkDirectShowSource";
-            this.chkDirectShowSource.Size = new System.Drawing.Size(278, 17);
-            this.chkDirectShowSource.TabIndex = 26;
-            this.chkDirectShowSource.Text = "Enable DirectShowSource() in the AVS Script Creator";
             // 
             // chkDebugInformation
             // 
             this.chkDebugInformation.AutoSize = true;
             this.chkDebugInformation.Checked = true;
             this.chkDebugInformation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDebugInformation.Location = new System.Drawing.Point(377, 96);
+            this.chkDebugInformation.Location = new System.Drawing.Point(13, 134);
             this.chkDebugInformation.Name = "chkDebugInformation";
             this.chkDebugInformation.Size = new System.Drawing.Size(133, 17);
             this.chkDebugInformation.TabIndex = 25;
             this.chkDebugInformation.Text = "Log debug information";
             // 
-            // lblMinimumLength
-            // 
-            this.lblMinimumLength.AutoSize = true;
-            this.lblMinimumLength.Location = new System.Drawing.Point(9, 181);
-            this.lblMinimumLength.Name = "lblMinimumLength";
-            this.lblMinimumLength.Size = new System.Drawing.Size(255, 13);
-            this.lblMinimumLength.TabIndex = 24;
-            this.lblMinimumLength.Text = "Title Selector:  show only if longer than (in seconds)";
-            // 
-            // minimumTitleLength
-            // 
-            this.minimumTitleLength.Location = new System.Drawing.Point(377, 179);
-            this.minimumTitleLength.Maximum = new decimal(new int[] {
-            9999,
-            0,
-            0,
-            0});
-            this.minimumTitleLength.Name = "minimumTitleLength";
-            this.minimumTitleLength.Size = new System.Drawing.Size(65, 21);
-            this.minimumTitleLength.TabIndex = 23;
-            this.minimumTitleLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.minimumTitleLength.Value = new decimal(new int[] {
-            900,
-            0,
-            0,
-            0});
-            // 
-            // cbUseIncludedAviSynth
-            // 
-            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(13, 27);
-            this.cbUseIncludedAviSynth.Name = "cbUseIncludedAviSynth";
-            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(203, 17);
-            this.cbUseIncludedAviSynth.TabIndex = 22;
-            this.cbUseIncludedAviSynth.Text = "Always use the included AviSynth";
-            this.cbUseIncludedAviSynth.CheckedChanged += new System.EventHandler(this.cbUseIncludedAviSynth_CheckedChanged);
-            // 
             // cbUseITUValues
             // 
             this.cbUseITUValues.Checked = true;
             this.cbUseITUValues.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbUseITUValues.Location = new System.Drawing.Point(377, 27);
+            this.cbUseITUValues.Location = new System.Drawing.Point(13, 66);
             this.cbUseITUValues.Name = "cbUseITUValues";
             this.cbUseITUValues.Size = new System.Drawing.Size(144, 17);
             this.cbUseITUValues.TabIndex = 20;
             this.cbUseITUValues.Text = "Use ITU Aspect Ratio";
             // 
-            // acceptableFPSError
-            // 
-            this.acceptableFPSError.DecimalPlaces = 3;
-            this.acceptableFPSError.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            this.acceptableFPSError.Location = new System.Drawing.Point(377, 152);
-            this.acceptableFPSError.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.acceptableFPSError.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            this.acceptableFPSError.Name = "acceptableFPSError";
-            this.acceptableFPSError.Size = new System.Drawing.Size(65, 21);
-            this.acceptableFPSError.TabIndex = 7;
-            this.acceptableFPSError.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.acceptableFPSError.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.BackColor = System.Drawing.Color.Transparent;
-            this.label15.Location = new System.Drawing.Point(9, 154);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(245, 13);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "Acceptable FPS rounding error (bitrate calculator)";
-            // 
-            // resetDialogs
-            // 
-            this.resetDialogs.Location = new System.Drawing.Point(13, 230);
-            this.resetDialogs.Name = "resetDialogs";
-            this.resetDialogs.Size = new System.Drawing.Size(154, 21);
-            this.resetDialogs.TabIndex = 16;
-            this.resetDialogs.Text = "Reset All Dialogs";
-            this.resetDialogs.UseVisualStyleBackColor = true;
-            this.resetDialogs.Click += new System.EventHandler(this.resetDialogs_Click);
-            // 
-            // configSourceDetector
-            // 
-            this.configSourceDetector.Location = new System.Drawing.Point(377, 230);
-            this.configSourceDetector.Name = "configSourceDetector";
-            this.configSourceDetector.Size = new System.Drawing.Size(154, 21);
-            this.configSourceDetector.TabIndex = 17;
-            this.configSourceDetector.Text = "Configure Source Detector";
-            this.configSourceDetector.UseVisualStyleBackColor = true;
-            this.configSourceDetector.Click += new System.EventHandler(this.configSourceDetector_Click);
-            // 
             // openProgressWindow
             // 
             this.openProgressWindow.Checked = true;
             this.openProgressWindow.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.openProgressWindow.Location = new System.Drawing.Point(377, 73);
+            this.openProgressWindow.Location = new System.Drawing.Point(13, 20);
             this.openProgressWindow.Name = "openProgressWindow";
             this.openProgressWindow.Size = new System.Drawing.Size(144, 17);
             this.openProgressWindow.TabIndex = 15;
@@ -477,7 +350,7 @@ namespace MeGUI
             // 
             this.deleteIntermediateFiles.Checked = true;
             this.deleteIntermediateFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.deleteIntermediateFiles.Location = new System.Drawing.Point(377, 50);
+            this.deleteIntermediateFiles.Location = new System.Drawing.Point(13, 89);
             this.deleteIntermediateFiles.Name = "deleteIntermediateFiles";
             this.deleteIntermediateFiles.Size = new System.Drawing.Size(152, 17);
             this.deleteIntermediateFiles.TabIndex = 13;
@@ -487,7 +360,7 @@ namespace MeGUI
             // 
             this.deleteAbortedOutput.Checked = true;
             this.deleteAbortedOutput.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.deleteAbortedOutput.Location = new System.Drawing.Point(13, 50);
+            this.deleteAbortedOutput.Location = new System.Drawing.Point(13, 111);
             this.deleteAbortedOutput.Name = "deleteAbortedOutput";
             this.deleteAbortedOutput.Size = new System.Drawing.Size(184, 17);
             this.deleteAbortedOutput.TabIndex = 12;
@@ -497,7 +370,7 @@ namespace MeGUI
             // 
             this.openScript.Checked = true;
             this.openScript.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.openScript.Location = new System.Drawing.Point(12, 73);
+            this.openScript.Location = new System.Drawing.Point(13, 43);
             this.openScript.Name = "openScript";
             this.openScript.Size = new System.Drawing.Size(277, 17);
             this.openScript.TabIndex = 10;
@@ -513,30 +386,130 @@ namespace MeGUI
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(597, 413);
+            this.tabControl1.Size = new System.Drawing.Size(597, 461);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.groupBox12);
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Controls.Add(this.gbDefaultOutput);
+            this.tabPage1.Controls.Add(this.groupBox13);
             this.tabPage1.Controls.Add(this.otherGroupBox);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage1.Size = new System.Drawing.Size(589, 387);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(589, 435);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox12
+            // 
+            this.groupBox12.Controls.Add(this.lblMinimumLength);
+            this.groupBox12.Controls.Add(this.minimumTitleLength);
+            this.groupBox12.Controls.Add(this.acceptableFPSError);
+            this.groupBox12.Controls.Add(this.label15);
+            this.groupBox12.Controls.Add(this.resetDialogs);
+            this.groupBox12.Controls.Add(this.configSourceDetector);
+            this.groupBox12.Location = new System.Drawing.Point(3, 277);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Size = new System.Drawing.Size(579, 90);
+            this.groupBox12.TabIndex = 13;
+            this.groupBox12.TabStop = false;
+            // 
+            // lblMinimumLength
+            // 
+            this.lblMinimumLength.AutoSize = true;
+            this.lblMinimumLength.Location = new System.Drawing.Point(9, 48);
+            this.lblMinimumLength.Name = "lblMinimumLength";
+            this.lblMinimumLength.Size = new System.Drawing.Size(255, 13);
+            this.lblMinimumLength.TabIndex = 34;
+            this.lblMinimumLength.Text = "Title Selector:  show only if longer than (in seconds)";
+            // 
+            // minimumTitleLength
+            // 
+            this.minimumTitleLength.Location = new System.Drawing.Point(270, 46);
+            this.minimumTitleLength.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.minimumTitleLength.Name = "minimumTitleLength";
+            this.minimumTitleLength.Size = new System.Drawing.Size(65, 21);
+            this.minimumTitleLength.TabIndex = 33;
+            this.minimumTitleLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.minimumTitleLength.Value = new decimal(new int[] {
+            900,
+            0,
+            0,
+            0});
+            // 
+            // acceptableFPSError
+            // 
+            this.acceptableFPSError.DecimalPlaces = 3;
+            this.acceptableFPSError.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.acceptableFPSError.Location = new System.Drawing.Point(270, 15);
+            this.acceptableFPSError.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.acceptableFPSError.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            this.acceptableFPSError.Name = "acceptableFPSError";
+            this.acceptableFPSError.Size = new System.Drawing.Size(65, 21);
+            this.acceptableFPSError.TabIndex = 30;
+            this.acceptableFPSError.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.acceptableFPSError.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.Transparent;
+            this.label15.Location = new System.Drawing.Point(9, 17);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(245, 13);
+            this.label15.TabIndex = 29;
+            this.label15.Text = "Acceptable FPS rounding error (bitrate calculator)";
+            // 
+            // resetDialogs
+            // 
+            this.resetDialogs.Location = new System.Drawing.Point(396, 17);
+            this.resetDialogs.Name = "resetDialogs";
+            this.resetDialogs.Size = new System.Drawing.Size(154, 21);
+            this.resetDialogs.TabIndex = 31;
+            this.resetDialogs.Text = "Reset All Dialogs";
+            this.resetDialogs.UseVisualStyleBackColor = true;
+            // 
+            // configSourceDetector
+            // 
+            this.configSourceDetector.Location = new System.Drawing.Point(396, 48);
+            this.configSourceDetector.Name = "configSourceDetector";
+            this.configSourceDetector.Size = new System.Drawing.Size(154, 21);
+            this.configSourceDetector.TabIndex = 32;
+            this.configSourceDetector.Text = "Configure Source Detector";
+            this.configSourceDetector.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.defaultLanguage2);
             this.groupBox3.Controls.Add(this.defaultLanguage1);
-            this.groupBox3.Location = new System.Drawing.Point(2, 287);
+            this.groupBox3.Location = new System.Drawing.Point(3, 179);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(200, 92);
-            this.groupBox3.TabIndex = 8;
+            this.groupBox3.TabIndex = 12;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = " Default Languages ";
             // 
@@ -564,12 +537,26 @@ namespace MeGUI
             this.gbDefaultOutput.Controls.Add(this.btnClearOutputDirecoty);
             this.gbDefaultOutput.Controls.Add(this.clearDefaultOutputDir);
             this.gbDefaultOutput.Controls.Add(this.defaultOutputDir);
-            this.gbDefaultOutput.Location = new System.Drawing.Point(208, 287);
+            this.gbDefaultOutput.Location = new System.Drawing.Point(209, 179);
             this.gbDefaultOutput.Name = "gbDefaultOutput";
             this.gbDefaultOutput.Size = new System.Drawing.Size(373, 92);
-            this.gbDefaultOutput.TabIndex = 7;
+            this.gbDefaultOutput.TabIndex = 11;
             this.gbDefaultOutput.TabStop = false;
             this.gbDefaultOutput.Text = " Default Output Directory + Custom File Size Values ";
+            // 
+            // targetSizeSCBox1
+            // 
+            this.targetSizeSCBox1.CustomSizes = new MeGUI.core.util.FileSize[0];
+            this.targetSizeSCBox1.Location = new System.Drawing.Point(8, 56);
+            this.targetSizeSCBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.targetSizeSCBox1.MaximumSize = new System.Drawing.Size(1000, 28);
+            this.targetSizeSCBox1.MinimumSize = new System.Drawing.Size(64, 28);
+            this.targetSizeSCBox1.Name = "targetSizeSCBox1";
+            this.targetSizeSCBox1.NullString = "Modify custom file size values";
+            this.targetSizeSCBox1.SaveCustomValues = true;
+            this.targetSizeSCBox1.SelectedIndex = 0;
+            this.targetSizeSCBox1.Size = new System.Drawing.Size(329, 28);
+            this.targetSizeSCBox1.TabIndex = 44;
             // 
             // btnClearOutputDirecoty
             // 
@@ -579,7 +566,6 @@ namespace MeGUI
             this.btnClearOutputDirecoty.Size = new System.Drawing.Size(25, 23);
             this.btnClearOutputDirecoty.TabIndex = 43;
             this.btnClearOutputDirecoty.Text = "x";
-            this.btnClearOutputDirecoty.Click += new System.EventHandler(this.btnClearOutputDirecoty_Click);
             // 
             // clearDefaultOutputDir
             // 
@@ -588,7 +574,116 @@ namespace MeGUI
             this.clearDefaultOutputDir.Size = new System.Drawing.Size(24, 26);
             this.clearDefaultOutputDir.TabIndex = 41;
             this.clearDefaultOutputDir.Text = "x";
-            this.clearDefaultOutputDir.Click += new System.EventHandler(this.clearDefaultOutputDir_Click);
+            // 
+            // defaultOutputDir
+            // 
+            this.defaultOutputDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.defaultOutputDir.Filename = "";
+            this.defaultOutputDir.FolderMode = true;
+            this.defaultOutputDir.Location = new System.Drawing.Point(8, 27);
+            this.defaultOutputDir.Margin = new System.Windows.Forms.Padding(4);
+            this.defaultOutputDir.Name = "defaultOutputDir";
+            this.defaultOutputDir.Size = new System.Drawing.Size(329, 23);
+            this.defaultOutputDir.TabIndex = 40;
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add(this.cbHwdDecoder);
+            this.groupBox13.Controls.Add(this.chkEnableHwd);
+            this.groupBox13.Controls.Add(this.chkInput8Bit);
+            this.groupBox13.Controls.Add(this.lblffmsThreads);
+            this.groupBox13.Controls.Add(this.ffmsThreads);
+            this.groupBox13.Controls.Add(this.cbUseIncludedAviSynth);
+            this.groupBox13.Controls.Add(this.chkDirectShowSource);
+            this.groupBox13.Location = new System.Drawing.Point(270, 7);
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size(311, 166);
+            this.groupBox13.TabIndex = 2;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Avisynth/+ Extra Settings";
+            // 
+            // cbHwdDecoder
+            // 
+            this.cbHwdDecoder.FormattingEnabled = true;
+            this.cbHwdDecoder.Items.AddRange(new object[] {
+            "Auto",
+            "NVIDIA CUVID",
+            "Intel Quick Sync",
+            "DXVA2",
+            "D3D11",
+            "VULKAN"});
+            this.cbHwdDecoder.Location = new System.Drawing.Point(199, 88);
+            this.cbHwdDecoder.Name = "cbHwdDecoder";
+            this.cbHwdDecoder.Size = new System.Drawing.Size(106, 21);
+            this.cbHwdDecoder.TabIndex = 57;
+            // 
+            // chkEnableHwd
+            // 
+            this.chkEnableHwd.AutoSize = true;
+            this.chkEnableHwd.Location = new System.Drawing.Point(13, 90);
+            this.chkEnableHwd.Name = "chkEnableHwd";
+            this.chkEnableHwd.Size = new System.Drawing.Size(180, 17);
+            this.chkEnableHwd.TabIndex = 56;
+            this.chkEnableHwd.Text = "Enable Hardware Video Decoder";
+            this.chkEnableHwd.UseVisualStyleBackColor = true;
+            // 
+            // chkInput8Bit
+            // 
+            this.chkInput8Bit.AutoSize = true;
+            this.chkInput8Bit.Location = new System.Drawing.Point(13, 66);
+            this.chkInput8Bit.Name = "chkInput8Bit";
+            this.chkInput8Bit.Size = new System.Drawing.Size(152, 17);
+            this.chkInput8Bit.TabIndex = 55;
+            this.chkInput8Bit.Text = "Restrict input filter to 8 bit";
+            this.chkInput8Bit.UseVisualStyleBackColor = true;
+            // 
+            // lblffmsThreads
+            // 
+            this.lblffmsThreads.AutoSize = true;
+            this.lblffmsThreads.Location = new System.Drawing.Point(15, 135);
+            this.lblffmsThreads.Name = "lblffmsThreads";
+            this.lblffmsThreads.Size = new System.Drawing.Size(106, 13);
+            this.lblffmsThreads.TabIndex = 54;
+            this.lblffmsThreads.Text = "FFMS Thread Count:";
+            // 
+            // ffmsThreads
+            // 
+            this.ffmsThreads.Location = new System.Drawing.Point(127, 133);
+            this.ffmsThreads.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.ffmsThreads.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.ffmsThreads.Name = "ffmsThreads";
+            this.ffmsThreads.Size = new System.Drawing.Size(38, 21);
+            this.ffmsThreads.TabIndex = 53;
+            this.ffmsThreads.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // cbUseIncludedAviSynth
+            // 
+            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(13, 20);
+            this.cbUseIncludedAviSynth.Name = "cbUseIncludedAviSynth";
+            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(203, 17);
+            this.cbUseIncludedAviSynth.TabIndex = 28;
+            this.cbUseIncludedAviSynth.Text = "Always use the included AviSynth";
+            // 
+            // chkDirectShowSource
+            // 
+            this.chkDirectShowSource.AutoSize = true;
+            this.chkDirectShowSource.Location = new System.Drawing.Point(13, 43);
+            this.chkDirectShowSource.Name = "chkDirectShowSource";
+            this.chkDirectShowSource.Size = new System.Drawing.Size(278, 17);
+            this.chkDirectShowSource.TabIndex = 27;
+            this.chkDirectShowSource.Text = "Enable DirectShowSource() in the AVS Script Creator";
             // 
             // tabPage3
             // 
@@ -600,7 +695,7 @@ namespace MeGUI
             this.tabPage3.Controls.Add(this.autoModeGroupbox);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(589, 387);
+            this.tabPage3.Size = new System.Drawing.Size(589, 435);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Extended";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -619,7 +714,7 @@ namespace MeGUI
             this.groupBox2.Controls.Add(this.label18);
             this.groupBox2.Location = new System.Drawing.Point(273, 243);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(308, 135);
+            this.groupBox2.Size = new System.Drawing.Size(308, 189);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = " Auto Update Http Proxy ";
@@ -722,7 +817,7 @@ namespace MeGUI
             this.gbVideoPreview.Controls.Add(this.chkEnsureCorrectPlaybackSpeed);
             this.gbVideoPreview.Controls.Add(this.cbAddTimePos);
             this.gbVideoPreview.Controls.Add(this.chAlwaysOnTop);
-            this.gbVideoPreview.Location = new System.Drawing.Point(4, 288);
+            this.gbVideoPreview.Location = new System.Drawing.Point(3, 342);
             this.gbVideoPreview.Name = "gbVideoPreview";
             this.gbVideoPreview.Size = new System.Drawing.Size(263, 90);
             this.gbVideoPreview.TabIndex = 4;
@@ -820,13 +915,15 @@ namespace MeGUI
             // 
             // outputExtensions
             // 
+            this.outputExtensions.Controls.Add(this.lblForcedName);
+            this.outputExtensions.Controls.Add(this.txtForcedName);
             this.outputExtensions.Controls.Add(this.videoExtension);
             this.outputExtensions.Controls.Add(this.label11);
             this.outputExtensions.Controls.Add(this.label12);
             this.outputExtensions.Controls.Add(this.audioExtension);
             this.outputExtensions.Location = new System.Drawing.Point(3, 104);
             this.outputExtensions.Name = "outputExtensions";
-            this.outputExtensions.Size = new System.Drawing.Size(264, 77);
+            this.outputExtensions.Size = new System.Drawing.Size(264, 131);
             this.outputExtensions.TabIndex = 1;
             this.outputExtensions.TabStop = false;
             this.outputExtensions.Text = " Optional output extensions ";
@@ -952,14 +1049,16 @@ namespace MeGUI
             this.tabPage4.Controls.Add(this.groupBox8);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage4.Size = new System.Drawing.Size(589, 387);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(589, 435);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Worker/Job/Queue";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
             // groupBox11
             // 
+            this.groupBox11.Controls.Add(this.label7);
+            this.groupBox11.Controls.Add(this.cbStandbySettings);
             this.groupBox11.Controls.Add(this.cbRemoveJob);
             this.groupBox11.Controls.Add(this.cbAutoStart);
             this.groupBox11.Controls.Add(this.cbAutoStartOnStartup);
@@ -967,7 +1066,7 @@ namespace MeGUI
             this.groupBox11.Controls.Add(this.label6);
             this.groupBox11.Location = new System.Drawing.Point(252, 310);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(329, 71);
+            this.groupBox11.Size = new System.Drawing.Size(329, 119);
             this.groupBox11.TabIndex = 12;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = " global worker settings ";
@@ -1224,7 +1323,6 @@ namespace MeGUI
             // 
             this.workerSettingsListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.workerSettingsListBox.ItemHeight = 21;
             this.workerSettingsListBox.Location = new System.Drawing.Point(6, 19);
             this.workerSettingsListBox.Name = "workerSettingsListBox";
             this.workerSettingsListBox.Size = new System.Drawing.Size(562, 147);
@@ -1240,8 +1338,8 @@ namespace MeGUI
             this.tabPage2.Controls.Add(this.vobGroupBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.tabPage2.Size = new System.Drawing.Size(589, 387);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(589, 435);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "External Programs";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1279,34 +1377,30 @@ namespace MeGUI
             this.lblFDK.TabIndex = 45;
             this.lblFDK.Text = "Location";
             // 
+            // fdkaacLocation
+            // 
+            this.fdkaacLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.fdkaacLocation.Enabled = false;
+            this.fdkaacLocation.Filename = "";
+            this.fdkaacLocation.Filter = "FDKAAC|fdkaac.exe";
+            this.fdkaacLocation.Location = new System.Drawing.Point(64, 20);
+            this.fdkaacLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.fdkaacLocation.Name = "fdkaacLocation";
+            this.fdkaacLocation.Size = new System.Drawing.Size(509, 23);
+            this.fdkaacLocation.TabIndex = 44;
+            // 
             // groupBox6
             // 
-            this.groupBox6.Controls.Add(this.chkInput8Bit);
             this.groupBox6.Controls.Add(this.chk64Bit);
             this.groupBox6.Controls.Add(this.chx264ExternalMuxer);
             this.groupBox6.Controls.Add(this.useQAAC);
-            this.groupBox6.Controls.Add(this.lblForcedName);
-            this.groupBox6.Controls.Add(this.txtForcedName);
-            this.groupBox6.Controls.Add(this.lblffmsThreads);
-            this.groupBox6.Controls.Add(this.ffmsThreads);
             this.groupBox6.Location = new System.Drawing.Point(4, 264);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(577, 117);
+            this.groupBox6.Size = new System.Drawing.Size(577, 67);
             this.groupBox6.TabIndex = 33;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Misc ";
-            // 
-            // chkInput8Bit
-            // 
-            this.chkInput8Bit.AutoSize = true;
-            this.chkInput8Bit.Checked = true;
-            this.chkInput8Bit.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkInput8Bit.Location = new System.Drawing.Point(11, 43);
-            this.chkInput8Bit.Name = "chkInput8Bit";
-            this.chkInput8Bit.Size = new System.Drawing.Size(152, 17);
-            this.chkInput8Bit.TabIndex = 52;
-            this.chkInput8Bit.Text = "Restrict input filter to 8 bit";
-            this.chkInput8Bit.UseVisualStyleBackColor = true;
             // 
             // chk64Bit
             // 
@@ -1343,55 +1437,6 @@ namespace MeGUI
             this.useQAAC.UseVisualStyleBackColor = true;
             this.useQAAC.CheckedChanged += new System.EventHandler(this.useQAAC_CheckedChanged);
             // 
-            // lblForcedName
-            // 
-            this.lblForcedName.AutoSize = true;
-            this.lblForcedName.Location = new System.Drawing.Point(11, 94);
-            this.lblForcedName.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.lblForcedName.Name = "lblForcedName";
-            this.lblForcedName.Size = new System.Drawing.Size(164, 13);
-            this.lblForcedName.TabIndex = 33;
-            this.lblForcedName.Text = "Add text to forced track names: ";
-            this.lblForcedName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // txtForcedName
-            // 
-            this.txtForcedName.Location = new System.Drawing.Point(225, 91);
-            this.txtForcedName.Name = "txtForcedName";
-            this.txtForcedName.Size = new System.Drawing.Size(288, 21);
-            this.txtForcedName.TabIndex = 32;
-            // 
-            // lblffmsThreads
-            // 
-            this.lblffmsThreads.AutoSize = true;
-            this.lblffmsThreads.Location = new System.Drawing.Point(11, 66);
-            this.lblffmsThreads.Name = "lblffmsThreads";
-            this.lblffmsThreads.Size = new System.Drawing.Size(106, 13);
-            this.lblffmsThreads.TabIndex = 31;
-            this.lblffmsThreads.Text = "FFMS Thread Count:";
-            // 
-            // ffmsThreads
-            // 
-            this.ffmsThreads.Location = new System.Drawing.Point(123, 64);
-            this.ffmsThreads.Maximum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.ffmsThreads.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.ffmsThreads.Name = "ffmsThreads";
-            this.ffmsThreads.Size = new System.Drawing.Size(38, 21);
-            this.ffmsThreads.TabIndex = 30;
-            this.ffmsThreads.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.useNeroAacEnc);
@@ -1425,6 +1470,19 @@ namespace MeGUI
             this.lblNero.TabIndex = 45;
             this.lblNero.Text = "Location";
             // 
+            // neroaacencLocation
+            // 
+            this.neroaacencLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.neroaacencLocation.Enabled = false;
+            this.neroaacencLocation.Filename = "";
+            this.neroaacencLocation.Filter = "NeroAacEnc|neroaacenc.exe";
+            this.neroaacencLocation.Location = new System.Drawing.Point(64, 20);
+            this.neroaacencLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.neroaacencLocation.Name = "neroaacencLocation";
+            this.neroaacencLocation.Size = new System.Drawing.Size(509, 23);
+            this.neroaacencLocation.TabIndex = 44;
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.btnClearMP4TempDirectory);
@@ -1444,6 +1502,19 @@ namespace MeGUI
             this.btnClearMP4TempDirectory.TabIndex = 42;
             this.btnClearMP4TempDirectory.Text = "x";
             this.btnClearMP4TempDirectory.Click += new System.EventHandler(this.btnClearMP4TempDirectory_Click);
+            // 
+            // tempDirMP4
+            // 
+            this.tempDirMP4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tempDirMP4.Filename = "";
+            this.tempDirMP4.FolderMode = true;
+            this.tempDirMP4.Location = new System.Drawing.Point(12, 20);
+            this.tempDirMP4.Margin = new System.Windows.Forms.Padding(4);
+            this.tempDirMP4.Name = "tempDirMP4";
+            this.tempDirMP4.Size = new System.Drawing.Size(529, 23);
+            this.tempDirMP4.TabIndex = 41;
+            this.tempDirMP4.FileSelected += new MeGUI.FileBarEventHandler(this.tempDirMP4_FileSelected);
             // 
             // vobGroupBox
             // 
@@ -1552,81 +1623,55 @@ namespace MeGUI
             this.helpButton1.ArticleName = "Settings";
             this.helpButton1.AutoSize = true;
             this.helpButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.helpButton1.Location = new System.Drawing.Point(4, 418);
+            this.helpButton1.Location = new System.Drawing.Point(7, 468);
             this.helpButton1.Margin = new System.Windows.Forms.Padding(4);
             this.helpButton1.Name = "helpButton1";
             this.helpButton1.Size = new System.Drawing.Size(38, 23);
             this.helpButton1.TabIndex = 1;
             // 
-            // targetSizeSCBox1
+            // label7
             // 
-            this.targetSizeSCBox1.CustomSizes = new MeGUI.core.util.FileSize[0];
-            this.targetSizeSCBox1.Location = new System.Drawing.Point(8, 56);
-            this.targetSizeSCBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.targetSizeSCBox1.MaximumSize = new System.Drawing.Size(1000, 28);
-            this.targetSizeSCBox1.MinimumSize = new System.Drawing.Size(64, 28);
-            this.targetSizeSCBox1.Name = "targetSizeSCBox1";
-            this.targetSizeSCBox1.NullString = "Modify custom file size values";
-            this.targetSizeSCBox1.SaveCustomValues = true;
-            this.targetSizeSCBox1.SelectedIndex = 0;
-            this.targetSizeSCBox1.Size = new System.Drawing.Size(329, 28);
-            this.targetSizeSCBox1.TabIndex = 44;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(199, 83);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(107, 13);
+            this.label7.TabIndex = 38;
+            this.label7.Text = "while a job is running";
             // 
-            // defaultOutputDir
+            // cbStandbySettings
             // 
-            this.defaultOutputDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.defaultOutputDir.Filename = "";
-            this.defaultOutputDir.FolderMode = true;
-            this.defaultOutputDir.Location = new System.Drawing.Point(8, 27);
-            this.defaultOutputDir.Margin = new System.Windows.Forms.Padding(4);
-            this.defaultOutputDir.Name = "defaultOutputDir";
-            this.defaultOutputDir.Size = new System.Drawing.Size(329, 23);
-            this.defaultOutputDir.TabIndex = 40;
+            this.cbStandbySettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStandbySettings.FormattingEnabled = true;
+            this.cbStandbySettings.Location = new System.Drawing.Point(9, 80);
+            this.cbStandbySettings.Margin = new System.Windows.Forms.Padding(2);
+            this.cbStandbySettings.Name = "cbStandbySettings";
+            this.cbStandbySettings.Size = new System.Drawing.Size(181, 21);
+            this.cbStandbySettings.TabIndex = 37;
             // 
-            // fdkaacLocation
+            // lblForcedName
             // 
-            this.fdkaacLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.fdkaacLocation.Enabled = false;
-            this.fdkaacLocation.Filename = "";
-            this.fdkaacLocation.Filter = "FDKAAC|fdkaac.exe";
-            this.fdkaacLocation.Location = new System.Drawing.Point(64, 20);
-            this.fdkaacLocation.Margin = new System.Windows.Forms.Padding(4);
-            this.fdkaacLocation.Name = "fdkaacLocation";
-            this.fdkaacLocation.Size = new System.Drawing.Size(509, 23);
-            this.fdkaacLocation.TabIndex = 44;
+            this.lblForcedName.AutoSize = true;
+            this.lblForcedName.Location = new System.Drawing.Point(9, 84);
+            this.lblForcedName.Margin = new System.Windows.Forms.Padding(3);
+            this.lblForcedName.Name = "lblForcedName";
+            this.lblForcedName.Size = new System.Drawing.Size(164, 13);
+            this.lblForcedName.TabIndex = 40;
+            this.lblForcedName.Text = "Add text to forced track names: ";
+            this.lblForcedName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // neroaacencLocation
+            // txtForcedName
             // 
-            this.neroaacencLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.neroaacencLocation.Enabled = false;
-            this.neroaacencLocation.Filename = "";
-            this.neroaacencLocation.Filter = "NeroAacEnc|neroaacenc.exe";
-            this.neroaacencLocation.Location = new System.Drawing.Point(64, 20);
-            this.neroaacencLocation.Margin = new System.Windows.Forms.Padding(4);
-            this.neroaacencLocation.Name = "neroaacencLocation";
-            this.neroaacencLocation.Size = new System.Drawing.Size(509, 23);
-            this.neroaacencLocation.TabIndex = 44;
-            // 
-            // tempDirMP4
-            // 
-            this.tempDirMP4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tempDirMP4.Filename = "";
-            this.tempDirMP4.FolderMode = true;
-            this.tempDirMP4.Location = new System.Drawing.Point(12, 20);
-            this.tempDirMP4.Margin = new System.Windows.Forms.Padding(4);
-            this.tempDirMP4.Name = "tempDirMP4";
-            this.tempDirMP4.Size = new System.Drawing.Size(529, 23);
-            this.tempDirMP4.TabIndex = 41;
-            this.tempDirMP4.FileSelected += new MeGUI.FileBarEventHandler(this.tempDirMP4_FileSelected);
+            this.txtForcedName.Location = new System.Drawing.Point(11, 98);
+            this.txtForcedName.Name = "txtForcedName";
+            this.txtForcedName.Size = new System.Drawing.Size(243, 21);
+            this.txtForcedName.TabIndex = 39;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(597, 446);
+            this.ClientSize = new System.Drawing.Size(597, 496);
             this.Controls.Add(this.helpButton1);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.cancelButton);
@@ -1643,12 +1688,17 @@ namespace MeGUI
             groupBox1.PerformLayout();
             this.otherGroupBox.ResumeLayout(false);
             this.otherGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.minimumTitleLength)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.acceptableFPSError)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox12.ResumeLayout(false);
+            this.groupBox12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minimumTitleLength)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.acceptableFPSError)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.gbDefaultOutput.ResumeLayout(false);
+            this.groupBox13.ResumeLayout(false);
+            this.groupBox13.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ffmsThreads)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -1675,7 +1725,6 @@ namespace MeGUI
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ffmsThreads)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
@@ -1690,11 +1739,9 @@ namespace MeGUI
 
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button resetDialogs;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.FolderBrowserDialog openFolderDialog;
-        private System.Windows.Forms.Button configSourceDetector;
         private System.Windows.Forms.GroupBox otherGroupBox;
         private System.Windows.Forms.OpenFileDialog openExecutableDialog;
         private System.Windows.Forms.CheckBox openScript;
@@ -1720,8 +1767,6 @@ namespace MeGUI
         private System.Windows.Forms.RadioButton shutdown;
         private System.Windows.Forms.RadioButton donothing;
         private System.Windows.Forms.Button configureServersButton;
-        private System.Windows.Forms.NumericUpDown acceptableFPSError;
-        private System.Windows.Forms.Label label15;
         private MeGUI.core.gui.HelpButton helpButton1;
         private System.Windows.Forms.CheckBox keep2ndPassOutput;
         private System.Windows.Forms.CheckBox keep2ndPassLogFile;
@@ -1737,9 +1782,6 @@ namespace MeGUI
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.TextBox txt_httpproxypwd;
         private System.Windows.Forms.TextBox txt_httpproxyport;
-        private System.Windows.Forms.GroupBox gbDefaultOutput;
-        private System.Windows.Forms.Button clearDefaultOutputDir;
-        private FileBar defaultOutputDir;
         private System.Windows.Forms.CheckBox cbAddTimePos;
         private System.Windows.Forms.CheckBox backupfiles;
         private System.Windows.Forms.TabPage tabPage2;
@@ -1756,16 +1798,7 @@ namespace MeGUI
         private System.Windows.Forms.ComboBox cbAutoUpdateServerSubList;
         private System.Windows.Forms.ToolTip toolTipHelp;
         private System.Windows.Forms.CheckBox chkEnsureCorrectPlaybackSpeed;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.ComboBox defaultLanguage2;
-        private System.Windows.Forms.ComboBox defaultLanguage1;
-        private System.Windows.Forms.Button btnClearOutputDirecoty;
-        private System.Windows.Forms.NumericUpDown ffmsThreads;
-        private System.Windows.Forms.Label lblffmsThreads;
-        private System.Windows.Forms.Label lblForcedName;
-        private System.Windows.Forms.TextBox txtForcedName;
         private System.Windows.Forms.CheckBox cbUseITUValues;
-        private core.gui.TargetSizeSCBox targetSizeSCBox1;
         private FileBar neroaacencLocation;
         private System.Windows.Forms.CheckBox useNeroAacEnc;
         private System.Windows.Forms.Label lblNero;
@@ -1774,18 +1807,13 @@ namespace MeGUI
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cbHttpProxyMode;
         private System.Windows.Forms.CheckBox chx264ExternalMuxer;
-        private System.Windows.Forms.CheckBox cbUseIncludedAviSynth;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.CheckBox useFDKAac;
         private System.Windows.Forms.Label lblFDK;
         private FileBar fdkaacLocation;
         private System.Windows.Forms.CheckBox useDGIndexIM;
-        private System.Windows.Forms.Label lblMinimumLength;
-        private System.Windows.Forms.NumericUpDown minimumTitleLength;
         private System.Windows.Forms.CheckBox chk64Bit;
         private System.Windows.Forms.CheckBox chkDebugInformation;
-        private System.Windows.Forms.CheckBox chkDirectShowSource;
-        private System.Windows.Forms.CheckBox chkInput8Bit;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Button btnResetSettings;
@@ -1809,7 +1837,32 @@ namespace MeGUI
         private System.Windows.Forms.CheckBox cbAutoStartOnStartup;
         private System.Windows.Forms.NumericUpDown workerMaximumCount;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.CheckBox cbUseIncludedAviSynth;
+        private System.Windows.Forms.CheckBox chkDirectShowSource;
+        private System.Windows.Forms.CheckBox chkInput8Bit;
+        private System.Windows.Forms.Label lblffmsThreads;
+        private System.Windows.Forms.NumericUpDown ffmsThreads;
+        private System.Windows.Forms.CheckBox chkEnableHwd;
+        private System.Windows.Forms.ComboBox cbHwdDecoder;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ComboBox defaultLanguage2;
+        private System.Windows.Forms.ComboBox defaultLanguage1;
+        private System.Windows.Forms.GroupBox gbDefaultOutput;
+        private core.gui.TargetSizeSCBox targetSizeSCBox1;
+        private System.Windows.Forms.Button btnClearOutputDirecoty;
+        private System.Windows.Forms.Button clearDefaultOutputDir;
+        private FileBar defaultOutputDir;
+        private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.Label lblMinimumLength;
+        private System.Windows.Forms.NumericUpDown minimumTitleLength;
+        private System.Windows.Forms.NumericUpDown acceptableFPSError;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button resetDialogs;
+        private System.Windows.Forms.Button configSourceDetector;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cbStandbySettings;
+        private System.Windows.Forms.Label lblForcedName;
+        private System.Windows.Forms.TextBox txtForcedName;
     }
 }

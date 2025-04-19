@@ -182,7 +182,7 @@ namespace MeGUI
         }
         public static readonly VideoEncoderType FFV1      = new VideoEncoderType("FFV1", VideoCodec.FFV1);
         public static readonly VideoEncoderType HFYU      = new VideoEncoderType("Huffyuv", VideoCodec.HFYU);
-        public static readonly VideoEncoderType SVTAV1PSY = new VideoEncoderType("svt-av1-psy", VideoCodec.AV1);
+        public static readonly VideoEncoderType SVTAV1PSY = new VideoEncoderType("svtav1psy", VideoCodec.AV1);
         public static readonly VideoEncoderType X264      = new VideoEncoderType("x264", VideoCodec.AVC);
         public static readonly VideoEncoderType X265      = new VideoEncoderType("x265", VideoCodec.HEVC);
         public static readonly VideoEncoderType XVID      = new VideoEncoderType("Xvid", VideoCodec.ASP);
