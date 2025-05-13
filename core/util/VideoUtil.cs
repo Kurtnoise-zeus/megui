@@ -803,11 +803,13 @@ namespace MeGUI
             bool bUseLsmash = UseLSMASHVideoSource(inputFile, video);
             if (video)
             {
-                script.AppendFormat("{0}(\"{1}\"{2}{3}",
+                script.AppendFormat("{0}(\"{1}\"{2}{3}{4}",
                     (bUseLsmash ? "LSMASHVideoSource" : "LWLibavVideoSource"),
                     inputFile,
                     (track > -1 ? (bUseLsmash ? ", track=" + track : ", stream_index=" + track) : String.Empty),
-                    (!bUseLsmash && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty));
+                    (!bUseLsmash && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
+                    (MainForm.Instance.Settings.EnableHwdAVSVideoDec ? ", prefer_hw=" + MainForm.Instance.Settings.HwdItems : String.Empty)
+                    );
 
                 if (iVideoBit <= 8)
                     script.Append(')');
