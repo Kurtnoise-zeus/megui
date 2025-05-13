@@ -387,6 +387,8 @@ namespace MeGUI
                 settings.TempDirMP4 = tempDirMP4.Filename;
                 settings.AddTimePosition = cbAddTimePos.Checked;
                 settings.FFMSThreads = Decimal.ToInt32(ffmsThreads.Value);
+                settings.HwdItems = cbHwdDecoder.SelectedIndex;
+                settings.EnableHwdAVSVideoDec = chkEnableHwd.Checked;
                 settings.AppendToForcedStreams = txtForcedName.Text;
                 settings.UseITUValues = cbUseITUValues.Checked;
 
@@ -486,6 +488,12 @@ namespace MeGUI
                     ffmsThreads.Value = ffmsThreads.Maximum;
                 else
                     ffmsThreads.Value = settings.FFMSThreads;
+                cbHwdDecoder.SelectedIndex = (int)settings.HwdItems;
+                chkEnableHwd.Checked = settings.EnableHwdAVSVideoDec;
+                if (chkEnableHwd.Checked)
+                    cbHwdDecoder.Enabled = true;
+                else
+                    cbHwdDecoder.Enabled = false;
                 cbUseITUValues.Checked = settings.UseITUValues;
                 useDGIndexNV.Checked = settings.UseDGIndexNV;
                 useDGIndexIM.Checked = settings.UseDGIndexIM;
@@ -607,6 +615,11 @@ namespace MeGUI
         private void cbAutoUpdateServerSubList_SelectedIndexChanged(object sender, EventArgs e)
         {
             configureServersButton.Enabled = (cbAutoUpdateServerSubList.SelectedIndex == 2);
+        }
+
+        private void chkEnableHwd_CheckedChanged(object sender, EventArgs e)
+        {
+            cbHwdDecoder.Enabled = chkEnableHwd.Checked;
         }
     }
 }

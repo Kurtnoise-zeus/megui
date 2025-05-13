@@ -114,6 +114,8 @@ namespace MeGUI
             this.configureServersButton = new System.Windows.Forms.Button();
             this.useAutoUpdateCheckbox = new System.Windows.Forms.CheckBox();
             this.outputExtensions = new System.Windows.Forms.GroupBox();
+            this.lblForcedName = new System.Windows.Forms.Label();
+            this.txtForcedName = new System.Windows.Forms.TextBox();
             this.videoExtension = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -126,6 +128,8 @@ namespace MeGUI
             this.nbPasses = new System.Windows.Forms.NumericUpDown();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cbStandbySettings = new System.Windows.Forms.ComboBox();
             this.cbRemoveJob = new System.Windows.Forms.CheckBox();
             this.cbAutoStart = new System.Windows.Forms.CheckBox();
             this.cbAutoStartOnStartup = new System.Windows.Forms.CheckBox();
@@ -174,10 +178,6 @@ namespace MeGUI
             this.autoEncodeDefaultsButton = new System.Windows.Forms.Button();
             this.toolTipHelp = new System.Windows.Forms.ToolTip(this.components);
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cbStandbySettings = new System.Windows.Forms.ComboBox();
-            this.lblForcedName = new System.Windows.Forms.Label();
-            this.txtForcedName = new System.Windows.Forms.TextBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
             groupBox1.SuspendLayout();
             this.otherGroupBox.SuspendLayout();
@@ -606,12 +606,13 @@ namespace MeGUI
             // 
             this.cbHwdDecoder.FormattingEnabled = true;
             this.cbHwdDecoder.Items.AddRange(new object[] {
-            "Auto",
+            "Default Software",
             "NVIDIA CUVID",
             "Intel Quick Sync",
+            "Auto",
             "DXVA2",
             "D3D11",
-            "VULKAN"});
+            "Vulkan"});
             this.cbHwdDecoder.Location = new System.Drawing.Point(199, 88);
             this.cbHwdDecoder.Name = "cbHwdDecoder";
             this.cbHwdDecoder.Size = new System.Drawing.Size(106, 21);
@@ -620,12 +621,13 @@ namespace MeGUI
             // chkEnableHwd
             // 
             this.chkEnableHwd.AutoSize = true;
-            this.chkEnableHwd.Location = new System.Drawing.Point(13, 90);
+            this.chkEnableHwd.Location = new System.Drawing.Point(15, 90);
             this.chkEnableHwd.Name = "chkEnableHwd";
             this.chkEnableHwd.Size = new System.Drawing.Size(180, 17);
             this.chkEnableHwd.TabIndex = 56;
             this.chkEnableHwd.Text = "Enable Hardware Video Decoder";
             this.chkEnableHwd.UseVisualStyleBackColor = true;
+            this.chkEnableHwd.CheckedChanged += new System.EventHandler(this.chkEnableHwd_CheckedChanged);
             // 
             // chkInput8Bit
             // 
@@ -928,6 +930,24 @@ namespace MeGUI
             this.outputExtensions.TabStop = false;
             this.outputExtensions.Text = " Optional output extensions ";
             // 
+            // lblForcedName
+            // 
+            this.lblForcedName.AutoSize = true;
+            this.lblForcedName.Location = new System.Drawing.Point(9, 84);
+            this.lblForcedName.Margin = new System.Windows.Forms.Padding(3);
+            this.lblForcedName.Name = "lblForcedName";
+            this.lblForcedName.Size = new System.Drawing.Size(164, 13);
+            this.lblForcedName.TabIndex = 40;
+            this.lblForcedName.Text = "Add text to forced track names: ";
+            this.lblForcedName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtForcedName
+            // 
+            this.txtForcedName.Location = new System.Drawing.Point(11, 98);
+            this.txtForcedName.Name = "txtForcedName";
+            this.txtForcedName.Size = new System.Drawing.Size(243, 21);
+            this.txtForcedName.TabIndex = 39;
+            // 
             // videoExtension
             // 
             this.videoExtension.Location = new System.Drawing.Point(11, 20);
@@ -1070,6 +1090,26 @@ namespace MeGUI
             this.groupBox11.TabIndex = 12;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = " global worker settings ";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(199, 83);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(107, 13);
+            this.label7.TabIndex = 38;
+            this.label7.Text = "while a job is running";
+            // 
+            // cbStandbySettings
+            // 
+            this.cbStandbySettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStandbySettings.FormattingEnabled = true;
+            this.cbStandbySettings.Location = new System.Drawing.Point(9, 80);
+            this.cbStandbySettings.Margin = new System.Windows.Forms.Padding(2);
+            this.cbStandbySettings.Name = "cbStandbySettings";
+            this.cbStandbySettings.Size = new System.Drawing.Size(181, 21);
+            this.cbStandbySettings.TabIndex = 37;
             // 
             // cbRemoveJob
             // 
@@ -1628,44 +1668,6 @@ namespace MeGUI
             this.helpButton1.Name = "helpButton1";
             this.helpButton1.Size = new System.Drawing.Size(38, 23);
             this.helpButton1.TabIndex = 1;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(199, 83);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(107, 13);
-            this.label7.TabIndex = 38;
-            this.label7.Text = "while a job is running";
-            // 
-            // cbStandbySettings
-            // 
-            this.cbStandbySettings.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbStandbySettings.FormattingEnabled = true;
-            this.cbStandbySettings.Location = new System.Drawing.Point(9, 80);
-            this.cbStandbySettings.Margin = new System.Windows.Forms.Padding(2);
-            this.cbStandbySettings.Name = "cbStandbySettings";
-            this.cbStandbySettings.Size = new System.Drawing.Size(181, 21);
-            this.cbStandbySettings.TabIndex = 37;
-            // 
-            // lblForcedName
-            // 
-            this.lblForcedName.AutoSize = true;
-            this.lblForcedName.Location = new System.Drawing.Point(9, 84);
-            this.lblForcedName.Margin = new System.Windows.Forms.Padding(3);
-            this.lblForcedName.Name = "lblForcedName";
-            this.lblForcedName.Size = new System.Drawing.Size(164, 13);
-            this.lblForcedName.TabIndex = 40;
-            this.lblForcedName.Text = "Add text to forced track names: ";
-            this.lblForcedName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // txtForcedName
-            // 
-            this.txtForcedName.Location = new System.Drawing.Point(11, 98);
-            this.txtForcedName.Name = "txtForcedName";
-            this.txtForcedName.Size = new System.Drawing.Size(243, 21);
-            this.txtForcedName.TabIndex = 39;
             // 
             // SettingsForm
             // 

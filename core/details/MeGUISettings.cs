@@ -70,7 +70,7 @@ namespace MeGUI
                      bEnsureCorrectPlaybackSpeed, bExternalMuxerX264, bUseNeroAacEnc, bOSx64, bEnableDirectShowSource,
                      bVobSubberExtractForced, bVobSubberShowAll, bUsex64Tools, bShowDebugInformation, bEac3toDefaultToHD,
                      bEac3toEnableEncoder, bEac3toEnableDecoder, bEac3toEnableCustomOptions, bFirstUpdateCheck,
-                     bChapterCreatorCounter, bX264AdvancedSettings, bEac3toAddPrefix, workerRemoveJob;
+                     bChapterCreatorCounter, bX264AdvancedSettings, bEac3toAddPrefix, workerRemoveJob, bHwdVideoDecoder;
         private decimal forceFilmThreshold, acceptableFPSError;
         private int nbPasses, autoUpdateServerSubList, minComplexity, updateFormSplitter,
                     maxComplexity, jobColumnWidth, inputColumnWidth, outputColumnWidth, codecColumnWidth,
@@ -78,7 +78,8 @@ namespace MeGUI
                     updateFormUpdateColumnWidth, updateFormNameColumnWidth, updateFormLocalVersionColumnWidth,
                     updateFormServerVersionColumnWidth, updateFormLocalDateColumnWidth, updateFormServerDateColumnWidth,
                     updateFormLastUsedColumnWidth, updateFormStatusColumnWidth, updateFormServerArchitectureColumnWidth, 
-                    ffmsThreads, chapterCreatorMinimumLength, updateCheckInterval, disablePackageInterval, iWorkerMaximumCount;
+                    ffmsThreads, chapterCreatorMinimumLength, updateCheckInterval, disablePackageInterval, iWorkerMaximumCount,
+                    hwdItems;
         private double dpiScaleFactor, dLastDPIScaleFactor;
         private SourceDetectorSettings sdSettings;
         private AutoEncodeDefaultsSettings aedSettings;
@@ -192,11 +193,13 @@ namespace MeGUI
             bEnsureCorrectPlaybackSpeed = false;
             bAlwayUsePortableAviSynth = true;
             ffmsThreads = 1;
+            hwdItems = 0;
             appendToForcedStreams = "";
             ocGUIMode = OCGUIMode.Default;
             bUseITU = true;
             lastUsedOneClickFolder = "";
             bUseNeroAacEnc = bUseFDKAac = bUseQAAC = bUseDGIndexNV = bUseDGIndexIM = false;
+            bHwdVideoDecoder = false;
             chapterCreatorMinimumLength = 900;
             bExternalMuxerX264 = true;
             bVobSubberSingleFileExport = false;
@@ -986,6 +989,12 @@ namespace MeGUI
             set { ffmsThreads = value; }
         }
 
+        public int HwdItems
+        {
+            get { return hwdItems; }
+            set { hwdItems = value; }
+        }
+
         public bool UseITUValues
         {
             get { return bUseITU; }
@@ -1184,6 +1193,12 @@ namespace MeGUI
         {
             get { return bUseQAAC; }
             set { bUseQAAC = value; }
+        }
+
+        public bool EnableHwdAVSVideoDec
+        {
+            get { return bHwdVideoDecoder; }
+            set { bHwdVideoDecoder = value; }
         }
 
         [XmlIgnore]
