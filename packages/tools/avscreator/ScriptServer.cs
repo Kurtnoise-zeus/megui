@@ -156,7 +156,7 @@ namespace MeGUI
 
         public static string GetInputLine(string input, string indexFile, bool interlaced, PossibleSources sourceType,
             bool colormatrix, bool mpeg2deblock, bool flipVertical, double fps, bool dss2,
-            NvDeinterlacerType nvDeintType, int nvHorizontalResolution, int nvVerticalResolution, CropValues nvCropValues, HwdDevice hwdDevice, bool timecodesv2)
+            NvDeinterlacerType nvDeintType, int nvHorizontalResolution, int nvVerticalResolution, CropValues nvCropValues, bool timecodesv2)
         {
             string inputLine = "#input";
             string strDLLPath = "";
@@ -259,9 +259,6 @@ namespace MeGUI
                         inputLine = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
 
                     inputLine += "BSVideoSource(\"" + input + "\"" + ((fpsdetails == true) ? ", fpsnum=" + fpsnum.ToString() + ", fpsden=" + fpsden.ToString() : String.Empty);
-
-                    if (hwdDevice != (HwdDevice.hwdDeviceNone))
-                        inputLine += ScriptServer.GetGetHwdDevice(true, hwdDevice);
 
                     if (timecodesv2)
                         inputLine += ", timecodes=\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "timecodes_v2.txt");

@@ -112,9 +112,7 @@ namespace MeGUI
             this.nvDeInt = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.chhwdevice = new System.Windows.Forms.CheckBox();
             this.chTimecodesv2 = new System.Windows.Forms.CheckBox();
-            this.cbhwdevice = new System.Windows.Forms.ComboBox();
             this.deinterlacingGroupBox = new System.Windows.Forms.GroupBox();
             this.deintM = new System.Windows.Forms.NumericUpDown();
             this.deintFieldOrder = new System.Windows.Forms.ComboBox();
@@ -943,52 +941,23 @@ namespace MeGUI
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.chhwdevice);
             this.groupBox2.Controls.Add(this.chTimecodesv2);
-            this.groupBox2.Controls.Add(this.cbhwdevice);
             this.groupBox2.Location = new System.Drawing.Point(8, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(427, 81);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             // 
-            // chhwdevice
-            // 
-            this.chhwdevice.AutoSize = true;
-            this.chhwdevice.Location = new System.Drawing.Point(25, 16);
-            this.chhwdevice.Name = "chhwdevice";
-            this.chhwdevice.Size = new System.Drawing.Size(120, 17);
-            this.chhwdevice.TabIndex = 6;
-            this.chhwdevice.Text = "Hardware Decoding";
-            this.chhwdevice.UseVisualStyleBackColor = true;
-            this.chhwdevice.CheckedChanged += new System.EventHandler(this.chhwdevice_CheckedChanged);
-            // 
             // chTimecodesv2
             // 
             this.chTimecodesv2.AutoSize = true;
-            this.chTimecodesv2.Location = new System.Drawing.Point(25, 41);
+            this.chTimecodesv2.Location = new System.Drawing.Point(22, 20);
             this.chTimecodesv2.Name = "chTimecodesv2";
             this.chTimecodesv2.Size = new System.Drawing.Size(139, 17);
             this.chTimecodesv2.TabIndex = 5;
             this.chTimecodesv2.Text = "Write Timecodes v2 File";
             this.chTimecodesv2.UseVisualStyleBackColor = true;
             this.chTimecodesv2.CheckedChanged += new System.EventHandler(this.RefreshScript);
-            // 
-            // cbhwdevice
-            // 
-            this.cbhwdevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbhwdevice.Enabled = false;
-            this.cbhwdevice.FormattingEnabled = true;
-            this.cbhwdevice.Items.AddRange(new object[] {
-            "none",
-            "d3d11va",
-            "cuda",
-            "vulkan"});
-            this.cbhwdevice.Location = new System.Drawing.Point(151, 14);
-            this.cbhwdevice.Name = "cbhwdevice";
-            this.cbhwdevice.Size = new System.Drawing.Size(121, 21);
-            this.cbhwdevice.TabIndex = 4;
-            this.cbhwdevice.SelectedIndexChanged += new System.EventHandler(this.RefreshScript);
             // 
             // deinterlacingGroupBox
             // 
@@ -1456,7 +1425,5 @@ namespace MeGUI
         private TabPage tabPage4;
         private GroupBox groupBox2;
         private CheckBox chTimecodesv2;
-        private ComboBox cbhwdevice;
-        private CheckBox chhwdevice;
     }
 }
