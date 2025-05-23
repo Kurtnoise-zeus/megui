@@ -2140,6 +2140,7 @@ namespace MeGUI
             int iCounter = 0;
             foreach (string strLanguage in settings.DefaultAudioLanguage)
             {
+                bool firstTrackFound = false;
                 for (int i = 0; i < arrAudioTrackInfo.Count; i++)
                 {
                     if (arrAudioTrackInfo[i].Language.ToLowerInvariant().Equals(strLanguage.ToLowerInvariant()))
@@ -2157,72 +2158,75 @@ namespace MeGUI
                             }
                         }
 
-                        bool bAddTrack = true;
                         if (bUseFirstTrackOnly)
                         {
-                            foreach (OneClickStreamControl oAudioControl in audioTracks)
+                            if (!firstTrackFound)
                             {
-                                if (oAudioControl.SelectedStreamIndex > 0 &&
-                                    oAudioControl.SelectedStream.Language.ToLowerInvariant().Equals(arrAudioTrackInfo[i].Language.ToLowerInvariant()))
+                                if (iCounter > 0)
+                                    AudioAddTrack(false);
+                                iSelectedAudioTabPage = iCounter;
+                                audioTracks[iCounter++].SelectedStreamIndex = i + 1;
+                                firstTrackFound = true;
+                            }
+                            // skip any further tracks for this language
+                        }
+                        else
+                        {
+                            // add all tracks for this language
+                            if (iCounter > 0)
+                                AudioAddTrack(false);
+                            iSelectedAudioTabPage = iCounter;
+                            audioTracks[iCounter++].SelectedStreamIndex = i + 1;
+                        }
+
+                    }
+                }
+
+
+                if (iCounter == 0 && arrAudioTrackInfo.Count > 0 && !settings.UseNoLanguagesAsFallback)
+                {
+                    for (int i = 0; i < arrAudioTrackInfo.Count; i++)
+                    {
+                        if (arrAudioTrackInfo[i].Language.ToLowerInvariant().Equals(strLanguage.ToLowerInvariant()))
+                        {
+                            // should only the first audio track for this language be processed?
+                            bool bUseFirstTrackOnly = true;
+                            if (settings.AudioSettings.Count > 0)
+                                bUseFirstTrackOnly = settings.AudioSettings[0].UseFirstTrackOnly;
+                            foreach (OneClickAudioSettings oAudioSettings in settings.AudioSettings)
+                            {
+                                if (arrAudioTrackInfo[i].Language.ToLowerInvariant().Equals(oAudioSettings.Language.ToLowerInvariant()))
                                 {
-                                    bAddTrack = false;
+                                    bUseFirstTrackOnly = oAudioSettings.UseFirstTrackOnly;
                                     break;
                                 }
                             }
-                        }
 
-                        if (!bAddTrack)
-                            break;
-
-                        if (iCounter > 0)
-                            AudioAddTrack(false);
-
-                        iSelectedAudioTabPage = iCounter;
-                        audioTracks[iCounter++].SelectedStreamIndex = i + 1;
-                    }
-                }
-            }
-
-            if (iCounter == 0 && arrAudioTrackInfo.Count > 0 && !settings.UseNoLanguagesAsFallback)
-            {
-                for (int i = 0; i < arrAudioTrackInfo.Count; i++)
-                {
-                    // should only the first audio track for this language be processed?
-                    bool bUseFirstTrackOnly = true;
-                    if (settings.AudioSettings.Count > 0)
-                        bUseFirstTrackOnly = settings.AudioSettings[0].UseFirstTrackOnly;
-                    foreach (OneClickAudioSettings oAudioSettings in settings.AudioSettings)
-                    {
-                        if (arrAudioTrackInfo[i].Language.ToLowerInvariant().Equals(oAudioSettings.Language.ToLowerInvariant()))
-                        {
-                            bUseFirstTrackOnly = oAudioSettings.UseFirstTrackOnly;
-                            break;
-                        }
-                    }
-
-                    bool bAddTrack = true;
-                    if (bUseFirstTrackOnly)
-                    {
-                        foreach (OneClickStreamControl oAudioControl in audioTracks)
-                        {
-                            if (oAudioControl.SelectedStreamIndex > 0 &&
-                                oAudioControl.SelectedStream.Language.ToLowerInvariant().Equals(arrAudioTrackInfo[i].Language.ToLowerInvariant()))
+                            if (bUseFirstTrackOnly)
                             {
-                                bAddTrack = false;
-                                break;
+                                if (!firstTrackFound)
+                                {
+                                    if (iCounter > 0)
+                                        AudioAddTrack(false);
+                                    iSelectedAudioTabPage = iCounter;
+                                    audioTracks[iCounter++].SelectedStreamIndex = i + 1;
+                                    firstTrackFound = true;
+                                }
+                                // skip any further tracks for this language
                             }
+                            else
+                            {
+                                // add all tracks for this language
+                                if (iCounter > 0)
+                                    AudioAddTrack(false);
+                                iSelectedAudioTabPage = iCounter;
+                                audioTracks[iCounter++].SelectedStreamIndex = i + 1;
+                            }
+
                         }
                     }
-
-                    if (!bAddTrack)
-                        break;
-
-                    if (iCounter > 0)
-                        AudioAddTrack(false);
-
-                    iSelectedAudioTabPage = iCounter;
-                    audioTracks[iCounter++].SelectedStreamIndex = i + 1;
                 }
+
             }
 
             iSelectedAudioTabPage = 0;
