@@ -471,38 +471,60 @@ namespace MeGUI
                 buttonPanel.Controls.Remove(showPAR);
             }
             SuspendLayout();
-           
-            // resize main window
+
             sizeLock = true;
             int iMainHeight = this.videoWindowHeight + formHeightDelta;
-            int iMainWidth = this.videoWindowWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
+
+            // Clamp iMainHeight if bOriginalSize is true
             if (bOriginalSize)
             {
                 Size oSizeScreen = Screen.GetWorkingArea(this).Size;
                 int iScreenHeight = oSizeScreen.Height - 2 * SystemInformation.FixedFrameBorderSize.Height;
-                int iScreenWidth = oSizeScreen.Width - 2 * SystemInformation.FixedFrameBorderSize.Width;
-
                 if (iMainHeight >= iScreenHeight)
                     iMainHeight = iScreenHeight;
+            }
 
+            // Determine if vertical scrollbar is needed
+            bool needsVerticalScrollbar = this.videoWindowHeight > (iMainHeight - formHeightDelta + 2);
+
+            int adjustedVideoWindowWidth = this.videoWindowWidth;
+            if (needsVerticalScrollbar)
+            {
+                adjustedVideoWindowWidth += SystemInformation.VerticalScrollBarWidth;
+            }
+
+            // Calculate iMainWidth using adjustedVideoWindowWidth
+            int iMainWidth = adjustedVideoWindowWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
+
+            // Clamp iMainWidth to screen width if bOriginalSize is true
+            if (bOriginalSize)
+            {
+                Size oSizeScreen = Screen.GetWorkingArea(this).Size;
+                int iScreenWidth = oSizeScreen.Width - 2 * SystemInformation.FixedFrameBorderSize.Width;
                 if (iMainWidth >= iScreenWidth)
                     iMainWidth = iScreenWidth;
             }
-            if (iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - 2 < buttonPanelMinWidth)
-                iMainWidth = buttonPanelMinWidth + 2 * SystemInformation.FixedFrameBorderSize.Width;
+
+            // Clamp iMainWidth to ensure buttonPanelMinWidth is respected
+            // The available width for the panel content is iMainWidth - 2 * FixedFrameBorderSize.Width - DPIRescale(12)
+            if (iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - MainForm.Instance.Settings.DPIRescale(12) < buttonPanelMinWidth)
+                iMainWidth = buttonPanelMinWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
+
             this.Size = new Size(iMainWidth, iMainHeight);
 
             // resize videoPanel
-            this.videoPanel.Size = new Size(iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width, iMainHeight - formHeightDelta + 2);
+            // The width for videoPanel should be the available space: iMainWidth minus borders and rescaling offsets
+            this.videoPanel.Size = new Size(iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - MainForm.Instance.Settings.DPIRescale(12), iMainHeight - formHeightDelta + 2);
             sizeLock = false;
 
-            // resize videoPreview
+            // resize videoPreview (size remains based on original videoWindowWidth/Height)
             this.videoPreview.Size = new Size(this.videoWindowWidth, this.videoWindowHeight);
 
             // resize buttonPanel
-            this.buttonPanel.Size = new Size(iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width, buttonPanel.Height);
+            // The width for buttonPanel should also be the available space like videoPanel
+            this.buttonPanel.Size = new Size(iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - MainForm.Instance.Settings.DPIRescale(12), buttonPanel.Height);
             this.buttonPanel.Location = new Point(1, videoPanel.Location.Y + videoPanel.Size.Height);
-            ResumeLayout();
+            ResumeLayout(false);
         }
 
         private void FormResized(object sender, EventArgs e)
