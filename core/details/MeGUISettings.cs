@@ -1574,10 +1574,6 @@ namespace MeGUI
             if (!bUseDGIndexNV)
                 return false;
 
-            // DGI is not available in a RDP connection
-            if (SystemInformation.TerminalServerSession == true)
-                return false;
-
             return true;
         }
 
