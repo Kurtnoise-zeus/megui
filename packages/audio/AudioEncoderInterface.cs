@@ -103,7 +103,7 @@ namespace MeGUI
             _settings = settings;
         }
 
-        protected void Dispose(bool disposing)
+        internal void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -445,7 +445,6 @@ namespace MeGUI
                 return;
             }
 
-            Thread t = null;
             try
             {
                 RaiseEvent("Opening file....please wait, it may take some time");
