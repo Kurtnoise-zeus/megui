@@ -61,7 +61,8 @@ namespace MeGUI
                        defaultLanguage1, defaultLanguage2, afterEncodingCommand, videoExtension, audioExtension,
                        strEac3toLastFolderPath, strEac3toLastFilePath, strEac3toLastDestinationPath, tempDirMP4,
                        fdkAacPath, httpproxyaddress, httpproxyport, httpproxyuid, httpproxypwd, defaultOutputDir, exhalePath,
-                       appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString, muxInputPath, muxOutputPath;
+                       appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString, muxInputPath, muxOutputPath,
+                       qaacPath;
         private bool autoForceFilm, autoOpenScript, bUseQAAC, bUseDGIndexNV, bUseDGIndexIM, bInput8Bit,
                      overwriteStats, keep2of3passOutput, autoUpdate, deleteIntermediateFiles, workerAutoStart,
                      deleteAbortedOutput, openProgressWindow, bEac3toAutoSelectStreams, bUseFDKAac, bVobSubberKeepAll,
@@ -1144,6 +1145,26 @@ namespace MeGUI
             }
         }
 
+        /// <summary>
+        /// filename and full path of the qaav executable
+        /// </summary>
+        public string QAacPath
+        {
+            get
+            {
+                if (!File.Exists(qaacPath))
+                    qaacPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\qaac.exe");
+                return qaacPath;
+            }
+            set
+            {
+                if (!File.Exists(value))
+                    qaacPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\qaac.exe");
+                else
+                    qaacPath = value;
+            }
+        }
+
 
         /// <summary>
         /// filename and full path of the exhale executable
@@ -1768,7 +1789,7 @@ namespace MeGUI
             oggenc.UpdateInformation("oggenc2", "OggEnc2", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\oggenc2\oggenc2.exe"));
             opus.UpdateInformation("opus", "Opus", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\opus\opusenc.exe"));
             pgcdemux.UpdateInformation("pgcdemux", "PgcDemux", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\pgcdemux\pgcdemux.exe"));
-            qaac.UpdateInformation("qaac", "QAAC", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\qaac.exe"));
+            qaac.UpdateInformation("qaac", "QAAC", qaacPath);
             qaac.DoNotDeleteFoldersOnUpdate.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\QTfiles"));
             qaac.DoNotDeleteFoldersOnUpdate.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\QTfiles64"));
             if (!MainForm.Instance.Settings.UseQAAC)

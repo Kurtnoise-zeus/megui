@@ -106,6 +106,11 @@ namespace MeGUI
                         if (MainForm.Instance.Settings.UseFDKAac && File.Exists(MainForm.Instance.Settings.Fdkaac.Path))
                             latest.UploadDate = currentVersion.UploadDate;
                     }
+                    else if (this.name == "qaac")
+                    {
+                        if (MainForm.Instance.Settings.UseQAAC && File.Exists(MainForm.Instance.Settings.QAAC.Path))
+                            latest.UploadDate = currentVersion.UploadDate;
+                    }
                     return latest != null && (latest.CompareTo(currentVersion) != 0);
                 }
             }
@@ -138,6 +143,20 @@ namespace MeGUI
                             {
                                 System.Diagnostics.FileVersionInfo finfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(MainForm.Instance.Settings.Fdkaac.Path);
                                 FileInfo fi = new FileInfo(MainForm.Instance.Settings.Fdkaac.Path);
+                                CurrentVersion.FileVersion = finfo.FileMajorPart + "." + finfo.FileMinorPart + "." + finfo.FileBuildPart + "." + finfo.FilePrivatePart;
+                                CurrentVersion.UploadDate = fi.LastWriteTimeUtc;
+                            }
+                        }
+                        break;
+                    case "qaac":
+                        if (MainForm.Instance.Settings.UseQAAC)
+                        {
+                            if (MainForm.Instance.Settings.QAAC.UpdateAllowed())
+                                arrPath.AddRange(MainForm.Instance.Settings.QAAC.Files);
+                            if (File.Exists(MainForm.Instance.Settings.QAAC.Path))
+                            {
+                                System.Diagnostics.FileVersionInfo finfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(MainForm.Instance.Settings.QAAC.Path);
+                                FileInfo fi = new FileInfo(MainForm.Instance.Settings.QAAC.Path);
                                 CurrentVersion.FileVersion = finfo.FileMajorPart + "." + finfo.FileMinorPart + "." + finfo.FileBuildPart + "." + finfo.FilePrivatePart;
                                 CurrentVersion.UploadDate = fi.LastWriteTimeUtc;
                             }
