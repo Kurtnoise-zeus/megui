@@ -355,6 +355,7 @@ namespace MeGUI
                 settings.SourceDetectorSettings = sdSettings;
                 settings.NeroAacEncPath = neroaacencLocation.Filename;
                 settings.FDKAacPath = fdkaacLocation.Filename;
+                settings.QAacPath = qaacLocation.Filename;
                 settings.VideoExtension = videoExtension.Text;
                 settings.AudioExtension = audioExtension.Text;
 				settings.DefaultLanguage1 = defaultLanguage1.Text;
@@ -446,6 +447,7 @@ namespace MeGUI
                 useAutoUpdateCheckbox.Checked = settings.AutoUpdate;
                 neroaacencLocation.Filename = settings.NeroAacEncPath;
                 fdkaacLocation.Filename = settings.FDKAacPath;
+                qaacLocation.Filename = settings.QAacPath;
                 sdSettings = settings.SourceDetectorSettings;
                 videoExtension.Text = settings.VideoExtension;
                 audioExtension.Text = settings.AudioExtension;
@@ -577,6 +579,7 @@ namespace MeGUI
 
         private void useQAAC_CheckedChanged(object sender, EventArgs e)
         {
+            qaacLocation.Enabled = lblQaac.Enabled = useQAAC.Checked;
             if (useQAAC.Checked && !internalSettings.UseQAAC)
                 MessageBox.Show("You have to restart MeGUI in order to get access to QAAC.\r\nAlso external dependencies must be installed if not already available. More information can be found here:\r\nhttps://sites.google.com/site/qaacpage/", "Restart required", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

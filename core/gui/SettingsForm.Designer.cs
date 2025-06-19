@@ -152,6 +152,10 @@ namespace MeGUI
             this.btnResetSettings = new System.Windows.Forms.Button();
             this.workerSettingsListBox = new System.Windows.Forms.ListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.lblQaac = new System.Windows.Forms.Label();
+            this.qaacLocation = new MeGUI.FileBar();
+            this.useQAAC = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.useFDKAac = new System.Windows.Forms.CheckBox();
             this.lblFDK = new System.Windows.Forms.Label();
@@ -159,7 +163,6 @@ namespace MeGUI
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.chk64Bit = new System.Windows.Forms.CheckBox();
             this.chx264ExternalMuxer = new System.Windows.Forms.CheckBox();
-            this.useQAAC = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.useNeroAacEnc = new System.Windows.Forms.CheckBox();
             this.lblNero = new System.Windows.Forms.Label();
@@ -205,6 +208,7 @@ namespace MeGUI
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.groupBox8.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.groupBox14.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -1371,6 +1375,7 @@ namespace MeGUI
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.groupBox14);
             this.tabPage2.Controls.Add(this.groupBox7);
             this.tabPage2.Controls.Add(this.groupBox6);
             this.tabPage2.Controls.Add(this.groupBox5);
@@ -1383,6 +1388,51 @@ namespace MeGUI
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "External Programs";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox14
+            // 
+            this.groupBox14.Controls.Add(this.lblQaac);
+            this.groupBox14.Controls.Add(this.qaacLocation);
+            this.groupBox14.Controls.Add(this.useQAAC);
+            this.groupBox14.Location = new System.Drawing.Point(4, 123);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(577, 55);
+            this.groupBox14.TabIndex = 48;
+            this.groupBox14.TabStop = false;
+            // 
+            // lblQaac
+            // 
+            this.lblQaac.AutoSize = true;
+            this.lblQaac.Enabled = false;
+            this.lblQaac.Location = new System.Drawing.Point(7, 20);
+            this.lblQaac.Name = "lblQaac";
+            this.lblQaac.Size = new System.Drawing.Size(47, 13);
+            this.lblQaac.TabIndex = 50;
+            this.lblQaac.Text = "Location";
+            // 
+            // qaacLocation
+            // 
+            this.qaacLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.qaacLocation.Enabled = false;
+            this.qaacLocation.Filename = "";
+            this.qaacLocation.Filter = "QAAC|qaac.exe";
+            this.qaacLocation.Location = new System.Drawing.Point(60, 16);
+            this.qaacLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.qaacLocation.Name = "qaacLocation";
+            this.qaacLocation.Size = new System.Drawing.Size(509, 23);
+            this.qaacLocation.TabIndex = 49;
+            // 
+            // useQAAC
+            // 
+            this.useQAAC.AutoSize = true;
+            this.useQAAC.Location = new System.Drawing.Point(12, 0);
+            this.useQAAC.Name = "useQAAC";
+            this.useQAAC.Size = new System.Drawing.Size(90, 17);
+            this.useQAAC.TabIndex = 48;
+            this.useQAAC.Text = "Enable QAAC";
+            this.useQAAC.UseVisualStyleBackColor = true;
+            this.useQAAC.CheckedChanged += new System.EventHandler(this.useQAAC_CheckedChanged);
             // 
             // groupBox7
             // 
@@ -1434,10 +1484,9 @@ namespace MeGUI
             // 
             this.groupBox6.Controls.Add(this.chk64Bit);
             this.groupBox6.Controls.Add(this.chx264ExternalMuxer);
-            this.groupBox6.Controls.Add(this.useQAAC);
-            this.groupBox6.Location = new System.Drawing.Point(4, 264);
+            this.groupBox6.Location = new System.Drawing.Point(8, 326);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(577, 67);
+            this.groupBox6.Size = new System.Drawing.Size(577, 103);
             this.groupBox6.TabIndex = 33;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = " Misc ";
@@ -1447,7 +1496,7 @@ namespace MeGUI
             this.chk64Bit.AutoSize = true;
             this.chk64Bit.Checked = true;
             this.chk64Bit.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk64Bit.Location = new System.Drawing.Point(225, 43);
+            this.chk64Bit.Location = new System.Drawing.Point(12, 20);
             this.chk64Bit.Name = "chk64Bit";
             this.chk64Bit.Size = new System.Drawing.Size(141, 17);
             this.chk64Bit.TabIndex = 51;
@@ -1465,17 +1514,6 @@ namespace MeGUI
             this.chx264ExternalMuxer.TabIndex = 49;
             this.chx264ExternalMuxer.Text = "x264: use external muxer for MKV";
             this.chx264ExternalMuxer.UseVisualStyleBackColor = true;
-            // 
-            // useQAAC
-            // 
-            this.useQAAC.AutoSize = true;
-            this.useQAAC.Location = new System.Drawing.Point(12, 20);
-            this.useQAAC.Name = "useQAAC";
-            this.useQAAC.Size = new System.Drawing.Size(90, 17);
-            this.useQAAC.TabIndex = 48;
-            this.useQAAC.Text = "Enable QAAC";
-            this.useQAAC.UseVisualStyleBackColor = true;
-            this.useQAAC.CheckedChanged += new System.EventHandler(this.useQAAC_CheckedChanged);
             // 
             // groupBox5
             // 
@@ -1527,7 +1565,7 @@ namespace MeGUI
             // 
             this.groupBox4.Controls.Add(this.btnClearMP4TempDirectory);
             this.groupBox4.Controls.Add(this.tempDirMP4);
-            this.groupBox4.Location = new System.Drawing.Point(3, 204);
+            this.groupBox4.Location = new System.Drawing.Point(7, 266);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(578, 54);
             this.groupBox4.TabIndex = 31;
@@ -1563,7 +1601,7 @@ namespace MeGUI
             this.vobGroupBox.Controls.Add(this.cbAutoLoadDG);
             this.vobGroupBox.Controls.Add(this.forceFilmPercentage);
             this.vobGroupBox.Controls.Add(this.autoForceFilm);
-            this.vobGroupBox.Location = new System.Drawing.Point(4, 122);
+            this.vobGroupBox.Location = new System.Drawing.Point(8, 184);
             this.vobGroupBox.Name = "vobGroupBox";
             this.vobGroupBox.Size = new System.Drawing.Size(577, 76);
             this.vobGroupBox.TabIndex = 29;
@@ -1723,6 +1761,8 @@ namespace MeGUI
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox6.ResumeLayout(false);
@@ -1866,5 +1906,8 @@ namespace MeGUI
         private System.Windows.Forms.ComboBox cbStandbySettings;
         private System.Windows.Forms.Label lblForcedName;
         private System.Windows.Forms.TextBox txtForcedName;
+        private System.Windows.Forms.GroupBox groupBox14;
+        private System.Windows.Forms.Label lblQaac;
+        private FileBar qaacLocation;
     }
 }
