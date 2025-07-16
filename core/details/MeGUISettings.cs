@@ -1789,7 +1789,7 @@ namespace MeGUI
             oggenc.UpdateInformation("oggenc2", "OggEnc2", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\oggenc2\oggenc2.exe"));
             opus.UpdateInformation("opus", "Opus", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\opus\opusenc.exe"));
             pgcdemux.UpdateInformation("pgcdemux", "PgcDemux", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\pgcdemux\pgcdemux.exe"));
-            qaac.UpdateInformation("qaac", "QAAC", qaacPath);
+            qaac.UpdateInformation("qaac", "QAAC", QAacPath);
             qaac.DoNotDeleteFoldersOnUpdate.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\QTfiles"));
             qaac.DoNotDeleteFoldersOnUpdate.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\qaac\QTfiles64"));
             if (!MainForm.Instance.Settings.UseQAAC)
