@@ -260,6 +260,25 @@ namespace MeGUI
 
                     inputLine += "BSVideoSource(\"" + input + "\"" + ((fpsdetails == true) ? ", fpsnum=" + fpsnum.ToString() + ", fpsden=" + fpsden.ToString() : String.Empty);
 
+                    if (MainForm.Instance.Settings.EnableHwdAVSVideoDec)
+                    {
+                        switch (MainForm.Instance.Settings.HwdItems)
+                        {
+                            case 4:
+                                inputLine += string.Format(", hwdevice=" + "\"dxva2\"");
+                                break;
+                            case 5:
+                                inputLine += string.Format(", hwdevice=" + "\"d3d11\"");
+                                break;
+                            case 6:
+                                inputLine += string.Format(", hwdevice=" + "\"vulkan\"");
+                                break;
+                            default:
+                                inputLine += string.Format("");
+                                break;
+                        }
+                    }
+
                     if (timecodesv2)
                         inputLine += ", timecodes=\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "timecodes_v2.txt");
 

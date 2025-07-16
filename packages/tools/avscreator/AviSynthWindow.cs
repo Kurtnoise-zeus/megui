@@ -751,7 +751,28 @@ namespace MeGUI
                 if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
                 {
                     tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
-                    tempAvs += string.Format("BSVideoSource(\"{0}\")", fileName);
+                    if (MainForm.Instance.Settings.EnableHwdAVSVideoDec)
+                    {
+                        tempAvs += string.Format("BSVideoSource(\"{0}\"", fileName);
+                        switch (MainForm.Instance.Settings.HwdItems)
+                        {
+                            case 4:
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "dxva2");
+                                break;
+                            case 5:
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "d3d11");
+                                break;
+                            case 6:
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "vulkan");
+                                break;
+                            default:
+                                tempAvs += string.Format(")");
+                                break;
+                        }
+
+                    }
+                    else
+                        tempAvs += string.Format("BSVideoSource(\"{0}\")", fileName);
                 }
                 else tempAvs = string.Format("BSVideoSource(\"{0}\")", fileName);
 
