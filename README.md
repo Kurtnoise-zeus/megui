@@ -22,7 +22,7 @@ Nothing really new comparing to the official release except :
 - Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)
 - BestSource avisynth support (https://github.com/vapoursynth/bestsource/releases)
 - FFV1 Lossless Video Encoder (https://ffmpeg.org/)
-- SVT-AV1-PSY Video Encoder (https://github.com/psy-ex/svt-av1-psy) 
+- SVT-AV1-PSY Video Encoder (https://github.com/BlueSwordM/svt-av1-psyex) 
 
 ## Release
 
