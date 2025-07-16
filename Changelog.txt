@@ -1,3 +1,12 @@
+Changelog version 6666 20250716
+
+- Added hardware decoding support for BestSource and L-Smash input avisynth plugin.
+- Rearranged a little bit the Avisynth Extra Settings through Options.
+- Added qaac location settings through Options.
+- Added webm muxer. Patch by Lin Seng.
+- Fixed several issues in the One-Click Encoder. 
+
+
 Changelog version 6666 20250210
 
 - Updated MediaInfo libraries.
