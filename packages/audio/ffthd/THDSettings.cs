@@ -28,12 +28,9 @@ namespace MeGUI
     {
         public static string ID = "FFmpeg TrueHD";
 
-        public static readonly object[] SupportedBitrates = new object[] { 64, 128, 160, 192, 224, 256, 288, 320, 352, 384, 448, 512, 576, 640, 704, 768, 832, 896, 960, 1024, 1088, 1152, 1216, 1280, 1344, 1408, 1472, 1536};
-
         public THDSettings()
             : base(ID, AudioCodec.THD, AudioEncoderType.FFTHD, 384)
         {
-            base.supportedBitrates = Array.ConvertAll<object, int>(SupportedBitrates, delegate(object o) { return (int)o; });
         }
 
         public override BitrateManagementMode BitrateMode
