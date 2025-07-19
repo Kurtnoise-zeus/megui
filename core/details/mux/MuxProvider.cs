@@ -1308,6 +1308,7 @@ namespace MeGUI
             RegisterEncoder(new LameMP3EncodingProvider());
             RegisterEncoder(new VorbisEncodingProvider());
             RegisterEncoder(new AC3EncodingProvider());
+            RegisterEncoder(new DCAEncodingProvider());
             RegisterEncoder(new EAC3EncodingProvider());
             RegisterEncoder(new ExhaleEncodingProvider());
             RegisterEncoder(new FdkaacEncodingProvider());
@@ -1442,6 +1443,16 @@ namespace MeGUI
             supportedCodecs.Add(AudioCodec.AC3);
             supportedTypes.Add(AudioType.AC3);
             supportedEncoderTypes.Add(AudioEncoderType.FFAC3);
+        }
+    }
+    public class DCAEncodingProvider : AudioEncodingProvider
+    {
+        public DCAEncodingProvider()
+            : base()
+        {
+            supportedCodecs.Add(AudioCodec.DTS);
+            supportedTypes.Add(AudioType.DTS);
+            supportedEncoderTypes.Add(AudioEncoderType.FFDCA);
         }
     }
 

@@ -70,6 +70,7 @@ namespace MeGUI
             SafeRegister<xvidSettings, xvidConfigurationPanel>("Video");
             profileGroups.Add(new ProfileGroup(typeof(AudioCodecSettings), "Audio"));
             SafeRegister<AC3Settings, MeGUI.packages.audio.ffac3.AC3ConfigurationPanel>("Audio");
+            SafeRegister<DCASettings, MeGUI.packages.audio.ffdca.DCAConfigurationPanel>("Audio");
             SafeRegister<EAC3Settings, MeGUI.packages.audio.ffeac3.EAC3ConfigurationPanel>("Audio");
             SafeRegister<THDSettings, MeGUI.packages.audio.ffthd.THDConfigurationPanel>("Audio");
             SafeRegister<MP2Settings, MeGUI.packages.audio.ffmp2.MP2ConfigurationPanel>("Audio");

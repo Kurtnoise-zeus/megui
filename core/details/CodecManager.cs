@@ -211,6 +211,7 @@ namespace MeGUI
         public static readonly AudioEncoderType EXHALE = new AudioEncoderType("EXHALE", AudioCodec.AAC);
         public static readonly AudioEncoderType FFAAC  = new AudioEncoderType("FFAAC", AudioCodec.AAC);
         public static readonly AudioEncoderType FFAC3  = new AudioEncoderType("FFAC3", AudioCodec.AC3);
+        public static readonly AudioEncoderType FFDCA  = new AudioEncoderType("FFDCA", AudioCodec.DTS);
         public static readonly AudioEncoderType FFEAC3 = new AudioEncoderType("FFEAC3", AudioCodec.EAC3);
         public static readonly AudioEncoderType FFTHD  = new AudioEncoderType("FFTHD", AudioCodec.THD);
         public static readonly AudioEncoderType FFMP2  = new AudioEncoderType("FFMP2", AudioCodec.MP2);
@@ -287,6 +288,7 @@ namespace MeGUI
                 throw new Exception("Failed to register a standard video encoder type");
             if (!(
                 AudioEncoderTypes.Register(AudioEncoderType.FFAC3)  &&
+                AudioEncoderTypes.Register(AudioEncoderType.FFDCA)  &&
                 AudioEncoderTypes.Register(AudioEncoderType.FFEAC3) &&
                 AudioEncoderTypes.Register(AudioEncoderType.FFMP2)  &&
                 AudioEncoderTypes.Register(AudioEncoderType.FFTHD)  &&
