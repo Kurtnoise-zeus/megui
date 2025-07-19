@@ -347,22 +347,26 @@ namespace MeGUI
         #region reading process output
         protected virtual void readStream(StreamReader sr, ManualResetEvent rEvent, StreamType str)
         {
-            string line;
-            if (Proc != null && sr != null && rEvent != null)
+            // Use a using statement to ensure the StreamReader is disposed after use
+            using (sr)
             {
-                try
+                string line;
+                if (Proc != null && sr != null && rEvent != null)
                 {
-                    while ((line = sr.ReadLine()) != null)
+                    try
                     {
-                        mre.WaitOne();
-                        ProcessLine(line, str, ImageType.Information);
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            mre.WaitOne();
+                            ProcessLine(line, str, ImageType.Information);
+                        }
                     }
+                    catch (Exception e)
+                    {
+                        ProcessLine("Exception in readStream. Line cannot be processed. " + e.Message, str, ImageType.Error);
+                    }
+                    rEvent.Set();
                 }
-                catch (Exception e)
-                {
-                    ProcessLine("Exception in readStream. Line cannot be processed. " + e.Message, str, ImageType.Error);
-                }
-                rEvent.Set();
             }
         }
 
