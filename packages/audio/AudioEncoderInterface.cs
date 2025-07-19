@@ -55,6 +55,7 @@ namespace MeGUI
                 (((j as AudioJob).Settings is MP3Settings) ||
                 ((j as AudioJob).Settings is MP2Settings) ||
                 ((j as AudioJob).Settings is AC3Settings) ||
+                ((j as AudioJob).Settings is EAC3Settings) ||
                 ((j as AudioJob).Settings is OggVorbisSettings) ||
                 ((j as AudioJob).Settings is NeroAACSettings) ||
                 ((j as AudioJob).Settings is FlacSettings) ||
@@ -408,7 +409,7 @@ namespace MeGUI
                 if (System.Text.RegularExpressions.Regex.IsMatch(line.ToLowerInvariant(), @"^processed\s?[0-9]{0,5}\s?seconds..."))
                     return;
             }
-            else if (audioJob.Settings is AC3Settings || audioJob.Settings is MP2Settings || audioJob.Settings is FFAACSettings)
+            else if (audioJob.Settings is AC3Settings || audioJob.Settings is MP2Settings || audioJob.Settings is FFAACSettings || audioJob.Settings is EAC3Settings)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(line.ToLowerInvariant(), @"^size= "))
                     return;
@@ -2214,6 +2215,24 @@ function c3_dpl2(clip a)
                 sb.Append(" -hide_banner -i - -y");
                 if (!oSettings.CustomEncoderOptions.Contains("-acodec "))
                     sb.Append(" -acodec ac3");
+                if (!oSettings.CustomEncoderOptions.Contains("-ab "))
+                    sb.Append(" -ab " + oSettings.Bitrate + "k");
+                if (!String.IsNullOrEmpty(oSettings.CustomEncoderOptions))
+                    sb.Append(" " + oSettings.CustomEncoderOptions.Trim());
+                sb.Append(" \"{0}\"");
+            }
+            else if (audioJob.Settings is EAC3Settings)
+            {
+                UpdateCacher.CheckPackage("ffmpeg");
+                EAC3Settings oSettings = audioJob.Settings as EAC3Settings;
+                _encoderExecutablePath = this._settings.FFmpeg.Path;
+                _sendWavHeaderToEncoderStdIn = HeaderType.W64;
+
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
+
+                sb.Append(" -hide_banner -i - -y");
+                if (!oSettings.CustomEncoderOptions.Contains("-acodec "))
+                    sb.Append(" -acodec eac3");
                 if (!oSettings.CustomEncoderOptions.Contains("-ab "))
                     sb.Append(" -ab " + oSettings.Bitrate + "k");
                 if (!String.IsNullOrEmpty(oSettings.CustomEncoderOptions))

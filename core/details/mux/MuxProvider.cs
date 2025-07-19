@@ -1279,7 +1279,7 @@ namespace MeGUI
         
         public override string GetInputTypeFilter()
         {
-            return "All supported types|*.avs;*.wav;*.pcm;*.mpa;*.mp2;*.mp3;*.ac3;*.dts;*.m4a;*.aac";
+            return "All supported types|*.avs;*.wav;*.pcm;*.mpa;*.mp2;*.mp3;*.ac3;*.dts;*.m4a;*.aac;*.eac3";
         }
 
         public override IJobProcessor CreateEncoder(MeGUISettings settings)
@@ -1308,6 +1308,7 @@ namespace MeGUI
             RegisterEncoder(new LameMP3EncodingProvider());
             RegisterEncoder(new VorbisEncodingProvider());
             RegisterEncoder(new AC3EncodingProvider());
+            RegisterEncoder(new EAC3EncodingProvider());
             RegisterEncoder(new MP2EncodingProvider());
             RegisterEncoder(new FlacEncodingProvider());
             RegisterEncoder(new QaacEncodingProvider());
@@ -1440,6 +1441,17 @@ namespace MeGUI
             supportedCodecs.Add(AudioCodec.AC3);
             supportedTypes.Add(AudioType.AC3);
             supportedEncoderTypes.Add(AudioEncoderType.FFAC3);
+        }
+    }
+
+    public class EAC3EncodingProvider : AudioEncodingProvider
+    {
+        public EAC3EncodingProvider()
+            : base()
+        {
+            supportedCodecs.Add(AudioCodec.EAC3);
+            supportedTypes.Add(AudioType.EAC3);
+            supportedEncoderTypes.Add(AudioEncoderType.FFEAC3);
         }
     }
 

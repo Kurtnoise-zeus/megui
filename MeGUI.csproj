@@ -165,6 +165,10 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="App.ico" />
+    <EmbeddedResource Include="packages\audio\ffeac3\EAC3ConfigurationPanel.resx">
+      <DependentUpon>EAC3ConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.resx">
       <DependentUpon>svtav1psyConfigurationPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -344,6 +348,13 @@
       <DependentUpon>FFAACConfigurationPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="packages\audio\ffaac\FFAACSettings.cs" />
+    <Compile Include="packages\audio\ffeac3\EAC3Settings.cs" />
+    <Compile Include="packages\audio\ffeac3\EAC3ConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\ffeac3\EAC3ConfigurationPanel.Designer.cs">
+      <DependentUpon>EAC3ConfigurationPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="packages\muxer\ffmpeg\FFmpegMuxer.cs" />
     <Compile Include="packages\reader\lmash\lsmashReader.cs" />
     <Compile Include="packages\reader\mediainfo\wrapper\AudioTrack.cs" />
