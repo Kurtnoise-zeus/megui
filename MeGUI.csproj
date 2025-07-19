@@ -169,6 +169,10 @@
       <DependentUpon>EAC3ConfigurationPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="packages\audio\ffthd\THDConfigurationPanel.resx">
+      <DependentUpon>THDConfigurationPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.resx">
       <DependentUpon>svtav1psyConfigurationPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -355,6 +359,13 @@
     <Compile Include="packages\audio\ffeac3\EAC3ConfigurationPanel.Designer.cs">
       <DependentUpon>EAC3ConfigurationPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="packages\audio\ffthd\THDConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\ffthd\THDConfigurationPanel.Designer.cs">
+      <DependentUpon>THDConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\ffthd\THDSettings.cs" />
     <Compile Include="packages\muxer\ffmpeg\FFmpegMuxer.cs" />
     <Compile Include="packages\reader\lmash\lsmashReader.cs" />
     <Compile Include="packages\reader\mediainfo\wrapper\AudioTrack.cs" />

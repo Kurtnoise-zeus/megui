@@ -212,6 +212,7 @@ namespace MeGUI
         public static readonly AudioEncoderType FFAAC  = new AudioEncoderType("FFAAC", AudioCodec.AAC);
         public static readonly AudioEncoderType FFAC3  = new AudioEncoderType("FFAC3", AudioCodec.AC3);
         public static readonly AudioEncoderType FFEAC3 = new AudioEncoderType("FFEAC3", AudioCodec.EAC3);
+        public static readonly AudioEncoderType FFTHD  = new AudioEncoderType("FFTHD", AudioCodec.THD);
         public static readonly AudioEncoderType FFMP2  = new AudioEncoderType("FFMP2", AudioCodec.MP2);
         public static readonly AudioEncoderType FDKAAC = new AudioEncoderType("FDK-AAC", AudioCodec.AAC);
         public static readonly AudioEncoderType FLAC   = new AudioEncoderType("FLAC", AudioCodec.FLAC);
@@ -288,6 +289,7 @@ namespace MeGUI
                 AudioEncoderTypes.Register(AudioEncoderType.FFAC3)  &&
                 AudioEncoderTypes.Register(AudioEncoderType.FFEAC3) &&
                 AudioEncoderTypes.Register(AudioEncoderType.FFMP2)  &&
+                AudioEncoderTypes.Register(AudioEncoderType.FFTHD)  &&
                 AudioEncoderTypes.Register(AudioEncoderType.LAME)   &&
                 AudioEncoderTypes.Register(AudioEncoderType.NAAC)   &&
                 AudioEncoderTypes.Register(AudioEncoderType.VORBIS) &&

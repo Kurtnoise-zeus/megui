@@ -71,6 +71,7 @@ namespace MeGUI
             profileGroups.Add(new ProfileGroup(typeof(AudioCodecSettings), "Audio"));
             SafeRegister<AC3Settings, MeGUI.packages.audio.ffac3.AC3ConfigurationPanel>("Audio");
             SafeRegister<EAC3Settings, MeGUI.packages.audio.ffeac3.EAC3ConfigurationPanel>("Audio");
+            SafeRegister<THDSettings, MeGUI.packages.audio.ffthd.THDConfigurationPanel>("Audio");
             SafeRegister<MP2Settings, MeGUI.packages.audio.ffmp2.MP2ConfigurationPanel>("Audio");
             SafeRegister<MP3Settings, MeGUI.packages.audio.lame.lameConfigurationPanel>("Audio");
             SafeRegister<NeroAACSettings, MeGUI.packages.audio.naac.neroConfigurationPanel>("Audio");
