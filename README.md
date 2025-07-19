@@ -20,6 +20,7 @@ Nothing really new comparing to the official release except :
 
 - Audio transcoding in order to use channel mask values. This requires avisynth+ 3.7.3 or higher.
 - Exhale Audio Encoder (https://gitlab.com/ecodis/exhale)
+- FFmpeg DCA/EAC3/THD Audio Encoders (https://ffmpeg.org/)
 - BestSource avisynth support (https://github.com/vapoursynth/bestsource/releases)
 - FFV1 Lossless Video Encoder (https://ffmpeg.org/)
 - SVT-AV1-PSY Video Encoder (https://github.com/BlueSwordM/svt-av1-psyex) 
