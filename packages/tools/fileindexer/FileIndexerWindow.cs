@@ -216,6 +216,8 @@ namespace MeGUI
 
         private void input_FileSelected(FileBar sender, FileBarEventArgs args)
         {
+            output.Filename = ""; // ensure to clean up output
+
             if (Path.GetExtension(input.Filename.ToUpperInvariant()) == ".VOB")
             {
                 // switch to IFO if possible as a VOB file is used
