@@ -1976,9 +1976,11 @@ namespace MeGUI
                 Padding = audioTracks[0].Padding,
                 ShowDelay = audioTracks[0].ShowDelay,
                 ShowDefaultStream = audioTracks[0].ShowDefaultStream,
-                ShowForceStream = audioTracks[0].ShowForceStream,
-                Filter = audioTracks[0].Filter
+                ShowForceStream = audioTracks[0].ShowForceStream
             };
+            a.chkDefaultStream.CheckedChanged += new System.EventHandler(this.chkDefaultStream_CheckedChanged);
+            a.SomethingChanged += new EventHandler(audio1_SomethingChanged);
+            a.Filter = audioTracks[0].Filter;
             a.FileUpdated += oneClickAudioStreamControl_FileUpdated;
 
             // clone the streams
@@ -1996,10 +1998,7 @@ namespace MeGUI
 
             a.CustomStreams = audioTracks[0].CustomStreams;
             a.SelectedStreamIndex = 0;
-            a.SomethingChanged += new EventHandler(audio1_SomethingChanged);
-            a.EncodingMode = audioTracks[0].EncodingMode;
             a.initProfileHandler();
-            a.SelectProfileNameOrWarn(audioTracks[0].EncoderProfile);
             if (this.Visible)
                 a.enableDragDrop();
 
@@ -2007,10 +2006,7 @@ namespace MeGUI
                 iSelectedAudioTabPage > audioTracks.Count - 1)
                 iSelectedAudioTabPage = 0;
 
-            if (!audioTab.IsDisposed)
-            {
-                IntPtr h = audioTab.Handle;  // fix for TabPages.Insert not working if handle has not been created yet (issue in batch mode)
-            }
+            IntPtr h = audioTab.Handle;  // fix for TabPages.Insert not working if handle has not been created yet (issue in batch mode)
             audioTab.TabPages.Insert(iSelectedAudioTabPage + 1, p);
             audioTracks.Insert(iSelectedAudioTabPage + 1, a);
             p.Controls.Add(a);
@@ -2020,7 +2016,6 @@ namespace MeGUI
 
             if (bChangeFocus)
                 audioTab.SelectedTab = p;
-            p.Dispose();
 
             beingCalled--;
             UpdatePossibleContainers();
@@ -2072,6 +2067,7 @@ namespace MeGUI
                     break;
                 }
             }
+
         }
 
         private void oneClickAudioStreamControl_FileUpdated(object sender, EventArgs e)
