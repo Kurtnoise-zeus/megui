@@ -118,14 +118,14 @@ namespace MeGUI
 
             int iTracksFound = 0;
             int iCurrentAudioTrack = -1;
-            for (int iCurrentTrack = 0; iCurrentTrack <= 29; iCurrentTrack++) // hard limit to max. 30 tracks
+            for (int iCurrentTrack = 1; iCurrentTrack <= 29; iCurrentTrack++) // hard limit to max. 30 tracks
             {
                 StringBuilder strAVSScript = new StringBuilder();
                 strAVSScript.Append(VideoUtil.getLSMASHAudioInputLine(Job.Input, Job.Output, iCurrentTrack, false));
 
                 // is this an audio track?
-                if (AudioUtil.AVSScriptHasAudio(strAVSScript.ToString(), out _) == false)
-                    continue;
+                //if (AudioUtil.AVSScriptHasAudio(strAVSScript.ToString(), out _) == false)
+                //    continue;
                 iCurrentAudioTrack++;
 
                 foreach (AudioTrackInfo oAudioTrack in Job.AudioTracks)
