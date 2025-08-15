@@ -103,8 +103,8 @@ namespace MeGUI
         private void CheckDGIIndexer()
         {
             string filter = "All DGIndex supported files|*.ifo;*.m1v;*.m2t;*.m2ts;*.m2v;*.mpeg;*.mpg;*.mpv;*.pva;*.tp;*.trp;*.ts;*.vob;*.vro";
-            filter += "|All FFMS Indexer supported files|*.avi;*.flv;*.ifo;*.m2ts;*.mkv;*.mp4;*.mpg;*.mpls;*.ogm;*.ts;*.vob;*.wmv";
-            filter += "|All LSMASH Indexer supported files|*.avi;*.flv;*.ifo;*.m2ts;*.mkv;*.mp4;*.mpg;*.mpls;*.ogm;*.ts;*.vob;*.wmv";
+            filter += "|All FFMS Indexer supported files|*.avi;*.flv;*.ifo;*.m2ts;*.mkv;*.webm;*.mp4;*.mpg;*.mpls;*.ogm;*.ts;*.vob;*.wmv";
+            filter += "|All LSMASH Indexer supported files|*.avi;*.flv;*.ifo;*.m2ts;*.mkv;*.webm;*.mp4;*.mpg;*.mpls;*.ogm;*.ts;*.vob;*.wmv";
             if (MainForm.Instance.Settings.IsDGIIndexerAvailable() || MainForm.Instance.Settings.IsDGMIndexerAvailable())
             {
                 if (MainForm.Instance.Settings.IsDGIIndexerAvailable())
@@ -125,7 +125,7 @@ namespace MeGUI
             }
             else
             {
-                filter += "|All supported files|*.264;*.avc;*.avi;*.flv;*.h264;*.265;*.hevc;*.ifo;*.m1v;*.m2t*;*.m2ts;*.m2v;*.mkv;*.mp4;*.mpeg;*.mpg;*.mpls;*.mpv;*.mts;*.ogm;*.pva;*.tp;*.trp;*.ts;*.vob;*.vro;*.wmv";
+                filter += "|All supported files|*.264;*.avc;*.avi;*.flv;*.h264;*.265;*.hevc;*.ifo;*.m1v;*.m2t*;*.m2ts;*.m2v;*.mkv;*.webm;*.mp4;*.mpeg;*.mpg;*.mpls;*.mpv;*.mts;*.ogm;*.pva;*.tp;*.trp;*.ts;*.vob;*.vro;*.wmv";
                 filter += "|All files|*.*";
                 input.Filter = filter;
                 input.FilterIndex = 4;
@@ -180,7 +180,8 @@ namespace MeGUI
                         this.demuxVideo.Enabled = false;
                         IndexerUsed = IndexType.FFMS;
                         btnFFMS.Checked = true;
-                        if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA"))
+                        if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") ||
+                            txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM"))
                             this.gbAudio.Text = " Audio Demux ";
                         else
                             this.gbAudio.Text = " Audio Encoding ";
@@ -195,7 +196,8 @@ namespace MeGUI
                         this.demuxVideo.Enabled = false;
                         IndexerUsed = IndexType.LSMASH;
                         btnLSMASH.Checked = true;
-                        if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA"))
+                        if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") || 
+                            txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM"))
                             this.gbAudio.Text = " Audio Demux ";
                         else
                             this.gbAudio.Text = " Audio Encoding ";
@@ -624,8 +626,9 @@ namespace MeGUI
                     {
                         FFMSIndexJob job = generateFFMSIndexJob(videoInput);
                         if (job.DemuxMode > 0 && job.AudioTracks.Count > 0 &&
-                            (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA")
-                            || txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("BLU-RAY PLAYLIST")))
+                            (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") || 
+                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM") ||
+                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("BLU-RAY PLAYLIST")))
                         {
                             job.DemuxMode = 0;
                             job.AudioTracksDemux = job.AudioTracks;
@@ -646,13 +649,15 @@ namespace MeGUI
                     {
                         LSMASHIndexJob job = generateLSMASHIndexJob(videoInput);
                         if (job.DemuxMode > 0 && job.AudioTracks.Count > 0 &&
-                            (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA")
-                            || txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("BLU-RAY PLAYLIST")))
+                            (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") ||
+                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM") ||
+                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("BLU-RAY PLAYLIST")))
                         {
                             job.DemuxMode = 0;
                             job.AudioTracksDemux = job.AudioTracks;
                             job.AudioTracks = new List<AudioTrackInfo>();
-                            if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA"))
+                            if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") || 
+                                txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM"))
                             {
                                 MkvExtractJob extractJob = new MkvExtractJob(videoInput, Path.GetDirectoryName(this.output.Filename), job.AudioTracksDemux);
                                 prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(extractJob));

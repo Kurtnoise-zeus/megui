@@ -1236,6 +1236,7 @@ namespace MeGUI
 
             // only the following container formats are supported
             if (_strContainer.ToUpperInvariant().Equals("MATROSKA") ||
+                _strContainer.ToUpperInvariant().Equals("WEBM") ||
                 _strContainer.ToUpperInvariant().Equals("MPEG-TS") ||
                 _strContainer.ToUpperInvariant().Equals("MPEG-PS") ||
                 _strContainer.ToUpperInvariant().Equals("MPEG VIDEO") ||
@@ -1261,6 +1262,7 @@ namespace MeGUI
 
             // only the following container formats are supported
             if (_strContainer.ToUpperInvariant().Equals("MATROSKA") ||
+                _strContainer.ToUpperInvariant().Equals("WEBM") ||
                 _strContainer.ToUpperInvariant().Equals("MPEG-TS") ||
                 _strContainer.ToUpperInvariant().Equals("MPEG-PS") ||
                 _strContainer.ToUpperInvariant().Equals("MPEG VIDEO") ||
