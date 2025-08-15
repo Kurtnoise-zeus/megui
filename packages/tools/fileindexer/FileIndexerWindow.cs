@@ -625,20 +625,6 @@ namespace MeGUI
                 case IndexType.FFMS:
                     {
                         FFMSIndexJob job = generateFFMSIndexJob(videoInput);
-                        if (job.DemuxMode > 0 && job.AudioTracks.Count > 0 &&
-                            (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") || 
-                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM") ||
-                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("BLU-RAY PLAYLIST")))
-                        {
-                            job.DemuxMode = 0;
-                            job.AudioTracksDemux = job.AudioTracks;
-                            job.AudioTracks = new List<AudioTrackInfo>();
-                            if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA"))
-                            {
-                                MkvExtractJob extractJob = new MkvExtractJob(videoInput, Path.GetDirectoryName(this.output.Filename), job.AudioTracksDemux);
-                                prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(extractJob));
-                            }
-                        }
                         prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(job));
                         MainForm.Instance.Jobs.AddJobsWithDependencies(prepareJobs, true);
                         if (this.closeOnQueue.Checked)
@@ -648,21 +634,6 @@ namespace MeGUI
                 case IndexType.LSMASH:
                     {
                         LSMASHIndexJob job = generateLSMASHIndexJob(videoInput);
-                        if (job.DemuxMode > 0 && job.AudioTracks.Count > 0 &&
-                            (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") ||
-                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM") ||
-                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("BLU-RAY PLAYLIST")))
-                        {
-                            job.DemuxMode = 0;
-                            job.AudioTracksDemux = job.AudioTracks;
-                            job.AudioTracks = new List<AudioTrackInfo>();
-                            if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") || 
-                                txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM"))
-                            {
-                                MkvExtractJob extractJob = new MkvExtractJob(videoInput, Path.GetDirectoryName(this.output.Filename), job.AudioTracksDemux);
-                                prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(extractJob));
-                            }
-                        }
                         prepareJobs = new SequentialChain(prepareJobs, new SequentialChain(job));
                         MainForm.Instance.Jobs.AddJobsWithDependencies(prepareJobs, true);
                         if (this.closeOnQueue.Checked)
