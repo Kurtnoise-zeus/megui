@@ -899,7 +899,7 @@ namespace MeGUI
                 script.AppendFormat("{0}(\"{1}\"{2}{3}{4}){5}",
                     ("LWLibavAudioSource"),
                     inputFile,
-                    (track > -1 ? ("stream_index=" + track) : String.Empty),
+                    (track > -1 ? (", stream_index=" + track) : String.Empty),
                     (!String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
                     (drc ? ", drc_scale=1" : ", drc_scale=0"),
                     Environment.NewLine);
