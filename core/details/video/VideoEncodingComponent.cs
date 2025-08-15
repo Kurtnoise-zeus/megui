@@ -491,11 +491,6 @@ namespace MeGUI
                 vArray[vArray.Length - 2] = VideoType.AVI;
                 vArray[vArray.Length - 1] = VideoType.MKV;
             }
-            else if (lastCodec == VideoEncoderType.X264)
-            {
-                Array.Resize(ref vArray, vArray.Length + 1);
-                vArray[vArray.Length - 1] = VideoType.MP4;
-            }
             else if (lastCodec == VideoEncoderType.X265)
             {
                 Array.Resize(ref vArray, vArray.Length + 2);
@@ -509,13 +504,8 @@ namespace MeGUI
                 vArray[vArray.Length - 2] = VideoType.MP4;
                 vArray[vArray.Length - 1] = VideoType.WEBM;
             }
-            else if (lastCodec == VideoEncoderType.FFV1)
-            {
-                Array.Resize(ref vArray, vArray.Length + 1);
-                vArray[vArray.Length - 1] = VideoType.MKV;
-            }
 
-                Util.ChangeItemsKeepingSelectedSame(fileType, vArray);
+            Util.ChangeItemsKeepingSelectedSame(fileType, vArray);
         }
 
         private void editZonesButton_Click(object sender, EventArgs e)
