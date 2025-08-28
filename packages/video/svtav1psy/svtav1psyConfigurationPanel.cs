@@ -118,9 +118,10 @@ namespace MeGUI.packages.video.svtav1psy
                 if (svtEncodingMode.SelectedIndex == (int)VideoCodecSettings.VideoEncodingMode.quality) // crf
                 {
                     svtBitrateQuantizer.Maximum = 63;
-                    svtBitrateQuantizer.Minimum = 1.0M;
-                    svtBitrateQuantizer.DecimalPlaces = 1;
-                    svtBitrateQuantizer.Increment = 0.1M;
+                    svtBitrateQuantizer.Minimum = 1;
+                    svtBitrateQuantizer.Value = (int)svtBitrateQuantizer.Value; // makes sure it is an integer
+                    svtBitrateQuantizer.DecimalPlaces = 0;
+                    svtBitrateQuantizer.Increment = 1;
                 }
                 else // qp
                 {
@@ -139,7 +140,7 @@ namespace MeGUI.packages.video.svtav1psy
                 if (isBitrateMode((VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex))
                     this.svtBitrateQuantizer.Value = 7000;
                 else
-                    this.svtBitrateQuantizer.Value = 35;
+                    this.svtBitrateQuantizer.Value = 30;
             }
 
             lastEncodingMode = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;

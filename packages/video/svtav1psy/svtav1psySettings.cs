@@ -81,7 +81,7 @@ namespace MeGUI
         public svtav1psySettings():base(ID, VideoEncoderType.SVTAV1PSY)
 		{
             psyTuningMode = svtAv1PsyTuningModes.NONE;
-            quantizerCrf = 35;
+            quantizerCrf = 30;
             VideoEncodingType = VideoEncodingMode.quality;
             base.MaxNumberOfPasses = 2;
             preset = 10;
