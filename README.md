@@ -23,7 +23,7 @@ Nothing really new comparing to the official release except :
 - FFmpeg DCA/EAC3/THD Audio Encoders (https://ffmpeg.org/)
 - BestSource avisynth support (https://github.com/vapoursynth/bestsource/releases)
 - FFV1 Lossless Video Encoder (https://ffmpeg.org/)
-- SVT-AV1-PSY Video Encoder (https://github.com/BlueSwordM/svt-av1-psyex) 
+- SVT-AV1-Essential Video Encoder (https://github.com/nekotrix/SVT-AV1-Essential) 
 
 ## Release
 
