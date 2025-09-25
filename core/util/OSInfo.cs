@@ -438,6 +438,7 @@ namespace MeGUI
                                                         case 22621: osName += " 22H2"; break;
                                                         case 22631: osName += " 23H2"; break;
                                                         case 26100: osName += " 24H2"; break;
+                                                        case 26200: osName += " 25H2"; break;    
                                                         default: osName += string.IsNullOrEmpty(release) ? string.Empty : " " + release; break;
                                                     }
                                                 }
