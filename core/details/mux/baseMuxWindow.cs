@@ -278,8 +278,16 @@ namespace MeGUI
                     chapters.Filename = "<internal chapters>";
             }
             
-            MainForm.Instance.Settings.MuxInputPath = Path.GetDirectoryName(vInput.Filename);
-            
+            string videoFolder = Path.GetDirectoryName(vInput.Filename);
+            MainForm.Instance.Settings.MuxInputPath = videoFolder;
+
+            // Set input folder for EXISTING tracks
+            foreach (var audioTrack in audioTracks)
+                audioTrack.input.SetInitialFolder(videoFolder);
+
+            foreach (var subtitleTrack in subtitleTracks)
+                subtitleTrack.input.SetInitialFolder(videoFolder);
+
             FileUpdated();
             CheckIO();
         }
@@ -352,7 +360,12 @@ namespace MeGUI
             };
             a.FileUpdated += muxStreamControl2_FileUpdated;
             a.input.FileSelected += new MeGUI.FileBarEventHandler(this.Audio_FileSelected);
-            a.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+
+            // Use the current video folder if available, otherwise setting
+            string folder = !string.IsNullOrEmpty(vInput.Filename)
+                ? Path.GetDirectoryName(vInput.Filename)
+                : MainForm.Instance.Settings.MuxInputPath;
+            a.input.SetInitialFolder(folder);
 
             audio.TabPages.Add(p);
             p.Controls.Add(a);
@@ -395,7 +408,12 @@ namespace MeGUI
             a.input.FileSelected += new MeGUI.FileBarEventHandler(this.Subtitle_FileSelected);
             a.Filter = subtitleTracks[0].Filter;
             a.FileUpdated += muxStreamControl1_FileUpdated;
-            a.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+
+            // Use the current video folder if available, otherwise setting
+            string folder = !string.IsNullOrEmpty(vInput.Filename)
+                ? Path.GetDirectoryName(vInput.Filename)
+                : MainForm.Instance.Settings.MuxInputPath;
+            a.input.SetInitialFolder(folder);
 
             subtitles.TabPages.Add(p);
             p.Controls.Add(a);
