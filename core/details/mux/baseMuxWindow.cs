@@ -288,6 +288,8 @@ namespace MeGUI
             foreach (var subtitleTrack in subtitleTracks)
                 subtitleTrack.input.SetInitialFolder(videoFolder);
 
+            chapters.SetInitialFolder(videoFolder);
+
             FileUpdated();
             CheckIO();
         }
@@ -311,8 +313,12 @@ namespace MeGUI
 
         private void chapters_FileSelected(FileBar sender, FileBarEventArgs args)
         {
-            MainForm.Instance.Settings.MuxInputPath = Path.GetDirectoryName(chapters.Filename);
+            // Use the current video folder if available, otherwise setting
+            string folder = !string.IsNullOrEmpty(vInput.Filename)
+                ? Path.GetDirectoryName(vInput.Filename)
+                : Path.GetDirectoryName(chapters.Filename);
             
+
             if (!File.Exists(chapters.Filename))
             {
                 FileUpdated();
