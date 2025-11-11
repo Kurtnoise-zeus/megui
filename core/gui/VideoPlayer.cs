@@ -979,6 +979,12 @@ namespace MeGUI
             return base.ProcessDialogKey(keyData);
         }
 
+        private void goToFrameButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.G && Control.ModifierKeys == Keys.Control)
+                goToFrameButton_Click(null, null);
+        }
+
         private void videoPreview_PositionChanged(object sender, EventArgs e)
         {
             if (videoPreview.Position > -1)

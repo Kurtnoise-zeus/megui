@@ -96,6 +96,7 @@ namespace MeGUI
             goToFrameButton.TabIndex = 13;
             goToFrameButton.Text = "Go to frame";
             goToFrameButton.Click += new System.EventHandler(this.goToFrameButton_Click);
+            goToFrameButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.goToFrameButton_KeyDown);
             // 
             // contextMenu1
             // 
