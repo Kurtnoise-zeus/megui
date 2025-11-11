@@ -609,6 +609,7 @@ namespace MeGUI
             supportedVideoCodecs.Add(VideoCodec.AV1);
             supportedVideoCodecs.Add(VideoCodec.HEVC);
             supportedVideoCodecs.Add(VideoCodec.HFYU);
+            supportedVideoCodecs.Add(VideoCodec.FFV1);
             supportedVideoCodecs.Add(VideoCodec.MPEG1);
             supportedVideoCodecs.Add(VideoCodec.MPEG2);
             supportedVideoCodecs.Add(VideoCodec.VC1);

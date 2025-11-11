@@ -324,7 +324,7 @@ namespace MeGUI
         }
         public static readonly VideoType AVI      = new VideoType("AVI", "AVI Files", "avi", ContainerType.AVI, new VideoCodec[] { VideoCodec.ASP, VideoCodec.AVC, VideoCodec.HFYU });
         public static readonly VideoType M2TS     = new VideoType("M2TS", "M2TS Files", "m2ts", ContainerType.M2TS, new VideoCodec[] { VideoCodec.AVC, VideoCodec.HEVC, VideoCodec.MPEG2, VideoCodec.VC1 });
-        public static readonly VideoType MKV      = new VideoType("MKV", "Matroska Files", "mkv", ContainerType.MKV, new VideoCodec[] { VideoCodec.ASP, VideoCodec.AVC, VideoCodec.HFYU, VideoCodec.MPEG1, VideoCodec.MPEG2, VideoCodec.VC1 });
+        public static readonly VideoType MKV      = new VideoType("MKV", "Matroska Files", "mkv", ContainerType.MKV, new VideoCodec[] { VideoCodec.ASP, VideoCodec.AVC, VideoCodec.HFYU, VideoCodec.MPEG1, VideoCodec.MPEG2, VideoCodec.VC1, VideoCodec.FFV1 });
         public static readonly VideoType MP4      = new VideoType("MP4", "MP4 Files", "mp4", ContainerType.MP4, new VideoCodec[] { VideoCodec.ASP, VideoCodec.AVC, VideoCodec.HEVC, VideoCodec.MPEG1, VideoCodec.MPEG2 });
         public static readonly VideoType WEBM     = new VideoType("WEBM", "WebM Files", "webm", ContainerType.WEBM, new VideoCodec[] { VideoCodec.VP8, VideoCodec.VP9, VideoCodec.AV1 });
         public static readonly VideoType MPEG1    = new VideoType("MPEG1", "MPEG-1 Files", "m1v", null, VideoCodec.MPEG1);
