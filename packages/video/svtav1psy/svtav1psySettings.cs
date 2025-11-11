@@ -118,7 +118,7 @@ namespace MeGUI
             set { svt10Bits = value; }
         }
         /// <summary>
-        ///  Handles assessment of whether the encoding options vary between two ffv1Settings instances
+        ///  Handles assessment of whether the encoding options vary between two SvtAv1PsySettings instances
         /// The following are excluded from the comparison:
         /// BitrateQuantizer
         /// CreditsQuantizer
@@ -133,8 +133,7 @@ namespace MeGUI
         public bool IsAltered(svtav1psySettings otherSettings)
         {
             if (
-                this.FFV1EncodingType != otherSettings.FFV1EncodingType ||
-                this.svtAv1PsyTuning != otherSettings.svtAv1PsyTuning
+                    this.svtAv1PsyTuning != otherSettings.svtAv1PsyTuning
                 )
                 return true;
             else

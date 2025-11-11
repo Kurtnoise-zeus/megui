@@ -185,7 +185,7 @@ namespace MeGUI.packages.video.svtav1psy
 
 
         /// <summary>
-        /// Returns whether settings is ffv1Settings
+        /// Returns whether settings is SvtAv1PsySettings
         /// </summary>
         /// <param name="settings">The settings to check</param>
         /// <returns>Whether the settings are valid</returns>
@@ -195,9 +195,9 @@ namespace MeGUI.packages.video.svtav1psy
         }
 
         /// <summary>
-        /// Returns a new instance of ffv1Settings.
+        /// Returns a new instance of SvtAv1PsySettings.
         /// </summary>
-        /// <returns>A new instance of ffv1Settings</returns>
+        /// <returns>A new instance of SvtAv1PsySettings</returns>
         protected override VideoCodecSettings defaultSettings()
         {
             return new svtav1psySettings();
