@@ -1083,9 +1083,7 @@ namespace MeGUI
 		{
             if (isPreviewMode || player == null || !player.Visible)
             {
-                MessageBox.Show(this, "No AutoCropping without the original video window open",
-                    "AutoCropping not possible",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                return;
+                reopenOriginal_Click(null, null);
             }
 
             // don't lock up the GUI, start a new thread
