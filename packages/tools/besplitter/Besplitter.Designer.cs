@@ -139,8 +139,10 @@ namespace MeGUI.packages.tools.besplitter
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "Besplitter";
             this.Text = "MeGUI - Audio Cutter";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Besplitter_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

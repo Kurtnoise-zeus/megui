@@ -66,8 +66,10 @@ namespace MeGUI.core.gui
             this.Controls.Add(this.button2);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "TextViewer";
             this.Text = "Text Viewer";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextViewer_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

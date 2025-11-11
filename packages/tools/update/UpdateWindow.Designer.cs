@@ -71,9 +71,9 @@ namespace MeGUI
             this.txtBoxLog = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.chkShowAllFiles = new System.Windows.Forms.CheckBox();
-            this.btnUpdate = new System.Windows.Forms.Button();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.progressBar = new MeGUI.core.gui.CustomProgressBar();
+            this.btnUpdate = new System.Windows.Forms.Button();
             this.statusToolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -176,6 +176,7 @@ namespace MeGUI
             this.colStatus});
             this.listViewDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewDetails.FullRowSelect = true;
+            this.listViewDetails.HideSelection = false;
             this.listViewDetails.Location = new System.Drawing.Point(0, 0);
             this.listViewDetails.Name = "listViewDetails";
             this.listViewDetails.Size = new System.Drawing.Size(721, 199);
@@ -267,18 +268,6 @@ namespace MeGUI
             this.chkShowAllFiles.UseVisualStyleBackColor = true;
             this.chkShowAllFiles.CheckedChanged += new System.EventHandler(this.chkShowAllFiles_CheckedChanged);
             // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdate.Enabled = false;
-            this.btnUpdate.Location = new System.Drawing.Point(634, 30);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdate.TabIndex = 3;
-            this.btnUpdate.Text = "Update";
-            this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
-            // 
             // helpButton1
             // 
             this.helpButton1.ArticleName = "Presentation/AutoUpdate";
@@ -299,6 +288,18 @@ namespace MeGUI
             this.progressBar.Size = new System.Drawing.Size(721, 24);
             this.progressBar.TabIndex = 7;
             // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUpdate.Enabled = false;
+            this.btnUpdate.Location = new System.Drawing.Point(634, 30);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdate.TabIndex = 3;
+            this.btnUpdate.Text = "Update";
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            // 
             // UpdateWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -307,6 +308,7 @@ namespace MeGUI
             this.Controls.Add(this.splitContainer1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(400, 200);
@@ -316,6 +318,7 @@ namespace MeGUI
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UpdateWindow_FormClosing);
             this.Load += new System.EventHandler(this.UpdateWindow_Load);
             this.Shown += new System.EventHandler(this.UpdateWindow_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.UpdateWindow_KeyDown);
             this.Move += new System.EventHandler(this.UpdateWindow_Move);
             this.Resize += new System.EventHandler(this.UpdateWindow_Resize);
             this.statusToolStrip.ResumeLayout(false);

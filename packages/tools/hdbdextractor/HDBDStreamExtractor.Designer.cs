@@ -109,7 +109,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.SuspendLayout();
             // 
             // StatusStrip
-            //
+            // 
             this.StatusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripStatusLabel,
@@ -615,6 +615,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(773, 488);
@@ -623,6 +624,7 @@ namespace MeGUI.packages.tools.hdbdextractor
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MeGUI - HD-DVD/Blu-ray Streams Extractor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HdBrStreamExtractor_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HdBdStreamExtractor_KeyDown);
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
             this.InputGroupBox.ResumeLayout(false);

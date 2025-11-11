@@ -78,11 +78,13 @@ namespace MeGUI.core.gui
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(368, 190);
             this.Name = "WorkerSummary";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Worker Overview";
             this.VisibleChanged += new System.EventHandler(this.WorkerSummary_VisibleChanged);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WorkerSummary_KeyDown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

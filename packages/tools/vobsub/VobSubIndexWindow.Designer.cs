@@ -216,11 +216,13 @@ namespace MeGUI
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "VobSubIndexWindow";
             this.Text = "MeGUI - VobSub Indexer";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.VobSubIndexWindow_FormClosed);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VobSubIndexWindow_KeyDown);
             this.inputGroupbox.ResumeLayout(false);
             this.outputGroupbox.ResumeLayout(false);
             this.subtitleGroupbox.ResumeLayout(false);

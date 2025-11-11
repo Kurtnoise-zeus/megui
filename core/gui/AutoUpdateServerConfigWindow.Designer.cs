@@ -180,8 +180,10 @@ namespace MeGUI.core.gui
             this.Controls.Add(this.flowLayoutPanel3);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "AutoUpdateServerConfigWindow";
             this.Text = "Update Server Configuration";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutoUpdateServerConfigWindow_KeyDown);
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);

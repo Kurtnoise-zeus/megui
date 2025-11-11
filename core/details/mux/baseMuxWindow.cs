@@ -469,6 +469,24 @@ namespace MeGUI
             UpdateChapterBox();
         }
 
+        private void baseMuxWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
+
         private void output_Click(object sender, EventArgs e)
         {
             CheckIO();

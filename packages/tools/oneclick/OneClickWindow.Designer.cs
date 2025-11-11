@@ -911,10 +911,12 @@ namespace MeGUI
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "OneClickWindow";
             this.Text = "MeGUI - One Click Encoder";
             this.Shown += new System.EventHandler(this.OneClickWindow_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OneClickWindow_KeyDown);
             this.tabPage1.ResumeLayout(false);
             this.outputTab.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);

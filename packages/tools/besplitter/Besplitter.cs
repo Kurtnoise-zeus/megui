@@ -151,6 +151,24 @@ namespace MeGUI.packages.tools.besplitter
             output.Filename = Path.Combine(FileUtil.GetOutputFolder(input.Filename), 
                 Path.GetFileNameWithoutExtension(input.Filename) + "_new" + Path.GetExtension(input.Filename));
         }
+
+        private void Besplitter_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
     }
 
     public class BesplitterTool : ITool

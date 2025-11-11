@@ -244,11 +244,13 @@ namespace MeGUI
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AutoEncodeDefaults";
             this.ShowInTaskbar = false;
             this.Text = "MeGUI - Auto Encode Defaults";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.AutoEncodeDefaults_KeyDown);
             this.AutomaticEncodingGroup.ResumeLayout(false);
             this.AutomaticEncodingGroup.PerformLayout();
             this.OutputGroupBox.ResumeLayout(false);

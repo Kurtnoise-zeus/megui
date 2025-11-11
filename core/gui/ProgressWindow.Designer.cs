@@ -92,7 +92,7 @@
             this.groupBox1.Size = new System.Drawing.Size(308, 177);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            //
+            // 
             // currentFPS
             // 
             this.currentFPS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -140,7 +140,7 @@
             this.positionInClipTotal.TabStop = false;
             this.positionInClipTotal.Text = "---";
             this.positionInClipTotal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            //
+            // 
             // totalTime
             // 
             this.totalTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -279,7 +279,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.actionLabel);
             this.groupBox2.Controls.Add(this.priorityLabel);
@@ -322,7 +322,7 @@
             this.priority.Size = new System.Drawing.Size(142, 21);
             this.priority.TabIndex = 11;
             this.priority.SelectedIndexChanged += new System.EventHandler(this.priority_SelectedIndexChanged);
-            //
+            // 
             // abortButton
             // 
             this.abortButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -354,11 +354,13 @@
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "ProgressWindow";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Status";
             this.VisibleChanged += new System.EventHandler(this.ProgressWindow_VisibleChanged);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProgressWindow_KeyDown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);

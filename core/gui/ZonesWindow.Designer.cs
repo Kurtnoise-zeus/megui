@@ -110,9 +110,11 @@ namespace MeGUI.core.gui
             this.Controls.Add(this.flowLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "ZonesWindow";
             this.Text = "ZonesWindow";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ZonesWindow_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ZonesWindow_KeyDown);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

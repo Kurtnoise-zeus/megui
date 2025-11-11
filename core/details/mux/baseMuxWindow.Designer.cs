@@ -202,7 +202,7 @@ namespace MeGUI
             this.vInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel2.SetColumnSpan(this.vInput, 4);
             this.vInput.Filename = "";
-            this.vInput.Location = new System.Drawing.Point(71, 6);
+            this.vInput.Location = new System.Drawing.Point(68, 6);
             this.vInput.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
             this.vInput.Name = "vInput";
             this.vInput.Size = new System.Drawing.Size(358, 23);
@@ -222,7 +222,7 @@ namespace MeGUI
             // removeVideoTrack
             // 
             this.removeVideoTrack.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.removeVideoTrack.Location = new System.Drawing.Point(400, 42);
+            this.removeVideoTrack.Location = new System.Drawing.Point(401, 42);
             this.removeVideoTrack.Name = "removeVideoTrack";
             this.removeVideoTrack.Size = new System.Drawing.Size(26, 20);
             this.removeVideoTrack.TabIndex = 39;
@@ -576,7 +576,7 @@ namespace MeGUI
             this.helpButton1.Location = new System.Drawing.Point(12, 565);
             this.helpButton1.Margin = new System.Windows.Forms.Padding(12, 9, 12, 9);
             this.helpButton1.Name = "helpButton1";
-            this.helpButton1.Size = new System.Drawing.Size(29, 23);
+            this.helpButton1.Size = new System.Drawing.Size(37, 23);
             this.helpButton1.TabIndex = 8;
             // 
             // chkCloseOnQueue
@@ -602,10 +602,12 @@ namespace MeGUI
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "baseMuxWindow";
             this.Text = "Mux";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.baseMuxWindow_KeyDown);
             this.videoGroupbox.ResumeLayout(false);
             this.videoGroupbox.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);

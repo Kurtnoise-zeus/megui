@@ -71,6 +71,7 @@ namespace MeGUI
             this.btnReloadVideo = new System.Windows.Forms.Button();
             this.zoomOutButton = new System.Windows.Forms.Button();
             this.zoomInButton = new System.Windows.Forms.Button();
+            this.arChooser = new MeGUI.core.gui.ARChooser();
             this.showPAR = new System.Windows.Forms.CheckBox();
             this.originalSizeButton = new System.Windows.Forms.Button();
             this.introEndButton = new System.Windows.Forms.Button();
@@ -81,7 +82,6 @@ namespace MeGUI
             this.defaultToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.videoPanel = new System.Windows.Forms.Panel();
             this.videoPreview = new MeGUI.core.gui.VideoPlayerControl();
-            this.arChooser = new MeGUI.core.gui.ARChooser();
             goToFrameButton = new System.Windows.Forms.Button();
             this.buttonPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionSlider)).BeginInit();
@@ -287,6 +287,19 @@ namespace MeGUI
             this.zoomInButton.UseVisualStyleBackColor = true;
             this.zoomInButton.Click += new System.EventHandler(this.zoomInButton_Click);
             // 
+            // arChooser
+            // 
+            this.arChooser.CustomDARs = new MeGUI.core.util.Dar[0];
+            this.arChooser.HasLater = false;
+            this.arChooser.Location = new System.Drawing.Point(241, 45);
+            this.arChooser.MaximumSize = new System.Drawing.Size(1000, 29);
+            this.arChooser.MinimumSize = new System.Drawing.Size(64, 29);
+            this.arChooser.Name = "arChooser";
+            this.arChooser.SelectedIndex = 0;
+            this.arChooser.Size = new System.Drawing.Size(170, 29);
+            this.arChooser.TabIndex = 11;
+            this.arChooser.SelectionChanged += new MeGUI.StringChanged(this.arChooser_SelectionChanged);
+            // 
             // showPAR
             // 
             this.showPAR.AutoSize = true;
@@ -378,24 +391,11 @@ namespace MeGUI
             this.videoPreview.Location = new System.Drawing.Point(1, 1);
             this.videoPreview.Margin = new System.Windows.Forms.Padding(0);
             this.videoPreview.Name = "videoPreview";
-            this.videoPreview.Position = -1;
+            this.videoPreview.Position = 0;
             this.videoPreview.Size = new System.Drawing.Size(274, 164);
             this.videoPreview.SpeedUp = 1D;
             this.videoPreview.TabIndex = 11;
             this.videoPreview.PositionChanged += new System.EventHandler(this.videoPreview_PositionChanged);
-            // 
-            // arChooser
-            // 
-            this.arChooser.CustomDARs = new MeGUI.core.util.Dar[0];
-            this.arChooser.HasLater = false;
-            this.arChooser.Location = new System.Drawing.Point(241, 45);
-            this.arChooser.MaximumSize = new System.Drawing.Size(1000, 29);
-            this.arChooser.MinimumSize = new System.Drawing.Size(64, 29);
-            this.arChooser.Name = "arChooser";
-            this.arChooser.SelectedIndex = 0;
-            this.arChooser.Size = new System.Drawing.Size(170, 29);
-            this.arChooser.TabIndex = 11;
-            this.arChooser.SelectionChanged += new MeGUI.StringChanged(this.arChooser_SelectionChanged);
             // 
             // VideoPlayer
             // 
@@ -407,10 +407,12 @@ namespace MeGUI
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "VideoPlayer";
             this.Text = "VideoPlayer";
             this.Shown += new System.EventHandler(this.VideoPlayer_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VideoPlayer_KeyDown);
             this.buttonPanel.ResumeLayout(false);
             this.buttonPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.positionSlider)).EndInit();

@@ -961,6 +961,24 @@ namespace MeGUI
                 videoPreview.OffsetPosition(-1);
         }
 
+        private void VideoPlayer_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
+
         private void videoPreview_PositionChanged(object sender, EventArgs e)
         {
             if (videoPreview.Position > -1)

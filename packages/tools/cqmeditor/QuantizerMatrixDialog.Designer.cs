@@ -923,10 +923,12 @@ namespace MeGUI
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "QuantizerMatrixDialog";
             this.Text = "MeGUI - Quantizer Matrix Editor";
             this.Load += new System.EventHandler(this.QuantizerMatrixDialog_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.QuantizerMatrixDialog_KeyDown);
             this.matrixGroupbox.ResumeLayout(false);
             this.matrixGroupbox.PerformLayout();
             this.operationsGroupbox.ResumeLayout(false);
