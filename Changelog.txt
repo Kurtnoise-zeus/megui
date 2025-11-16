@@ -1,3 +1,16 @@
+Changelog version 6666 20251116
+
+- Added esc keyboard shortcut to close the main UI Forms.
+- Added CTRL+G as keyboard shortcut for the "Go to Frame" button on Video Preview.
+- Added FFmpeg DTS, TrueHD, EAC-3 Audio Encoders support.
+- Defined the same video input path for Audio, Subtitles & Chapters streams in Muxers.
+- Detected properly Windows 11 25H2 versioning.
+- Enabled WebM file handling for FFMS/L-Smash Indexers. Patch by Tengsen.
+- Fixed Audio Streams selection in the One-Click Encoder.
+- Updated MediaInfo Libraries. 
+
+
+
 Changelog version 6666 20250716
 
 - Added hardware decoding support for BestSource and L-Smash input avisynth plugin.
