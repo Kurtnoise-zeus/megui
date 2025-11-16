@@ -471,60 +471,50 @@ namespace MeGUI
                 buttonPanel.Controls.Remove(showPAR);
             }
             SuspendLayout();
-
             sizeLock = true;
-            int iMainHeight = this.videoWindowHeight + formHeightDelta;
 
-            // Clamp iMainHeight if bOriginalSize is true
-            if (bOriginalSize)
-            {
-                Size oSizeScreen = Screen.GetWorkingArea(this).Size;
-                int iScreenHeight = oSizeScreen.Height - 2 * SystemInformation.FixedFrameBorderSize.Height;
-                if (iMainHeight >= iScreenHeight)
-                    iMainHeight = iScreenHeight;
-            }
+            // Get screen dimensions
+            Size oSizeScreen = Screen.GetWorkingArea(this).Size;
+            int iScreenWidth = oSizeScreen.Width - 2 * SystemInformation.FixedFrameBorderSize.Width;
+            int iScreenHeight = oSizeScreen.Height - 2 * SystemInformation.FixedFrameBorderSize.Height;
 
-            // Determine if vertical scrollbar is needed
-            bool needsVerticalScrollbar = this.videoWindowHeight > (iMainHeight - formHeightDelta + 2);
+            // Respect min width for controls
+            int videoPanelWidth = Math.Max(videoWindowWidth, buttonPanelMinWidth);
+            videoPanelWidth = Math.Min(videoPanelWidth, iScreenWidth);
 
-            int adjustedVideoWindowWidth = this.videoWindowWidth;
-            if (needsVerticalScrollbar)
-            {
-                adjustedVideoWindowWidth += SystemInformation.VerticalScrollBarWidth;
-            }
+            // Reserve space for buttonPanel below videoPanel
+            int maxVideoPanelHeight = iScreenHeight
+                - buttonPanel.Height
+                - MainForm.Instance.Settings.DPIRescale(12)
+                - 2 * SystemInformation.FixedFrameBorderSize.Height;
+            int videoPanelHeight = Math.Min(videoWindowHeight, maxVideoPanelHeight);
 
-            // Calculate iMainWidth using adjustedVideoWindowWidth
-            int iMainWidth = adjustedVideoWindowWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
+            // Set videoPanel on top
+            videoPanel.Location = new Point(0, 0);
+            videoPanel.Size = new Size(videoPanelWidth, videoPanelHeight);
 
-            // Clamp iMainWidth to screen width if bOriginalSize is true
-            if (bOriginalSize)
-            {
-                Size oSizeScreen = Screen.GetWorkingArea(this).Size;
-                int iScreenWidth = oSizeScreen.Width - 2 * SystemInformation.FixedFrameBorderSize.Width;
-                if (iMainWidth >= iScreenWidth)
-                    iMainWidth = iScreenWidth;
-            }
+            // Set videoPreview inside videoPanel, centered or anchored
+            videoPreview.Size = new Size(videoWindowWidth, videoWindowHeight);
+            // Optional: center videoPreview in videoPanel if smaller than panel
+            int previewOffsetX = Math.Max(0, (videoPanelWidth - videoWindowWidth) / 2);
+            int previewOffsetY = Math.Max(0, (videoPanelHeight - videoWindowHeight) / 2);
+            videoPreview.Location = new Point(previewOffsetX, previewOffsetY);
 
-            // Clamp iMainWidth to ensure buttonPanelMinWidth is respected
-            // The available width for the panel content is iMainWidth - 2 * FixedFrameBorderSize.Width - DPIRescale(12)
-            if (iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - MainForm.Instance.Settings.DPIRescale(12) < buttonPanelMinWidth)
-                iMainWidth = buttonPanelMinWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
+            // Set buttonPanel just below videoPanel
+            buttonPanel.Size = new Size(videoPanelWidth, buttonPanel.Height);
+            buttonPanel.Location = new Point(videoPanel.Left, videoPanel.Bottom);
 
-            this.Size = new Size(iMainWidth, iMainHeight);
+            // Set Form Size to fit both panels
+            int totalHeight = videoPanel.Height + buttonPanel.Height
+                + 2 * SystemInformation.FixedFrameBorderSize.Height + MainForm.Instance.Settings.DPIRescale(12);
+            int totalWidth = videoPanelWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
+            if (totalWidth > iScreenWidth) totalWidth = iScreenWidth;
+            if (totalHeight > iScreenHeight) totalHeight = iScreenHeight;
 
-            // resize videoPanel
-            // The width for videoPanel should be the available space: iMainWidth minus borders and rescaling offsets
-            this.videoPanel.Size = new Size(iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - MainForm.Instance.Settings.DPIRescale(12), iMainHeight - formHeightDelta + 2);
-            sizeLock = false;
+            this.Size = new Size(totalWidth, totalHeight);
 
-            // resize videoPreview (size remains based on original videoWindowWidth/Height)
-            this.videoPreview.Size = new Size(this.videoWindowWidth, this.videoWindowHeight);
-
-            // resize buttonPanel
-            // The width for buttonPanel should also be the available space like videoPanel
-            this.buttonPanel.Size = new Size(iMainWidth - 2 * SystemInformation.FixedFrameBorderSize.Width - MainForm.Instance.Settings.DPIRescale(12), buttonPanel.Height);
-            this.buttonPanel.Location = new Point(1, videoPanel.Location.Y + videoPanel.Size.Height);
             ResumeLayout(false);
+            sizeLock = false;
         }
 
         private void FormResized(object sender, EventArgs e)
@@ -545,12 +535,12 @@ namespace MeGUI
         #endregion
 
         #region destructor
-		/// <summary>
-		/// performs additional tasks when the window is closed
-		/// ensures that if the AviReader/d2vreader is valid, access to the file is properly closed
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnClosing(CancelEventArgs e)
+        /// <summary>
+        /// performs additional tasks when the window is closed
+        /// ensures that if the AviReader/d2vreader is valid, access to the file is properly closed
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnClosing(CancelEventArgs e)
 		{
             if (!this.AllowClose)
             {
