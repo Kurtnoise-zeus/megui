@@ -12,7 +12,7 @@ The current branch has been **tested only on x64 dev environment** (Avisynth+, W
 
 ## Compilation
 
-Just open the MeGUI.sln file using Visual Studio. I'm using VS2022 Community Edition in order to compile the latest changes.
+Just open the MeGUI.sln file using Visual Studio and restaure nuget missing packages. Currently, I'm using VS2026 Community Edition in order to compile the latest changes. The previous one (VS 2022) works fine also.
 
 ## What's new
 
