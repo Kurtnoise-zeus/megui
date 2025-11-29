@@ -478,6 +478,18 @@ namespace MeGUI
         ///</summary>
         public static string LookupISOCode(string code)
 		{
+            // Handle language codes from eac3to 3.55+
+            if (code.Length == 5 && code.StartsWith("[") && code.EndsWith("]"))
+            {
+                string innerCode = code.Substring(1, 3); // Get the 3-letter code inside brackets
+                if (languagesReverseBibliographic.ContainsKey(innerCode))
+                    return languagesReverseBibliographic[innerCode];
+                else if (languagesReverseTerminology.ContainsKey(innerCode))
+                    return languagesReverseTerminology[innerCode];
+                else
+                    return ""; // Not found
+            }
+
             if (code.Length == 2)
             {
                 if (languagesReverseISO2.ContainsKey(code))
@@ -494,6 +506,7 @@ namespace MeGUI
             { 
                 // we may have language information w/ more than ISO Codes e.g "en-US/English (US)"
                 int position = code.IndexOf("-");
+
                 if ( position >= 0)
                 {
                     string ncode = code.Substring(0, position);
