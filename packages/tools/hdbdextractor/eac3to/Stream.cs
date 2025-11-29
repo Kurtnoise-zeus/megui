@@ -134,12 +134,13 @@ namespace eac3to
             string strIdentifier = s.Split(',')[0];
             Stream stream = null;
 
-            if (strIdentifier.Contains("AVC") || strIdentifier.Contains("MVC") || strIdentifier.Contains("VC-1") || strIdentifier.Contains("MPEG") ||
+            if (strIdentifier.Contains("AVC") || strIdentifier.Contains("AV1") || strIdentifier.Contains("MVC") || strIdentifier.Contains("VC-1") || strIdentifier.Contains("MPEG") ||
                         strIdentifier.Contains("DIRAC") || strIdentifier.Contains("THEORA") || strIdentifier.Contains("HEVC"))
                 stream = VideoStream.Parse(s, _log);
             else if (strIdentifier.Contains("AC3") || strIdentifier.Contains("TrueHD") || strIdentifier.Contains("DTS") ||
                         strIdentifier.Contains("RAW") || strIdentifier.Contains("PCM") || strIdentifier.Contains("MP") || strIdentifier.Contains("AAC") ||
-                        strIdentifier.Contains("FLAC") || strIdentifier.Contains("WAVPACK") || strIdentifier.Contains("TTA") || strIdentifier.Contains("VORBIS"))
+                        strIdentifier.Contains("FLAC") || strIdentifier.Contains("WAVPACK") || strIdentifier.Contains("TTA") || strIdentifier.Contains("VORBIS") ||
+                        strIdentifier.Contains("OPUS"))
                 stream = AudioStream.Parse(s, _log);
             else if (strIdentifier.Contains("Subtitle"))
                 stream = SubtitleStream.Parse(s, _log);

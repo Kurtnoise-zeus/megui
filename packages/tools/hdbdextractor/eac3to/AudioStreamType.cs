@@ -59,6 +59,8 @@ namespace eac3to
         [StringValue("WAVPACK4")]
         WAVPACK,
         [StringValue("VORBIS")]
-        VORBIS
+        VORBIS,
+        [StringValue("OPUS")]
+        OPUS
     }
 }

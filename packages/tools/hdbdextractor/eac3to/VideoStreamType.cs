@@ -40,6 +40,8 @@ namespace eac3to
         [StringValue("DIRAC")]
         DIRAC,
         [StringValue("THEORA")]
-        THEORA
+        THEORA,
+        [StringValue("AV1")]
+        AV1
     }
 }

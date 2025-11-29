@@ -79,6 +79,8 @@ namespace eac3to
                         arrType.Add("MP2"); break;
                     case AudioStreamType.MP3:
                         arrType.Add("MP3"); break;
+                    case AudioStreamType.OPUS:
+                        arrType.Add("OPUS"); break;
                     case AudioStreamType.TrueHD:
                         if (!String.IsNullOrEmpty(TypeCore) || ParsingFailed)
                         {
@@ -188,6 +190,9 @@ namespace eac3to
                     break;
                 case "FLAC":
                     audioStream.AudioType = AudioStreamType.FLAC;
+                    break;
+                case "OPUS":
+                    audioStream.AudioType = AudioStreamType.OPUS;
                     break;
                 case "TTA1":
                     audioStream.AudioType = AudioStreamType.TTA;

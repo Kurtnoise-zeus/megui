@@ -49,6 +49,8 @@ namespace eac3to
                         return new object[] { "MKV", "OGG" };
                     case VideoStreamType.DIRAC:
                         return new object[] { "MKV", "DRC" };
+                    case VideoStreamType.AV1:
+                        return new object[] { "MKV", "IVF" };
                     default:
                         return new object[] { "UNKNOWN" };
                 }
@@ -72,6 +74,9 @@ namespace eac3to
             VideoStream videoStream = new VideoStream(s, _log);
             switch (type.ToUpperInvariant())
             {
+                case "AV1":
+                    videoStream.VideoType = VideoStreamType.AV1;
+                    break;
                 case "H264/AVC":
                     videoStream.VideoType = VideoStreamType.AVC;
                     break;
