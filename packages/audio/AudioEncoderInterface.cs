@@ -676,7 +676,7 @@ namespace MeGUI
             uint HeaderSize = (uint)(WExtHeader ? 60 : 36);
             int[] defmask = { 0, 4, 3, 11, 263, 1543, 1551, 1807, 1599, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-            if (Greater4GB || headerType == HeaderType.W64)
+            if (Greater4GB && headerType == HeaderType.W64)
             {
                 // W64
                 HeaderSize = (uint)(WExtHeader ? 128 : 112);
@@ -725,7 +725,7 @@ namespace MeGUI
                 target.Write(BitConverter.GetBytes((uint)0x719B3800), 0, 4);
             }
             // data chunk
-            if (Greater4GB || headerType == HeaderType.W64)
+            if (Greater4GB && headerType == HeaderType.W64)
             {
                 // W64
                 if (!WExtHeader)
