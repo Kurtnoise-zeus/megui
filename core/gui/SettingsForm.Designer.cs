@@ -616,6 +616,7 @@ namespace MeGUI
             "Auto",
             "DXVA2",
             "D3D11",
+            "D3D12",
             "Vulkan"});
             this.cbHwdDecoder.Location = new System.Drawing.Point(199, 88);
             this.cbHwdDecoder.Name = "cbHwdDecoder";

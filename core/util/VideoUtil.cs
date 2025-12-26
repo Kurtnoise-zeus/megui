@@ -801,6 +801,28 @@ namespace MeGUI
                 indexFile = null;
 
             bool bUseLsmash = UseLSMASHVideoSource(inputFile, video);
+            bool bUseLsmashHWDecode = MainForm.Instance.Settings.EnableHwdAVSVideoDec;
+            string preferhw = string.Empty;
+
+            if(bUseLsmashHWDecode)
+            {
+                switch (MainForm.Instance.Settings.HwdItems)
+                {
+                    case 4:
+                        preferhw += string.Format(", prefer_hw=4");
+                        break;
+                    case 5:
+                        preferhw += string.Format(", prefer_hw=5");
+                        break;
+                    case 7:
+                        preferhw += string.Format(", prefer_hw=6");
+                        break;
+                    default:
+                        preferhw += string.Format("");
+                        break;
+                }
+            }
+
             if (video)
             {
                 script.AppendFormat("{0}(\"{1}\"{2}{3}{4}",
@@ -808,7 +830,7 @@ namespace MeGUI
                     inputFile,
                     (track > -1 ? (bUseLsmash ? ", track=" + track : ", stream_index=" + track) : String.Empty),
                     (!bUseLsmash && !String.IsNullOrEmpty(indexFile) ? ", cachefile=\"" + indexFile + "\"" : String.Empty),
-                    (MainForm.Instance.Settings.EnableHwdAVSVideoDec ? ", prefer_hw=" + MainForm.Instance.Settings.HwdItems : String.Empty)
+                    (MainForm.Instance.Settings.EnableHwdAVSVideoDec ? preferhw : String.Empty)
                     );
 
                 if (iVideoBit <= 8)

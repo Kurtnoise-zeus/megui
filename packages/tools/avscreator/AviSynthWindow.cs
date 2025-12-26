@@ -760,9 +760,12 @@ namespace MeGUI
                                 tempAvs += string.Format(", hwdevice=\"{0}\")", "dxva2");
                                 break;
                             case 5:
-                                tempAvs += string.Format(", hwdevice=\"{0}\")", "d3d11");
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "d3d11va");
                                 break;
                             case 6:
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "d3d12va");
+                                break;
+                            case 7:
                                 tempAvs += string.Format(", hwdevice=\"{0}\")", "vulkan");
                                 break;
                             default:

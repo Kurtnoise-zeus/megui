@@ -88,8 +88,12 @@ namespace MeGUI
     {
         [EnumTitle("None", "")]
         hwdDeviceNone = 0,
+        [EnumTitle("dxva2", ", hwdevice=\"" + "dxva2" + "\"")]
+        hwdDeviceDXVA2,
         [EnumTitle("d3d11va", ", hwdevice=\"" + "d3d11va" + "\"")]
         hwdDeviceD3d11,
+        [EnumTitle("d3d12va", ", hwdevice=\"" + "d3d12va" + "\"")]
+        hwdDeviceD3d12,
         [EnumTitle("Cuda", ", hwdevice=\"" + "cuda" + "\"")]
         hwdDeviceCuda,
         [EnumTitle("Vulkan", ", hwdevice=\"" + "vulkan" + "\"")]
@@ -268,9 +272,12 @@ namespace MeGUI
                                 inputLine += string.Format(", hwdevice=" + "\"dxva2\"");
                                 break;
                             case 5:
-                                inputLine += string.Format(", hwdevice=" + "\"d3d11\"");
+                                inputLine += string.Format(", hwdevice=" + "\"d3d11va\"");
                                 break;
                             case 6:
+                                inputLine += string.Format(", hwdevice=" + "\"d3d12va\"");
+                                break;
+                            case 7:
                                 inputLine += string.Format(", hwdevice=" + "\"vulkan\"");
                                 break;
                             default:
