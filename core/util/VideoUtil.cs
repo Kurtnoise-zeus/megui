@@ -808,6 +808,15 @@ namespace MeGUI
             {
                 switch (MainForm.Instance.Settings.HwdItems)
                 {
+                    case 1:
+                        preferhw += string.Format(", prefer_hw=1");
+                        break;
+                    case 2:
+                        preferhw += string.Format(", prefer_hw=2");
+                        break;
+                    case 3:
+                        preferhw += string.Format(", prefer_hw=3");
+                        break;
                     case 4:
                         preferhw += string.Format(", prefer_hw=4");
                         break;

@@ -97,7 +97,9 @@ namespace MeGUI
         [EnumTitle("Cuda", ", hwdevice=\"" + "cuda" + "\"")]
         hwdDeviceCuda,
         [EnumTitle("Vulkan", ", hwdevice=\"" + "vulkan" + "\"")]
-        hwdDeviceVulkan
+        hwdDeviceVulkan,
+        [EnumTitle("CUVID", ", hwdevice=\"" + "cuvid" + "\"")]
+        hwdDeviceCUVID
     }
 
     public enum UserSourceType
@@ -268,6 +270,12 @@ namespace MeGUI
                     {
                         switch (MainForm.Instance.Settings.HwdItems)
                         {
+                            case 1:
+                                inputLine += string.Format(", hwdevice=" + "\"cuda\"");
+                                break;
+                            case 2:
+                                inputLine += string.Format(", hwdevice=" + "\"qsv\"");
+                                break;
                             case 4:
                                 inputLine += string.Format(", hwdevice=" + "\"dxva2\"");
                                 break;

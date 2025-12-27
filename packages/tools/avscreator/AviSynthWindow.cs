@@ -756,6 +756,12 @@ namespace MeGUI
                         tempAvs += string.Format("BSVideoSource(\"{0}\"", fileName);
                         switch (MainForm.Instance.Settings.HwdItems)
                         {
+                            case 1:
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "cuda");
+                                break;
+                            case 2:
+                                tempAvs += string.Format(", hwdevice=\"{0}\")", "qsv");
+                                break;
                             case 4:
                                 tempAvs += string.Format(", hwdevice=\"{0}\")", "dxva2");
                                 break;
