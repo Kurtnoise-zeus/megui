@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
   <assemblyIdentity version="1.0.0.0" name="MyApplication.app"/>
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
@@ -39,7 +39,7 @@
       <!-- Windows 8.1 -->
       <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />
 
-      <!-- Windows 10 -->
+      <!-- Windows 10 / Windows 11 -->
       <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
 
     </application>
@@ -64,6 +64,9 @@
       <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">
         System
       </dpiAwareness>
+	  <activeCodePage xmlns="http://schemas.microsoft.com/SMI/2019/WindowsSettings">
+	    UTF-8
+	  </activeCodePage>
     </windowsSettings>
   </application>
 
