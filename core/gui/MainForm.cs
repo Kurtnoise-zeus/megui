@@ -1,6 +1,6 @@
 ﻿// ****************************************************************************
 // 
-// Copyright (C) 2005-2025 Doom9 & al
+// Copyright (C) 2005-2026 Doom9 & al
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ namespace MeGUI
 #if CSC
 			name = "";
 #endif
-            DateTime BuildDate = new DateTime(2025,11,16);
+            DateTime BuildDate = new DateTime(2026,01,03);
             string[] resources = myAssembly.GetManifestResourceNames();
             this.trayIcon.Icon = new Icon(myAssembly.GetManifestResourceStream(name + "App.ico"));
             this.Icon = trayIcon.Icon;
@@ -1316,7 +1316,7 @@ namespace MeGUI
         {
             bool bDebug = false;
             string AppProductVersion = "";
-            DateTime BuildDate = new DateTime(2025, 11, 16);
+            DateTime BuildDate = new DateTime(2026, 01, 03);
 #if DEBUG
             bDebug = true;
 #endif

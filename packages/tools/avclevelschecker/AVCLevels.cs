@@ -1,6 +1,6 @@
 // ****************************************************************************
 // 
-// Copyright (C) 2005-2025 Doom9 & al
+// Copyright (C) 2005-2026 Doom9 & al
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -282,7 +282,7 @@ namespace MeGUI
                 case Levels.L_13: return 11880;
                 case Levels.L_20: return 11880;
                 case Levels.L_21: return 19800;
-                case Levels.L_22: return 20250;
+                case Levels.L_22: return 20260;
                 case Levels.L_30: return 40500;
                 case Levels.L_31: return 108000;
                 case Levels.L_32: return 216000;
