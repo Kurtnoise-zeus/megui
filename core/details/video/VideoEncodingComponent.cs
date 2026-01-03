@@ -497,7 +497,7 @@ namespace MeGUI
                 vArray[vArray.Length - 2] = VideoType.MKV;
                 vArray[vArray.Length - 1] = VideoType.MP4;
             }
-            else if (lastCodec == VideoEncoderType.SVTAV1PSY)
+            else if (lastCodec == VideoEncoderType.SVTAV1)
             {
                 Array.Resize(ref vArray, vArray.Length + 3);
                 vArray[vArray.Length - 3] = VideoType.MKV;

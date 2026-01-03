@@ -29,7 +29,7 @@ namespace MeGUI
 	/// Contains basic codec settings, basically all the settings that are often used by codecs like bitrate, encoding mode, etc.
 	/// </summary>
     [XmlInclude(typeof(x264Settings)), XmlInclude(typeof(xvidSettings)), XmlInclude(typeof(hfyuSettings)), XmlInclude(typeof(x265Settings)), XmlInclude(typeof(ffv1Settings)),
-        XmlInclude(typeof(svtav1psySettings))]
+        XmlInclude(typeof(svtav1Settings))]
     public abstract class VideoCodecSettings : MeGUI.core.plugins.interfaces.GenericSettings
 	{
         private string id;

@@ -1294,7 +1294,7 @@ namespace MeGUI
             : base()
         {
             this.RegisterEncoder(new FFV1EncoderProvider());
-            this.RegisterEncoder(new SVTAV1PSYEncoderProvider());
+            this.RegisterEncoder(new SVTAV1EncoderProvider());
             this.RegisterEncoder(new X264EncoderProvider());
             this.RegisterEncoder(new X265EncoderProvider());
             this.RegisterEncoder(new XviDEncoderProvider());
@@ -1385,18 +1385,18 @@ namespace MeGUI
         }
     }
 
-    public class SVTAV1PSYEncoderProvider : EncodingProvider<VideoCodec, VideoType, VideoEncoderType>
+    public class SVTAV1EncoderProvider : EncodingProvider<VideoCodec, VideoType, VideoEncoderType>
     {
-        public SVTAV1PSYEncoderProvider()
+        public SVTAV1EncoderProvider()
         {
             supportedCodecs.Add(VideoCodec.AV1);
             supportedTypes.Add(VideoType.RAWAV1);
-            supportedEncoderTypes.Add(VideoEncoderType.SVTAV1PSY);
+            supportedEncoderTypes.Add(VideoEncoderType.SVTAV1);
         }
 
         public override IJobProcessor CreateEncoder(MeGUISettings settings)
         {
-            return new svtav1psyEncoder(settings.SvtAv1Psy.Path);
+            return new svtav1Encoder(settings.SvtAv1.Path);
         }
     }
 

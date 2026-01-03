@@ -22,14 +22,14 @@ using System;
 
 using MeGUI.core.util;
 
-namespace MeGUI.packages.video.svtav1psy
+namespace MeGUI.packages.video.svtav1
 {
-    class svtav1psySettingsHandler
+    class svtav1SettingsHandler
     {
-        private svtav1psySettings _xs;
+        private svtav1Settings _xs;
         private LogItem _log;
         
-        public svtav1psySettingsHandler(svtav1psySettings xs, LogItem log)
+        public svtav1SettingsHandler(svtav1Settings xs, LogItem log)
 		{
             _xs = xs;
             _log = log;

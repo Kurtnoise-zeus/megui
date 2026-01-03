@@ -177,8 +177,8 @@
       <DependentUpon>THDConfigurationPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.resx">
-      <DependentUpon>svtav1psyConfigurationPanel.cs</DependentUpon>
+    <EmbeddedResource Include="packages\video\svtav1\svtav1ConfigurationPanel.resx">
+      <DependentUpon>svtav1ConfigurationPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx" />
@@ -894,15 +894,15 @@
     </Compile>
     <Compile Include="packages\video\huffyuv\hfyuSettings.cs" />
     <Compile Include="packages\video\ffmpeg\ffmpegEncoder.cs" />
-    <Compile Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.cs">
+    <Compile Include="packages\video\svtav1\svtav1ConfigurationPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="packages\video\svtav1psy\svtav1psyConfigurationPanel.Designer.cs">
-      <DependentUpon>svtav1psyConfigurationPanel.cs</DependentUpon>
+    <Compile Include="packages\video\svtav1\svtav1ConfigurationPanel.Designer.cs">
+      <DependentUpon>svtav1ConfigurationPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="packages\video\svtav1psy\svtav1psyEncoder.cs" />
-    <Compile Include="packages\video\svtav1psy\svtav1psySettings.cs" />
-    <Compile Include="packages\video\svtav1psy\svtav1psySettingsHandler.cs" />
+    <Compile Include="packages\video\svtav1\svtav1Encoder.cs" />
+    <Compile Include="packages\video\svtav1\svtav1Settings.cs" />
+    <Compile Include="packages\video\svtav1\svtav1SettingsHandler.cs" />
     <Compile Include="packages\video\x264\x264ConfigurationPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

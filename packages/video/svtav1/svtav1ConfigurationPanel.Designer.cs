@@ -20,7 +20,7 @@
 
 namespace MeGUI.packages.video.svtav1psy
 {
-    partial class svtav1psyConfigurationPanel
+    partial class svtav1ConfigurationPanel
     {
         /// <summary>
         /// Required designer variable.

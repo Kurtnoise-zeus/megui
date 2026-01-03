@@ -27,22 +27,22 @@ using MeGUI.core.util;
 
 namespace MeGUI
 {
-    class svtav1psyEncoder : CommandlineVideoEncoder
+    class svtav1Encoder : CommandlineVideoEncoder
     {
-        public static readonly JobProcessorFactory Factory = new JobProcessorFactory(new ProcessorFactory(init), "svtav1psyEncoder");
+        public static readonly JobProcessorFactory Factory = new JobProcessorFactory(new ProcessorFactory(init), "svtav1Encoder");
 
         private static IJobProcessor init(MainForm mf, Job j)
         {
-            if (j is VideoJob && (j as VideoJob).Settings is svtav1psySettings)
+            if (j is VideoJob && (j as VideoJob).Settings is svtav1Settings)
             {
                 UpdateCacher.CheckPackage("ffmpeg");
-                UpdateCacher.CheckPackage("svtav1psy");
-                return new svtav1psyEncoder("cmd.exe");
+                UpdateCacher.CheckPackage("svtav1");
+                return new svtav1Encoder("cmd.exe");
             }
             return null;
         }
 
-        public svtav1psyEncoder(string encoderPath) : base()
+        public svtav1Encoder(string encoderPath) : base()
         {
             Executable = encoderPath;
             IMinimumChildProcessCount = 1;
@@ -79,13 +79,13 @@ namespace MeGUI
             base.ProcessLine(line, stream, oType);
         }
 
-        public static string genCommandline(string input, string output, Dar? d, int hres, int vres, ref ulong numberOfFrames, svtav1psySettings _xs, LogItem log)
+        public static string genCommandline(string input, string output, Dar? d, int hres, int vres, ref ulong numberOfFrames, svtav1Settings _xs, LogItem log)
         {
             int qp;
             StringBuilder sb = new StringBuilder();
             CultureInfo ci = new CultureInfo("en-us");
-            svtav1psySettings xs = (svtav1psySettings)_xs.Clone();
-            MeGUI.packages.video.svtav1psy.svtav1psySettingsHandler oSettingsHandler = new packages.video.svtav1psy.svtav1psySettingsHandler(xs, log);
+            svtav1Settings xs = (svtav1Settings)_xs.Clone();
+            MeGUI.packages.video.svtav1.svtav1SettingsHandler oSettingsHandler = new packages.video.svtav1.svtav1SettingsHandler(xs, log);
 
             // log
             if (log != null)
@@ -99,7 +99,7 @@ namespace MeGUI
                 if (xs.SVT10Bits)
                     sb.Append("-pix_fmt yuv420p10le ");
                 
-                sb.Append("-strict -1 -f yuv4mpegpipe - | " + "\"" + MainForm.Instance.Settings.SvtAv1Psy.Path + "\" ");
+                sb.Append("-strict -1 -f yuv4mpegpipe - | " + "\"" + MainForm.Instance.Settings.SvtAv1.Path + "\" ");
             }
 
             #region main tab
@@ -125,15 +125,15 @@ namespace MeGUI
                     xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepass1 ||
                     xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepass2 ||
                     xs.VideoEncodingType == VideoCodecSettings.VideoEncodingMode.threepassAutomated)
-                    xs.svtAv1PsyTuning = svtav1psySettings.svtAv1PsyTuningModes.PSNR; // multi pass encodings do not support default tunings - force it to PSNR
+                    xs.svtav1Tuning = svtav1Settings.svtav1TuningModes.PSNR; // multi pass encodings do not support default tunings - force it to PSNR
 
-                switch (xs.svtAv1PsyTuning)
+                switch (xs.svtav1Tuning)
                 {
-                    case svtav1psySettings.svtAv1PsyTuningModes.VQ: sb.Append("--tune 0 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.PSNR: sb.Append("--tune 1 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.SSIM: sb.Append("--tune 2 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
-                    case svtav1psySettings.svtAv1PsyTuningModes.STILLPICTURE: sb.Append("--tune 4 "); break;
+                    case svtav1Settings.svtav1TuningModes.VQ: sb.Append("--tune 0 "); break;
+                    case svtav1Settings.svtav1TuningModes.PSNR: sb.Append("--tune 1 "); break;
+                    case svtav1Settings.svtav1TuningModes.SSIM: sb.Append("--tune 2 "); break;
+                    case svtav1Settings.svtav1TuningModes.SUBJECTIVESSIM: sb.Append("--tune 3 "); break;
+                    case svtav1Settings.svtav1TuningModes.STILLPICTURE: sb.Append("--tune 4 "); break;
                     default: break;
                 }
             }
@@ -221,7 +221,7 @@ namespace MeGUI
         {
             get 
             {
-                string strCommandLine = genCommandline(Job.Input, Job.Output, Job.DAR, Hres, Vres, ref NumberOfFrames, Job.Settings as svtav1psySettings, base.log);
+                string strCommandLine = genCommandline(Job.Input, Job.Output, Job.DAR, Hres, Vres, ref NumberOfFrames, Job.Settings as svtav1Settings, base.log);
                 Su.NbFramesTotal = NumberOfFrames;
                 return strCommandLine;
             }

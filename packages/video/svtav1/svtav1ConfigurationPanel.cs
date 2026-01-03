@@ -33,17 +33,17 @@ using MeGUI.core.plugins.interfaces;
 
 namespace MeGUI.packages.video.svtav1psy
 {
-    public partial class svtav1psyConfigurationPanel : MeGUI.core.details.video.VideoConfigurationPanel, Editable<svtav1psySettings>
+    public partial class svtav1ConfigurationPanel : MeGUI.core.details.video.VideoConfigurationPanel, Editable<svtav1Settings>
     {
         private XmlDocument ContextHelp = new XmlDocument();
-        public svtav1psyConfigurationPanel()
+        public svtav1ConfigurationPanel()
             : base()
         {
             InitializeComponent();
             svtEncodingMode.SelectedIndex = 0;
             gbPresets.Text = "Preset #" + tbsvtPresets.Value.ToString();
-            svtTunes.Items.AddRange(EnumProxy.CreateArray(svtav1psySettings.SupportedPsyTuningModes));
-            svtTunes.SelectedItem = EnumProxy.Create(svtav1psySettings.svtAv1PsyTuningModes.NONE);
+            svtTunes.Items.AddRange(EnumProxy.CreateArray(svtav1Settings.SupportedPsyTuningModes));
+            svtTunes.SelectedItem = EnumProxy.Create(svtav1Settings.svtav1TuningModes.NONE);
         }
 
         /// <summary>
@@ -61,31 +61,31 @@ namespace MeGUI.packages.video.svtav1psy
         {
             switch (getPsyTuning())
             {
-                case svtav1psySettings.svtAv1PsyTuningModes.NONE:
+                case svtav1Settings.svtav1TuningModes.NONE:
                     {
 
                     }
                     break;
 
-                case svtav1psySettings.svtAv1PsyTuningModes.VQ:
+                case svtav1Settings.svtav1TuningModes.VQ:
                     {
 
                     }
                     break;
 
-                case svtav1psySettings.svtAv1PsyTuningModes.PSNR:
+                case svtav1Settings.svtav1TuningModes.PSNR:
                     {
 
                     }
                     break;
 
-                case svtav1psySettings.svtAv1PsyTuningModes.SSIM:
+                case svtav1Settings.svtav1TuningModes.SSIM:
                     {
 
                     }
                     break;
 
-                case svtav1psySettings.svtAv1PsyTuningModes.SUBJECTIVESSIM:
+                case svtav1Settings.svtav1TuningModes.SUBJECTIVESSIM:
                     {
 
                     }
@@ -149,7 +149,7 @@ namespace MeGUI.packages.video.svtav1psy
         protected override string getCommandline()
         {
             ulong x = 1;
-            return svtav1psyEncoder.genCommandline(null, null, null, -1, -1, ref x, Settings as svtav1psySettings, null);
+            return svtav1Encoder.genCommandline(null, null, null, -1, -1, ref x, Settings as svtav1Settings, null);
         }
         /// <summary>
         /// Does all the necessary adjustments after a GUI change has been made.
@@ -191,7 +191,7 @@ namespace MeGUI.packages.video.svtav1psy
         /// <returns>Whether the settings are valid</returns>
         protected override bool isValidSettings(VideoCodecSettings settings)
         {
-            return settings is svtav1psySettings;
+            return settings is svtav1Settings;
         }
 
         /// <summary>
@@ -200,22 +200,22 @@ namespace MeGUI.packages.video.svtav1psy
         /// <returns>A new instance of SvtAv1PsySettings</returns>
         protected override VideoCodecSettings defaultSettings()
         {
-            return new svtav1psySettings();
+            return new svtav1Settings();
         }
 
         /// <summary>
         /// gets / sets the settings currently displayed on the GUI
         /// </summary>
-        public svtav1psySettings Settings
+        public svtav1Settings Settings
         {
             get
             {
-                svtav1psySettings xs = new svtav1psySettings();
+                svtav1Settings xs = new svtav1Settings();
                 xs.Preset = tbsvtPresets.Value;
                 xs.VideoEncodingType = (VideoCodecSettings.VideoEncodingMode)svtEncodingMode.SelectedIndex;
                 xs.BitrateQuantizer = (int)svtBitrateQuantizer.Value;
                 xs.QuantizerCRF = svtBitrateQuantizer.Value;
-                xs.svtAv1PsyTuning = getPsyTuning();
+                xs.svtav1Tuning = getPsyTuning();
                 xs.SVT10Bits = chSvt10Bits.Checked;
                 xs.CustomEncoderOptions = customCommandlineOptions.Text;
                 return xs;
@@ -226,10 +226,10 @@ namespace MeGUI.packages.video.svtav1psy
                 if (value == null)
                     return;
 
-                svtav1psySettings xs = value;
+                svtav1Settings xs = value;
                 updating = true;
                 tbsvtPresets.Value = xs.Preset;
-                svtTunes.SelectedItem = EnumProxy.Create(xs.svtAv1PsyTuning);
+                svtTunes.SelectedItem = EnumProxy.Create(xs.svtav1Tuning);
                 svtEncodingMode.SelectedIndex = (int)xs.VideoEncodingType;
                 svtBitrateQuantizer.Value = (isBitrateMode(xs.VideoEncodingType) || xs.QuantizerCRF == 1) ? xs.BitrateQuantizer : xs.QuantizerCRF;
                 chSvt10Bits.Checked = xs.SVT10Bits;
@@ -447,10 +447,10 @@ namespace MeGUI.packages.video.svtav1psy
             genericUpdate();
         }
 
-        private svtav1psySettings.svtAv1PsyTuningModes getPsyTuning()
+        private svtav1Settings.svtav1TuningModes getPsyTuning()
         {
             EnumProxy o = svtTunes.SelectedItem as EnumProxy;
-            return (svtav1psySettings.svtAv1PsyTuningModes)o.RealValue;
+            return (svtav1Settings.svtav1TuningModes)o.RealValue;
         }
 
         private void svtEncodingMode_SelectedIndexChanged(object sender, EventArgs e)
