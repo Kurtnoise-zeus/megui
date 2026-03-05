@@ -143,7 +143,7 @@ namespace eac3to
 
             AudioStream audioStream = new AudioStream(s, _log);
 
-            string type = s.Substring(s.IndexOf(":") + 1, s.IndexOf(',') - s.IndexOf(":") - 1).Trim();
+            string type = s.Substring(s.IndexOf(":") + 1, s.IndexOf(',') - s.IndexOf(":") - 1).Trim().TrimStart('*');
             switch (type.ToUpperInvariant())
             {
                 case "AC3":

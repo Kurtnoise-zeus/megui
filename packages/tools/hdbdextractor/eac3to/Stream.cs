@@ -68,13 +68,16 @@ namespace eac3to
             if (split.Length > 1)
             {
                 language = split[1].Substring(1, split[1].Length - 1).Trim();
+                // strip ISO 639 brackets introduced in eac3to 3.55 (e.g. "[eng]" â†’ "eng")
+                if (language.StartsWith("[") && language.EndsWith("]"))
+                    language = language.Substring(1, language.Length - 2).Trim();
                 switch (language)
                 {
                     case "Modern Greek":    language = "Greek"; break;
                     case "LowGerman":       language = "Low German"; break;
                     case "North Ndebele":   language = "Ndebele, North"; break;
                     case "South Ndebele":   language = "Ndebele, South"; break;
-                    case "Bokmål":          language = "Norwegian Bokmål"; break;
+                    case "BokmÃ¥l":          language = "Norwegian BokmÃ¥l"; break;
                     case "Walamo":          language = "Wolaitta"; break;
                     case "Undetermined":    language = string.Empty; break;
                 }
