@@ -83,7 +83,8 @@ namespace eac3to
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentNullException("s", "The string 's' cannot be null or empty.");
 
-            string type = s.Substring(s.IndexOf(":") + 12, 3).Trim();
+            int subtitleIdx = s.IndexOf("Subtitle (");
+            string type = subtitleIdx >= 0 ? s.Substring(subtitleIdx + 10, 3).Trim() : string.Empty;
             SubtitleStream subtitleStream = new SubtitleStream(s, _log);
             switch (type.ToUpperInvariant())
             {

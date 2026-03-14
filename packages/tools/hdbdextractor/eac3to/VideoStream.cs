@@ -70,7 +70,7 @@ namespace eac3to
             if (string.IsNullOrEmpty(s))
                 throw new ArgumentNullException("s", "The string 's' cannot be null or empty.");
  
-            string type = s.Substring(s.IndexOf(":") + 1, s.IndexOf(',') - s.IndexOf(":") - 1).Trim().Split(' ')[0];
+            string type = s.Substring(s.IndexOf(":") + 1, s.IndexOf(',') - s.IndexOf(":") - 1).Trim().TrimStart('*').Split(' ')[0];
             VideoStream videoStream = new VideoStream(s, _log);
             switch (type.ToUpperInvariant())
             {
