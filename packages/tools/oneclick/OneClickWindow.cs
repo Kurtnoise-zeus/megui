@@ -2179,50 +2179,18 @@ namespace MeGUI
                 }
 
 
-                if (iCounter == 0 && arrAudioTrackInfo.Count > 0 && !settings.UseNoLanguagesAsFallback)
+            }
+
+            // fallback: if no matching tracks were found and "all" is selected, select all available tracks
+            if (iCounter == 0 && arrAudioTrackInfo.Count > 0 && !settings.UseNoLanguagesAsFallback)
+            {
+                for (int i = 0; i < arrAudioTrackInfo.Count; i++)
                 {
-                    for (int i = 0; i < arrAudioTrackInfo.Count; i++)
-                    {
-                        if (arrAudioTrackInfo[i].Language.ToLowerInvariant().Equals(strLanguage.ToLowerInvariant()))
-                        {
-                            // should only the first audio track for this language be processed?
-                            bool bUseFirstTrackOnly = true;
-                            if (settings.AudioSettings.Count > 0)
-                                bUseFirstTrackOnly = settings.AudioSettings[0].UseFirstTrackOnly;
-                            foreach (OneClickAudioSettings oAudioSettings in settings.AudioSettings)
-                            {
-                                if (arrAudioTrackInfo[i].Language.ToLowerInvariant().Equals(oAudioSettings.Language.ToLowerInvariant()))
-                                {
-                                    bUseFirstTrackOnly = oAudioSettings.UseFirstTrackOnly;
-                                    break;
-                                }
-                            }
-
-                            if (bUseFirstTrackOnly)
-                            {
-                                if (!firstTrackFound)
-                                {
-                                    if (iCounter > 0)
-                                        AudioAddTrack(false);
-                                    iSelectedAudioTabPage = iCounter;
-                                    audioTracks[iCounter++].SelectedStreamIndex = i + 1;
-                                    firstTrackFound = true;
-                                }
-                                // skip any further tracks for this language
-                            }
-                            else
-                            {
-                                // add all tracks for this language
-                                if (iCounter > 0)
-                                    AudioAddTrack(false);
-                                iSelectedAudioTabPage = iCounter;
-                                audioTracks[iCounter++].SelectedStreamIndex = i + 1;
-                            }
-
-                        }
-                    }
+                    if (iCounter > 0)
+                        AudioAddTrack(false);
+                    iSelectedAudioTabPage = iCounter;
+                    audioTracks[iCounter++].SelectedStreamIndex = i + 1;
                 }
-
             }
 
             iSelectedAudioTabPage = 0;
