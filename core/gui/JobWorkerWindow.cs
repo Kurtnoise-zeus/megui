@@ -81,7 +81,8 @@ namespace MeGUI.core.gui
         private ProgressWindow pw;
         private MainForm mainForm;
         private LogItem log;
-        private volatile bool isShutDown;
+        private int _isShutDown; // 0 = running, 1 = shut down; used with Interlocked for atomic shutdown guard
+        private bool isShutDown => _isShutDown != 0;
 
         public event EventHandler WorkerFinishedJobs;
 
@@ -325,9 +326,9 @@ namespace MeGUI.core.gui
         #region shut down
         internal void ShutDown()
         {
-            if (isShutDown)
+            // Atomically check-and-set to prevent double-entry from concurrent threads
+            if (Interlocked.CompareExchange(ref _isShutDown, 1, 0) != 0)
                 return;
-            isShutDown = true;
 
             if (IsRunning)
                 Abort();
@@ -506,7 +507,9 @@ namespace MeGUI.core.gui
                 else
                     status = JobWorkerStatus.Idle;
 
-                // After shutdown, do not access worker or mainForm resources
+                // Guard: after shutdown the worker has been removed from the
+                // workers dictionary and its resources may be disposed, so skip
+                // any further calls that reference mainForm.Jobs or the worker.
                 if (isShutDown)
                     return;
 
