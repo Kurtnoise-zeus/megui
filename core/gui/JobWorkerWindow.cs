@@ -81,6 +81,7 @@ namespace MeGUI.core.gui
         private ProgressWindow pw;
         private MainForm mainForm;
         private LogItem log;
+        private volatile bool isShutDown;
 
         public event EventHandler WorkerFinishedJobs;
 
@@ -99,8 +100,8 @@ namespace MeGUI.core.gui
             if (disposing)
             {
                 // dispose managed resources
-                pw.Dispose();
-                currentProcessor.Dispose();
+                pw?.Dispose();
+                currentProcessor?.Dispose();
             }
             // free native resources
         }
@@ -114,13 +115,13 @@ namespace MeGUI.core.gui
         #region process window opening and closing
         public void HideProcessWindow()
         {
-            if (pw != null)
+            if (pw != null && !isShutDown && MainForm.Instance != null)
                 MainForm.Instance.Jobs.ShowProgressWindow(pw, false);
         }
 
         public void ShowProcessWindow()
         {
-            if (pw != null)
+            if (pw != null && !isShutDown && MainForm.Instance != null)
                 MainForm.Instance.Jobs.ShowProgressWindow(pw, true);
         }
 
@@ -324,6 +325,10 @@ namespace MeGUI.core.gui
         #region shut down
         internal void ShutDown()
         {
+            if (isShutDown)
+                return;
+            isShutDown = true;
+
             if (IsRunning)
                 Abort();
 
@@ -434,6 +439,9 @@ namespace MeGUI.core.gui
             Thread t = new Thread(new ThreadStart(delegate
             {
                 TaggedJob job = mainForm.Jobs.ByName(su.JobName);
+                if (job == null)
+                    return;
+
                 JobStartInfo JobInfo = JobStartInfo.JOB_STARTED;
 
                 copyInfoIntoJob(job, su);
@@ -475,7 +483,8 @@ namespace MeGUI.core.gui
                     status = JobWorkerStatus.Stopped;
                     JobInfo = JobStartInfo.COULDNT_START;
                 }
-                else if (mainForm.Jobs.WorkersCount <= MainForm.Instance.Settings.WorkerMaximumCount || bIsTemporaryWorker)
+                else if (MainForm.Instance != null && 
+                    (mainForm.Jobs.WorkersCount <= MainForm.Instance.Settings.WorkerMaximumCount || bIsTemporaryWorker))
                 {
                     JobInfo = StartNextJobInQueue();
                     switch (JobInfo)
@@ -490,12 +499,16 @@ namespace MeGUI.core.gui
                                 status = JobWorkerStatus.Idle;
                             if (mode == JobWorkerMode.CloseOnLocalListCompleted)
                                 ShutDown();
-                            WorkerFinishedJobs(this, EventArgs.Empty);
+                            WorkerFinishedJobs?.Invoke(this, EventArgs.Empty);
                             break;
                     }
                 }
                 else
                     status = JobWorkerStatus.Idle;
+
+                // After shutdown, do not access worker or mainForm resources
+                if (isShutDown)
+                    return;
 
                 mainForm.Jobs.AdjustWorkerCount(true);
 

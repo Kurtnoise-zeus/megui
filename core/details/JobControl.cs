@@ -102,7 +102,21 @@ namespace MeGUI.core.details
         /// <param name="bShow">true if to be shown, false if not</param>
         public void ShowProgressWindow(ProgressWindow oProgress, bool bShow)
         {
-            this.Invoke((System.Action)delegate { oProgress.Visible = bShow; });
+            if (IsDisposed || !IsHandleCreated)
+                return;
+
+            try
+            {
+                this.Invoke((System.Action)delegate { oProgress.Visible = bShow; });
+            }
+            catch (ObjectDisposedException)
+            {
+                // Control was disposed between our check and the Invoke call
+            }
+            catch (InvalidOperationException)
+            {
+                // Handle was destroyed between our check and the Invoke call
+            }
         }
 
         /// <summary>
