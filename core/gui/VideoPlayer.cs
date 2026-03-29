@@ -549,6 +549,7 @@ namespace MeGUI
             }
 
             this.Visible = false;
+            videoPreview.UnloadVideo();
             file?.Dispose();
 			base.OnClosing(e);
 		}
