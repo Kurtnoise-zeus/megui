@@ -96,21 +96,23 @@ namespace MeGUI.core.details
         /// <summary>
         /// Changes the visibility of the ProgressWindow
         /// Invoke needed to ensure that it is threadsafe
-        /// Therefore it will run in the JobControl thread
+        /// Therefore it will run in the UI thread
         /// </summary>
         /// <param name="oProgress">the ProgressWindow to change </param>
         /// <param name="bShow">true if to be shown, false if not</param>
         public void ShowProgressWindow(ProgressWindow oProgress, bool bShow)
         {
-            // Early-out if the control is already disposed or has no handle.
-            // Note: a TOCTOU race exists between this check and the Invoke below,
-            // so the try/catch is required as a secondary safety net.
-            if (IsDisposed || !IsHandleCreated)
+            // Use mainForm for marshalling instead of this (JobControl) because
+            // JobControl lives on the Queue tab which may not have its handle
+            // created yet if the user hasn't switched to that tab.
+            // mainForm is always visible and has a valid handle.
+            Control invokeTarget = mainForm;
+            if (invokeTarget == null || invokeTarget.IsDisposed || !invokeTarget.IsHandleCreated)
                 return;
 
             try
             {
-                this.Invoke((System.Action)delegate { oProgress.Visible = bShow; });
+                invokeTarget.Invoke((System.Action)delegate { oProgress.Visible = bShow; });
             }
             catch (ObjectDisposedException)
             {
