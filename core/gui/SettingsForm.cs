@@ -25,6 +25,8 @@ using System.Text;
 using System.Xml;
 using System.Windows.Forms;
 
+using MeGUI.core.gui;
+
 namespace MeGUI
 {
 	/// <summary>
@@ -69,6 +71,9 @@ namespace MeGUI
 
                 cbStandbySettings.DataSource = EnumProxy.CreateArray(new object[] { MeGUISettings.StandbySettings.SystemDefault, MeGUISettings.StandbySettings.DisableSystemStandby, MeGUISettings.StandbySettings.DisableMonitorStandby });
             }
+
+            // appearance tab
+            cbTheme.DataSource = EnumProxy.CreateArray(new object[] { AppTheme.Light, AppTheme.Dark, AppTheme.FollowSystem });
         }
 
         /// <summary>
@@ -437,6 +442,10 @@ namespace MeGUI
                 EnumProxy o = cbStandbySettings.SelectedItem as EnumProxy;
                 settings.StandbySetting = (MeGUISettings.StandbySettings)o.RealValue;
 
+                EnumProxy themeProxy = cbTheme.SelectedItem as EnumProxy;
+                if (themeProxy != null)
+                    settings.Theme = (AppTheme)themeProxy.RealValue;
+
                 return settings;
 			}
 			set
@@ -511,6 +520,8 @@ namespace MeGUI
                 chkInput8Bit.Checked = settings.Input8Bit;
 
                 cbStandbySettings.SelectedItem = EnumProxy.Create(MainForm.Instance.Settings.StandbySetting);
+
+                cbTheme.SelectedItem = EnumProxy.Create(settings.Theme);
             }
 		}
 		#endregion
