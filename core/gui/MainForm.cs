@@ -191,6 +191,7 @@ namespace MeGUI
                 _updateHandler.BeginUpdateCheck();
 
             // apply the configured theme
+            core.gui.ThemeManager.Setup();
             ApplyApplicationTheme();
         }
 

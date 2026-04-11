@@ -38,6 +38,9 @@ namespace MeGUI.core.gui
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
         #endregion
 
+        private static bool _initialized;
+        private static int _lastThemedFormCount;
+
         #region Theme colors
         // Dark theme palette
         private static readonly Color DarkFormBack = Color.FromArgb(255, 32, 32, 32);
@@ -111,8 +114,49 @@ namespace MeGUI.core.gui
             if (form == null)
                 return;
 
+            // Do not theme the splash screen (it uses TransparencyKey)
+            if (form is SplashScreen)
+                return;
+
             ApplyToControl(form);
             SetDarkTitleBar(form, IsDarkTheme);
+        }
+
+        /// <summary>
+        /// Initializes the theme manager and registers an idle handler
+        /// to automatically apply the theme to newly opened forms.
+        /// Call once during application startup after settings are loaded.
+        /// </summary>
+        public static void Setup()
+        {
+            if (_initialized)
+                return;
+            _initialized = true;
+            _lastThemedFormCount = 0;
+            Application.Idle += OnApplicationIdle;
+        }
+
+        private static void OnApplicationIdle(object sender, EventArgs e)
+        {
+            // If there are more open forms than last time, apply theme to new ones
+            FormCollection forms = Application.OpenForms;
+            if (forms.Count != _lastThemedFormCount)
+            {
+                for (int i = 0; i < forms.Count; i++)
+                {
+                    try
+                    {
+                        Form f = forms[i];
+                        if (f != null && f.IsHandleCreated)
+                            ApplyTheme(f);
+                    }
+                    catch
+                    {
+                        // Form collection can change during enumeration
+                    }
+                }
+                _lastThemedFormCount = forms.Count;
+            }
         }
 
         /// <summary>
