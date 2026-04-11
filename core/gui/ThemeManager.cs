@@ -140,9 +140,10 @@ namespace MeGUI.core.gui
         {
             // If there are more open forms than last time, apply theme to new ones
             FormCollection forms = Application.OpenForms;
-            if (forms.Count != _lastThemedFormCount)
+            int currentCount = forms.Count;
+            if (currentCount != _lastThemedFormCount)
             {
-                for (int i = 0; i < forms.Count; i++)
+                for (int i = 0; i < currentCount; i++)
                 {
                     try
                     {
@@ -152,10 +153,11 @@ namespace MeGUI.core.gui
                     }
                     catch
                     {
-                        // Form collection can change during enumeration
+                        // Form collection can change during enumeration; ignore safely
+                        break;
                     }
                 }
-                _lastThemedFormCount = forms.Count;
+                _lastThemedFormCount = currentCount;
             }
         }
 
@@ -315,7 +317,7 @@ namespace MeGUI.core.gui
             else
             {
                 // Generic fallback
-                if (!(control.BackColor == Color.Transparent))
+                if (control.BackColor != Color.Transparent)
                 {
                     control.BackColor = dark ? DarkControlBack : LightControlBack;
                 }
@@ -365,10 +367,10 @@ namespace MeGUI.core.gui
         }
 
         /// <summary>
-        /// Gets a theme-aware text brush for custom-painted controls.
-        /// The caller must NOT dispose this brush (it returns a system Brush).
+        /// Gets a theme-aware system text brush for custom-painted controls.
+        /// Do not dispose this brush as it returns a cached system Brush instance.
         /// </summary>
-        public static Brush TextBrush => IsDarkTheme ? Brushes.White : Brushes.Black;
+        public static Brush SystemTextBrush => IsDarkTheme ? Brushes.White : Brushes.Black;
     }
 
     #region Dark ToolStrip/MenuStrip renderer
