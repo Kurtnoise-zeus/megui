@@ -862,6 +862,33 @@ namespace MeGUI
             }
         }
 
+        /// <summary>
+        /// Returns true if the Windows system theme is set to dark mode (Windows 10 1809+).
+        /// </summary>
+        public static bool IsSystemDarkTheme
+        {
+            get
+            {
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"))
+                    {
+                        if (key != null)
+                        {
+                            object value = key.GetValue("AppsUseLightTheme");
+                            if (value is int intVal)
+                                return intVal == 0;
+                        }
+                    }
+                }
+                catch
+                {
+                    // Registry access might fail; default to light
+                }
+                return false;
+            }
+        }
+
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         public static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
 

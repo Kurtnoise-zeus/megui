@@ -120,9 +120,9 @@ namespace MeGUI.packages.tools.cutter
                 item.Tag = cut;
                 sections.Items.Add(item);
                 if (item.Index % 2 != 0)
-                    item.BackColor = Color.White;
+                    item.BackColor = core.gui.ThemeManager.FieldBackColor;
                 else
-                    item.BackColor = Color.FromArgb(255, 225, 235, 255);
+                    item.BackColor = core.gui.ThemeManager.AltRowColor;
             }
             clearZonesButton.Enabled = sections.Items.Count > 0;
             sections.EndUpdate();
