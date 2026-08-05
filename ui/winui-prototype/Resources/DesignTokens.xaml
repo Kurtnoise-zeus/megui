@@ -1,0 +1,24 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Color tokens -->
+  <Color x:Key="AccentColor">#FF7C3AED</Color>
+  <Color x:Key="AccentHoverColor">#FF8B5CF6</Color>
+  <Color x:Key="BackgroundColor">#FF0F1720</Color>
+  <Color x:Key="SurfaceColor">#FF111827</Color>
+  <Color x:Key="CardColor">#FF141824</Color>
+  <Color x:Key="TextPrimary">#FFE6EEF3</Color>
+  <Color x:Key="TextSecondary">#FF9AA5B1</Color>
+
+  <!-- Brushes -->
+  <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+  <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
+  <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+  <SolidColorBrush x:Key="CardBrush" Color="{StaticResource CardColor}"/>
+  <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}"/>
+  <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondary}"/>
+
+  <!-- Spacing -->
+  <x:Double x:Key="CornerRadius">12</x:Double>
+
+</ResourceDictionary>

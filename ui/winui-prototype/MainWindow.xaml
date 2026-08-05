@@ -1,0 +1,47 @@
+<muxc:NavigationView
+    x:Name="RootNav"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:local="using:WinUIPrototype"
+    RequestedTheme="Dark"
+    PaneDisplayMode="Left"
+    IsBackButtonVisible="Collapsed"
+    CompactModeThresholdWidth="0"
+    PaneWidth="72"
+    OpenPaneLength="240">
+
+    <muxc:NavigationView.PaneHeader>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="12,8,0,8">
+            <Border Background="{StaticResource AccentBrush}" Width="40" Height="40" CornerRadius="8">
+                <TextBlock Text="M" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+            </Border>
+        </StackPanel>
+    </muxc:NavigationView.PaneHeader>
+
+    <muxc:NavigationView.MenuItems>
+        <muxc:NavigationViewItem Icon="Home" Content="Home" Tag="home"/>
+        <muxc:NavigationViewItem Icon="Play" Content="Queue" Tag="queue"/>
+        <muxc:NavigationViewItem Icon="Edit" Content="Encoders" Tag="encoders"/>
+        <muxc:NavigationViewItem Icon="Settings" Content="Settings" Tag="settings"/>
+    </muxc:NavigationView.MenuItems>
+
+    <muxc:NavigationView.Content>
+        <Grid Background="{StaticResource BackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="380"/>
+            </Grid.ColumnDefinitions>
+
+            <Frame x:Name="ContentFrame" />
+
+            <Border Grid.Column="1" Margin="16" Background="{StaticResource CardBrush}" CornerRadius="12">
+                <StackPanel Margin="12">
+                    <TextBlock Text="Properties" Foreground="{StaticResource TextPrimaryBrush}" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock Text="Select an item to see properties" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </muxc:NavigationView.Content>
+
+</muxc:NavigationView>
