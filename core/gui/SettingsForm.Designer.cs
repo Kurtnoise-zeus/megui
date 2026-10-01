@@ -69,6 +69,11 @@ namespace MeGUI
             this.openFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPageAppearance = new System.Windows.Forms.TabPage();
+            this.gbTheme = new System.Windows.Forms.GroupBox();
+            this.lblTheme = new System.Windows.Forms.Label();
+            this.cbTheme = new System.Windows.Forms.ComboBox();
+            this.lblThemeDescription = new System.Windows.Forms.Label();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.lblMinimumLength = new System.Windows.Forms.Label();
             this.minimumTitleLength = new System.Windows.Forms.NumericUpDown();
@@ -215,6 +220,8 @@ namespace MeGUI
             this.groupBox4.SuspendLayout();
             this.vobGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.forceFilmPercentage)).BeginInit();
+            this.tabPageAppearance.SuspendLayout();
+            this.gbTheme.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -383,6 +390,7 @@ namespace MeGUI
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPageAppearance);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage2);
@@ -691,6 +699,57 @@ namespace MeGUI
             this.chkDirectShowSource.Size = new System.Drawing.Size(278, 17);
             this.chkDirectShowSource.TabIndex = 27;
             this.chkDirectShowSource.Text = "Enable DirectShowSource() in the AVS Script Creator";
+            // 
+            // tabPageAppearance
+            // 
+            this.tabPageAppearance.Controls.Add(this.gbTheme);
+            this.tabPageAppearance.Location = new System.Drawing.Point(4, 22);
+            this.tabPageAppearance.Name = "tabPageAppearance";
+            this.tabPageAppearance.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageAppearance.Size = new System.Drawing.Size(589, 435);
+            this.tabPageAppearance.TabIndex = 5;
+            this.tabPageAppearance.Text = "Appearance";
+            this.tabPageAppearance.UseVisualStyleBackColor = true;
+            // 
+            // gbTheme
+            // 
+            this.gbTheme.Controls.Add(this.lblTheme);
+            this.gbTheme.Controls.Add(this.cbTheme);
+            this.gbTheme.Controls.Add(this.lblThemeDescription);
+            this.gbTheme.Location = new System.Drawing.Point(6, 6);
+            this.gbTheme.Name = "gbTheme";
+            this.gbTheme.Size = new System.Drawing.Size(577, 115);
+            this.gbTheme.TabIndex = 0;
+            this.gbTheme.TabStop = false;
+            this.gbTheme.Text = "Theme";
+            // 
+            // lblTheme
+            // 
+            this.lblTheme.AutoSize = true;
+            this.lblTheme.Location = new System.Drawing.Point(13, 30);
+            this.lblTheme.Name = "lblTheme";
+            this.lblTheme.Size = new System.Drawing.Size(82, 13);
+            this.lblTheme.TabIndex = 0;
+            this.lblTheme.Text = "Application theme";
+            // 
+            // cbTheme
+            // 
+            this.cbTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbTheme.FormattingEnabled = true;
+            this.cbTheme.Location = new System.Drawing.Point(130, 27);
+            this.cbTheme.Name = "cbTheme";
+            this.cbTheme.Size = new System.Drawing.Size(200, 21);
+            this.cbTheme.TabIndex = 1;
+            // 
+            // lblThemeDescription
+            // 
+            this.lblThemeDescription.Location = new System.Drawing.Point(13, 60);
+            this.lblThemeDescription.Name = "lblThemeDescription";
+            this.lblThemeDescription.Size = new System.Drawing.Size(548, 44);
+            this.lblThemeDescription.TabIndex = 2;
+            this.lblThemeDescription.Text = "Choose between Light, Dark, or Follow System theme. \"Follow System\" will automati" +
+    "cally use the theme set in your Windows personalization settings. Changes are app" +
+    "lied after clicking Save.";
             // 
             // tabPage3
             // 
@@ -1776,6 +1835,9 @@ namespace MeGUI
             this.vobGroupBox.ResumeLayout(false);
             this.vobGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.forceFilmPercentage)).EndInit();
+            this.tabPageAppearance.ResumeLayout(false);
+            this.gbTheme.ResumeLayout(false);
+            this.gbTheme.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1912,5 +1974,10 @@ namespace MeGUI
         private System.Windows.Forms.GroupBox groupBox14;
         private System.Windows.Forms.Label lblQaac;
         private FileBar qaacLocation;
+        private System.Windows.Forms.TabPage tabPageAppearance;
+        private System.Windows.Forms.GroupBox gbTheme;
+        private System.Windows.Forms.Label lblTheme;
+        private System.Windows.Forms.ComboBox cbTheme;
+        private System.Windows.Forms.Label lblThemeDescription;
     }
 }

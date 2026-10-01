@@ -22,6 +22,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
+using MeGUI.core.gui;
+
 namespace MeGUI.core.gui
 {
     public enum ProgressBarDisplayText
@@ -78,7 +80,7 @@ namespace MeGUI.core.gui
                 // Calculate the location of the text (the middle of progress bar)
                 Point location = new Point(Convert.ToInt32((rect.Width / 2) - (len.Width / 2)), Convert.ToInt32((rect.Height / 2) - (len.Height / 2)));
                 // Draw the custom text
-                g.DrawString(text, f, Brushes.Black, location);
+                g.DrawString(text, f, ThemeManager.SystemTextBrush, location);
             }
         }
 

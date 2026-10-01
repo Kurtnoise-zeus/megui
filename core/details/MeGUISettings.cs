@@ -94,6 +94,7 @@ namespace MeGUI
         private StandbySettings standbySetting;
         private AfterEncoding afterEncoding;
         private ProxyMode httpProxyMode;
+        private AppTheme appTheme;
         private List<WorkerSettings> arrWorkerSettings;
         private List<WorkerPriority> arrWorkerPriority;
         private ProgramSettings avimuxgui, avisynth, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
@@ -156,6 +157,7 @@ namespace MeGUI
             audioExtension = "";
             alwaysOnTop = false;
             httpProxyMode = ProxyMode.None;
+            appTheme = AppTheme.FollowSystem;
             httpproxyaddress = "";
             httpproxyport = "";
             httpproxyuid = "";
@@ -907,6 +909,15 @@ namespace MeGUI
         {
             get { return httpProxyMode; }
             set { httpProxyMode = value; }
+        }
+
+        /// <summary>
+        /// Gets / sets the application theme (Light, Dark, or FollowSystem)
+        /// </summary>
+        public AppTheme Theme
+        {
+            get { return appTheme; }
+            set { appTheme = value; }
         }
 
         /// <summary>
@@ -1810,6 +1821,15 @@ namespace MeGUI
 #endregion
     }
 
+    public enum AppTheme
+    {
+        [EnumTitle("Light")]
+        Light = 0,
+        [EnumTitle("Dark")]
+        Dark = 1,
+        [EnumTitle("Follow System")]
+        FollowSystem = 2
+    }
     public enum AfterEncoding { DoNothing = 0, Shutdown = 1, RunCommand = 2, CloseMeGUI = 3 }
     public enum ProxyMode { None = 0, SystemProxy = 1, CustomProxy = 2, CustomProxyWithLogin = 3 }
     public enum UpdateMode

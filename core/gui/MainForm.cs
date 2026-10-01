@@ -189,6 +189,23 @@ namespace MeGUI
 
             if (MainForm.Instance.Settings.UpdateMode != UpdateMode.Disabled)
                 _updateHandler.BeginUpdateCheck();
+
+            // apply the configured theme
+            core.gui.ThemeManager.Setup();
+            ApplyApplicationTheme();
+        }
+
+        /// <summary>
+        /// Applies the current theme to the main form and all open forms.
+        /// </summary>
+        internal void ApplyApplicationTheme()
+        {
+            core.gui.ThemeManager.ApplyTheme(this);
+            foreach (Form openForm in Application.OpenForms)
+            {
+                if (openForm != this)
+                    core.gui.ThemeManager.ApplyTheme(openForm);
+            }
         }
 
         private void GetChangeLog()
@@ -235,7 +252,7 @@ namespace MeGUI
 
                             txtChangeLog.Select(startIndex, line.Length);
                             if (bDark)
-                                txtChangeLog.SelectionColor = Color.Black;
+                                txtChangeLog.SelectionColor = core.gui.ThemeManager.IsDarkTheme ? Color.White : Color.Black;
                             else
                                 txtChangeLog.SelectionColor = Color.LightGray;
 
@@ -1306,6 +1323,7 @@ namespace MeGUI
                 if (sform.ShowDialog() == DialogResult.OK)
                 {
                     MeGUISettings.StandbySettings oldStandbyValue = this.settings.StandbySetting;
+                    AppTheme oldTheme = this.settings.Theme;
                     
                     this.settings = sform.Settings;
                     this.saveSettings();
@@ -1318,6 +1336,10 @@ namespace MeGUI
                         if (MainForm.Instance.Jobs.IsAnyJobRunning)
                             MeGUI.core.util.WindowUtil.PreventSystemPowerdown();
                     }
+
+                    // apply theme if changed
+                    if (oldTheme != settings.Theme)
+                        ApplyApplicationTheme();
                 }
             }
         }
