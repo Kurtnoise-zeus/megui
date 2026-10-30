@@ -107,12 +107,6 @@ namespace MeGUI
                             && !FileUtil.RegExMatch(line, @"\[\w\d{2}\] audio overlaps for ", true)
                             && !FileUtil.RegExMatch(line, @"\[\w\d{2}\] the video framerate is correct, but rather unusual", true))
                             StdoutLog.LogEvent(line, ImageType.Warning);
-                        if (line.Contains("Getting \"Haali Matroska Muxer\" instance failed"))
-                        {
-                            // haali media splitter is missing ==> try to (re)install it
-                            if (!Su.WasAborted && FileUtil.InstallHaali(ref log))
-                                base.BSecondPassNeeded = true;
-                        }
                     }
                 }
             }

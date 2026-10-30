@@ -1390,9 +1390,6 @@ namespace MeGUI
             this.UpdateHandler = new UpdateHandler();
 
             LogItem v = new LogItem("Component Information");
-            string haaliPath = FileUtil.GetHaaliInstalledPath();
-            FileUtil.GetFileInformation("Haali Media Splitter", Path.Combine(haaliPath, "splitter.ax"), ref v);
-            FileUtil.GetFileInformation("Haali DSS2", Path.Combine(haaliPath, "avss.dll"), ref v);
             FileUtil.GetFileInformation("ICSharpCode.SharpZipLib", Path.GetDirectoryName(Application.ExecutablePath) + @"\ICSharpCode.SharpZipLib.dll", ref v);
             FileUtil.GetFileInformation("MediaInfo", Path.GetDirectoryName(Application.ExecutablePath) + @"\MediaInfo.dll", ref v);
             FileUtil.GetFileInformation("SevenZipSharp", Path.GetDirectoryName(Application.ExecutablePath) + @"\SevenZipSharp.dll", ref v);

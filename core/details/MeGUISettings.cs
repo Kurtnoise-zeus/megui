@@ -97,7 +97,7 @@ namespace MeGUI
         private List<WorkerSettings> arrWorkerSettings;
         private List<WorkerPriority> arrWorkerPriority;
         private ProgramSettings avimuxgui, avisynth, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
-                                eac3to, fdkaac, ffmpeg, ffms, flac, haali, lame, lsmash, mediainfo,
+                                eac3to, fdkaac, ffmpeg, ffms, flac, lame, lsmash, mediainfo,
                                 megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc, exhale, 
                                 oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid, bestsource, svtav1;
         Dictionary<string, string> oRedistVersions;
@@ -1304,12 +1304,6 @@ namespace MeGUI
             set { flac = value; }
         }
 
-        public ProgramSettings Haali
-        {
-            get { return haali; }
-            set { haali = value; }
-        }
-
         public ProgramSettings Lame
         {
             get { return lame; }
@@ -1646,8 +1640,6 @@ namespace MeGUI
                 ffms = new ProgramSettings("ffms");
             if (flac == null)
                 flac = new ProgramSettings("flac");
-            if (haali == null)
-                haali = new ProgramSettings("haali");
             if (lame == null)
                 lame = new ProgramSettings("lame");
             if (lsmash == null)
@@ -1759,9 +1751,6 @@ namespace MeGUI
             ffms.UpdateInformation("ffms", "FFMS", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\ffms\ffmsindex.exe"));
             ffms.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\ffms\ffms2.dll"));
             flac.UpdateInformation("flac", "FLAC", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\flac\flac.exe"));
-            haali.UpdateInformation("haali", "Haali Media Splitter", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\haali\splitter.ax"));
-            haali.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\haali\avss.dll"));
-            haali.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\haali\install.cmd"));
             lame.UpdateInformation("lame", "LAME", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\lame\lame.exe"));
             lsmash.UpdateInformation("lsmash", "L-SMASH Works", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\lsmash\LSMASHSource.dll"));
             bestsource.UpdateInformation("bestsource", "BestSource Avisynth Plugin", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\bestsource\BestSource.dll"));
