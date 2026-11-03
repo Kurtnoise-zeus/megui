@@ -820,9 +820,9 @@ namespace MeGUI.core.gui
             foreach (ListViewItem oItem in queueListView.Items)
             {
                 if (oList.Contains(oItem.Text))
-                    oItem.BackColor = Color.FromArgb(255, 225, 235, 255);
+                    oItem.BackColor = core.gui.ThemeManager.AltRowColor;
                 else
-                    oItem.BackColor = SystemColors.Window;
+                    oItem.BackColor = core.gui.ThemeManager.FieldBackColor;
             }
             queueListView.ResumeLayout();
         }

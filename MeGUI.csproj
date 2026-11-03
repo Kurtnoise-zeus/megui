@@ -314,6 +314,7 @@
     <Compile Include="core\gui\CustomProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="core\gui\ThemeManager.cs" />
     <Compile Include="core\gui\messageboxex\MessageBoxEx.cs" />
     <Compile Include="core\gui\messageboxex\MessageBoxExForm.cs">
       <SubType>Form</SubType>

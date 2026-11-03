@@ -130,9 +130,9 @@ namespace MeGUI
                     ListViewItem item = new ListViewItem(new string[] { frame, strTimeIn, strTimeOut, c.Name });
                     chapterListView.Items.Add(item);
                     if (item.Index % 2 != 0)
-                        item.BackColor = Color.White;
+                        item.BackColor = core.gui.ThemeManager.FieldBackColor;
                     else
-                        item.BackColor = Color.FromArgb(255, 245, 245, 245);
+                        item.BackColor = core.gui.ThemeManager.AltRowColor;
                 }
 
                 if (chapterListView.Items.Count > iSelectItem)
@@ -578,7 +578,7 @@ namespace MeGUI
             if (!GetTimeSpanFromString(startTime.Text, out ts))
                 startTime.ForeColor = Color.Red;
             else
-                startTime.ForeColor = Color.Black;
+                startTime.ForeColor = core.gui.ThemeManager.ForeColor;
         }
 
         private void chapterListView_DoubleClick(object sender, EventArgs e)
