@@ -100,7 +100,6 @@ namespace MeGUI
                                 eac3to, fdkaac, ffmpeg, ffms, flac, lame, lsmash, mediainfo,
                                 megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc, exhale, 
                                 oggenc, opus, pgcdemux, qaac, tsmuxer, vsrip, x264, x265, xvid, bestsource, svtav1;
-        Dictionary<string, string> oRedistVersions;
         #endregion
         public MeGUISettings()
 		{
@@ -211,7 +210,6 @@ namespace MeGUI
             bEnableDirectShowSource = false;
             bFirstUpdateCheck = true;
             dLastDPIScaleFactor = 0;
-            oRedistVersions = new Dictionary<string, string>();
             bChapterCreatorCounter = true;
             bX264AdvancedSettings = false;
             workerAutoStart = true;
@@ -1210,13 +1208,6 @@ namespace MeGUI
         {
             get { return bHwdVideoDecoder; }
             set { bHwdVideoDecoder = value; }
-        }
-
-        [XmlIgnore]
-        public Dictionary<string, string> RedistVersions
-        {
-            get { return oRedistVersions; }
-            set { oRedistVersions = value; }
         }
 
         public ProgramSettings AviMuxGui

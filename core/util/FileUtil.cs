@@ -748,96 +748,66 @@ namespace MeGUI.core.util
 
         #region redist actions
         /// <summary>
-        /// Gets the Redist information based on the registry
+        /// Gets the installed Microsoft Visual C++ v14 Redistributable (2015-2022 and later) from the registry
         /// </summary>
         /// <returns></returns>
         public static LogItem GetRedistInformation()
         {
-            GetRedistKeys(@"SOFTWARE\Classes\Installer\Dependencies");
-            GetRedistKeys(@"SOFTWARE\Classes\Installer\Products");
-
             LogItem oLog = new LogItem("Redistributables");
-            if (MainForm.Instance.Settings.RedistVersions.Count > 0)
+
+            // the x64 runtime is needed on a 64-bit OS, the x86 one otherwise
+            string strRequired = Environment.Is64BitOperatingSystem ? "x64" : "x86";
+            bool bRequiredFound = false;
+
+            foreach (string architecture in new string[] { "x64", "x86" })
             {
-                List<string> oKeys = MainForm.Instance.Settings.RedistVersions.Keys.ToList();
-                oKeys.Sort();
-                foreach (string key in oKeys)
-                    oLog.LogValue("Microsoft Visual C++ " + key.Split('_')[0] + " " + key.Split('_')[1], MainForm.Instance.Settings.RedistVersions[key], false);
+                string strVersion = GetVCRuntimeVersion(architecture);
+                if (String.IsNullOrEmpty(strVersion))
+                    continue;
+
+                oLog.LogValue("Microsoft Visual C++ v14 Redistributable " + architecture, strVersion, false);
+                if (architecture.Equals(strRequired))
+                    bRequiredFound = true;
             }
-            else
-                oLog.LogValue("Microsoft Visual C++ Redistributable", "not detected. Please install the latest Visual C++ Redistributable (https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist)", ImageType.Warning, false);
+
+            if (!bRequiredFound)
+                oLog.LogValue("Microsoft Visual C++ v14 Redistributable " + strRequired, "not detected. Please install the latest Visual C++ Redistributable (https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist)", ImageType.Warning, false);
 
             return oLog;
         }
 
         /// <summary>
-        /// Gets the sub keys of a root key and the redist information in them
+        /// Reads the version of the installed Visual C++ v14 runtime from
+        /// HKLM\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\{architecture}, which is the detection method documented by
+        /// Microsoft. The key name stays "14.0" for all v14 releases (2015, 2017, 2019, 2022, 14.50 and later).
         /// </summary>
-        /// <param name="strRegKey">root registry key</param>
-        private static void GetRedistKeys(string strRegKey)
+        /// <param name="architecture">x64 or x86</param>
+        /// <returns>the version (e.g. 14.51.36247) or an empty string if the runtime is not installed</returns>
+        private static string GetVCRuntimeVersion(string architecture)
         {
-            RegistryKey BaseKey = Registry.LocalMachine.OpenSubKey(strRegKey);
-            if (BaseKey == null)
-                return;
-
-            foreach (string sub in BaseKey.GetSubKeyNames())
+            // depending on the architecture/OS the key is either in the native or in the Wow6432Node registry view
+            foreach (RegistryView view in new RegistryView[] { RegistryView.Registry64, RegistryView.Registry32 })
             {
-                RegistryKey oLocalKey = BaseKey.OpenSubKey(sub);
-                FindRedistInformation(oLocalKey, out string year, out string architecture, out string version);
-                if (string.IsNullOrEmpty(architecture))
-                    continue;
-                if (MainForm.Instance.Settings.RedistVersions.ContainsKey(year + "_" + architecture))
+                try
                 {
-                    Version v1 = new Version(version);
-                    Version v2 = new Version(MainForm.Instance.Settings.RedistVersions[year + "_" + architecture]);
-                    if (v1 < v2)
-                        continue;
-                    MainForm.Instance.Settings.RedistVersions.Remove(year + "_" + architecture);
+                    using (RegistryKey oBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                    using (RegistryKey oKey = oBase.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\" + architecture))
+                    {
+                        if (oKey == null || Convert.ToInt32(oKey.GetValue("Installed", 0)) != 1)
+                            continue;
+
+                        // e.g. "v14.51.36247"
+                        string strVersion = Convert.ToString(oKey.GetValue("Version", string.Empty)).Trim().TrimStart('v', 'V');
+                        if (String.IsNullOrEmpty(strVersion) && oKey.GetValue("Major") != null)
+                            strVersion = string.Format("{0}.{1}.{2}", oKey.GetValue("Major"), oKey.GetValue("Minor"), oKey.GetValue("Bld"));
+
+                        return String.IsNullOrEmpty(strVersion) ? "n/a" : strVersion;
+                    }
                 }
-                MainForm.Instance.Settings.RedistVersions.Add(year + "_" + architecture, version);
-            }
-        }
-
-        /// <summary>
-        /// Tries to find the redist information based on a given reg key
-        /// </summary>
-        /// <param name="oKey">the reg key to check</param>
-        /// <param name="year">the year of the redist package</param>
-        /// <param name="architecture">the architecture of the redist package</param>
-        /// <param name="version">the version of the redist package</param>
-        private static void FindRedistInformation(RegistryKey oKey, out string year, out string architecture, out string version)
-        {
-            year = architecture = version = string.Empty;
-
-            object oValue = oKey.GetValue("ProductName");
-            if (oValue == null)
-            {
-                oValue = oKey.GetValue("DisplayName");
-                if (oValue == null)
-                    return;
+                catch { }
             }
 
-            string strValue = oValue.ToString();
-            if (String.IsNullOrEmpty(strValue))
-                return;
-
-            if (!RegExMatch(strValue, @"^Microsoft Visual C\+\+.*Redistributable", true))
-                return;
-
-            Match oMatch = Regex.Match(strValue, @"( \d{4} | \d{4}-\d{4} )");
-            if (!oMatch.Success)
-                return;
-            year = oMatch.Value.Trim();
-
-            oMatch = Regex.Match(strValue, @" \d+\.\d+\.\d+\z");
-            if (!oMatch.Success)
-                return;
-            version = oMatch.Value;
-
-            oMatch = Regex.Match(strValue, @"x(64|86)");
-            if (!oMatch.Success)
-                return;
-            architecture = oMatch.Value.ToLowerInvariant(); ;
+            return string.Empty;
         }
 
         /// <summary>
