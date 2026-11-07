@@ -849,7 +849,6 @@ namespace MeGUI
             _updateHandler.SaveSettings();
             UpdateCacher.RemoveOldFiles();
             jobControl1.SaveJobs();
-            FileUtil.RemoveRuntimeFiles();
             this.saveLog();
             deleteFiles();
             this.runRestarter();

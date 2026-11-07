@@ -3,6 +3,7 @@ Changelog version 6666 20261107
 - Removed the portable AviSynth build (tools\avs package, AviSynth.dll/DevIL.dll copies and the "Always use the included AviSynth" option)
 - MeGUI now requires a system installed AviSynth+ (https://github.com/AviSynth/AviSynthPlus/releases). DirectShowSource.dll and the plugins are loaded from its autoload folder
 - Stale AviSynth.dll/DevIL.dll copies left by previous versions are removed at startup
+- Removed the redist (Visual C++ runtime) package: runtime DLLs are no longer copied next to the tools. The Microsoft Visual C++ Redistributable has to be installed on the system
 
 Changelog version 6666 20260329
 
