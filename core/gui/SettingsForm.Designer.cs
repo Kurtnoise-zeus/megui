@@ -90,7 +90,6 @@ namespace MeGUI
             this.chkInput8Bit = new System.Windows.Forms.CheckBox();
             this.lblffmsThreads = new System.Windows.Forms.Label();
             this.ffmsThreads = new System.Windows.Forms.NumericUpDown();
-            this.cbUseIncludedAviSynth = new System.Windows.Forms.CheckBox();
             this.chkDirectShowSource = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -597,11 +596,10 @@ namespace MeGUI
             this.groupBox13.Controls.Add(this.chkInput8Bit);
             this.groupBox13.Controls.Add(this.lblffmsThreads);
             this.groupBox13.Controls.Add(this.ffmsThreads);
-            this.groupBox13.Controls.Add(this.cbUseIncludedAviSynth);
             this.groupBox13.Controls.Add(this.chkDirectShowSource);
             this.groupBox13.Location = new System.Drawing.Point(270, 7);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(311, 166);
+            this.groupBox13.Size = new System.Drawing.Size(311, 143);
             this.groupBox13.TabIndex = 2;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Avisynth/+ Extra Settings";
@@ -618,7 +616,7 @@ namespace MeGUI
             "D3D11",
             "D3D12",
             "Vulkan"});
-            this.cbHwdDecoder.Location = new System.Drawing.Point(199, 88);
+            this.cbHwdDecoder.Location = new System.Drawing.Point(199, 65);
             this.cbHwdDecoder.Name = "cbHwdDecoder";
             this.cbHwdDecoder.Size = new System.Drawing.Size(106, 21);
             this.cbHwdDecoder.TabIndex = 57;
@@ -626,7 +624,7 @@ namespace MeGUI
             // chkEnableHwd
             // 
             this.chkEnableHwd.AutoSize = true;
-            this.chkEnableHwd.Location = new System.Drawing.Point(15, 90);
+            this.chkEnableHwd.Location = new System.Drawing.Point(15, 67);
             this.chkEnableHwd.Name = "chkEnableHwd";
             this.chkEnableHwd.Size = new System.Drawing.Size(180, 17);
             this.chkEnableHwd.TabIndex = 56;
@@ -637,7 +635,7 @@ namespace MeGUI
             // chkInput8Bit
             // 
             this.chkInput8Bit.AutoSize = true;
-            this.chkInput8Bit.Location = new System.Drawing.Point(13, 66);
+            this.chkInput8Bit.Location = new System.Drawing.Point(13, 43);
             this.chkInput8Bit.Name = "chkInput8Bit";
             this.chkInput8Bit.Size = new System.Drawing.Size(152, 17);
             this.chkInput8Bit.TabIndex = 55;
@@ -647,7 +645,7 @@ namespace MeGUI
             // lblffmsThreads
             // 
             this.lblffmsThreads.AutoSize = true;
-            this.lblffmsThreads.Location = new System.Drawing.Point(15, 135);
+            this.lblffmsThreads.Location = new System.Drawing.Point(15, 112);
             this.lblffmsThreads.Name = "lblffmsThreads";
             this.lblffmsThreads.Size = new System.Drawing.Size(106, 13);
             this.lblffmsThreads.TabIndex = 54;
@@ -655,7 +653,7 @@ namespace MeGUI
             // 
             // ffmsThreads
             // 
-            this.ffmsThreads.Location = new System.Drawing.Point(127, 133);
+            this.ffmsThreads.Location = new System.Drawing.Point(127, 110);
             this.ffmsThreads.Maximum = new decimal(new int[] {
             1,
             0,
@@ -675,18 +673,10 @@ namespace MeGUI
             0,
             0});
             // 
-            // cbUseIncludedAviSynth
-            // 
-            this.cbUseIncludedAviSynth.Location = new System.Drawing.Point(13, 20);
-            this.cbUseIncludedAviSynth.Name = "cbUseIncludedAviSynth";
-            this.cbUseIncludedAviSynth.Size = new System.Drawing.Size(203, 17);
-            this.cbUseIncludedAviSynth.TabIndex = 28;
-            this.cbUseIncludedAviSynth.Text = "Always use the included AviSynth";
-            // 
             // chkDirectShowSource
             // 
             this.chkDirectShowSource.AutoSize = true;
-            this.chkDirectShowSource.Location = new System.Drawing.Point(13, 43);
+            this.chkDirectShowSource.Location = new System.Drawing.Point(13, 20);
             this.chkDirectShowSource.Name = "chkDirectShowSource";
             this.chkDirectShowSource.Size = new System.Drawing.Size(278, 17);
             this.chkDirectShowSource.TabIndex = 27;
@@ -1883,7 +1873,6 @@ namespace MeGUI
         private System.Windows.Forms.NumericUpDown workerMaximumCount;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox13;
-        private System.Windows.Forms.CheckBox cbUseIncludedAviSynth;
         private System.Windows.Forms.CheckBox chkDirectShowSource;
         private System.Windows.Forms.CheckBox chkInput8Bit;
         private System.Windows.Forms.Label lblffmsThreads;

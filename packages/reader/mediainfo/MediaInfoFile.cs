@@ -1329,8 +1329,6 @@ namespace MeGUI
             {
                 string tempAvs = "DirectShowSource(\"" + _file + "\", audio=false)";
 
-                if (MainForm.Instance.Settings.PortableAviSynth)
-                    tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path), @"plugins\directshowsource.dll") + "\")\r\n" + tempAvs;
                 IMediaFile iMediaFile = AvsFile.ParseScript(tempAvs);
                 if (iMediaFile != null)
                     iMediaFile.Dispose();
@@ -1354,7 +1352,7 @@ namespace MeGUI
             try
             {
                 string tempAvs = "";
-                if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
+                if (!String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
                 {
                     tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
                     if (MainForm.Instance.Settings.EnableHwdAVSVideoDec)

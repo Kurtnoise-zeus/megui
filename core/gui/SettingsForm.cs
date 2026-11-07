@@ -428,7 +428,6 @@ namespace MeGUI
 
                 settings.Input8Bit = chkInput8Bit.Checked;
                 settings.UseExternalMuxerX264 = chx264ExternalMuxer.Checked;
-                settings.AlwaysUsePortableAviSynth = cbUseIncludedAviSynth.Checked;
                 settings.ChapterCreatorMinimumLength = (int)minimumTitleLength.Value;
                 settings.Usex64Tools = chk64Bit.Checked;
                 settings.ShowDebugInformation = chkDebugInformation.Checked;
@@ -503,7 +502,6 @@ namespace MeGUI
                 useFDKAac.Checked = settings.UseFDKAac;
                 useQAAC.Checked = settings.UseQAAC;
                 chx264ExternalMuxer.Checked = settings.UseExternalMuxerX264;
-                cbUseIncludedAviSynth.Checked = settings.AlwaysUsePortableAviSynth;
                 minimumTitleLength.Value = settings.ChapterCreatorMinimumLength;
                 chk64Bit.Checked = settings.Usex64Tools;
                 chkDebugInformation.Checked = settings.ShowDebugInformation;
@@ -607,12 +605,6 @@ namespace MeGUI
                 else
                     MessageBox.Show("DGIndexIM cannot be used for free. Therefore you have to copy/create the file license.txt into your ..\\tools\\dgindexnv directory manually.", "license.txt for DGIndexIM missing", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-        }
-
-        private void cbUseIncludedAviSynth_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbUseIncludedAviSynth.Checked != internalSettings.AlwaysUsePortableAviSynth)
-                MessageBox.Show("You have to restart MeGUI so that the new AviSynth configuration can be changed.", "Restart required", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void cbAutoUpdateServerSubList_SelectedIndexChanged(object sender, EventArgs e)

@@ -751,7 +751,7 @@ namespace MeGUI
                 catch (Exception)
                 { }
 
-                if (MainForm.Instance.Settings.PortableAviSynth || !String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
+                if (!String.IsNullOrEmpty(MainForm.Instance.Settings.BestSource.Path))
                 {
                     tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.BestSource.Path), "BestSource.dll") + "\")\r\n";
                     if (MainForm.Instance.Settings.EnableHwdAVSVideoDec)
@@ -838,8 +838,6 @@ namespace MeGUI
                     VideoUtil.getAssumeFPS(0, fileName),
                     this.flipVertical.Checked ? ".FlipVertical()" : string.Empty
                     );
-                if (MainForm.Instance.Settings.PortableAviSynth)
-                    tempAvs = "LoadPlugin(\"" + Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path), @"plugins\directshowsource.dll") + "\")\r\n" + tempAvs;
                 if (MainForm.Instance.Settings.AviSynthPlus && MainForm.Instance.Settings.Input8Bit)
                     tempAvs += "\r\nConvertBits(8)";
             }

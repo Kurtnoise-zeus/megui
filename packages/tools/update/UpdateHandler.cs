@@ -632,10 +632,8 @@ namespace MeGUI
                                 needsRestart = true;
 
                             if (file.Name.Equals("ffmpeg") || file.Name.StartsWith("x26") || file.Name.Equals("avisynth_plugin")
-                                || file.Name.Equals("xvid_encraw") || file.Name.Equals("lsmash") || file.Name.Equals("redist") || file.Name.Equals("avs"))
+                                || file.Name.Equals("xvid_encraw") || file.Name.Equals("lsmash") || file.Name.Equals("redist"))
                             {
-                                if (MainForm.Instance.Settings.PortableAviSynth)
-                                    FileUtil.PortableAviSynthActions(false);
                                 FileUtil.CopyRuntimeFiles();
                             }
                         }

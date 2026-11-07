@@ -79,7 +79,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "XviDEncoder");
 
         /// <summary>
         /// Checks if temporary AVS keys have to be set. 
-        /// This is required so that Xvid can find/use the avisynth.dll - especially in the portable avisynth mode
+        /// This is required so that Xvid can find/use the avisynth.dll of the system installed AviSynth+
         /// </summary>
         private void SetAVSKeys()
         {

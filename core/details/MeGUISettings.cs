@@ -67,7 +67,7 @@ namespace MeGUI
                      overwriteStats, keep2of3passOutput, autoUpdate, deleteIntermediateFiles, workerAutoStart,
                      deleteAbortedOutput, openProgressWindow, bEac3toAutoSelectStreams, bUseFDKAac, bVobSubberKeepAll,
                      alwaysOnTop, addTimePosition, alwaysbackupfiles, bUseITU, bEac3toLastUsedFileMode, bMeGUIx64,
-                     bAutoLoadDG, bAlwayUsePortableAviSynth, bVobSubberSingleFileExport, workerAutoStartOnStartup,
+                     bAutoLoadDG, bVobSubberSingleFileExport, workerAutoStartOnStartup,
                      bEnsureCorrectPlaybackSpeed, bExternalMuxerX264, bUseNeroAacEnc, bOSx64, bEnableDirectShowSource,
                      bVobSubberExtractForced, bVobSubberShowAll, bUsex64Tools, bShowDebugInformation, bEac3toDefaultToHD,
                      bEac3toEnableEncoder, bEac3toEnableDecoder, bEac3toEnableCustomOptions, bFirstUpdateCheck,
@@ -96,7 +96,7 @@ namespace MeGUI
         private ProxyMode httpProxyMode;
         private List<WorkerSettings> arrWorkerSettings;
         private List<WorkerPriority> arrWorkerPriority;
-        private ProgramSettings avimuxgui, avisynth, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
+        private ProgramSettings avimuxgui, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
                                 eac3to, fdkaac, ffmpeg, ffms, flac, lame, lsmash, mediainfo,
                                 megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc, exhale, 
                                 oggenc, opus, pgcdemux, qaac, redist, tsmuxer, vsrip, x264, x265, xvid, bestsource, svtav1;
@@ -192,7 +192,6 @@ namespace MeGUI
             endColumnWidth = 58;
             fpsColumnWidth = 95;
             bEnsureCorrectPlaybackSpeed = false;
-            bAlwayUsePortableAviSynth = true;
             ffmsThreads = 1;
             hwdItems = 0;
             appendToForcedStreams = "";
@@ -1097,15 +1096,6 @@ namespace MeGUI
         }
 
         /// <summary>
-        /// always use portable avisynth
-        /// </summary>
-        public bool AlwaysUsePortableAviSynth
-        {
-            get { return bAlwayUsePortableAviSynth; }
-            set { bAlwayUsePortableAviSynth = value; }
-        }
-
-        /// <summary>
         /// filename and full path of the neroaacenc executable
         /// </summary>
         public string NeroAacEncPath
@@ -1233,12 +1223,6 @@ namespace MeGUI
         {
             get { return avimuxgui; }
             set { avimuxgui = value; }
-        }
-
-        public ProgramSettings AviSynth
-        {
-            get { return avisynth; }
-            set { avisynth = value; }
         }
 
         public ProgramSettings AviSynthPlugins
@@ -1443,17 +1427,6 @@ namespace MeGUI
         }
 #endregion
 
-        private bool bPortableAviSynth;
-        /// <summary>
-        /// portable avisynth in use
-        /// </summary>
-        [XmlIgnore()]
-        public bool PortableAviSynth
-        {
-            get { return bPortableAviSynth; }
-            set { bPortableAviSynth = value; }
-        }
-
         private bool bAviSynthPlus;
         /// <summary>
         /// avisynth+ in use
@@ -1618,8 +1591,6 @@ namespace MeGUI
             // initialize program settings if required
             if (avimuxgui == null)
                 avimuxgui = new ProgramSettings("avimux_gui");
-            if (avisynth == null)
-                avisynth = new ProgramSettings("avs");
             if (avisynthplugins == null)
                 avisynthplugins = new ProgramSettings("avisynth_plugin");
             if (besplit == null)
@@ -1689,10 +1660,6 @@ namespace MeGUI
 
             // set default name, program paths & files
             avimuxgui.UpdateInformation("avimux_gui", "AVI-Mux GUI", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\avimux_gui\avimux_gui.exe"));
-            avisynth.UpdateInformation("avs", "AviSynth portable", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\avs\AviSynth.dll"));
-            avisynth.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\avs\DevIL.dll"));
-            avisynth.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\avs\plugins\DirectShowSource.dll"));
-            avisynth.Required = true;
             avisynthplugins.UpdateInformation("avisynth_plugin", "AviSynth plugins", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\avisynth_plugin\colormatrix.dll"));
             if (!bMeGUIx64)
             {

@@ -911,8 +911,6 @@ namespace MeGUI
             {
                 if (oInfo.HasAudio)
                 {
-                    if (MainForm.Instance.Settings.PortableAviSynth)
-                        sbOpen.AppendFormat("LoadPlugin(\"{0}\"){1}", Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path), @"plugins\directshowsource.dll"), Environment.NewLine);
                     if (oInfo.HasVideo)
                         sbOpen.AppendFormat("DirectShowSource(\"{0}\", video=false){1}", audioJob.Input, Environment.NewLine);
                     else
@@ -1206,13 +1204,6 @@ namespace MeGUI
                     DeleteTempFiles();
                     strError = "Failed opening the file: " + audioJob.Input;
                     return false;
-                }
-
-                if (MainForm.Instance.Settings.PortableAviSynth && MainForm.Instance.Settings.AviSynthPlus)
-                {
-                    script.Insert(0, String.Format("ClearAutoloadDirs(){0}AddAutoloadDir(\"{1}\"){0}",
-                        Environment.NewLine,
-                        Path.Combine(Path.GetDirectoryName(MainForm.Instance.Settings.AviSynth.Path), @"plugins")));
                 }
 
                 if (audioJob.Delay != 0)
