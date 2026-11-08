@@ -66,7 +66,8 @@ namespace MeGUI
                 ((j as AudioJob).Settings is OpusSettings) ||
                 ((j as AudioJob).Settings is FDKAACSettings) ||
                 ((j as AudioJob).Settings is FFAACSettings) ||
-                ((j as AudioJob).Settings is ExhaleSettings)))
+                ((j as AudioJob).Settings is ExhaleSettings) ||
+                ((j as AudioJob).Settings is GCLSettings)))
                 return new AviSynthAudioEncoder(mf.Settings);
             return null;
         }
@@ -2498,6 +2499,28 @@ function c3_dpl2(clip a)
                 if (!String.IsNullOrEmpty(oSettings.CustomEncoderOptions))
                     sb.Append(" " + oSettings.CustomEncoderOptions.Trim());
                 sb.Append(" \"{0}\"");
+            }
+            else if (audioJob.Settings is GCLSettings)
+            {
+                // generic command line encoder: no package to check, the encoder is defined by the profile
+                GCLSettings oSettings = audioJob.Settings as GCLSettings;
+                if (String.IsNullOrWhiteSpace(oSettings.EncoderPath))
+                {
+                    DeleteTempFiles();
+                    throw new MeGUIException("No encoder has been configured in the selected \"gcl\" audio profile.");
+                }
+                _encoderExecutablePath = oSettings.EncoderPath;
+                switch (oSettings.InputHeader)
+                {
+                    case GCLInputHeader.W64: _sendWavHeaderToEncoderStdIn = HeaderType.W64; break;
+                    case GCLInputHeader.RF64: _sendWavHeaderToEncoderStdIn = HeaderType.RF64; break;
+                    case GCLInputHeader.NONE: _sendWavHeaderToEncoderStdIn = HeaderType.NONE; break;
+                    default: _sendWavHeaderToEncoderStdIn = HeaderType.WAV; break;
+                }
+
+                script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
+
+                sb.Append(" " + GCLSettings.BuildCommandLine(oSettings.CommandLine, oSettings.CustomEncoderOptions));
             }
 
             else if (audioJob.Settings is OpusSettings)

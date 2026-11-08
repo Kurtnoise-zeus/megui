@@ -217,6 +217,7 @@ namespace MeGUI
         public static readonly AudioEncoderType FFMP2  = new AudioEncoderType("FFMP2", AudioCodec.MP2);
         public static readonly AudioEncoderType FDKAAC = new AudioEncoderType("FDK-AAC", AudioCodec.AAC);
         public static readonly AudioEncoderType FLAC   = new AudioEncoderType("FLAC", AudioCodec.FLAC);
+        public static readonly AudioEncoderType GCL    = new AudioEncoderType("gcl", AudioCodec.UNKNOWN);
         public static readonly AudioEncoderType LAME   = new AudioEncoderType("LAME", AudioCodec.MP3);
         public static readonly AudioEncoderType NAAC   = new AudioEncoderType("NAAC", AudioCodec.AAC);
         public static readonly AudioEncoderType OPUS   = new AudioEncoderType("OPUS", AudioCodec.OPUS);
@@ -300,6 +301,7 @@ namespace MeGUI
                 AudioEncoderTypes.Register(AudioEncoderType.FDKAAC) &&
                 AudioEncoderTypes.Register(AudioEncoderType.FFAAC)  &&
                 AudioEncoderTypes.Register(AudioEncoderType.EXHALE) &&
+                AudioEncoderTypes.Register(AudioEncoderType.GCL)    &&
                 AudioEncoderTypes.Register(AudioEncoderType.OPUS)))
                 throw new Exception("Failed to register a standard audio encoder type");
                 
@@ -367,6 +369,8 @@ namespace MeGUI
         public static readonly AudioType DTS    = new AudioType("DTS", "DTS Files", "dts", null, AudioCodec.DTS);
         public static readonly AudioType EAC3   = new AudioType("EAC3", "EAC3 Files", "eac3", null, AudioCodec.EAC3);
         public static readonly AudioType FLAC   = new AudioType("FLAC", "FLAC Audio Lossless Files", "flac", null, AudioCodec.FLAC);
+        // placeholder of the generic command line encoder: the real extension is defined by its profile (see GCLSettings.GetOutputType)
+        public static readonly AudioType GCL    = new AudioType("gcl", "Generic command line audio files", "mka", null, AudioCodec.UNKNOWN);
         public static readonly AudioType MP2    = new AudioType("MP2", "MP2 Files", "mp2", null, AudioCodec.MP2);
         public static readonly AudioType MP3    = new AudioType("MP3", "MP3 Files", "mp3", null, AudioCodec.MP3);
         public static readonly AudioType MP4AAC = new AudioType("MP4-AAC", "MP4 AAC Files", "mp4", ContainerType.MP4, AudioCodec.AAC);

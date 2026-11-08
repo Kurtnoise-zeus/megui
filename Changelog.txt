@@ -4,6 +4,7 @@ Changelog version 6666 20261107
 - MeGUI now requires a system installed AviSynth+ (https://github.com/AviSynth/AviSynthPlus/releases). DirectShowSource.dll and the plugins are loaded from its autoload folder
 - Stale AviSynth.dll/DevIL.dll copies left by previous versions are removed at startup
 - Removed the redist (Visual C++ runtime) package: runtime DLLs are no longer copied next to the tools. The Microsoft Visual C++ Redistributable has to be installed on the system
+- Added a generic command line audio encoder (gcl): only the encoder path, the command line, the output file extension and the input header (WAV/W64/RF64/none) are specific
 
 Changelog version 6666 20260329
 

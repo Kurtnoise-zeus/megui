@@ -1315,6 +1315,7 @@ namespace MeGUI
             RegisterEncoder(new FdkaacEncodingProvider());
             RegisterEncoder(new FfaacEncodingProvider());
             RegisterEncoder(new FlacEncodingProvider());
+            RegisterEncoder(new GCLEncodingProvider());
             RegisterEncoder(new MP2EncodingProvider());
             RegisterEncoder(new OpusEncodingProvider());
             RegisterEncoder(new QaacEncodingProvider());
@@ -1557,6 +1558,17 @@ namespace MeGUI
             supportedTypes.Add(AudioType.M4A);
             supportedTypes.Add(AudioType.MP4AAC);
             supportedEncoderTypes.Add(AudioEncoderType.EXHALE);
+        }
+    }
+
+    public class GCLEncodingProvider : AudioEncodingProvider
+    {
+        public GCLEncodingProvider()
+            : base()
+        {
+            supportedCodecs.Add(AudioCodec.UNKNOWN);
+            supportedTypes.Add(AudioType.GCL);
+            supportedEncoderTypes.Add(AudioEncoderType.GCL);
         }
     }
     #endregion

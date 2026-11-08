@@ -127,7 +127,7 @@ namespace MeGUI.core.gui
             {
                 return "Problem with audio output filename:\n" + fileErr;
             }
-            AudioType aot = this.audioContainer.SelectedItem as AudioType;
+            AudioType aot = (AudCodecSettings is GCLSettings gclSettings) ? gclSettings.GetOutputType() : this.audioContainer.SelectedItem as AudioType;
             // test output file extension
             if (!Path.GetExtension(this.AudioOutput).Replace(".", "").Equals(aot.Extension, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -257,6 +257,14 @@ namespace MeGUI.core.gui
         private AudioEncoderType lastCodec = null;
         private void audioProfile_SelectedProfileChanged(object sender, EventArgs e)
         {
+            if (AudCodecSettings is GCLSettings gcl)
+            {
+                // generic command line encoder: the output extension is part of the profile and must be refreshed for every profile
+                lastCodec = AudCodecSettings.EncoderType;
+                Util.ChangeItemsKeepingSelectedSame(audioContainer, new AudioType[] { gcl.GetOutputType() });
+                return;
+            }
+
             if (lastCodec == AudCodecSettings.EncoderType)
                 return;
 

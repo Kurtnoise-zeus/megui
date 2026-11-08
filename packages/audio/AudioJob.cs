@@ -82,7 +82,10 @@ namespace MeGUI
         {
             get
             {
-                return VideoUtil.guessAudioType(Output);
+                AudioType type = VideoUtil.guessAudioType(Output);
+                if (type == null && Settings is GCLSettings gcl)
+                    type = gcl.GetOutputType();
+                return type;
             }
         }
 

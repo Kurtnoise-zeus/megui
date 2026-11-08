@@ -354,6 +354,13 @@
       <DependentUpon>ExhaleConfigurationPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="packages\audio\exhale\ExhaleSettings.cs" />
+    <Compile Include="packages\audio\gcl\GCLConfigurationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="packages\audio\gcl\GCLConfigurationPanel.Designer.cs">
+      <DependentUpon>GCLConfigurationPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="packages\audio\gcl\GCLSettings.cs" />
     <Compile Include="packages\audio\fdkaac\FDKAACSettings.cs" />
     <Compile Include="packages\audio\fdkaac\FDKAACConfigurationPanel.cs">
       <SubType>UserControl</SubType>
