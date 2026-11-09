@@ -32,6 +32,14 @@ namespace MeGUI.core.details.audio
     {
         private EnumProxy[] _avisynthChannelSet;
 	    
+        /// <summary>
+        /// Removes the "Extra" tab (custom command line) for the encoders which do not use it
+        /// </summary>
+        protected void HideExtraTab()
+        {
+            tabControl1.TabPages.Remove(Page2);
+        }
+
         #region start / stop
 
 	    public AudioConfigurationPanel()

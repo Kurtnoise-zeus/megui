@@ -2520,7 +2520,7 @@ function c3_dpl2(clip a)
 
                 script.Append("32==Audiobits(last)?ConvertAudioTo24bit(last):last" + Environment.NewLine);
 
-                sb.Append(" " + GCLSettings.BuildCommandLine(oSettings.CommandLine, oSettings.CustomEncoderOptions));
+                sb.Append(" " + GCLSettings.BuildCommandLine(oSettings.CommandLine));
             }
 
             else if (audioJob.Settings is OpusSettings)

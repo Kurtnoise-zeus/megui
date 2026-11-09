@@ -143,7 +143,7 @@
             this.lblHelp.Name = "lblHelp";
             this.lblHelp.Size = new System.Drawing.Size(384, 40);
             this.lblHelp.TabIndex = 9;
-            this.lblHelp.Text = "The audio is sent to the standard input of the encoder with the selected input header. Placeholders: {output} {samplerate} {bits} {channels} {samples} {size} {options}";
+            this.lblHelp.Text = "The audio is sent to the standard input of the encoder with the selected input header. Placeholders: {output} {samplerate} {bits} {channels} {samples} {size}";
             //
             // GCLConfigurationPanel
             //

@@ -37,7 +37,7 @@ namespace MeGUI
         /// </summary>
         public static readonly GCLInputHeader[] SupportedInputHeaders = new GCLInputHeader[] { GCLInputHeader.WAV, GCLInputHeader.W64, GCLInputHeader.RF64, GCLInputHeader.NONE };
 
-        public static readonly string[] SupportedPlaceholders = new string[] { "output", "samplerate", "bits", "channels", "samples", "size", "options" };
+        public static readonly string[] SupportedPlaceholders = new string[] { "output", "samplerate", "bits", "channels", "samples", "size" };
 
         private string encoderPath;
         private string commandLine;
@@ -123,14 +123,12 @@ namespace MeGUI
         /// handed over to string.Format: {0}=output file, {1}=sample rate, {2}=bits per sample, {3}=channels,
         /// {4}=sample count and {5}=size in bytes.
         /// Placeholders (case insensitive): {output} (always quoted, quotes around it are optional),
-        /// {samplerate}, {bits}, {channels}, {samples}, {size} and {options}, which is replaced by the
-        /// custom command line of the "Extra" tab. Without {options} these custom options are appended,
-        /// without {output} the quoted output file is appended at the end. All other braces are kept as is.
+        /// {samplerate}, {bits}, {channels}, {samples} and {size}. Without {output} the quoted output
+        /// file is appended at the end. All other braces are kept as is.
         /// </summary>
-        public static string BuildCommandLine(string commandLine, string customOptions)
+        public static string BuildCommandLine(string commandLine)
         {
             string strCommandLine = commandLine ?? string.Empty;
-            string strOptions = (customOptions ?? string.Empty).Trim();
 
             // escape all braces, the placeholders are restored afterwards
             strCommandLine = strCommandLine.Replace("{", "{{").Replace("}", "}}");
@@ -142,12 +140,6 @@ namespace MeGUI
             strCommandLine = Regex.Replace(strCommandLine, @"\{\{channels\}\}", "{3}", RegexOptions.IgnoreCase);
             strCommandLine = Regex.Replace(strCommandLine, @"\{\{samples\}\}", "{4}", RegexOptions.IgnoreCase);
             strCommandLine = Regex.Replace(strCommandLine, @"\{\{size\}\}", "{5}", RegexOptions.IgnoreCase);
-
-            string strEscapedOptions = strOptions.Replace("{", "{{").Replace("}", "}}");
-            if (Regex.IsMatch(strCommandLine, @"\{\{options\}\}", RegexOptions.IgnoreCase))
-                strCommandLine = Regex.Replace(strCommandLine, @"\{\{options\}\}", delegate (Match m) { return strEscapedOptions; }, RegexOptions.IgnoreCase);
-            else if (strEscapedOptions.Length > 0)
-                strCommandLine = (strCommandLine + " " + strEscapedOptions).Trim();
 
             if (!bOutput)
                 strCommandLine = (strCommandLine + " \"{0}\"").Trim();
