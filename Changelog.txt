@@ -5,6 +5,7 @@ Changelog version 6666 20261107
 - Stale AviSynth.dll/DevIL.dll copies left by previous versions are removed at startup
 - Removed the redist (Visual C++ runtime) package: runtime DLLs are no longer copied next to the tools. The Microsoft Visual C++ Redistributable has to be installed on the system
 - Added a generic command line audio encoder (gcl): only the encoder path, the command line, the output file extension and the input header (WAV/W64/RF64/none) are specific
+- SVT-AV1: NO_COLOR is set for the encoder and the remaining ANSI colors are removed from its output, so the progress line is parsed again (progress and ETA are updated); the progress is logged every 10 percent instead of for every frame
 
 Changelog version 6666 20260329
 

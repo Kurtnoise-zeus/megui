@@ -933,6 +933,7 @@
       <DependentUpon>svtav1ConfigurationPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="packages\video\svtav1\svtav1Encoder.cs" />
+    <Compile Include="packages\video\svtav1\svtav1Progress.cs" />
     <Compile Include="packages\video\svtav1\svtav1Settings.cs" />
     <Compile Include="packages\video\svtav1\svtav1SettingsHandler.cs" />
     <Compile Include="packages\video\x264\x264ConfigurationPanel.cs">

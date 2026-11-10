@@ -92,6 +92,12 @@ namespace MeGUI
             Util.ensureExists(Job.Input);
         }
 
+        /// <summary>
+        /// allows the processors to adjust the start info of the process (environment variables for example)
+        /// </summary>
+        protected virtual void configureStartInfo(ProcessStartInfo pstart)
+        { }
+
         protected virtual void doExitConfig()
         {
             if (Su.HasError || Su.WasAborted)
@@ -236,6 +242,7 @@ namespace MeGUI
             }
             pstart.WindowStyle = ProcessWindowStyle.Minimized;
             pstart.CreateNoWindow = true;
+            configureStartInfo(pstart);
             Proc.StartInfo = pstart;
             Proc.EnableRaisingEvents = true;
             Proc.Exited += new EventHandler(proc_Exited);

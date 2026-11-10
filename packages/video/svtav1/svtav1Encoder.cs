@@ -19,6 +19,7 @@
 // ****************************************************************************
 
 using MeGUI.core.util;
+using MeGUI.packages.video.svtav1;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -49,25 +50,42 @@ namespace MeGUI
             IMinimumChildProcessCount = 1;
         }
 
+        // the progress is written to the log every LogStepPercent percent instead of for every frame
+        private const int LogStepPercent = 10;
+        private int _lastLoggedStep = -1;
+
+        protected override void configureStartInfo(ProcessStartInfo pstart)
+        {
+            // SVT-AV1 only colors its output when NO_COLOR is not set (https://no-color.org/)
+            if (!pstart.UseShellExecute)
+                pstart.EnvironmentVariables["NO_COLOR"] = "1";
+        }
+
         public override void ProcessLine(string line, StreamType stream, ImageType oType)
         {
-            if (line.StartsWith("Encoding")) // status update
+            // builds which ignore NO_COLOR color their output with ANSI escape sequences: remove them before anything else
+            line = svtav1Progress.StripAnsi(line);
+
+            if (svtav1Progress.TryParse(line, out svtav1Progress progress)) // status update
             {
-                int frameNumberStart = line.IndexOf(":", 4) + 2;
-                int frameNumberEnd = line.IndexOf("/");
+                // the total is not printed when SVT-AV1 does not know the number of frames
+                if (progress.FrameTotal == 0 && Su.NbFramesTotal.HasValue)
+                    progress.FrameTotal = Su.NbFramesTotal.Value;
 
-                if (frameNumberStart > 0 && frameNumberEnd > 0 && frameNumberEnd > frameNumberStart)
+                // Initialize NbFramesTotal
+                if ((!Su.NbFramesTotal.HasValue || Su.NbFramesTotal == 0) && progress.FrameTotal > 0)
+                    Su.NbFramesTotal = progress.FrameTotal;
+
+                if (base.setFrameNumber(progress.Frame.ToString(CultureInfo.InvariantCulture)))
                 {
-                    // Initialize NbFramesTotal
-                    if (Su.NbFramesTotal == 0)
+                    int step = progress.FrameTotal > 0 ? (int)(progress.Frame * 100 / progress.FrameTotal) / LogStepPercent : 0;
+                    if (step > _lastLoggedStep)
                     {
-                        var match = Regex.Match(line, @"Encoding:\s+\d+/(\d+)\s+Frames");
-                        if (match.Success)
-                            Su.NbFramesTotal = ulong.Parse(match.Groups[1].Value);
+                        _lastLoggedStep = step;
+                        // the remaining time of SVT-AV1 includes its start-up time, it is far too high for the first frames
+                        base.ProcessLine(progress.ToSummary(step > 0), stream, ImageType.Information);
                     }
-
-                    if (base.setFrameNumber(line.Substring(frameNumberStart, frameNumberEnd - frameNumberStart).Trim()))
-                        return;
+                    return;
                 }
             }
             else if (line.StartsWith("frame=")) // status update for ffmpeg
