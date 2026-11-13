@@ -130,7 +130,7 @@ namespace MeGUI.core.gui
                 {
                     reg.MakeInfinite();
                     reg.Exclude(dst);
-                    g.FillRegion(Brushes.White, reg);
+                    g.FillRegion(core.gui.ThemeManager.IsDarkTheme ? Brushes.Black : Brushes.White, reg);
                 }
 
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;

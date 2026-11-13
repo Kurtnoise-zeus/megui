@@ -838,9 +838,9 @@ namespace MeGUI
             foreach (ListViewItem item in listViewDetails.Items)
             {
                 if (item.Index % 2 != 0)
-                    item.BackColor = Color.White;
+                    item.BackColor = core.gui.ThemeManager.FieldBackColor;
                 else
-                    item.BackColor = Color.FromArgb(255, 225, 235, 255);
+                    item.BackColor = core.gui.ThemeManager.AltRowColor;
             }
         }
 
@@ -875,9 +875,9 @@ namespace MeGUI
             foreach (ListViewItem item in listViewDetails.Items)
             {
                 if (item.Index % 2 != 0)
-                    item.BackColor = Color.White;
+                    item.BackColor = core.gui.ThemeManager.FieldBackColor;
                 else
-                    item.BackColor = Color.FromArgb(255, 225, 235, 255);
+                    item.BackColor = core.gui.ThemeManager.AltRowColor;
             }
         }
 
