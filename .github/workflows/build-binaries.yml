@@ -1,0 +1,56 @@
+name: Build Windows binaries
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.platform }}
+    runs-on: windows-2022
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x64, x86]
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up NuGet
+        uses: nuget/setup-nuget@v3
+        with:
+          nuget-version: '7.3'
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Restore NuGet packages
+        run: |
+          & $env:NUGET restore .\MeGUI.sln -NonInteractive
+        shell: pwsh
+
+      - name: Build MeGUI (Release ${{ matrix.platform }})
+        run: |
+          msbuild .\MeGUI.sln /m /p:Configuration=Release /p:Platform=${{ matrix.platform }} /p:OutputPath=dist\MeGUI_${{ matrix.platform }}\
+        shell: pwsh
+
+      - name: Upload Windows ${{ matrix.platform }} binaries
+        uses: actions/upload-artifact@v7
+        with:
+          name: MeGUI-windows-${{ matrix.platform }}-${{ github.sha }}
+          path: |
+            dist/MeGUI_${{ matrix.platform }}/
+            !dist/MeGUI_${{ matrix.platform }}/**/*.pdb
+            !dist/MeGUI_${{ matrix.platform }}/*.xml
+          if-no-files-found: error
+          retention-days: 60
