@@ -962,18 +962,18 @@ namespace MeGUI
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            switch (keyData)
             {
-                this.Close();
-                return true;
-            }
-            return base.ProcessDialogKey(keyData);
-        }
+                case Keys.Escape:
+                    Close();
+                    return true;
 
-        private void goToFrameButton_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.G && Control.ModifierKeys == Keys.Control)
-                goToFrameButton_Click(null, null);
+                case Keys.Control | Keys.G:
+                    goToFrameButton_Click(null, EventArgs.Empty);
+                    return true;
+            }
+
+            return base.ProcessDialogKey(keyData);
         }
 
         private void videoPreview_PositionChanged(object sender, EventArgs e)
