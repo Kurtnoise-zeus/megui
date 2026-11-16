@@ -72,5 +72,15 @@ namespace MeGUI.core.gui
             }
         }
 
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
     }
 }
