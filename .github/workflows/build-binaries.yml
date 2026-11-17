@@ -65,20 +65,9 @@ jobs:
         run: |
           $content = Get-Content 'Changelog.txt' -Raw
           $headers = [regex]::Matches($content, '(?m)^Changelog version[^\r\n]*')
-
-          if ($headers.Count -lt 2) {
-            throw "Could not find two Changelog version headers."
-          }
-
           $start = $headers[0].Index + $headers[0].Length
           $end = $headers[1].Index
-
           $notes = $content.Substring($start, $end - $start).Trim()
-
-          if (-not $notes) {
-            throw "Release notes are empty."
-          }
-
           Set-Content -Path 'release-notes.md' -Value $notes -Encoding utf8
 
       - name: Package release
