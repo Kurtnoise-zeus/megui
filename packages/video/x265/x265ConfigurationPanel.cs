@@ -785,7 +785,7 @@ namespace MeGUI.packages.video.x265
                 updating = true;
                 tbx265Presets.Value = (int)xs.x265PresetLevel;
                 if (xs.Profile > 2)
-                    hevcProfile.SelectedIndex = 2;
+                    hevcProfile.SelectedIndex = 0;
                 else
                     hevcProfile.SelectedIndex = xs.Profile;
                 x265Tunes.SelectedItem = EnumProxy.Create(xs.x265PsyTuning);
