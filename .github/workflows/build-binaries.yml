@@ -58,7 +58,7 @@ jobs:
           if-no-files-found: error
           retention-days: 60
 
-      # Make a Release whe a tag is pushed
+      # Make a Release when a tag is pushed
       - name: Extract release notes
         if: github.ref_type == 'tag'
         shell: pwsh
