@@ -126,10 +126,8 @@ namespace MeGUI
             this.Icon = trayIcon.Icon;
             this.TitleText = Application.ProductName + " " + new System.Version(Application.ProductVersion).Build;
             if (new System.Version(Application.ProductVersion).Revision != 0)
-                this.TitleText += "." + (new System.Version(Application.ProductVersion).Major) + 
-                                  "." + (new System.Version(Application.ProductVersion).Minor) +
-                                  "." + (new System.Version(Application.ProductVersion).Build) +
-                                  "." + (new System.Version(Application.ProductVersion).Revision);
+                this.TitleText = Application.ProductName + " " +
+                    new System.Version(Application.ProductVersion).ToString();
 
             this.TitleText += " " + BuildDate.ToString("yyyyMMdd");
 
