@@ -302,40 +302,117 @@ namespace MeGUI
             return bOK;
         }
 
+        /// <summary>
+        /// Profile type / group IDs that were renamed in newer versions: old ID -> new ID.
+        /// SelectedProfiles.xml written by an older version may still contain the old IDs (#75).
+        /// </summary>
+        private static readonly Dictionary<string, string> renamedIDs = new Dictionary<string, string>
+        {
+            { "svtav1psy", "svtav1" }
+        };
+
+        private static string currentID(string id)
+        {
+            return (id != null && renamedIDs.TryGetValue(id, out string newID)) ? newID : id;
+        }
+
+        private static void logSelectedProfilesWarning(string description, object value)
+        {
+            try
+            {
+                LogItem oLog = MainForm.Instance.Log.Info("Error");
+                oLog.LogValue(description, value, ImageType.Warning);
+            }
+            catch (Exception)
+            {
+                // logging must never prevent MeGUI from starting
+            }
+        }
+
         private void loadSelectedProfiles()
         {
             string file = Path.Combine(GetDefaultProfilPath(), "SelectedProfiles.xml");
             if (!File.Exists(file)) 
                 return;
 
-            deleteDeprecatedEntries(file);
-
-            using (Stream s = File.OpenRead(file))
+            try
             {
-                try
+                deleteDeprecatedEntries(file);
+            }
+            catch (Exception e)
+            {
+                // cosmetic clean-up of old entries: a failure here must not prevent MeGUI from starting
+                logSelectedProfilesWarning("Deprecated entries could not be removed from the list of selected profiles", e);
+            }
+
+            string[][] data;
+            try
+            {
+                using (Stream s = File.OpenRead(file))
                 {
                     // Hacky workaround because serialization of dictionaries isn't possible
                     XmlSerializer ser = new XmlSerializer(typeof(string[][]));
-                    string[][] data = (string[][])ser.Deserialize(s);
-                    string[] keys = data[0];
-                    string[] values = data[1];
-                    string[] groupKeys = data[2];
-                    string[] groupValues = data[3];
-                    System.Diagnostics.Debug.Assert(keys.Length == values.Length);
-                    Debug.Assert(groupKeys.Length == groupValues.Length);
-                    for (int i = 0; i < keys.Length; i++)
+                    data = (string[][])ser.Deserialize(s);
+                }
+
+                if (data == null || data.Length < 4 || data[0].Length != data[1].Length || data[2].Length != data[3].Length)
+                    throw new InvalidDataException("Unexpected content in " + file);
+            }
+            catch (Exception e)
+            {
+                // the file itself is unusable: keep the default selection
+                logSelectedProfilesWarning("List of selected profiles could not be loaded", e);
+                MessageBox.Show("List of selected profiles could not be loaded.\r\n" + e.Message, "Error loading profile", MessageBoxButtons.OK);
+                return;
+            }
+
+            string[] keys = data[0];
+            string[] values = data[1];
+            string[] groupKeys = data[2];
+            string[] groupValues = data[3];
+
+            // Apply the entries one by one: an entry that does not exist anymore (encoder renamed or removed,
+            // profile deleted, ...) must be skipped, not abort the whole loading.
+            for (int i = 0; i < keys.Length; i++)
+            {
+                try
+                {
+                    ProfileType type = byName(currentID(keys[i]));
+                    if (type == null)
                     {
-                        byName(keys[i]).SelectedProfile = byName(keys[i]).ByName(values[i]);
+                        logSelectedProfilesWarning("Selected profile ignored, unknown profile type", keys[i]);
+                        continue;
                     }
 
-                    for (int i = 0; i < groupKeys.Length; ++i)
-                    {
-                        groupByName(groupKeys[i]).SelectedChild = groupValues[i];
-                    }
+                    Profile profile = type.ByName(values[i]);
+                    if (profile == null)
+                        logSelectedProfilesWarning("Selected profile ignored, unknown profile for " + keys[i], values[i]);
+                    else
+                        type.SelectedProfile = profile;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    MessageBox.Show("List of selected profiles could not be loaded.", "Error loading profile", MessageBoxButtons.OK);
+                    logSelectedProfilesWarning("Selected profile could not be restored for " + keys[i], e);
+                }
+            }
+
+            for (int i = 0; i < groupKeys.Length; ++i)
+            {
+                try
+                {
+                    ProfileGroup group = groupByName(groupKeys[i]);
+                    string child = currentID(groupValues[i]);
+                    if (group == null || !group.ChildIDs.Contains(child))
+                    {
+                        logSelectedProfilesWarning("Selected profile group ignored, unknown group or child", groupKeys[i] + " / " + groupValues[i]);
+                        continue;
+                    }
+
+                    group.SelectedChild = child;
+                }
+                catch (Exception e)
+                {
+                    logSelectedProfilesWarning("Selected profile group could not be restored for " + groupKeys[i], e);
                 }
             }
         }
