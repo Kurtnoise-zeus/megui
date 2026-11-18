@@ -62,11 +62,16 @@ namespace MeGUI
             subtitleTracks[0].input.FileSelected += new MeGUI.FileBarEventHandler(this.Subtitle_FileSelected);
             audioTracks[0].input.FileSelected += new MeGUI.FileBarEventHandler(this.Audio_FileSelected);
 
-            vInput.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
-            muxStreamControl1.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
-            muxStreamControl2.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
-            chapters.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
-            output.SetInitialFolder(MainForm.Instance.Settings.MuxOutputPath);
+            // form designer fix (#83): MainForm.Instance does not exist when Visual Studio instantiates
+            // this class to design AdaptiveMuxWindow / MuxWindow, which derive from it
+            if (MainForm.Instance != null)
+            {
+                vInput.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+                muxStreamControl1.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+                muxStreamControl2.input.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+                chapters.SetInitialFolder(MainForm.Instance.Settings.MuxInputPath);
+                output.SetInitialFolder(MainForm.Instance.Settings.MuxOutputPath);
+            }
         }
 
         public baseMuxWindow(IMuxing muxer) : this()
