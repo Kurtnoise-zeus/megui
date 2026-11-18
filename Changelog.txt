@@ -11,7 +11,7 @@ Changelog version 6666 20261118
 - Fix version shown in GUI
 - Change default x265 profile from "Main Still Picture Profile" to "Main Profile"
 
-Changelog version 6666 20260329
+Changelog version 6666 20260403
 
 - Fixed several issues on svt-av1 encoder side
 - Fixed issue on Progress Window Form
