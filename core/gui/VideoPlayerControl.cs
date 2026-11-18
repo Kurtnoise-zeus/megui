@@ -198,7 +198,6 @@ namespace MeGUI.core.gui
         {
             int framesPlayed = 0;
             DateTime start = DateTime.Now;
-            Bitmap finalBitmap = null;
 
             do
             {
@@ -224,6 +223,14 @@ namespace MeGUI.core.gui
 
                 int pos = position;
 
+                // The control may have no size yet (not laid out) or be minimized:
+                // "new Bitmap(0, 0)" would throw, so simply wait for the next render request.
+                int targetWidth = videoPreview.Width;
+                int targetHeight = videoPreview.Height;
+                if (targetWidth <= 0 || targetHeight <= 0)
+                    continue;
+
+                Bitmap finalBitmap = null;
                 try
                 {
                     using (Bitmap b = GetFrame(pos))
@@ -231,39 +238,78 @@ namespace MeGUI.core.gui
                         if (b == null)
                             continue;
 
-                        //if (cropMargin != Padding.Empty) // only crop when necessary            
+                        //if (cropMargin != Padding.Empty) // only crop when necessary
                         //    cropImage(b);
 
-                        finalBitmap = ResizeBitmap(b, videoPreview.Width, videoPreview.Height);
+                        finalBitmap = ResizeBitmap(b, targetWidth, targetHeight);
                     }
 
-                    using (videoPreview.Image) // get rid of previous bitmap
+                    // Swap the image on the GUI thread. The previous bitmap is disposed there too,
+                    // after the PictureBox no longer references it.
+                    Bitmap newImage = finalBitmap;
+                    Invoke((SimpleDelegate)(delegate
                     {
-                        //do the actual rendering on GUI thread
-                        Invoke((SimpleDelegate)(delegate { videoPreview.Image = finalBitmap; }));
-                    }
+                        Image oldImage = videoPreview.Image;
+                        videoPreview.Image = newImage;
+                        oldImage?.Dispose();
+                    }));
+                    finalBitmap = null; // ownership transferred to the PictureBox
+                }
+                catch (Exception ex) when (ex is ObjectDisposedException || (ex is InvalidOperationException && (IsDisposed || Disposing || !IsHandleCreated)))
+                {
+                    // The player is being closed while a frame was in flight: nothing to report.
+                    finalBitmap?.Dispose();
+                    break;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not read AVS frame.", "Video Player Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    MeGUI.core.util.LogItem _oLog = MainForm.Instance.AVSScriptCreatorLog;
-                    if (_oLog == null)
-                    {
-                        _oLog = MainForm.Instance.Log.Info("AVS Script Creator");
-                        MainForm.Instance.AVSScriptCreatorLog = _oLog;
-                    }
-                    _oLog.LogValue("Could not read frame", ex.Message, MeGUI.core.util.ImageType.Warning, true);
-
-                    break;
+                    finalBitmap?.Dispose();
+                    LogFrameReadError(ex);
+                    ReportFrameReadErrorOnce();
+                    // Do NOT break: ending the loop would leave the player permanently without a render thread.
+                    // The next render request (seek, resize, ...) will simply try again.
+                    continue;
                 }
 
                 //needed for fps display
                 framesPlayed++;
 
             } while (!IsDisposed);
+        }
 
-            finalBitmap?.Dispose();
+        private int frameErrorReported;
+
+        private static void LogFrameReadError(Exception ex)
+        {
+            MeGUI.core.util.LogItem _oLog = MainForm.Instance.AVSScriptCreatorLog;
+            if (_oLog == null)
+            {
+                _oLog = MainForm.Instance.Log.Info("AVS Script Creator");
+                MainForm.Instance.AVSScriptCreatorLog = _oLog;
+            }
+            _oLog.LogValue("Could not read frame", ex.Message, MeGUI.core.util.ImageType.Warning, true);
+        }
+
+        /// <summary>
+        /// Shows the "Could not read AVS frame" message once per loaded video, on the GUI thread
+        /// (a modal MessageBox on the render thread has no owner window and blocks that thread).
+        /// </summary>
+        private void ReportFrameReadErrorOnce()
+        {
+            if (Interlocked.Exchange(ref frameErrorReported, 1) != 0)
+                return;
+
+            try
+            {
+                BeginInvoke((SimpleDelegate)(delegate
+                {
+                    MessageBox.Show(this.FindForm(), "Could not read AVS frame.", "Video Player Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }));
+            }
+            catch (InvalidOperationException)
+            {
+                // handle already gone: window is closing
+            }
         }
 
         private Bitmap GetFrame(int pos)
@@ -326,6 +372,9 @@ namespace MeGUI.core.gui
         public void LoadVideo(IVideoReader reader, double fps, int startPosition)
         {
             UnloadVideo();
+
+            //a new video gets a fresh chance to report a frame read error
+            Interlocked.Exchange(ref frameErrorReported, 0);
 
             //just to be sure... shouldn't be necessary because after UnloadVideo
             //videoReader will be null

@@ -175,7 +175,9 @@ namespace MeGUI
             scriptRefresh--;
             OpenVideoSource(videoInput, indexFile);
             UpdateEverything(true, true, resize.Checked);
-            previewButton_Click(true, null);
+            // Respect the "Automatically open video preview" setting (#62)
+            if (MainForm.Instance.Settings.AutoOpenScript)
+                previewButton_Click(true, null);
         }
 
 		protected override void OnClosing(CancelEventArgs e)
