@@ -9,7 +9,7 @@ Changelog version 6666 20261118
 - Auto-build Windows binaries (nightly builds can be downloaded from Actions)
 - Launch the "Go to frame" window using CTRL+G regardless of where the focus is inside the video preview window. Also close this window using ESC
 - Fix version shown in GUI
-- Change default x265 profile from "Main Still Picture Profile" to "Main Profile"
+- Change default x265 HEVC profile from "Main Still Picture Profile" to "Main Profile"
 
 Changelog version 6666 20260403
 
