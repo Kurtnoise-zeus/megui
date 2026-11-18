@@ -4,13 +4,15 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '*'
   pull_request:
     branches:
       - main
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -19,6 +21,7 @@ jobs:
 
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         platform: [x64, x86]
 
@@ -54,3 +57,33 @@ jobs:
             !dist/MeGUI_${{ matrix.platform }}/*.xml
           if-no-files-found: error
           retention-days: 60
+
+      # Make a Release when a tag is pushed
+      - name: Extract release notes
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        run: |
+          $content = Get-Content 'Changelog.txt' -Raw
+          $headers = [regex]::Matches($content, '(?m)^Changelog version[^\r\n]*')
+          $start = $headers[0].Index + $headers[0].Length
+          $end = $headers[1].Index
+          $notes = $content.Substring($start, $end - $start).Trim()
+          Set-Content -Path 'release-notes.md' -Value $notes -Encoding utf8
+
+      - name: Package release
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        run: |
+          Set-Location 'dist/MeGUI_${{ matrix.platform }}'
+          $files = Get-ChildItem | Where-Object { $_.PSIsContainer -or $_.Extension -notin @('.pdb', '.xml') }
+          & "$env:ProgramFiles\7-Zip\7z.exe" a -t7z -mx=9 "$env:GITHUB_WORKSPACE\MeGUI-windows-${{ matrix.platform }}_${{ github.ref_name }}.7z" $files.Name
+          if ($LASTEXITCODE -ne 0) { throw "7-Zip failed." }
+
+      - name: Publish GitHub Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: MeGUI ${{ github.ref_name }}
+          files: MeGUI-windows-${{ matrix.platform }}_${{ github.ref_name }}.7z
+          body_path: release-notes.md
