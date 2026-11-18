@@ -693,22 +693,13 @@ namespace MeGUI.core.gui
             i.LogValue("Delete aborted output set", mainForm.Settings.DeleteAbortedOutput);
             if (mainForm.Settings.DeleteAbortedOutput && File.Exists(job.Job.Output))
             {
-                // delete outout file and temporary files
-                if (File.Exists(job.Job.Output))
-                {
-                    FileUtil.DeleteFile(job.Job.Output, i);
-                    if (!File.Exists(job.Job.Output))
-                        i.LogValue("File deleted", job.Job.Output);
-                }
-                foreach (string strFile in job.Job.FilesToDelete)
-                {
-                    if (!File.Exists(strFile))
-                        continue;
-
-                    FileUtil.DeleteFile(strFile, i);
-                    if (!File.Exists(strFile))
-                        i.LogValue("File deleted", strFile);
-                }
+                // Only the (partial) output of the aborted job is deleted.
+                // Job.FilesToDelete must NOT be touched here: it lists the files to remove once the job has
+                // COMPLETED successfully, and for a mux job these are its inputs (intermediate video/audio
+                // streams). An aborted job stays in the queue and can be restarted, so it still needs them (#79).
+                FileUtil.DeleteFile(job.Job.Output, i);
+                if (!File.Exists(job.Job.Output))
+                    i.LogValue("File deleted", job.Job.Output);
             }
             log.Add(i);
         }
