@@ -10,7 +10,6 @@ Changelog version 6666 20261118
 - Launch the "Go to frame" window using CTRL+G regardless of where the focus is inside the video preview window. Also close this window using ESC
 - Fix version shown in GUI
 - Change default x265 HEVC profile from "Main Still Picture Profile" to "Main Profile"
-- DVD subtitle extraction (VobSub idx/sub) is now done by a managed port of the VSRip ripper built into MeGUI: vsrip.exe is no longer required and its package has been removed. The VOB files must not be CSS scrambled (a scrambled sector stops the extraction with an error)
 
 Changelog version 6666 20260403
 
