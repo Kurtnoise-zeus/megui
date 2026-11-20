@@ -19,27 +19,18 @@
 // ****************************************************************************
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 
 using MeGUI.core.util;
-using MeGUI.VobSubRip;
 
 namespace MeGUI
 {
-    /// <summary>
-    /// Extracts DVD subtitles (VobSub idx/sub) from a VTS IFO file.
-    /// The extraction is done in-process by the managed VobSubRip library (a port of the VSRip / MPC-HC ripper),
-    /// vsrip.exe is no longer required. The VOB files must not be CSS scrambled.
-    /// </summary>
-    public class VobSubIndexer : ThreadJobProcessor<SubtitleIndexJob>
+    public class VobSubIndexer : CommandlineJobProcessor<SubtitleIndexJob>
     {
         public static readonly JobProcessorFactory Factory = new JobProcessorFactory(new ProcessorFactory(init), "VobSubIndexer");
 
-        private CancellationTokenSource cts;
-        private double progressFrom, progressTo, progressMax;
+        private string configFile = null;
 
         private static IJobProcessor init(MainForm mf, Job j)
         {
@@ -49,11 +40,47 @@ namespace MeGUI
             return null;
         }
 
+        public VobSubIndexer()
+        {
+            UpdateCacher.CheckPackage("vsrip");
+            Executable = MainForm.Instance.Settings.VobSubRipper.Path;
+            BCommandLine = false;
+
+            // success exit code is 2
+            this.ArrSuccessCodes = new System.Collections.Generic.List<int>() { 2 };
+        }
+
         #region IJobProcessor Members
+        protected override bool secondRunNeeded()
+        {
+            // independent of the iteration write the subtitles first
+            writeSubtitles();
+
+            if (Job.ExtractForcedTracks && base.BFirstPass && !Su.HasError && !Su.WasAborted)
+            {
+                base.BSecondPassNeeded = true;
+                generateConfigFile();
+                Su.Status = "Demuxing forced subtitles...";
+            }
+
+            return base.secondRunNeeded();
+        }
+
+        protected override string Commandline
+        {
+            get
+            {
+                return "\"" + configFile + "\"";
+            }
+        }
+
         protected override void checkJobIO()
         {
             base.checkJobIO();
-            FileUtil.ensureDirectoryExists(Path.GetDirectoryName(Job.Output));
+            generateConfigFile();
+            Util.ensureExists(configFile);
+            Job.FilesToDelete.Add(configFile);
+            Job.FilesToDelete.Add(Path.ChangeExtension(Job.Input, ".chunks"));
 
             // delete CC streams
             string strForcedFile = Path.Combine(Path.GetDirectoryName(Job.Output), Path.GetFileNameWithoutExtension(Job.Output) + "_forced.idx");
@@ -81,141 +108,57 @@ namespace MeGUI
             Su.Status = "Demuxing subtitles...";
         }
 
-        protected override void RunInThread()
+        protected override bool hideProcess
         {
-            cts = new CancellationTokenSource();
-            try
-            {
-                bool bForcedPass = Job.ExtractForcedTracks;
-
-                // first pass: the selected subtitle tracks
-                progressFrom = 0;
-                progressTo = bForcedPass ? 50 : 100;
-                if (!runPass(true))
-                {
-                    Su.HasError = !Su.WasAborted;
-                    return;
-                }
-
-                // independent of the iteration write the subtitles first
-                writeSubtitles(true);
-
-                // second pass: forced subtitles only
-                if (bForcedPass && !Su.HasError && !Su.WasAborted)
-                {
-                    Su.Status = "Demuxing forced subtitles...";
-                    progressFrom = 50;
-                    progressTo = 100;
-                    if (!runPass(false))
-                    {
-                        Su.HasError = !Su.WasAborted;
-                        return;
-                    }
-                    writeSubtitles(false);
-                }
-            }
-            catch (Exception ex)
-            {
-                log.LogValue("Error: ", ex.Message, ImageType.Error);
-                Su.HasError = true;
-            }
-            finally
-            {
-                cts.Dispose();
-            }
+            get { return true; }
         }
+
         #endregion
 
         /// <summary>
-        /// runs the extraction for the selected tracks (first pass) or for the forced subtitles only (second pass)
+        /// writes the config file for vsrip
         /// </summary>
-        /// <returns>true if the extraction succeeded</returns>
-        private bool runPass(bool bFirstPass)
+        private void generateConfigFile()
         {
-            string outputBase = FileUtil.GetPathWithoutExtension(Job.Output) + (bFirstPass ? String.Empty : "_forced");
-            progressMax = 0;
-
-            try
-            {
-                using (VobSubRipper ripper = new VobSubRipper(Job.Input, writeLog))
-                {
-                    ripper.Progress = p =>
-                    {
-                        // the forced subtitle search restarts at 0%, never go backwards
-                        double pct = progressFrom + (progressTo - progressFrom) * Math.Max(0, Math.Min(1, p));
-                        if (pct > progressMax)
-                        {
-                            progressMax = pct;
-                            Su.PercentageCurrent = (decimal)pct;
-                        }
-                        if (IsJobStopped()) // also blocks while the job is paused
-                            cts.Cancel();
-                    };
-
-                    RipperOptions options = createOptions(ripper.Info, bFirstPass);
-                    log.LogValue("VobSub extraction", String.Format("PGC {0}, angle {1}, {2}, forced only: {3}",
-                        Job.PGC, options.Angle, Job.IndexAllTracks ? "all tracks" : "tracks " + String.Join(", ", Job.TrackIDs), !bFirstPass));
-
-                    RipResult result = ripper.Index(options, outputBase, cts.Token);
-                    if (!result.Success && !Su.WasAborted)
-                        log.LogEvent("Subtitle extraction failed", ImageType.Error);
-                    return result.Success;
-                }
-            }
-            catch (IfoFormatException ex)
-            {
-                log.LogEvent(ex.Message, ImageType.Error);
-                return false;
-            }
-        }
-
-        private RipperOptions createOptions(IfoInfo ifo, bool bFirstPass)
-        {
-            RipperOptions options = new RipperOptions();
-            options.PgcIndex = Job.PGC - 1;
-            options.Angle = Job.Angle > 1 ? Job.Angle : 1;
-            options.ResetTime = true;
-            options.ForcedOnly = !bFirstPass;
-            options.NoChunksCache = true; // do not write a .chunks cache file into the source folder
-
-            if (Job.IndexAllTracks)
-            {
-                // process everything and strip down later
-                for (int i = 0; i < 32; i++)
-                    options.Streams.Add(i);
-            }
+            // create the configuration script
+            StringBuilder script = new StringBuilder();
+            script.AppendLine(Job.Input);
+            script.AppendLine(FileUtil.GetPathWithoutExtension(Job.Output) + (base.BSecondPassNeeded ? "_forced" : String.Empty));
+            script.AppendLine(Job.PGC.ToString());
+            if (Job.Angle > 1)
+                script.AppendLine(Job.Angle.ToString());
             else
+                script.AppendLine("1");
+            if (!Job.IndexAllTracks)
             {
                 foreach (int id in Job.TrackIDs)
-                    options.Streams.Add(id);
+                    script.Append(id + " ");
+                script.AppendLine();
             }
+            else
+                script.AppendLine("ALL"); //process everything and strip down later
+            if (base.BSecondPassNeeded)
+                script.AppendLine("FORCEDONLY");
+            script.AppendLine("RESETTIME");
+            script.AppendLine("CLOSEIGNOREERRORS");
+            script.AppendLine("CLOSE");
 
-            // all the cells of the selected angle
-            if (options.PgcIndex >= 0 && options.PgcIndex < ifo.Pgcs.Count && options.Angle <= 9)
-            {
-                foreach (VobCell cell in ifo.Pgcs[options.PgcIndex].Angles[options.Angle])
-                    options.Cells.Add(cell.Key);
-            }
-            return options;
-        }
+            // write the script to a temp file
+            configFile = Path.ChangeExtension(Job.Output, ".vobsub");
+            FileUtil.ensureDirectoryExists(Path.GetDirectoryName(configFile));
+            using (StreamWriter output = new StreamWriter(configFile, false, Encoding.Default))
+                output.Write(script.ToString());
 
-        private void writeLog(MeGUI.VobSubRip.LogLevel level, string message)
-        {
-            switch (level)
-            {
-                case MeGUI.VobSubRip.LogLevel.Error: log.LogEvent(message, ImageType.Error); break;
-                case MeGUI.VobSubRip.LogLevel.Warning: log.LogEvent(message, ImageType.Warning); break;
-                default: log.LogEvent(message, ImageType.Information); break;
-            }
+            log.LogValue("VobSub configuration file", script);
         }
 
         /// <summary>
         /// extracts the subtitle tracks in multiple files if needed
         /// </summary>
-        private void writeSubtitles(bool bFirstPass)
+        private void writeSubtitles()
         {
             string strInputFile = Job.Output;
-            if (!bFirstPass)
+            if (!base.BFirstPass)
             {
                 strInputFile = Path.Combine(Path.GetDirectoryName(strInputFile), Path.GetFileNameWithoutExtension(strInputFile) + "_forced.idx");
                 string strSUBFile = Path.ChangeExtension(strInputFile, ".sub");
@@ -299,11 +242,11 @@ namespace MeGUI
                             }
 
                             // export if found or if all tracks should be demuxed
-                            if ((bFound && bFirstPass) || (bFound && !bFirstPass && bContentFound) || (Job.IndexAllTracks && bContentFound))
+                            if ((bFound && BFirstPass) || (bFound && !BFirstPass && bContentFound) || (Job.IndexAllTracks && bContentFound))
                             {
                                 // create output file
                                 string outputFile = Path.Combine(Path.GetDirectoryName(Job.Output), 
-                                    Path.GetFileNameWithoutExtension(Job.Output)) + "_" + index + "_" + strLanguage + (!bFirstPass ? "_forced" : string.Empty) + ".idx";
+                                    Path.GetFileNameWithoutExtension(Job.Output)) + "_" + index + "_" + strLanguage + (!base.BFirstPass ? "_forced" : string.Empty) + ".idx";
                                 using (StreamWriter output = new StreamWriter(outputFile))
                                     output.WriteLine(sbIndex.ToString());
 
