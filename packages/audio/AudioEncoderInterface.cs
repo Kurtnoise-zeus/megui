@@ -1744,6 +1744,40 @@ function c6_dpl2(clip a)
                             }
                             break;
                         default:
+                            // Stereo / Dolby ProLogic (II) downmix of a 7.1 or 6.1 clip: first fold the
+                            // back/side channels into a standard 5.1 layout (without SoxFilter), then
+                            // apply the 5.1 -> 2.0 formulas below. Before, these modes produced a 5.1 clip (#78).
+                            int iDownmixChannelCount = iChannelCount;
+                            if (audioJob.Settings.DownmixMode != ChannelMode.Downmix51 && (iChannelCount == 7 || iChannelCount == 8))
+                            {
+                                if (iChannelCount == 8)
+                                {
+                                    script.Append(@"8==Audiochannels(last)?c71_fold(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                    script.Append(@"# 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> 5.1 (intermediate step)
+function c71_fold(clip a)
+{
+    front = GetChannel(a, 1, 2, 3, 4)
+    back  = GetChannel(a, 5, 6)
+    side  = GetChannel(a, 7, 8)
+    return MergeChannels(front, MixAudio(back, side, 0.5, 0.5))
+}" + Environment.NewLine);
+                                }
+                                else
+                                {
+                                    script.Append(@"7==Audiochannels(last)?c61_fold(ConvertAudioToFloat(last)):last" + Environment.NewLine);
+                                    script.Append(@"# 6.1 Channels L,R,C,LFE,BC,SL,SR -> 5.1 (intermediate step)
+function c61_fold(clip a)
+{
+    front = GetChannel(a, 1, 2, 3, 4)
+    bcent = GetChannel(a, 5).Amplify(0.7071)
+    back  = MergeChannels(bcent, bcent)
+    side  = GetChannel(a, 6, 7)
+    return MergeChannels(front, MixAudio(back, side, 0.5, 0.5))
+}" + Environment.NewLine);
+                                }
+                                iDownmixChannelCount = 6;
+                            }
+
                             if (audioJob.Settings.DownmixMode == ChannelMode.Downmix51)
                             {
                                 switch (iChannelCount)
@@ -1776,41 +1810,14 @@ function c61_c51(clip a)
 }" + Environment.NewLine);
                                         break;
                                     default:
-                                        script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
+                                        script.Append(@"ConvertAudioToFloat(last)" + Environment.NewLine);
                                         break;
                                 }
                             }
                             else if (audioJob.Settings.DownmixMode == ChannelMode.StereoDownmix)
                             {
-                                switch (iChannelCount)
+                                switch (iDownmixChannelCount)
                                 {
-                                    case 8:
-                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                        script.Append(@"# 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> standard 5.1
-function c71_c51(clip a)
-{
-    front = GetChannel(a, 1, 2, 3, 4)
-    back  = GetChannel(a, 5, 6)
-    side  = GetChannel(a, 7, 8)
-    mix   = MixAudio(back, side, 0.5, 0.5).ConvertAudioTo32bit()
-    mix   = mix.SoxFilter(""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"").ConvertAudioToFloat()
-    return MergeChannels(front, mix)
-}" + Environment.NewLine);
-                                        break;
-                                    case 7:
-                                        script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                        script.Append(@"# 6.1 Channels L,R,C,LFE,BC,SL,SR -> standard 5.1
-function c61_c51(clip a)
-{
-    front = GetChannel(a, 1, 2, 3, 4)
-    bcent = GetChannel(a, 5).Amplify(0.7071)
-    back  = MergeChannels(bcent, bcent)
-    side  = GetChannel(a, 6, 7)
-    mix   = MixAudio(back, side, 0.5, 0.5).ConvertAudioTo32bit()
-    mix   = mix.SoxFilter(""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"").ConvertAudioToFloat()
-    return MergeChannels(front, mix)
-}" + Environment.NewLine);
-                                        break;
                                     case 6:
                                         script.Append(@"6==Audiochannels(last)?c6_stereo(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         script.Append(@"# 5.1 Channels L,R,C,LFE,SL,SR -> stereo + LFE
@@ -1875,38 +1882,14 @@ function c3_stereo(clip a)
 }" + Environment.NewLine);
                                         break;
                                     default:
-                                        script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
+                                        script.Append(@"ConvertAudioToFloat(last)" + Environment.NewLine);
                                         break;
                                 }
                             }
                             else if (audioJob.Settings.DownmixMode == ChannelMode.DPLDownmix)
                             {
-                                switch (iChannelCount)
+                                switch (iDownmixChannelCount)
                                 {
-                                    case 8:
-                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                        script.Append(@"# 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> standard 5.1
-function c71_c51(clip a)
-{
-    front = GetChannel(a, 1, 2, 3, 4)
-    back = GetChannel(a, 5, 6)
-    side = GetChannel(a, 6, 7)
-    mix = MixAudio(back, side, 0.5, 0.5).SoxFilter(""compand 0.0,0.0 -90,-84,-8,-2,-6,-1,-0,-0.1"")
-    return MergeChannels(front, mix)
-}" + Environment.NewLine);
-                                        break;
-                                    case 7:
-                                        script.Append(@"7==Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                        script.Append(@"# 6.1 Channels L,R,C,LFE,BC,SL,SR -> standard 5.1
-function c61_c51(clip a)
-{
-    front = GetChannel(a, 1, 2, 3, 4)
-    back = GetChannel(a, 5, 5)
-    side = GetChannel(a, 6, 7)
-    mix = MixAudio(back, side, 0.25, 0.75).SoxFilter(""""compand 0.0, 0.0 - 90, -84, -8, -2, -6, -1, -0, -0.1"""")
-    return MergeChannels(front, mix)
-}" + Environment.NewLine);
-                                        break;
                                     case 6:
                                         script.Append(@"6==Audiochannels(last)?c6_dpl(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         script.Append(@"# 5.1 Channels L,R,C,LFE,SL,SR -> Dolby ProLogic
@@ -1973,41 +1956,14 @@ function c3_dpl(clip a)
 }" + Environment.NewLine);
                                         break;
                                     default:
-                                        script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
+                                        script.Append(@"ConvertAudioToFloat(last)" + Environment.NewLine);
                                         break;
                                 }
                             }
                             else
                             {
-                                switch (iChannelCount)
+                                switch (iDownmixChannelCount)
                                 {
-                                    case 8:
-                                        script.Append(@"8<=Audiochannels(last)?c71_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                        script.Append(@"# 7.1 Channels L,R,C,LFE,BL,BR,SL,SR -> standard 5.1
-function c71_c51(clip a)
-{
-    front = GetChannel(a, 1, 2, 3, 4)
-    back = GetChannel(a, 5, 6)
-    side = GetChannel(a, 7, 8)
-    mix = MixAudio(back, side, 0.5, 0.5).ConvertAudioTo32bit()
-    mix = mix.SoxFilter(""compand 0.1, 0.1 - 90, -84, -16, -10, -0.1, -3 0.0 - 90 0.0"").ConvertAudioToFloat()
-    return MergeChannels(front, mix)
-}" + Environment.NewLine);
-                                        break;
-                                    case 7:
-                                        script.Append(@"7<=Audiochannels(last)?c61_c51(ConvertAudioToFloat(last)):last" + Environment.NewLine);
-                                        script.Append(@"# 6.1 Channels L,R,C,LFE,BC,SL,SR -> standard 5.1
-function c61_c51(clip a)
-{
-        front = GetChannel(a, 1, 2, 3, 4)
-        bcent = GetChannel(a, 5).Amplify(0.7071)
-        back  = MergeChannels(bcent, bcent)
-        side  = GetChannel(a, 6, 7)
-        mix   = MixAudio(back, side, 0.5, 0.5).ConvertAudioTo32bit()
-        mix   = mix.SoxFilter(""compand 0.1,0.1 -90,-84,-16,-10,-0.1,-3 0.0 -90 0.0"").ConvertAudioToFloat()
-        return MergeChannels(front, mix)
-}" + Environment.NewLine);
-                                        break;
                                     case 6:
                                         script.Append(@"6==Audiochannels(last)?c6_dpl2(ConvertAudioToFloat(last)):last" + Environment.NewLine);
                                         script.Append(@"# 5.1 Channels L,R,C,LFE,SL,SR -> Dolby ProLogic II
@@ -2076,7 +2032,7 @@ function c3_dpl2(clip a)
                                         break;
 
                                     default:
-                                        script.Append(@"ConvertAudioToFloat(last))" + Environment.NewLine);
+                                        script.Append(@"ConvertAudioToFloat(last)" + Environment.NewLine);
                                         break;
                                 }
                             }
