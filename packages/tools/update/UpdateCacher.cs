@@ -226,6 +226,23 @@ namespace MeGUI
             return UpdateWindow.ErrorState.Successful;
         }
 
+        private static string GetFileStart(string file)
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(file))
+                {
+                    char[] buffer = new char[200];
+                    int count = reader.Read(buffer, 0, buffer.Length);
+                    return new string(buffer, 0, count).Replace('\r', ' ').Replace('\n', ' ');
+                }
+            }
+            catch (Exception)
+            {
+                return "<unreadable>";
+            }
+        }
+
         public static void DeleteCacheFile(string p)
         {
             string localFilename = Path.Combine(MainForm.Instance.Settings.MeGUIUpdateCache, p);
@@ -389,14 +406,30 @@ namespace MeGUI
                 // check the xml file
                 err = UpdateWindow.ErrorState.InvalidXML;
                 System.Xml.XmlDocument upgradeXml = new System.Xml.XmlDocument();
-                try
+                for (int attempt = 1; ; attempt++)
                 {
-                    upgradeXml.Load(file);
-                }
-                catch
-                {
-                    DeleteCacheFile(file);
-                    return false;
+                    try
+                    {
+                        upgradeXml.Load(file);
+                        break;
+                    }
+                    catch (IOException) when (attempt < 3)
+                    {
+                        // the file may still be locked (antivirus, indexer, ...) right after the download: try again
+                        System.Threading.Thread.Sleep(500);
+                    }
+                    catch (Exception ex)
+                    {
+                        // say WHY the file is rejected and what the server really sent (HTML page, truncated file, ...)
+                        MainForm.Instance.UpdateHandler.AddTextToLog(
+                            string.Format("{0} could not be loaded as XML ({1}: {2}). Beginning of the file: {3}", file, ex.GetType().Name, ex.Message, GetFileStart(file)),
+                            ImageType.Error, true);
+                        if (ex is System.Xml.XmlException)
+                            DeleteCacheFile(file);      // really not a valid XML file
+                        else
+                            err = UpdateWindow.ErrorState.CouldNotDownloadFile;     // read error: the file itself may be fine, keep it
+                        return false;
+                    }
                 }
             }
 

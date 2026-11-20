@@ -64,6 +64,7 @@ namespace MeGUI
         private UpdateMode _updateMode;
         private string _forcePackage;
         private WebClient wc;
+        private static readonly TimeSpan DownloadInactivityTimeout = TimeSpan.FromSeconds(60);
         private bool bManuallyStarted;
 
         public UpdateMode UpdateMode
@@ -248,9 +249,19 @@ namespace MeGUI
                 wc = new WebClient();
                 // check for proxy authentication...
                 wc.Proxy = HttpProxy.GetProxy(MainForm.Instance.Settings);
+                // Never reuse a response cached by Windows/a proxy: a cached HTML error page or a truncated
+                // file would otherwise be served again as "update.xml" (#76)
+                wc.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.BypassCache);
+                // WebClient sends no User-Agent by default, which some servers/CDNs answer with an HTML page
+                wc.Headers[HttpRequestHeader.UserAgent] = "MeGUI/" + Application.ProductVersion;
+                long lastActivityTicks = DateTime.UtcNow.Ticks;
                 wc.DownloadFileCompleted += delegate(object sender, AsyncCompletedEventArgs e)
                 {
-                    if (e.Error != null)
+                    if (e.Cancelled)
+                    {
+                        result = UpdateWindow.ErrorState.CouldNotDownloadFile;
+                    }
+                    else if (e.Error != null)
                     {
                         if (e.Error is WebException)
                         {
@@ -268,6 +279,7 @@ namespace MeGUI
                 };
                 wc.DownloadProgressChanged += delegate(object sender, DownloadProgressChangedEventArgs e)
                 {
+                    Interlocked.Exchange(ref lastActivityTicks, DateTime.UtcNow.Ticks);
                     if (_updateWindow != null)
                     {
                         string text = string.Format("Downloading {0} - {1} kb / {2} kb", packageName, (e.BytesReceived / 1024d).ToString("##,#"), (e.TotalBytesToReceive / 1024d).ToString("##,#"));
@@ -279,7 +291,21 @@ namespace MeGUI
                     _updateWindow.SetProgressBar(0, 1, 0, "Downloading " + packageName);
                 sw.Start();
                 wc.DownloadFileAsync(new Uri(new Uri(_updateServerURL), url), localFilename);
-                mre.WaitOne();
+                // Do not wait forever: a download without any data received for DownloadInactivityTimeout is
+                // cancelled, otherwise the update check (and the lock it holds) is stuck for good (#76)
+                while (!mre.WaitOne(1000))
+                {
+                    long idleTicks = DateTime.UtcNow.Ticks - Interlocked.Read(ref lastActivityTicks);
+                    if (idleTicks < DownloadInactivityTimeout.Ticks)
+                        continue;
+
+                    AddTextToLog("Download of " + packageName + " cancelled: no data received for " + (int)DownloadInactivityTimeout.TotalSeconds + " seconds", ImageType.Error, true);
+                    wc.CancelAsync();
+                    mre.WaitOne(10000);
+                    UpdateCacher.DeleteCacheFile(localFilename);
+                    result = UpdateWindow.ErrorState.CouldNotDownloadFile;
+                    break;
+                }
                 if (_updateWindow != null)
                 {
                     MeGUI.core.util.Util.Wait(1000);
