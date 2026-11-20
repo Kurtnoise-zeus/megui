@@ -121,9 +121,9 @@ namespace MeGUI
 #endif
             bUsex64Tools = true;
 
-            autoUpdateServerLists = new string[][] { new string[] { "Development", "http://megui.org/auto/fork/" }, new string[] { "Custom" }};
+            autoUpdateServerLists = new string[][] { new string[] { "Development", "https://megui.org/auto/fork/" }, new string[] { "Custom" }};
             lastUpdateCheck = DateTime.Now.AddDays(-77).ToUniversalTime();
-            lastUpdateServer = "http://megui.org/auto/fork/";
+            lastUpdateServer = "https://megui.org/auto/fork/";
             disablePackageInterval = 14;
             updateCheckInterval = 240;
             acceptableFPSError = 0.01M;
