@@ -99,7 +99,7 @@ namespace MeGUI
         private ProgramSettings avimuxgui, avisynthplugins, besplit, dgindexim, dgindex, dgindexnv,
                                 eac3to, fdkaac, ffmpeg, ffms, flac, lame, lsmash, mediainfo,
                                 megui_core, megui_help, megui_libs, megui_updater, mkvmerge, mp4box, neroaacenc, exhale, 
-                                oggenc, opus, pgcdemux, qaac, tsmuxer, vsrip, x264, x265, xvid, bestsource, svtav1;
+                                oggenc, opus, pgcdemux, qaac, tsmuxer, x264, x265, xvid, bestsource, svtav1;
         #endregion
         public MeGUISettings()
 		{
@@ -1378,12 +1378,6 @@ namespace MeGUI
             set { tsmuxer = value; }
         }
 
-        public ProgramSettings VobSubRipper
-        {
-            get { return vsrip; }
-            set { vsrip = value; }
-        }
-
         /// <summary>
         /// program settings of x264 8bit
         /// </summary>
@@ -1632,8 +1626,6 @@ namespace MeGUI
                 svtav1 = new ProgramSettings("svtav1");
             if (tsmuxer == null)
                 tsmuxer = new ProgramSettings("tsmuxer");
-            if (vsrip == null)
-                vsrip = new ProgramSettings("vsrip");
             if (x264 == null)
                 x264 = new ProgramSettings("x264");
             if (x265 == null)
@@ -1734,7 +1726,6 @@ namespace MeGUI
                 UpdateCacher.CheckPackage("qaac", false, false);
             svtav1.UpdateInformation("svtav1", "svtav1", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\svtav1\SvtAv1EncApp.exe"));
             tsmuxer.UpdateInformation("tsmuxer", "tsMuxeR", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\tsmuxer\tsmuxer.exe"));
-            vsrip.UpdateInformation("vsrip", "VobSub Ripper", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\vsrip\vsrip.exe"));
             x264.UpdateInformation("x264", "x264", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\x264\x264.exe"));
             x265.UpdateInformation("x265", "x265", Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\x265\avs4x26x.exe"));
             x265.Files.Add(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"tools\x265\x64\x265.exe"));
