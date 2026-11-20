@@ -32,7 +32,6 @@ namespace MeGUI.packages.tools.oneclick
         private OneClickWindow oOneClickWindow;
         private string strInput;
         private LogItem _log;
-        private OneClickSettings _oSettings;
         private bool _bAbort;
 
         public OneClickProcessing(OneClickWindow oWindow, String strFileOrFolderName, OneClickSettings oSettings, LogItem oLog)

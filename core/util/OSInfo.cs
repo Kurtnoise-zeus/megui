@@ -607,6 +607,8 @@ namespace MeGUI
             }
 
 
+            // Legacy fallback for frameworks older than 4.5: unreachable as long as the block above always returns or throws.
+#pragma warning disable CS0162
             if (fv == "unknown")
             {
                 using (Microsoft.Win32.RegistryKey componentsKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(componentsKeyName))
@@ -670,6 +672,7 @@ namespace MeGUI
                 }
             }
             return DotNetVersionFormated(fv);
+#pragma warning restore CS0162
         }
 
         /// <summary>

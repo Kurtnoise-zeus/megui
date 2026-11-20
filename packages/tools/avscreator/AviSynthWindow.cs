@@ -310,10 +310,9 @@ namespace MeGUI
 
         private string _tempInputLine;
         private string _tempInputFileName, _tempInputIndexFile;
-        private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop, _tempHwDecoding, _tempTimecodesv2;
+        private bool _tempDeinterlacer, _tempColourCorrect, _tempMpeg2Deblocking, _tempFlipVertical, _tempDSS2, _tempNvDeint, _tempResize, _tempNvResize, _tempCrop, _tempTimecodesv2;
         private PossibleSources _tempInputSourceType;
         private NvDeinterlacerType _tempNvDeintType;
-        private HwdDevice _tempHwdDeviceType;
         private CropValues _tempCropValues;
         private double _tempFPS;
         private decimal _tempNvHorizontalResolution, _tempNvVerticalResolution;

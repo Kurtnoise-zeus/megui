@@ -139,8 +139,7 @@ namespace MeGUI
 
             // get number of frames to encode
             oSettingsHandler.getFrames(ref numberOfFrames);
-            if (numberOfFrames != null)
-                sb.Append("--frames " + numberOfFrames.ToString() + " ");
+            sb.Append("--frames " + numberOfFrames.ToString() + " ");
 
             // Tunings
             if (!xs.CustomEncoderOptions.Contains("--tune "))

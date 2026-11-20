@@ -43,7 +43,6 @@ namespace MeGUI
             return null;
         }
 
-        private int numberOfAudioTracks, numberOfSubtitleTracks;
         private string metaFile = null;
 
         public tsMuxeR(string executablePath)

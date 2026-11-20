@@ -43,7 +43,6 @@ namespace MeGUI
         }
 
         int coder, context, gopsize, slicesnb, nbThreads;
-		decimal quantizerCrf;
 		bool errorCorrection, ffv110Bits;
 
 		#region constructor
@@ -58,7 +57,6 @@ namespace MeGUI
             nbThreads = 1;
             errorCorrection = true;
             slicesnb = 1;
-            quantizerCrf = 28;
             ffv110Bits = false;
             FFV1EncodingType = FFV1EncodingMode.none;
             base.MaxNumberOfPasses = 2;
