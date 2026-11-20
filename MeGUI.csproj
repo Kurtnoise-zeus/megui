@@ -905,6 +905,14 @@
     <Compile Include="packages\tools\oneclick\OneClickWindow.Designer.cs">
       <DependentUpon>OneClickWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="packages\tools\vobsub\ripper\IdxWriter.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\IfoModels.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\IfoReader.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\LangTable.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\RipperOptions.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\SubPacket.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\VobSequence.cs" />
+    <Compile Include="packages\tools\vobsub\ripper\VobSubRipper.cs" />
     <Compile Include="packages\tools\vobsub\SubtitleIndexJob.cs" />
     <Compile Include="packages\tools\vobsub\VobSubIndexer.cs" />
     <Compile Include="packages\tools\vobsub\VobSubIndexWindow.cs">
