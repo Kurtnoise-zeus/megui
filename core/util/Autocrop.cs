@@ -54,26 +54,32 @@ namespace MeGUI.core.util
             int pos = reader.FrameCount / 10;
             int step = reader.FrameCount / 15;
             CropValues[] cropValues = new CropValues[11];
+            bool error = false;
             for (int i = 0; i < 11; i++)
             {
-                using (Bitmap b = reader.ReadFrameBitmap(pos))
-                    cropValues[i] = getAutoCropValues(b);
+                try
+                {
+                    using (Bitmap b = reader.ReadFrameBitmap(pos))
+                        cropValues[i] = getAutoCropValues(b);
+                }
+                catch (Exception)
+                {
+                    // frame not readable (e.g. the clip could not be converted to RGB24, #71):
+                    // report "no autocrop possible" instead of crashing (this runs on a worker thread)
+                    error = true;
+                    break;
+                }
                 pos += step;
             }
-            bool error = false;
-            CropValues final = getFinalAutocropValues(cropValues);
-            if (!error)
+
+            if (error)
             {
-                return final;
+                CropValues failed = new CropValues();
+                failed.left = failed.right = failed.top = failed.bottom = -1;
+                return failed;
             }
-            else
-            {
-                final.left = -1;
-                final.right = -1;
-                final.top = -1;
-                final.bottom = -1;
-                return final;
-            }
+
+            return getFinalAutocropValues(cropValues);
         }
 
         /// <summary>

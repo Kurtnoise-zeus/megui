@@ -66,6 +66,9 @@ namespace MeGUI
 
         private static readonly object _locker = new object();
 
+        // value of AvsProbe.StreamInfo.ColorSpace for a packed BGR24 clip, the only format ReadFrame can copy
+        private const string RGB24ColorSpace = "BGR24";
+
         [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
         private static extern void CopyMemory(IntPtr dest, IntPtr src, int count);
 
@@ -99,10 +102,10 @@ namespace MeGUI
                     AvsProbe.StreamInfo originalInfo = info;
 
                     string convertError = null;
-                    if (requireRGB24 && info.Width > 0)
+                    if (requireRGB24 && info.Width > 0 && info.ColorSpace != RGB24ColorSpace)
                     {
                         // Apply ConvertToRGB24 for frame reading; retain the pre-conversion colorspace
-                        IntPtr rgb24Clip = TryConvertToRGB24(lib, session, clip, evalScript, out convertError);
+                        IntPtr rgb24Clip = TryConvertToRGB24(lib, session, clip, evalScript, info.BitDepth, out convertError);
                         if (rgb24Clip != IntPtr.Zero)
                         {
                             lib.ReleaseClip(clip);
@@ -138,24 +141,42 @@ namespace MeGUI
             return (AviSynthColorspace)pixelType;
         }
         private static IntPtr TryConvertToRGB24(AvsLibrary lib, AvsSession session, IntPtr clip,
-                                                string evalScript, out string error)
+                                                string evalScript, int bitDepth, out string error)
         {
             error = null;
-            try
+
+            // Re-evaluate the original script with the conversion appended.
+            // We cannot rely on AviSynth's implicit 'last' variable because it
+            // does not persist across separate avs_invoke("Eval", ...) calls.
+            // Any expensive source indexing (e.g. LWI) is cached from the first
+            // evaluation and will not be repeated.
+            //
+            // High bit depth clips (10/12/14/16 bit, float) are not always accepted by ConvertToRGB24():
+            // fall back to an explicit 8 bit conversion first (#71).
+            string[] conversions = bitDepth > 8
+                ? new[] { "ConvertToRGB24()", "ConvertBits(8)\nConvertToRGB24()" }
+                : new[] { "ConvertToRGB24()" };
+
+            foreach (string conversion in conversions)
             {
-                // Re-evaluate the original script with ConvertToRGB24() appended.
-                // We cannot rely on AviSynth's implicit 'last' variable because it
-                // does not persist across separate avs_invoke("Eval", ...) calls.
-                // Any expensive source indexing (e.g. LWI) is cached from the first
-                // evaluation and will not be repeated.
-                string rgb24Script = evalScript + "\nConvertToRGB24()";
-                return session.EvalScript(rgb24Script);
+                try
+                {
+                    IntPtr rgb24Clip = session.EvalScript(evalScript + "\n" + conversion);
+                    if (rgb24Clip != IntPtr.Zero)
+                    {
+                        error = null;
+                        return rgb24Clip;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    error = error == null
+                        ? ex.Message
+                        : error + " | " + conversion.Replace("\n", "; ") + ": " + ex.Message;
+                }
             }
-            catch (Exception ex)
-            {
-                error = ex.Message;
-                return IntPtr.Zero;
-            }
+
+            return IntPtr.Zero;
         }
 
         // ── Constructor ───────────────────────────────────────────────────────
@@ -271,6 +292,14 @@ namespace MeGUI
         public void ReadFrame(IntPtr dst, int dstStride, int frameNum)
         {
             if (_disposed) return;
+
+            // The copy below assumes packed RGB24 rows. Never reinterpret another pixel format (planar YUV,
+            // high bit depth, ...) that way: it produces a tiled, flipped or garbled picture (#71).
+            if (dst != IntPtr.Zero && _info.ColorSpace != RGB24ColorSpace)
+                throw new AviSynthException(string.Format(
+                    "Cannot display frame {0}: the clip is {1} ({2} bit) and could not be converted to RGB24.{3}",
+                    frameNum, _info.ColorSpace, _info.BitDepth,
+                    _convertError != null ? " Conversion error: " + _convertError : string.Empty));
 
             IntPtr frame = _lib.GetFrame(_clip, frameNum);
             if (frame == IntPtr.Zero)
