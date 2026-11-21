@@ -1,0 +1,76 @@
+﻿using MeGUI.core.util;
+using System;
+using System.IO;
+
+namespace MeGUI.packages.audio.gcl
+{
+    public sealed class GclEncoder : CommandlineJobProcessor<AudioJob>
+    {
+        public static readonly JobProcessorFactory Factory =
+new JobProcessorFactory(new ProcessorFactory(init), "GenericCommandlineEncoder");
+
+        private static IJobProcessor init(MainForm mf, Job j)
+        {
+            if (j is AudioJob && (j as AudioJob).Settings is GclSettings)
+            {
+                var settings = ((AudioJob)j).Settings as GclSettings;
+                var exe = settings.ResolveExecutablePath();
+                return new GclEncoder(settings, exe);
+            }
+            return null;
+        }
+
+        private readonly GclSettings settings;
+
+        public GclEncoder(GclSettings settings, string executablePath)
+            : base()
+        {
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Executable = executablePath;
+        }
+        protected override string Commandline
+        {
+            get
+                {
+                        if (settings == null)
+            throw new InvalidOperationException("Generic command line settings are missing.");
+        
+        var exe = settings.ResolveExecutablePath();
+                        if (string.IsNullOrWhiteSpace(exe))
+            throw new InvalidOperationException("No executable configured for the generic command line encoder.");
+        
+        Executable = exe;
+        
+        var output = Job.Output;
+                        if (string.IsNullOrEmpty(Path.GetExtension(output)))
+        {
+            output = output + settings.SafeOutputExtension;
+        }
+
+        // defaults: 48 kHz, stereo
+        return settings.BuildCommandLine(Job.Input, output, 48000, 2);
+    }
+}
+
+        protected override void checkJobIO()
+        {
+            Util.ensureExists(Job.Input);
+                if (string.IsNullOrEmpty(Job.Output))
+        throw new InvalidOperationException("Generic command-line output file is empty.");
+            }
+
+        public override void ProcessLine(string line, StreamType stream, ImageType oType)
+        {
+                if (string.IsNullOrWhiteSpace(line))
+                        return;
+    
+                if (stream == StreamType.Stdout)
+        stdoutLog.LogEvent(line, oType);
+                else if (stream == StreamType.Stderr)
+        stderrLog.LogEvent(line, oType);
+    
+                if (oType == ImageType.Error)
+        Su.HasError = true;
+            }
+    }
+}

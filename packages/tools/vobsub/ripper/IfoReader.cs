@@ -5,9 +5,9 @@ using System.Text;
 namespace MeGUI.VobSubRip
 {
     /// <summary>
-    /// Analyse d'un fichier IFO de Video Title Set. Équivalent de <c>CVobSubFileRipper::LoadIfo</c>.
-    /// Les offsets utilisés sont ceux du format DVD-Video (voir aussi le désassemblage de VSRip.exe, 0x40B2xx-0x40C354) :
-    /// 0x200 attribut vidéo, 0x254 sous-titres (nombre, puis 6 octets par flux), 0xCC pointeur VTS_PGCIT.
+    /// Parser of a Video Title Set IFO file. Equivalent of <c>CVobSubFileRipper::LoadIfo</c>.
+    /// The offsets are the ones of the DVD-Video format (see also the disassembly of VSRip.exe, 0x40B2xx-0x40C354):
+    /// 0x200 video attributes, 0x254 subtitles (count, then 6 bytes per stream), 0xCC VTS_PGCIT pointer.
     /// </summary>
     public static class IfoReader
     {
@@ -52,7 +52,7 @@ namespace MeGUI.VobSubRip
             }
         }
 
-        // --- lecture big-endian avec contrôle des bornes ---
+        // --- big-endian reading with bounds checking ---
         private static int U8(byte[] d, long p) { return d[checked((int)p)]; }
         private static int U16(byte[] d, long p) { return (U8(d, p) << 8) | U8(d, p + 1); }
         private static uint U32(byte[] d, long p) { return ((uint)U16(d, p) << 16) | (uint)U16(d, p + 2); }
@@ -62,20 +62,20 @@ namespace MeGUI.VobSubRip
         {
             IfoInfo info = new IfoInfo();
 
-            // ---- langues des sous-titres (VTS_SPST_ATRT) ----
+            // ---- subtitle languages (VTS_SPST_ATRT) ----
             ushort[] ids = new ushort[32];
             int len = U16(d, 0x254);
             info.SubtitleStreamCount = len;
             for (int i = 0; i < len && i < 32; i++)
             {
-                long p = 0x256 + i * 6;           // 2 octets d'attributs, 2 octets de code langue, 2 octets d'extension
+                long p = 0x256 + i * 6;           // 2 bytes of attributes, 2 bytes of language code, 2 bytes of extension
                 ids[i] = (ushort)U16(d, p + 2);
                 if (ids[i] == 0) ids[i] = 0x2D2D; // '--'
             }
             info.SubtitleLanguageIds = (ushort[])ids.Clone();
 
-            // ---- attribut vidéo ----
-            // MPC-HC lit les 2 octets bruts dans un champ de bits (little-endian) : octet0 = d[0x200], octet1 = d[0x201].
+            // ---- video attributes ----
+            // MPC-HC reads the 2 raw bytes into a bit field (little-endian): byte0 = d[0x200], byte1 = d[0x201].
             int b0 = U8(d, 0x200), b1 = U8(d, 0x201);
             int system = (b0 >> 4) & 3;           // 0 = NTSC, 1 = PAL
             int aspect = (b0 >> 2) & 3;
@@ -105,7 +105,7 @@ namespace MeGUI.VobSubRip
                 pgc.NumPrograms = U8(d, offset + 2);
                 int nCells = pgc.NumCells = U8(d, offset + 3);
 
-                // correspondance numéro de flux (4:3 / wide) -> langue, d'après SPST_CTL (offset 0x1C, 32 × 4 octets)
+                // stream number (4:3 / wide) -> language mapping, from SPST_CTL (offset 0x1C, 32 x 4 bytes)
                 Array.Copy(ids, pgc.StreamLanguageIds, 32);
                 bool anyId = false;
                 for (int j = 0; j < 32; j++)
@@ -124,12 +124,12 @@ namespace MeGUI.VobSubRip
                     }
                 }
 
-                // palette YUV (offset 0xA4, 16 × [0,Y,Cr,Cb]) -> RGB
+                // YUV palette (offset 0xA4, 16 x [0,Y,Cr,Cb]) -> RGB
                 for (int j = 0; j < 16; j++)
                 {
                     long p = offset + 0xA4 + j * 4;
                     int y = U8(d, p + 1), u = U8(d, p + 2), v = U8(d, p + 3);
-                    // MPC-HC : y = (y - 16) * 255 / 219 stocké dans un BYTE ; on borne ici au lieu de laisser déborder.
+                    // MPC-HC: y = (y - 16) * 255 / 219 stored in a BYTE; the value is clamped here instead of overflowing.
                     double yy = Clamp((y - 16) * 255 / 219);
                     int r = Clamp(yy + 1.4022 * (u - 128));
                     int g = Clamp(yy - 0.3456 * (u - 128) - 0.7145 * (v - 128));
@@ -146,7 +146,7 @@ namespace MeGUI.VobSubRip
                     long p = offset + vobcelloff + j * 4L;
                     all.Add(new VobCell
                     {
-                        Vob = (byte)U16(d, p),          // MPC-HC garde l'octet de poids faible de l'identifiant (BE16)
+                        Vob = (byte)U16(d, p),          // MPC-HC keeps the low byte of the (BE16) identifier
                         Cell = (byte)U16(d, p + 2),
                     });
                 }
@@ -163,14 +163,14 @@ namespace MeGUI.VobSubRip
                     switch (cat >> 6)
                     {
                         case 0: iAngle = 0; break;   // normal
-                        case 1: iAngle = 1; break;   // premier bloc d'angle
-                        case 2: iAngle++; break;     // bloc d'angle intermédiaire
-                        case 3: iAngle++; break;     // dernier bloc d'angle
+                        case 1: iAngle = 1; break;   // first angle block
+                        case 2: iAngle++; break;     // intermediate angle block
+                        case 3: iAngle++; break;     // last angle block
                     }
                     c.AngleIndex = iAngle;
                     pgc.NumAngles = Math.Max(pgc.NumAngles, iAngle);
 
-                    uint t = U32(d, p + 4);          // temps de lecture en BCD + 2 bits de fps
+                    uint t = U32(d, p + 4);          // playback time in BCD + 2 bits of fps
                     c.StartSector = U32(d, p + 8);
                     c.EndSector = U32(d, p + 20);
 

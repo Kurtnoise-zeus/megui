@@ -1,10 +1,10 @@
-// Table des langues reprise de MPC-HC (VobSubFile.cpp, GPL).
+// Language table taken from MPC-HC (VobSubFile.cpp, GPL).
 
 namespace MeGUI.VobSubRip
 {
     internal static class LangTable
     {
-        // (code ISO 639-1 sur 2 caractères, nom). Le premier élément est la valeur par défaut.
+        // (2-character ISO 639-1 code, name). The first element is the default value.
         internal static readonly string[][] Entries =
         {
             new[] { "--", "(Not detected)" },

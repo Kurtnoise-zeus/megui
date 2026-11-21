@@ -874,6 +874,15 @@
     </Compile>
     <Compile Include="packages\tools\hdbdextractor\HDStreamExtractorIndexer.cs" />
     <Compile Include="packages\tools\hdbdextractor\HDStreamsExJob.cs" />
+    <Compile Include="packages\tools\pgsextractor\PgsExtractJob.cs" />
+    <Compile Include="packages\tools\pgsextractor\PgsSubtitleExtractor.cs" />
+    <Compile Include="packages\tools\pgsextractor\PgsExtractorWindow.cs" />
+    <Compile Include="packages\tools\pgsextractor\bluray\PgsModels.cs" />
+    <Compile Include="packages\tools\pgsextractor\bluray\MplsReader.cs" />
+    <Compile Include="packages\tools\pgsextractor\bluray\TsDemuxer.cs" />
+    <Compile Include="packages\tools\pgsextractor\bluray\PgsExtractor.cs" />
+    <Compile Include="packages\tools\pgsextractor\bluray\PgsRecolor.cs" />
+    <Compile Include="packages\tools\pgsextractor\bluray\PgsPreview.cs" />
     <Compile Include="packages\tools\oneclick\OneClickAudioControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

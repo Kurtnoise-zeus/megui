@@ -1,0 +1,260 @@
+﻿// ****************************************************************************
+// 
+// Copyright (C) 2005-2026 Doom9 & al
+// 
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+// ****************************************************************************
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
+
+namespace MeGUI.packages.demuxer
+{
+    public partial class DemuxWindow : Form
+    {
+        private List<TrackInfo> _tracks = new List<TrackInfo>();
+        private MediaInfoFile _mediaInfo;
+
+        public DemuxWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Supported Files (*.mkv;*.webm;*.mp4;*.mov;*.m4v;*.ts;*.m2ts)|*.mkv;*.webm;*.mp4;*.mov;*.m4v;*.ts;*.m2ts|All Files (*.*)|*.*";
+                ofd.Title = "Select input file to demux";
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                LoadInputFile(ofd.FileName);
+            }
+        }
+
+        private void txtInputFile_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length == 1 && IsSupportedExtension(Path.GetExtension(files[0]).ToLowerInvariant()))
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void txtInputFile_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length == 1)
+                    LoadInputFile(files[0]);
+            }
+        }
+
+        private void LoadInputFile(string filePath)
+        {
+            ClearInput();
+
+            if (!File.Exists(filePath))
+            {
+                MessageBox.Show("The file does not exist.", "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string ext = Path.GetExtension(filePath).ToLowerInvariant();
+            if (!IsSupportedExtension(ext))
+            {
+                MessageBox.Show("The file format is not supported.\nSupported formats: mkv, webm, mp4, mov, m4v, ts, m2ts",
+                    "Unsupported format", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            txtInputFile.Text = filePath;
+
+            _mediaInfo = new MediaInfoFile(filePath);
+            if (!_mediaInfo.MediaInfoOK)
+            {
+                MessageBox.Show("Unable to read the file with MediaInfo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ClearInput();
+                return;
+            }
+
+            _tracks.Clear();
+            clbTracks.Items.Clear();
+
+            // video track
+            if (_mediaInfo.HasVideo && _mediaInfo.VideoInfo.Track != null)
+            {
+                VideoTrackInfo vt = (VideoTrackInfo)_mediaInfo.VideoInfo.Track.Clone();
+                vt.SourceFileName = filePath;
+                _tracks.Add(vt);
+                string label = string.Format("[Video] {0} - {1}x{2} @ {3:0.###} fps",
+                    vt, _mediaInfo.VideoInfo.Width, _mediaInfo.VideoInfo.Height, _mediaInfo.VideoInfo.FPS);
+                clbTracks.Items.Add(label, true);
+            }
+
+            // audio tracks
+            if (_mediaInfo.HasAudio)
+            {
+                foreach (AudioTrackInfo at in _mediaInfo.AudioInfo.Tracks)
+                {
+                    AudioTrackInfo t = (AudioTrackInfo)at.Clone();
+                    t.SourceFileName = filePath;
+                    _tracks.Add(t);
+                    clbTracks.Items.Add("[Audio] " + t.ToString(), true);
+                }
+            }
+
+            // subtitle tracks
+            foreach (SubtitleTrackInfo st in _mediaInfo.SubtitleInfo.Tracks)
+            {
+                SubtitleTrackInfo t = (SubtitleTrackInfo)st.Clone();
+                t.SourceFileName = filePath;
+                _tracks.Add(t);
+                clbTracks.Items.Add("[Subtitle] " + t.ToString(), true);
+            }
+
+            if (_tracks.Count == 0)
+            {
+                MessageBox.Show("No tracks found in the selected file.", "No tracks", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClearInput();
+                return;
+            }
+
+            btnRemove.Enabled = true;
+            btnQueue.Enabled = true;
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            ClearInput();
+        }
+
+        private void ClearInput()
+        {
+            txtInputFile.Text = string.Empty;
+            clbTracks.Items.Clear();
+            _tracks.Clear();
+            btnRemove.Enabled = false;
+            btnQueue.Enabled = false;
+
+            if (_mediaInfo != null)
+            {
+                _mediaInfo.Dispose();
+                _mediaInfo = null;
+            }
+        }
+
+        private void btnSelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clbTracks.Items.Count; i++)
+                clbTracks.SetItemChecked(i, true);
+        }
+
+        private void btnSelectNone_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clbTracks.Items.Count; i++)
+                clbTracks.SetItemChecked(i, false);
+        }
+
+        private void btnQueue_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtInputFile.Text) || !File.Exists(txtInputFile.Text))
+            {
+                MessageBox.Show("Please select a valid input file.", "Missing input", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
+            List<TrackInfo> selectedTracks = new List<TrackInfo>();
+            for (int i = 0; i < clbTracks.Items.Count; i++)
+            {
+                if (clbTracks.GetItemChecked(i))
+                    selectedTracks.Add(_tracks[i]);
+            }
+
+            if (selectedTracks.Count == 0)
+            {
+                MessageBox.Show("Please select at least one track to extract.", "No tracks selected", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
+            string inputFile = txtInputFile.Text;
+            string outputPath = Path.GetDirectoryName(inputFile);
+            string ext = Path.GetExtension(inputFile).ToLowerInvariant();
+
+            Job job = CreateDemuxJob(inputFile, outputPath, selectedTracks, ext);
+            if (job == null)
+            {
+                MessageBox.Show("Unable to create a demux job for this file type.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            MainForm.Instance.Jobs.AddJobsToQueue(job);
+
+            if (chkCloseOnQueue.Checked)
+                this.Close();
+            else
+            {
+                MessageBox.Show("Job added to the queue.", "Demuxer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClearInput();
+            }
+        }
+
+        private Job CreateDemuxJob(string inputFile, string outputPath, List<TrackInfo> tracks, string ext)
+        {
+            switch (ext)
+            {
+                case ".mkv":
+                case ".webm":
+                    return new MkvExtractJob(inputFile, outputPath, tracks);
+                case ".mp4":
+                case ".mov":
+                case ".m4v":
+                    return new MP4BoxDemuxJob(inputFile, outputPath, tracks);
+                case ".ts":
+                case ".m2ts":
+                    return new TsMuxeRDemuxJob(inputFile, outputPath, tracks);
+                default:
+                    return null;
+            }
+        }
+
+        private static bool IsSupportedExtension(string ext)
+        {
+            switch (ext)
+            {
+                case ".mkv":
+                case ".webm":
+                case ".mp4":
+                case ".mov":
+                case ".m4v":
+                case ".ts":
+                case ".m2ts":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+}

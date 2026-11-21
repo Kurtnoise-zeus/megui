@@ -994,6 +994,7 @@ namespace MeGUI
             PackageSystem.JobProcessors.Register(MeGUI.packages.tools.besplitter.Joiner.Factory);
             PackageSystem.JobProcessors.Register(MeGUI.packages.tools.besplitter.Splitter.Factory);
             PackageSystem.JobProcessors.Register(HDStreamExtractorIndexer.Factory);
+            PackageSystem.JobProcessors.Register(PgsSubtitleExtractor.Factory);
             PackageSystem.JobProcessors.Register(CleanupJobRunner.Factory);
 
             PackageSystem.MuxerProviders.Register(new AVIMuxGUIMuxerProvider());
@@ -1014,6 +1015,7 @@ namespace MeGUI
             PackageSystem.Tools.Register(new D2VCreatorTool());
             PackageSystem.Tools.Register(new VobSubTool());
             PackageSystem.Tools.Register(new MeGUI.packages.tools.hdbdextractor.HdBdExtractorTool());
+            PackageSystem.Tools.Register(new MeGUI.packages.tools.pgsextractor.PgsExtractorTool());
             PackageSystem.Tools.Register(new UpdateTool());
 
             PackageSystem.MediaFileTypes.Register(new AvsFileFactory());        // HandleLevel 30

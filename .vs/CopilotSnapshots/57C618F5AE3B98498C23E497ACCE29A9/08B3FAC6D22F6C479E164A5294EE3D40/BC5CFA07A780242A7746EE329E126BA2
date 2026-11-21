@@ -1,0 +1,154 @@
+﻿// ****************************************************************************
+// 
+// Copyright (C) 2005-2026 Doom9 & al
+// 
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+// ****************************************************************************
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+using MeGUI.core.util;
+
+namespace MeGUI
+{
+    class MP4BoxDemuxer : CommandlineJobProcessor<MP4BoxDemuxJob>
+    {
+        public static readonly JobProcessorFactory Factory =
+            new JobProcessorFactory(new ProcessorFactory(init), "MP4BoxDemuxer");
+
+        private static IJobProcessor init(MainForm mf, Job j)
+        {
+            if (j is MP4BoxDemuxJob)
+                return new MP4BoxDemuxer(mf.Settings.Mp4Box.Path);
+            return null;
+        }
+
+        private List<TrackInfo> _extractableTracks;
+        private int _currentTrackIndex;
+
+        public MP4BoxDemuxer(string executablePath)
+        {
+            UpdateCacher.CheckPackage("mp4box");
+            this.Executable = executablePath;
+            _currentTrackIndex = 0;
+        }
+
+        protected override void checkJobIO()
+        {
+            base.checkJobIO();
+
+            _extractableTracks = new List<TrackInfo>();
+            foreach (TrackInfo track in Job.Tracks)
+            {
+                if (track.TrackType != TrackType.Unknown)
+                    _extractableTracks.Add(track);
+            }
+            _currentTrackIndex = 0;
+        }
+
+        protected override bool secondRunNeeded()
+        {
+            _currentTrackIndex++;
+            return _currentTrackIndex < _extractableTracks.Count;
+        }
+
+        private enum LineType : int { other = 0, exporting, empty, error };
+
+        private static LineType getLineType(string line)
+        {
+            if (line.StartsWith("Exporting") && line.Contains("(") && line.Contains("/"))
+                return LineType.exporting;
+            if (isEmptyLine(line))
+                return LineType.empty;
+            if (line.ToLowerInvariant().StartsWith("error"))
+                return LineType.error;
+            return LineType.other;
+        }
+
+        private static bool isEmptyLine(string line)
+        {
+            foreach (char c in line)
+            {
+                if (c != ' ')
+                    return false;
+            }
+            return true;
+        }
+
+        public override void ProcessLine(string line, StreamType stream, ImageType oType)
+        {
+            switch (getLineType(line))
+            {
+                case LineType.exporting:
+                    Su.PercentageCurrent = getPercentage(line);
+                    Su.Status = "Extracting Track " + (_currentTrackIndex + 1) + " of " + _extractableTracks.Count + "...";
+                    break;
+                case LineType.error:
+                    base.ProcessLine(line, stream, ImageType.Error);
+                    break;
+                case LineType.empty:
+                    break;
+                case LineType.other:
+                    if (line.ToLowerInvariant().StartsWith("warning"))
+                        oType = ImageType.Warning;
+                    base.ProcessLine(line, stream, oType);
+                    break;
+            }
+        }
+
+        private decimal? getPercentage(string line)
+        {
+            try
+            {
+                int start = line.IndexOf("(") + 1;
+                int separator = line.IndexOf("/", start);
+                int end = line.IndexOf(")", separator);
+                if (start > 0 && separator > start && end > separator)
+                {
+                    int current = Int32.Parse(line.Substring(start, separator - start));
+                    int total = Int32.Parse(line.Substring(separator + 1, end - separator - 1));
+                    if (total > 0)
+                        return (decimal)current / total * 100m;
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                log.LogValue("Exception in getPercentage(" + line + ")", e, ImageType.Warning);
+                return null;
+            }
+        }
+
+        protected override string Commandline
+        {
+            get
+            {
+                TrackInfo track = _extractableTracks[_currentTrackIndex];
+                string outputFile = Path.Combine(Job.OutputPath, GetOutputFileName(track));
+                return "-raw " + track.TrackID + " \"" + Job.Input + "\" -out \"" + outputFile + "\"";
+            }
+        }
+
+        private string GetOutputFileName(TrackInfo track)
+        {
+            string baseName = Path.GetFileNameWithoutExtension(Job.Input);
+            string extension = TrackInfo.GetDemuxExtension(track.Codec, track.IsMKVContainer());
+            return baseName + " - trackID[" + track.TrackID + "]." + extension;
+        }
+    }
+}

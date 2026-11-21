@@ -90,7 +90,7 @@ namespace MeGUI
 	XmlInclude(typeof(CleanupJob)), XmlInclude(typeof(DGMIndexJob)), XmlInclude(typeof(FFMSIndexJob)),
 	XmlInclude(typeof(DGIIndexJob)), XmlInclude(typeof(HDStreamsExJob)), XmlInclude(typeof(PgcDemuxJob)),
 	XmlInclude(typeof(MkvExtractJob)), XmlInclude(typeof(OneClickPostProcessingJob)), XmlInclude(typeof(LSMASHIndexJob)),
-	XmlInclude(typeof(MP4BoxDemuxJob)), XmlInclude(typeof(TsMuxeRDemuxJob))]
+	XmlInclude(typeof(MP4BoxDemuxJob)), XmlInclude(typeof(TsMuxeRDemuxJob)), XmlInclude(typeof(PgsExtractJob))]
 	public abstract class Job
 	{
         #region important details

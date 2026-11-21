@@ -1,0 +1,117 @@
+﻿// ****************************************************************************
+// 
+// Copyright (C) 2005-2026 Doom9 & al
+// 
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+// ****************************************************************************
+
+using System;
+using System.IO;
+using System.Text;
+
+using MeGUI.core.util;
+
+namespace MeGUI
+{
+    class MP4BoxDemuxer : CommandlineJobProcessor<MP4BoxDemuxJob>
+    {
+        public static readonly JobProcessorFactory Factory =
+            new JobProcessorFactory(new ProcessorFactory(init), "MP4BoxDemuxer");
+
+        private static IJobProcessor init(MainForm mf, Job j)
+        {
+            if (j is MP4BoxDemuxJob)
+                return new MP4BoxDemuxer(mf.Settings.Mp4Box.Path);
+            return null;
+        }
+
+        private List<TrackInfo> _extractableTracks;
+        private int _currentTrackIndex;
+
+        public MP4BoxDemuxer(string executablePath)
+        {
+            UpdateCacher.CheckPackage("mp4box");
+            this.Executable = executablePath;
+            _currentTrackIndex = 0;
+        }
+
+        protected override void checkJobIO()
+        {
+            base.checkJobIO();
+
+            _extractableTracks = new List<TrackInfo>();
+            foreach (TrackInfo track in Job.Tracks)
+            {
+                if (track.TrackType != TrackType.Unknown)
+                    _extractableTracks.Add(track);
+            }
+            _currentTrackIndex = 0;
+        }
+
+        protected override bool secondRunNeeded()
+        {
+            _currentTrackIndex++;
+            return _currentTrackIndex < _extractableTracks.Count;
+        }
+
+        public override void ProcessLine(string line, StreamType stream, ImageType oType)
+        {
+            if (line.StartsWith("Extracting") || line.StartsWith("ISO File"))
+            {
+                Su.PercentageCurrent = getPercentage(line);
+                Su.Status = "Extracting Track " + (_currentTrackIndex + 1) + " of " + _extractableTracks.Count + "...";
+                return;
+            }
+
+            if (line.ToLowerInvariant().StartsWith("error"))
+                oType = ImageType.Error;
+            else if (line.ToLowerInvariant().StartsWith("warning"))
+                oType = ImageType.Warning;
+
+            base.ProcessLine(line, stream, oType);
+        }
+
+        private decimal? getPercentage(string line)
+        {
+            try
+            {
+                int start = line.IndexOf("(") + 1;
+                int end = line.IndexOf("/");
+                if (start > 0 && end > start)
+                {
+                    string perc = line.Substring(start, end - start);
+                    return Int32.Parse(perc);
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                log.LogValue("Exception in getPercentage(" + line + ")", e, ImageType.Warning);
+                return null;
+            }
+        }
+
+        protected override string Commandline
+        {
+            get
+            {
+                TrackInfo track = _extractableTracks[_currentTrackIndex];
+                string outputFile = Path.Combine(Job.OutputPath, track.DemuxFileName);
+                return "-raw " + track.TrackID + ":output=\"" + outputFile + "\" \"" + Job.Input + "\"";
+            }
+        }
+    }
+}

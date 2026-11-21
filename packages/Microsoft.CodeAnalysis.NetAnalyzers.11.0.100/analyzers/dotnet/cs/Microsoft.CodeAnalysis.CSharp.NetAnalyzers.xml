@@ -1,0 +1,423 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.CodeAnalysis.CSharp.NetAnalyzers</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpEnumsShouldHaveZeroValueFixer">
+            <summary>
+            CA1008: Enums should have zero value
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpEnumStorageShouldBeInt32Fixer">
+            <summary> 
+            CA1028: Enum Storage should be Int32
+            </summary> 
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpIdentifiersShouldNotContainUnderscoresFixer">
+            <summary>
+            CA1707: Identifiers should not contain underscores
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpImplementStandardExceptionConstructorsAnalyzer">
+            <summary>
+            CA1032: Implement standard exception constructors
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpOverrideEqualsAndOperatorEqualsOnValueTypesFixer">
+            <summary>
+            CA1815: Override equals and operator equals on value types
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpOverrideEqualsOnOverloadingOperatorEqualsFixer">
+            <summary>
+            CA2224: Override Equals on overloading operator equals
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpOverrideGetHashCodeOnOverridingEqualsFixer">
+            <summary>
+            CA2218: Override GetHashCode on overriding Equals
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpPassSystemUriObjectsInsteadOfStringsAnalyzer">
+            <summary>
+            CA2234: Pass system uri objects instead of strings
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiDesignGuidelines.CSharpUsePreferredTermsAnalyzer">
+            <summary>
+            CA1726: Use preferred terms
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.ApiReview.CSharpAvoidCallingProblematicMethodsAnalyzer">
+            <summary>
+            CA2001: Avoid calling problematic methods
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.Documentation.CSharpAvoidUsingCrefTagsWithAPrefixAnalyzer">
+            <summary>
+            CA1200: Avoid using cref tags with a prefix
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.Maintainability.CSharpUseCrossPlatformIntrinsicsAnalyzer">
+            <summary>
+            CA1516: Use cross-platform intrinsics
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.Maintainability.CSharpUseNameofInPlaceOfStringAnalyzer">
+            <summary>
+            CA1507: Use nameof to express symbol names
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.Maintainability.CSharpVariableNamesShouldNotMatchFieldNamesAnalyzer">
+            <summary>
+            CA1500: Variable names should not match field names
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.QualityGuidelines.CSharpAvoidDuplicateElementInitializationFixer">
+            <summary>
+            CA2244: Do not duplicate indexed element initializations
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.QualityGuidelines.CSharpMarkMembersAsStaticFixer">
+            <summary>
+            CA1822: Mark members as static
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.CSharp.Analyzers.QualityGuidelines.CSharpUseLiteralsWhereAppropriateFixer">
+            <summary>
+            CA1802: Use literals where appropriate
+            </summary>
+        </member>
+        <member name="T:Microsoft.CodeQuality.Analyzers.QualityGuidelines.CSharpDoNotInitializeUnnecessarilyFixer">
+            <summary>CA1805: Do not initialize unnecessarily.</summary>
+        </member>
+        <member name="T:Microsoft.CodeAnalysis.CSharp.NetAnalyzers.Microsoft.NetCore.Analyzers.Performance.CSharpUseStringMethodCharOverloadWithSingleCharacters">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.NetCore.Analyzers.Performance.CSharpUseSpanClearInsteadOfFillAnalyzer">
+            <summary>
+            CA1855: C# implementation of use Span.Clear instead of Span.Fill(default)
+            Implements the <see cref="T:Microsoft.NetCore.Analyzers.Performance.UseSpanClearInsteadOfFillAnalyzer" />
+            </summary>
+            <seealso cref="T:Microsoft.NetCore.Analyzers.Performance.UseSpanClearInsteadOfFillFixer"/>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.InteropServices.CSharpMarkBooleanPInvokeArgumentsWithMarshalAsAnalyzer">
+            <summary>
+            CA1414: Mark boolean PInvoke arguments with MarshalAs
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.InteropServices.CSharpUseManagedEquivalentsOfWin32ApiAnalyzer">
+            <summary>
+            CA2205: Use managed equivalents of win32 api
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpDoNotGuardCallFixer">
+            <summary>
+            CA1853: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.DoNotGuardDictionaryRemoveByContainsKeyTitle"/>
+            CA1868: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.DoNotGuardSetAddOrRemoveByContainsTitle"/>
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpDoNotUseCountWhenAnyCanBeUsedFixer">
+            <summary>
+            CA1827: Do not use Count()/LongCount() when Any() can be used.
+            CA1828: Do not use CountAsync()/LongCountAsync() when AnyAsync() can be used.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpDoNotUseCountWhenAnyCanBeUsedFixer.TryGetFixer(Microsoft.CodeAnalysis.SyntaxNode,System.String,System.Boolean,Microsoft.CodeAnalysis.SyntaxNode@,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.SyntaxNode}@)">
+            <summary>
+            Tries to get a fixer for the specified <paramref name="node" />.
+            </summary>
+            <param name="node">The node to get a fixer for.</param>
+            <param name="operation">The operation to get the fixer from.</param>
+            <param name="isAsync"><see langword="true" /> if it's an asynchronous method; <see langword="false" /> otherwise.</param>
+            <param name="expression">If this method returns <see langword="true" />, contains the expression to be used to invoke <c>Any</c>.</param>
+            <param name="arguments">If this method returns <see langword="true" />, contains the arguments from <c>Any</c> to be used on <c>Count</c>.</param>
+            <returns><see langword="true" /> if a fixer was found., <see langword="false" /> otherwise.</returns>
+        </member>
+        <member name="P:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpPreferDictionaryTryMethodsOverContainsKeyGuardFixer.TryGetValueFix.VariableName">
+            <summary>
+            The name of the local the value is already read into, or <see langword="null"/> when the fix
+            has to introduce one.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpPreferIsEmptyOverCountFixer">
+            <summary>
+            CA1836: Prefer IsEmpty over Count when available.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpUseAsSpanInsteadOfRangeIndexerFixer">
+            <summary>
+            CA1831, CA1832, CA1833: Use AsSpan or AsMemory instead of Range-based indexers when appropriate.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpUsePropertyInsteadOfCountMethodWhenAvailableFixer">
+            <summary>
+            CA1829: C# implementation of use property instead of <see cref="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})"/>, when available.
+            Implements the <see cref="T:Microsoft.CodeAnalysis.CodeFixes.CodeFixProvider" />
+            </summary>
+            <seealso cref="T:Microsoft.NetCore.Analyzers.Performance.UsePropertyInsteadOfCountMethodWhenAvailableFixer"/>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpUsePropertyInsteadOfCountMethodWhenAvailableFixer.TryGetExpression(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
+            <summary>
+            Gets the expression from the specified <paramref name="invocationNode" /> where to replace the invocation of the
+            <see cref="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})" /> method with a property invocation.
+            </summary>
+            <param name="invocationNode">The invocation node to get a fixer for.</param>
+            <param name="memberAccessNode">The member access node for the invocation node.</param>
+            <param name="nameNode">The name node for the invocation node.</param>
+            <returns><see langword="true" /> if a <paramref name="memberAccessNode" /> and <paramref name="nameNode" /> were found;
+            <see langword="false" /> otherwise.</returns>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpUseSearchValuesAnalyzer">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpUseSearchValuesFixer">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Performance.CSharpUseSpanClearInsteadOfFillFixer">
+            <summary>
+            CA1855: C# implementation of use Span.Clear instead of Span.Fill(default)
+            Implements the <see cref="T:Microsoft.CodeAnalysis.CodeFixes.CodeFixProvider" />
+            </summary>
+            <seealso cref="T:Microsoft.NetCore.Analyzers.Performance.UseSpanClearInsteadOfFillFixer"/>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Resources.CSharpMarkAssembliesWithNeutralResourcesLanguageAnalyzer">
+            <summary>
+            CA1824: Mark assemblies with NeutralResourcesLanguageAttribute
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer">
+            <summary>
+            C#-specific fixer for <see cref="T:Microsoft.NetCore.Analyzers.Runtime.AvoidRedundantRegexIsMatchBeforeMatch"/>.
+            Transforms:
+            <code>
+            if (Regex.IsMatch(input, pattern))
+            {
+                Match m = Regex.Match(input, pattern);
+                // use m
+            }
+            </code>
+            Into:
+            <code>
+            if (Regex.Match(input, pattern) is { Success: true } m)
+            {
+                // use m
+            }
+            </code>
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.TryGetDeclarationFix(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.LocalDeclarationStatementSyntax,Microsoft.CodeAnalysis.SyntaxNode,System.Threading.CancellationToken,Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.Fix@)">
+            <summary>
+            Path 1: The Match result is assigned via a local declaration in the if body:
+            <c>Match m = Regex.Match(...);</c>
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.TryGetAssignmentFix(Microsoft.CodeAnalysis.SemanticModel,Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.AssignmentExpressionSyntax,Microsoft.CodeAnalysis.SyntaxNode,System.Threading.CancellationToken,Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.Fix@)">
+            <summary>
+            Path 2: The Match result is assigned to a pre-declared variable in the if body:
+            <c>Match m; if (IsMatch(...)) { m = Regex.Match(...); }</c>
+            Transforms to: <c>if (Regex.Match(...) is { Success: true } m) { }</c>
+            Only applies when the pre-existing declaration is immediately before the if
+            and the variable is not referenced after the if statement.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.IsMatchNode(Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,Microsoft.CodeAnalysis.SyntaxNode)">
+            <summary>
+            Checks whether <paramref name="expression"/> is exactly the Match invocation
+            <paramref name="matchNode"/> after unwrapping parentheses and casts.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.IsVarOrMatchType(Microsoft.CodeAnalysis.CSharp.Syntax.TypeSyntax,Microsoft.CodeAnalysis.SemanticModel,System.Threading.CancellationToken)">
+            <summary>
+            Returns true when the type syntax is <c>var</c> or exactly
+            <c>System.Text.RegularExpressions.Match</c>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.PassesNameConflictChecks(Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,System.String)">
+            <summary>
+            Returns true when the variable name doesn't conflict with bindings in else
+            branches or subsequent sibling statements.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.IsVariableReferencedAfterIf(Microsoft.CodeAnalysis.CSharp.Syntax.BlockSyntax,System.Int32,System.String)">
+            <summary>
+            Checks whether the variable is referenced in any statement after
+            <paramref name="ifIndex"/> in the parent block.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.ContainsIdentifierReference(Microsoft.CodeAnalysis.SyntaxNode,System.String)">
+            <summary>
+            Returns true when <paramref name="node"/> contains an identifier that
+            could plausibly bind to a local named <paramref name="variableName"/>.
+            Excludes identifiers that are syntactically the name of a member access
+            (e.g. <c>obj.m</c>) or a qualified name suffix, since those bind to a
+            member rather than the local. Conservative — does not consult the
+            semantic model, so it can still over-report (e.g. type names, nameof).
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.BuildIsPatternCondition(Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax,System.String)">
+            <summary>
+            Builds: <c>Regex.Match(input, pattern) is { Success: true } m</c>
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.HasConflictingName(Microsoft.CodeAnalysis.SyntaxNode,System.String)">
+            <summary>
+            Checks whether the given syntax node (typically an else clause) contains any
+            variable binding with the specified name — including variable declarators,
+            pattern designations (is/switch patterns), out var, foreach, and catch.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.HasConflictingNameInSubsequentSiblings(Microsoft.CodeAnalysis.CSharp.Syntax.IfStatementSyntax,System.String)">
+            <summary>
+            Checks whether any statement after the given if statement in its parent block
+            declares a variable with the specified name. Pattern variables from the if
+            condition scope to the entire enclosing block, so later declarations conflict.
+            For parent containers other than <see cref="T:Microsoft.CodeAnalysis.CSharp.Syntax.BlockSyntax"/>, conservatively
+            assume a conflict because this helper only scans block statements.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.Fix">
+            <summary>
+            The nodes a single fix rewrites, resolved before any edit is made so that the same code
+            gates a single invocation and every diagnostic of a fix-all pass.
+            </summary>
+        </member>
+        <member name="P:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.Fix.PreDeclaration">
+            <summary>
+            The pre-existing declaration of <see cref="P:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidRedundantRegexIsMatchBeforeMatchFixer.Fix.VariableName"/>, which only Path 2 removes.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpAvoidZeroLengthArrayAllocationsAnalyzer">
+            <summary>
+            RS0007: Avoid zero-length array allocations.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpDoNotUseStackallocInLoopsAnalyzer">
+            <summary>CA2014: Do Not Use Stackalloc In Loops.</summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpDoNotUseTimersThatPreventPowerStateChangesAnalyzer">
+            <summary>
+            CA1601: Do not use timers that prevent power state changes
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpForwardCancellationTokenToInvocationsFixer.TypeNameVisitor.AddGlobalAlias(Microsoft.CodeAnalysis.CSharp.Syntax.SimpleNameSyntax)">
+            <summary>
+            We always unilaterally add "global::" to all named types/namespaces.  This
+            will then be trimmed off if possible by the simplifier
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpPreventNumericIntPtrUIntPtrBehavioralChanges">
+            <summary>
+            CA2020: Detects Behavioral Changes introduced by new Numeric IntPtr UIntPtr feature
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpProvideDeserializationMethodsForOptionalFieldsAnalyzer">
+            <summary>
+            CA2239: Provide deserialization methods for optional fields
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpTestForEmptyStringsUsingStringLengthFixer">
+            <summary>
+            CA1820: Test for empty strings using string length
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Runtime.CSharpTestForNaNCorrectlyFixer">
+            <summary>
+            CA2242: Test for NaN correctly
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Usage.CSharpPreferGenericOverloadsAnalyzer">
+            <summary>
+            CA2263: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.PreferGenericOverloadsTitle"/>
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Usage.CSharpPreferGenericOverloadsFixer">
+            <summary>
+            CA2263: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.PreferGenericOverloadsTitle"/>
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetCore.CSharp.Analyzers.Usage.FileBasedProgramDirectiveQuoting">
+            <summary>
+            Shared logic for detecting the deprecated unquoted-whitespace form of a file-based program
+            <c>#:</c> directive and for computing its quoted replacement. This mirrors (a conservative
+            subset of) the directive parser in <c>Microsoft.DotNet.FileBasedPrograms</c> and reuses that
+            parser's value-level primitives (see <see cref="T:Microsoft.DotNet.FileBasedPrograms.FileBasedProgramDirectiveValueHelpers"/>) for
+            quoting, name validity, and metadata detection so the two cannot drift. It flags only directives
+            that the parser accepts as the legacy form and that have an unambiguous, semantics-preserving
+            quoted equivalent.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Usage.FileBasedProgramDirectiveQuoting.TryParse(Microsoft.CodeAnalysis.SyntaxTrivia,System.String@,System.String@,System.String@)">
+            <summary>
+            Extracts the directive kind (e.g. <c>property</c>) and its value text from a file-based program
+            <c>#:</c> directive trivia. Returns <see langword="false"/> for any other trivia.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Usage.FileBasedProgramDirectiveQuoting.IsLegacyForm(System.String,System.String)">
+            <summary>
+            Returns whether the directive uses the deprecated unquoted-whitespace form.
+            </summary>
+        </member>
+        <member name="M:Microsoft.NetCore.CSharp.Analyzers.Usage.FileBasedProgramDirectiveQuoting.TryGetQuotedForm(System.String,System.String,System.String@)">
+            <summary>
+            Computes an equivalent quoted <paramref name="newValue"/> for a legacy directive.
+            Returns <see langword="false"/> when the legacy form cannot be rewritten without changing
+            its value.
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetFramework.CSharp.Analyzers.CSharpAvoidDuplicateAcceleratorsAnalyzer">
+            <summary>
+            CA1301: Avoid duplicate accelerators
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetFramework.CSharp.Analyzers.CSharpCallBaseClassMethodsOnISerializableTypesAnalyzer">
+            <summary>
+            CA2236: Call base class methods on ISerializable types
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetFramework.CSharp.Analyzers.CSharpDoNotMarkServicedComponentsWithWebMethodAnalyzer">
+            <summary>
+            CA2212: Do not mark serviced components with WebMethod
+            </summary>
+        </member>
+        <member name="T:Microsoft.NetFramework.CSharp.Analyzers.CSharpSetLocaleForDataTypesAnalyzer">
+            <summary>
+            CA1306: Set locale for data types
+            </summary>
+        </member>
+        <member name="T:Microsoft.DotNet.FileBasedPrograms.FileBasedProgramDirectiveValueHelpers">
+            <summary>
+            Low-level primitives for parsing and formatting the values of file-based program <c>#:</c> directives.
+            These are source-shared between the CLI directive parser (<c>FileLevelDirectiveHelpers</c>)
+            and the analyzer that flags the deprecated unquoted form (<c>FileBasedProgramDirectiveQuoting</c>).
+            </summary>
+        </member>
+        <member name="M:Microsoft.DotNet.FileBasedPrograms.FileBasedProgramDirectiveValueHelpers.ContainsDisallowedNameCharacter(System.String)">
+            <summary>
+            Returns whether <paramref name="name"/> contains a character that is not allowed in a directive
+            or metadata name (whitespace or one of the separator characters <c>@</c>, <c>=</c>, <c>/</c>).
+            </summary>
+        </member>
+        <member name="M:Microsoft.DotNet.FileBasedPrograms.FileBasedProgramDirectiveValueHelpers.IsValidMSBuildName(System.String,System.String@)">
+            <summary>
+            Validates that <paramref name="name"/> is a valid XML NCName,
+            the constraint MSBuild applies to property and item-metadata names
+            (an NCName additionally disallows the ':' that a plain XML name permits).
+            </summary>
+        </member>
+        <member name="M:Microsoft.DotNet.FileBasedPrograms.FileBasedProgramDirectiveValueHelpers.AllValidMetadata(System.Collections.Immutable.ImmutableArray{System.String},System.Int32)">
+            <summary>
+            Returns whether every token from <paramref name="start"/> onwards
+            is a valid <c>Name=Value</c> item-metadata pair
+            (a valid MSBuild name, then <c>'='</c>, then any value).
+            </summary>
+        </member>
+        <member name="M:Microsoft.DotNet.FileBasedPrograms.FileBasedProgramDirectiveValueHelpers.QuoteIfNeeded(System.String)">
+            <summary>
+            Wraps <paramref name="value"/> in a C# string literal when it contains a character (whitespace or a double quote)
+            that cannot appear in a bare directive token. Otherwise returns it unchanged.
+            </summary>
+        </member>
+    </members>
+</doc>

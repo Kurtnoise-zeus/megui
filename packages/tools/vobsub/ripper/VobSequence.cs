@@ -6,28 +6,28 @@ using System.Linq;
 namespace MeGUI.VobSubRip
 {
     /// <summary>
-    /// Séquence de fichiers VTS_xx_n.VOB lue comme un flux continu de secteurs de 2048 octets.
-    /// Équivalent (sans la partie lecteur DVD / CSS) de <c>CVobFile</c> de MPC-HC.
-    /// Le secteur logique 0 est le début de VTS_xx_1.VOB : le fichier VTS_xx_0.VOB (menu), s'il existe,
-    /// est placé en tête de séquence puis masqué par un décalage, exactement comme dans MPC-HC.
+    /// Sequence of VTS_xx_n.VOB files read as a continuous stream of 2048-byte sectors.
+    /// Equivalent (without the DVD drive / CSS part) of <c>CVobFile</c> of MPC-HC.
+    /// Logical sector 0 is the start of VTS_xx_1.VOB: the VTS_xx_0.VOB file (menu), if it exists,
+    /// is put at the head of the sequence and then hidden by an offset, exactly like in MPC-HC.
     /// </summary>
     public sealed class VobSequence : IDisposable
     {
         public const int SectorSize = 2048;
 
-        private readonly List<Tuple<string, long>> _files = new List<Tuple<string, long>>();   // (chemin, secteurs)
-        private long _size;     // taille totale en secteurs (menu inclus)
-        private long _offset;   // secteurs du VTS_xx_0.VOB
-        private long _pos;      // position absolue courante (secteurs)
+        private readonly List<Tuple<string, long>> _files = new List<Tuple<string, long>>();   // (path, sectors)
+        private long _size;     // total size in sectors (menu included)
+        private long _offset;   // sectors of VTS_xx_0.VOB
+        private long _pos;      // current absolute position (sectors)
         private int _iFile = -1;
         private FileStream _stream;
 
         public IList<string> Files { get { return _files.Select(f => f.Item1).ToList(); } }
-        /// <summary>Longueur utile en secteurs (hors menu).</summary>
+        /// <summary>Useful length in sectors (menu excluded).</summary>
         public long Length { get { return _size - _offset; } }
         public long Position { get { return _pos - _offset; } }
 
-        /// <summary>Recherche VTS_xx_0.VOB ... VTS_xx_99.VOB à partir du chemin de l'IFO.</summary>
+        /// <summary>Searches VTS_xx_0.VOB ... VTS_xx_99.VOB starting from the path of the IFO.</summary>
         public static VobSequence Open(string ifoPath, Action<LogLevel, string> log = null)
         {
             if (log == null) log = delegate { };
@@ -51,7 +51,7 @@ namespace MeGUI.VobSubRip
                 }
 
                 long size = new FileInfo(vob).Length;
-                if ((size & 0x7ff) != 0) { found.Clear(); break; }   // taille non multiple de 2048 : séquence rejetée
+                if ((size & 0x7ff) != 0) { found.Clear(); break; }   // size is not a multiple of 2048: sequence rejected
                 if (size > 0) found.Add(Tuple.Create(vob, size / SectorSize));
                 if (i == 0) offset = size / SectorSize;
             }
@@ -75,7 +75,7 @@ namespace MeGUI.VobSubRip
             return new FileStream(_files[i].Item1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 1 << 16, FileOptions.SequentialScan);
         }
 
-        /// <summary>Se place sur le secteur logique <paramref name="lba"/> (0 = début de VTS_xx_1.VOB).</summary>
+        /// <summary>Moves to the logical sector <paramref name="lba"/> (0 = start of VTS_xx_1.VOB).</summary>
         public bool Seek(long lba)
         {
             long pos = Math.Min(Math.Max(lba + _offset, _offset), _size - 1);
@@ -96,7 +96,7 @@ namespace MeGUI.VobSubRip
             return true;
         }
 
-        /// <summary>Lit le secteur suivant dans <paramref name="sector"/> (2048 octets au moins). Retourne false en fin de séquence ou si le fichier est tronqué.</summary>
+        /// <summary>Reads the next sector into <paramref name="sector"/> (at least 2048 bytes). Returns false at the end of the sequence or if the file is truncated.</summary>
         public bool Read(byte[] sector)
         {
             if (sector == null || sector.Length < SectorSize) throw new ArgumentException("buffer < 2048 octets", "sector");

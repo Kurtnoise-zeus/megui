@@ -1,0 +1,232 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Microsoft.CodeAnalysis.VisualBasic.NetAnalyzers
+</name>
+</assembly>
+<members>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicEnumStorageShouldBeInt32Fixer">
+ <summary>
+ CA1028: Enum Storage should be Int32
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicIdentifiersShouldNotContainUnderscoresFixer">
+ <summary>
+ CA1707: Identifiers should not contain underscores
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicImplementStandardExceptionConstructorsAnalyzer">
+ <summary>
+ CA1032: Implement standard exception constructors
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicOverrideEqualsAndOperatorEqualsOnValueTypesFixer">
+ <summary>
+ CA1815: Override equals and operator equals on value types
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicOverrideEqualsOnOverloadingOperatorEqualsFixer">
+ <summary>
+ CA2224: Override Equals on overloading operator equals
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicOverrideEqualsOnOverloadingOperatorEqualsAnalyzer">
+ <summary>
+ CA2224: Override Equals on overloading operator equals
+ </summary>
+ <remarks>
+ CA2224 is not applied to C# since it already reports CS0660.
+ </remarks>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicOverrideGetHashCodeOnOverridingEqualsFixer">
+ <summary>
+ CA2218: Override GetHashCode on overriding Equals
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicOverrideGetHashCodeOnOverridingEqualsAnalyzer">
+ <summary>
+ CA2218: Override GetHashCode on overriding Equals
+ </summary>
+ <remarks>
+ CA2218 is not applied to C# since it already reports CS0569.
+ </remarks>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicPassSystemUriObjectsInsteadOfStringsAnalyzer">
+ <summary>
+ CA2234: Pass system uri objects instead of strings
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiDesignGuidelines.BasicUsePreferredTermsAnalyzer">
+ <summary>
+ CA1726: Use preferred terms
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.ApiReview.BasicAvoidCallingProblematicMethodsAnalyzer">
+ <summary>
+ CA2001: Avoid calling problematic methods
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.Documentation.BasicAvoidUsingCrefTagsWithAPrefixAnalyzer">
+ <summary>
+ CA1200: Avoid using cref tags with a prefix
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.Maintainability.BasicUseNameofInPlaceOfStringAnalyzer">
+ <summary>
+ CA1507: Use nameof to express symbol names
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.Maintainability.BasicVariableNamesShouldNotMatchFieldNamesAnalyzer">
+ <summary>
+ CA1500: Variable names should not match field names
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.QualityGuidelines.BasicMarkMembersAsStaticFixer">
+ <summary>
+ CA1822: Mark members as static
+ </summary>
+</member>
+<member name="T:Microsoft.CodeQuality.VisualBasic.Analyzers.QualityGuidelines.BasicUseLiteralsWhereAppropriateFixer">
+ <summary>
+ CA1802: Use literals where appropriate
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.InteropServices.BasicMarkBooleanPInvokeArgumentsWithMarshalAsAnalyzer">
+ <summary>
+ CA1414: Mark boolean PInvoke arguments with MarshalAs
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.InteropServices.BasicUseManagedEquivalentsOfWin32ApiAnalyzer">
+ <summary>
+ CA2205: Use managed equivalents of win32 api
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicDoNotGuardCallFixer">
+ <summary>
+ CA1853: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.DoNotGuardDictionaryRemoveByContainsKeyTitle"/>
+ CA1868: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.DoNotGuardSetAddOrRemoveByContainsTitle"/>
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicDoNotUseCountWhenAnyCanBeUsedFixer">
+ <summary>
+ CA1827: Do not use Count()/LongCount() when Any() can be used.
+ CA1828: Do not use CountAsync()/LongCountAsync() when AnyAsync() can be used.
+ </summary>
+</member>
+<member name="M:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicDoNotUseCountWhenAnyCanBeUsedFixer.TryGetFixer(Microsoft.CodeAnalysis.SyntaxNode,System.String,System.Boolean,Microsoft.CodeAnalysis.SyntaxNode@,System.Collections.Generic.IEnumerable{Microsoft.CodeAnalysis.SyntaxNode}@)">
+ <summary>
+ Tries to get a fixer for the specified <paramref name="node" />.
+ </summary>
+ <param name="node">The node to get a fixer for.</param>
+ <param name="operation">The operation to get the fixer from.</param>
+ <param name="isAsync"><see langword="true" /> if it's an asynchronous method <see langword="false" /> otherwise.</param>
+ <param name="expression">If this method returns <see langword="true" />, contains the expression to be used to invoke <c>Any</c>.</param>
+ <param name="arguments">If this method returns <see langword="true" />, contains the arguments from <c>Any</c> to be used on <c>Count</c>.</param>
+ <returns><see langword="true" /> if a fixer was found., <see langword="false" /> otherwise.</returns>
+</member>
+<member name="P:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicPreferDictionaryTryMethodsOverContainsKeyGuardFixer.TryGetValueFix.ValueAssignmentAnchor">
+ <summary>
+ The statement the declaration of the value local is inserted before.
+ </summary>
+</member>
+<member name="P:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicPreferDictionaryTryMethodsOverContainsKeyGuardFixer.TryGetValueFix.VariableName">
+ <summary>
+ The name of the local the value is already read into, or Nothing when the fix has to introduce one.
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicPreferIsEmptyOverCountFixer">
+ <summary>
+ CA1836: Prefer IsEmpty over Count when available.
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicUsePropertyInsteadOfCountMethodWhenAvailableFixer">
+ <summary>
+ CA1829: C# implementation Of use Property instead Of <see cref="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})"/>, When available.
+ Implements the <see cref="T:Microsoft.CodeAnalysis.CodeFixes.CodeFixProvider" />
+ </summary>
+ <seealso cref="T:Microsoft.NetCore.Analyzers.Performance.UsePropertyInsteadOfCountMethodWhenAvailableFixer"/>
+</member>
+<member name="M:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicUsePropertyInsteadOfCountMethodWhenAvailableFixer.TryGetExpression(Microsoft.CodeAnalysis.SyntaxNode,Microsoft.CodeAnalysis.SyntaxNode@,Microsoft.CodeAnalysis.SyntaxNode@)">
+ <summary>
+ Gets the expression from the specified <paramref name="invocationNode" /> where to replace the invocation of the
+ <see cref="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})" /> method with a property invocation.
+ </summary>
+ <param name="invocationNode">The invocation node to get a fixer for.</param>
+ <param name="memberAccessNode">The member access node for the invocation node.</param>
+ <param name="nameNode">The name node for the invocation node.</param>
+ <returns><see langword="true" /> if a <paramref name="memberAccessNode" /> and <paramref name="nameNode" /> were found;
+ <see langword="false" /> otherwise.</returns>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Performance.BasicUseStringMethodCharOverloadWithSingleCharacters">
+ <inheritdoc/>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Resources.BasicMarkAssembliesWithNeutralResourcesLanguageAnalyzer">
+ <summary>
+ CA1824: Mark assemblies with NeutralResourcesLanguageAttribute
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Runtime.BasicAvoidZeroLengthArrayAllocationsAnalyzer">
+ <summary>
+ RS0007: Avoid zero-length array allocations.
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Runtime.BasicDoNotUseTimersThatPreventPowerStateChangesAnalyzer">
+ <summary>
+ CA1601: Do not use timers that prevent power state changes
+ </summary>
+</member>
+<member name="M:Microsoft.NetCore.VisualBasic.Analyzers.Runtime.BasicForwardCancellationTokenToInvocationsFixer.TypeNameVisitor.MakeHalfWidthIdentifier(System.String)">
+ <summary>
+ Creates a half width form Unicode character string. 
+ </summary>
+ <param name="text">The text representing the original identifier.  This can be in full width or half width Unicode form.  </param>
+ <returns>A string representing the text in a half width Unicode form.</returns>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Runtime.BasicProvideDeserializationMethodsForOptionalFieldsAnalyzer">
+ <summary>
+ CA2239: Provide deserialization methods for optional fields
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Runtime.BasicTestForEmptyStringsUsingStringLengthFixer">
+ <summary>
+ CA1820: Test for empty strings using string length
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Runtime.BasicTestForNaNCorrectlyFixer">
+ <summary>
+ CA2242: Test for NaN correctly
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Usage.BasicPreferGenericOverloadsFixer">
+ <summary>
+ CA2263: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.PreferGenericOverloadsTitle"/>
+ </summary>
+</member>
+<member name="T:Microsoft.NetCore.VisualBasic.Analyzers.Usage.BasicPreferGenericOverloadsAnalyzer">
+ <summary>
+ CA2263: <inheritdoc cref="P:Microsoft.NetCore.Analyzers.MicrosoftNetCoreAnalyzersResources.PreferGenericOverloadsTitle"/>
+ </summary>
+</member>
+<member name="T:Microsoft.NetFramework.VisualBasic.Analyzers.BasicAvoidDuplicateAcceleratorsAnalyzer">
+ <summary>
+ CA1301: Avoid duplicate accelerators
+ </summary>
+</member>
+<member name="T:Microsoft.NetFramework.VisualBasic.Analyzers.BasicCallBaseClassMethodsOnISerializableTypesAnalyzer">
+ <summary>
+ CA2236: Call base class methods on ISerializable types
+ </summary>
+</member>
+<member name="T:Microsoft.NetFramework.VisualBasic.Analyzers.BasicDoNotMarkServicedComponentsWithWebMethodAnalyzer">
+ <summary>
+ CA2212: Do not mark serviced components with WebMethod
+ </summary>
+</member>
+<member name="T:Microsoft.NetFramework.VisualBasic.Analyzers.BasicSetLocaleForDataTypesAnalyzer">
+ <summary>
+ CA1306: Set locale for data types
+ </summary>
+</member>
+</members>
+</doc>

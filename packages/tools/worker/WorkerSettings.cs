@@ -84,7 +84,7 @@ namespace MeGUI
                     }
                     case JobType.Demuxer: 
                     {
-                        if (oJob is SubtitleIndexJob || oJob is HDStreamsExJob || oJob is PgcDemuxJob
+                        if (oJob is SubtitleIndexJob || oJob is HDStreamsExJob || oJob is PgcDemuxJob || oJob is PgsExtractJob
                             || oJob is MkvExtractJob || oJob is MeGUI.packages.tools.besplitter.AudioSplitJob)
                             return true;
                         break;
@@ -123,7 +123,7 @@ namespace MeGUI
         {
             if (oJob is AudioJob)
                 return JobType.Audio;
-            else if (oJob is SubtitleIndexJob || oJob is HDStreamsExJob || oJob is PgcDemuxJob
+            else if (oJob is SubtitleIndexJob || oJob is HDStreamsExJob || oJob is PgcDemuxJob || oJob is PgsExtractJob
                 || oJob is MkvExtractJob || oJob is MeGUI.packages.tools.besplitter.AudioSplitJob)
                 return JobType.Demuxer;
             else if (oJob is IndexJob)

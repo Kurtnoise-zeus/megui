@@ -2,12 +2,12 @@ using System;
 
 namespace MeGUI.VobSubRip
 {
-    /// <summary>Analyse minimale d'un paquet de sous-image DVD (SPU), équivalent de <c>CVobSubImage::GetPacketInfo</c>.</summary>
+    /// <summary>Minimal analysis of a DVD sub-picture packet (SPU), equivalent of <c>CVobSubImage::GetPacketInfo</c>.</summary>
     internal static class SubPacket
     {
         /// <summary>
-        /// Parcourt les blocs de contrôle du SPU. <paramref name="forced"/> est vrai si la commande 0x00
-        /// (« forced start displaying ») est présente. Retourne false si le paquet est invalide.
+        /// Walks through the control blocks of the SPU. <paramref name="forced"/> is true if the 0x00 command
+        /// ("forced start displaying") is present. Returns false if the packet is invalid.
         /// </summary>
         public static bool GetInfo(byte[] data, int packetSize, int dataSize, out bool forced)
         {
@@ -21,7 +21,7 @@ namespace MeGUI.VobSubRip
                 i = next;
                 if (i + 4 > packetSize) return false;
 
-                i += 2;                                   // date du bloc (ignorée ici)
+                i += 2;                                   // date of the block (ignored here)
                 next = (data[i] << 8) | data[i + 1];
                 i += 2;
 
@@ -58,7 +58,7 @@ namespace MeGUI.VobSubRip
                             if (o0 > o1 || o1 > dataSize) return false;
                             break;
                         }
-                        default: end = true; break;   // 0xFF = fin du bloc, autre = bloc ignoré
+                        default: end = true; break;   // 0xFF = end of the block, other = ignored block
                     }
                 }
             } while (i <= next && i < packetSize);

@@ -1,0 +1,141 @@
+﻿using MeGUI;
+using MeGUI.core.details.audio;
+using MeGUI.packages.audio.gcl;
+using System;
+using System.Windows.Forms;
+
+
+namespace MeGUI.packages.audio.gcl
+{
+    public partial class GclConfigurationPanel : MeGUI.core.details.audio.AudioConfigurationPanel, Editable<GclSettings>
+    {
+        private TextBox tbExecutablePath;
+        private TextBox tbOutputExtension;
+        private TextBox tbCodecName;
+        private TextBox tbCommandLineTemplate;
+        private CheckBox cbUseCustomPath;
+        private TextBox tbPreview;
+
+        public GclConfigurationPanel()
+        {
+            BuildUi();
+        }
+
+        private void BuildUi()
+        {
+            var layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(8),
+                ColumnCount = 2
+            };
+
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180F));
+        layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+
+        int row = 0;
+
+        layout.Controls.Add(new Label { Text = "Executable path:", AutoSize = true }, 0, row);
+        tbExecutablePath = new TextBox { Dock = DockStyle.Fill, Text = string.Empty };
+        layout.Controls.Add(tbExecutablePath, 1, row++);
+
+        layout.Controls.Add(new Label { Text = "Use custom path:", AutoSize = true }, 0, row);
+        cbUseCustomPath = new CheckBox { AutoSize = true, Checked = false, Dock = DockStyle.Left };
+        layout.Controls.Add(cbUseCustomPath, 1, row++);
+
+        layout.Controls.Add(new Label { Text = "Output extension:", AutoSize = true }, 0, row);
+        tbOutputExtension = new TextBox { Dock = DockStyle.Fill, Text = ".m4a" };
+        layout.Controls.Add(tbOutputExtension, 1, row++);
+
+        layout.Controls.Add(new Label { Text = "Codec name:", AutoSize = true }, 0, row);
+        tbCodecName = new TextBox { Dock = DockStyle.Fill, Text = "aac" };
+        layout.Controls.Add(tbCodecName, 1, row++);
+
+        layout.Controls.Add(new Label { Text = "Command line:", AutoSize = true }, 0, row);
+
+        tbCommandLineTemplate = new TextBox
+        {
+             Dock = DockStyle.Fill,
+             Multiline = true,
+             Height = 90,
+             Text = "-hide_banner -y -i \"{input}\" -vn -c:a {codec} -b:a {bitrate}k -ar {sampleRate} -ac {channels} \"{output}\""
+        };
+
+        layout.Controls.Add(tbCommandLineTemplate, 1, row++);
+
+        layout.Controls.Add(new Label { Text = "Preview:", AutoSize = true }, 0, row);
+        tbPreview = new TextBox
+                    {
+            Dock = DockStyle.Fill,
+        Multiline = true,
+        Height = 80,
+        ReadOnly = true
+                    }
+        ;
+        layout.Controls.Add(tbPreview, 1, row++);
+
+        var placeholders = new Label
+                    {
+            Text = "Available placeholders: {input}, {output}, {codec}, {bitrate}, {sampleRate}, {channels}, {extension}, {profile}",
+        AutoSize = true,
+        ForeColor = System.Drawing.Color.DarkBlue
+                    }
+        ;
+        layout.Controls.Add(placeholders, 1, row++);
+
+        Controls.Add(layout);
+
+        tbExecutablePath.TextChanged += (_, __) => UpdatePreview();
+        tbOutputExtension.TextChanged += (_, __) => UpdatePreview();
+        tbCodecName.TextChanged += (_, __) => UpdatePreview();
+        tbCommandLineTemplate.TextChanged += (_, __) => UpdatePreview();
+
+        UpdatePreview();
+        }
+
+        private void UpdatePreview()
+        {
+    var settings = new GclSettings
+                {
+        UseCustomExecutablePath = cbUseCustomPath.Checked,
+        ExecutablePath = tbExecutablePath.Text,
+        OutputExtension = tbOutputExtension.Text,
+        CodecName = tbCodecName.Text,
+        CommandLineTemplate = tbCommandLineTemplate.Text
+            }
+    ;
+    
+    var cmd = settings.BuildCommandLine(@"C:\input\audio.wav", @"C:\output\audio.m4a", 48000, 2);
+    tbPreview.Text = cmd;
+            }
+
+        protected override AudioCodecSettings CodecSettings
+        {
+            get
+                {
+                        return new GclSettings
+                        {
+                UseCustomExecutablePath = cbUseCustomPath.Checked,
+    ExecutablePath = tbExecutablePath.Text.Trim(),
+    OutputExtension = tbOutputExtension.Text.Trim(),
+    CodecName = tbCodecName.Text.Trim(),
+    CommandLineTemplate = tbCommandLineTemplate.Text.Trim()
+                }
+        ;
+                    }
+    set
+                {
+        var s = value as GclSettings;
+                        if (s == null)
+                                return;
+        
+        cbUseCustomPath.Checked = s.UseCustomExecutablePath;
+        tbExecutablePath.Text = s.ExecutablePath;
+        tbOutputExtension.Text = s.OutputExtension;
+        tbCodecName.Text = s.CodecName;
+        tbCommandLineTemplate.Text = s.CommandLineTemplate;
+                    }
+            }
+    }
+}
+

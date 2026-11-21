@@ -11,6 +11,7 @@ Changelog version 6666 20261118
 - Fix version shown in GUI
 - Change default x265 HEVC profile from "Main Still Picture Profile" to "Main Profile"
 - DVD subtitle extraction (VobSub idx/sub) is now done by a managed port of the VSRip ripper built into MeGUI: vsrip.exe is no longer required and its package has been removed. The VOB files must not be CSS scrambled (a scrambled sector stops the extraction with an error)
+- New tool "PGS Subtitle Extractor" (Tools menu): extracts the PGS subtitles (.sup) of a Blu-ray folder, playlist or M2TS files with a managed MPLS/M2TS demuxer built into MeGUI (eac3to is not used), with drag & drop and an optional recoloring of the subtitles (text / outline colors of the palette) with a before / after preview of the first subtitle. The M2TS files must not be AACS encrypted (a decrypted rip is required)
 
 Changelog version 6666 20260403
 

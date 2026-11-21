@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MeGUI.VobSubRip
 {
-    /// <summary>Position d'un sous-titre dans le .sub (équivalent de <c>CVobSubFile::SubPos</c>).</summary>
+    /// <summary>Position of a subtitle in the .sub (equivalent of <c>CVobSubFile::SubPos</c>).</summary>
     internal sealed class SubPos
     {
         public long FilePos;
@@ -25,7 +25,7 @@ namespace MeGUI.VobSubRip
         public List<SubPos> Positions = new List<SubPos>();
     }
 
-    /// <summary>Écriture des fichiers .idx et .sub (équivalent de <c>CVobSubFile::WriteIdx / WriteSub</c>, format idx v7).</summary>
+    /// <summary>Writes the .idx and .sub files (equivalent of <c>CVobSubFile::WriteIdx / WriteSub</c>, idx v7 format).</summary>
     internal static class IdxWriter
     {
         public const int IdxVersion = 7;
@@ -135,7 +135,7 @@ namespace MeGUI.VobSubRip
             File.WriteAllText(path, sb.ToString(), new ASCIIEncoding());
         }
 
-        /// <summary>Écrit le .sub : copie des secteurs tant qu'ils commencent par un pack header MPEG-PS (00 00 01 BA).</summary>
+        /// <summary>Writes the .sub: copies the sectors as long as they start with an MPEG-PS pack header (00 00 01 BA).</summary>
         public static void WriteSub(string path, MemoryStream sub)
         {
             using (FileStream f = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))

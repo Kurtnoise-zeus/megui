@@ -7,9 +7,9 @@ using System.Threading;
 namespace MeGUI.VobSubRip
 {
     /// <summary>
-    /// Extraction des sous-titres d'un VTS vers un couple .idx/.sub.
-    /// Portage de <c>CVobSubFileRipper</c> (MPC-HC / VSRip) pour des VOB déjà lisibles :
-    /// le déchiffrement CSS et la lecture directe d'un lecteur DVD ne sont pas pris en charge.
+    /// Extraction of the subtitles of a VTS to an .idx/.sub pair.
+    /// Port of <c>CVobSubFileRipper</c> (MPC-HC / VSRip) for VOB files which are already readable:
+    /// CSS decryption and direct reading of a DVD drive are not supported.
     /// </summary>
     public sealed class VobSubRipper : IDisposable
     {
@@ -18,7 +18,7 @@ namespace MeGUI.VobSubRip
 
         public IfoInfo Info { get; private set; }
         public Action<LogLevel, string> Log { get; set; }
-        /// <summary>Progression 0.0 → 1.0. Appelée environ tous les 512 Ko lus.</summary>
+        /// <summary>Progress 0.0 -> 1.0. Called about every 512 KB read.</summary>
         public Action<double> Progress { get; set; }
 
         public VobSubRipper(string ifoPath, Action<LogLevel, string> log = null)
@@ -58,7 +58,7 @@ namespace MeGUI.VobSubRip
         private static uint LE32(byte[] b, int o) { return unchecked((uint)(b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24))); }
 
         /// <summary>
-        /// Indexe les VOB et écrit <c>outputPath</c>.idx / .sub (l'extension éventuelle de <paramref name="outputPath"/> est retirée).
+        /// Indexes the VOB files and writes <c>outputPath</c>.idx / .sub (a possible extension of <paramref name="outputPath"/> is removed).
         /// </summary>
         public RipResult Index(RipperOptions o, string outputPath, CancellationToken ct = default(CancellationToken))
         {
@@ -111,7 +111,7 @@ namespace MeGUI.VobSubRip
 
             if (o.ResetTime)
             {
-                // première cellule de l'angle qui fait partie de la sélection
+                // first cell of the angle which is part of the selection
                 int first = o.Cells.First();
                 foreach (VobCell c in angle) if (o.Cells.Contains(c.Key)) { first = c.Key; break; }
                 foreach (VobCell c in angle)
@@ -254,7 +254,7 @@ namespace MeGUI.VobSubRip
                         bDiscontinuityFixApplied = true;
                     }
 
-                    if (code0e == 0xe0010000)   // vidéo : sert de référence temporelle
+                    if (code0e == 0xe0010000)   // video: used as the time reference
                     {
                         if (bDiscontinuity)
                         {
@@ -285,8 +285,8 @@ namespace MeGUI.VobSubRip
                     }
                 }
 
-                // Différence volontaire avec MPC-HC : le dernier chunk est aussi enregistré (End exclusif = fin de plage).
-                // Sans cela, le cache .chunks omet la dernière cellule et une 2e extraction perd ses sous-titres.
+                // Intentional difference with MPC-HC: the last chunk is saved too (End is exclusive = end of the range).
+                // Without this, the .chunks cache omits the last cell and a second extraction loses its subtitles.
                 if (curchunk.Vc != 0 && !ct.IsCancellationRequested)
                 {
                     curchunk.End = curpos;
@@ -325,7 +325,7 @@ namespace MeGUI.VobSubRip
                 if (nLang < 0 && sl.Positions.Count > 0) nLang = i;
                 sl.Id = pgc.StreamLanguageIds[i];
                 sl.Name = sl.Alt = LangTable.FindName(sl.Id);
-                sl.Positions = sl.Positions.OrderBy(p => p.Start).ToList();   // tri stable
+                sl.Positions = sl.Positions.OrderBy(p => p.Start).ToList();   // stable sort
 
                 if (o.ForcedOnly)
                 {
@@ -384,7 +384,7 @@ namespace MeGUI.VobSubRip
             return result;
         }
 
-        /// <summary>Reconstitue un paquet SPU à partir du .sub en cours (équivalent de <c>CVobSubFile::GetPacket</c>).</summary>
+        /// <summary>Rebuilds an SPU packet from the .sub being written (equivalent of <c>CVobSubFile::GetPacket</c>).</summary>
         private static byte[] GetPacket(MemoryStream sub, long filepos, int lang, out int packetSize, out int dataSize)
         {
             packetSize = dataSize = 0;
@@ -428,7 +428,7 @@ namespace MeGUI.VobSubRip
             return ret;
         }
 
-        // ---- cache .chunks (format compatible avec VSRip : version=1, checksum IFO, longueur VOB, liste de chunks) ----
+        // ---- .chunks cache (VSRip compatible format: version=1, IFO checksum, VOB length, list of chunks) ----
         private string ChunksPath { get { return Path.ChangeExtension(_ifoPath, ".chunks"); } }
 
         private uint IfoChecksum()
