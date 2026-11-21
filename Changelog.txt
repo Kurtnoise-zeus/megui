@@ -1,4 +1,4 @@
-Changelog version 6666 20261118
+Changelog version 6666 20261121
 
 - Removed the portable AviSynth build (tools\avs package, AviSynth.dll/DevIL.dll copies and the "Always use the included AviSynth" option)
 - MeGUI now requires a system installed AviSynth+ (https://github.com/AviSynth/AviSynthPlus/releases). DirectShowSource.dll and the plugins are loaded from its autoload folder
