@@ -917,14 +917,37 @@ namespace MeGUI
                 newMenuItem.Click += new System.EventHandler(this.mnuMuxer_Click);
             }
 
-            // Fill the tools menu
+            // Fill the tools menu: one sub-menu per category, separated by a line
             mnuTools.MenuItems.Clear();
-            List<MenuItem> toolsItems = new List<MenuItem>();
             List<Shortcut> usedShortcuts = new List<Shortcut>();
-            toolsItems.Add(mnutoolsD2VCreator);
-            toolsItems.Add(mnuMuxers);
             usedShortcuts.Add(mnuMuxers.Shortcut);
-            toolsItems.Add(mnuDemuxer);
+
+            // category of the tools (by name); a tool which is not listed goes into "Other"
+            string[] categoryOrder = { "Encoding", "Audio", "Video", "Avisynth", "Subtitles", "Muxing / Demuxing", "Chapters", "Other" };
+            Dictionary<string, string> toolCategories = new Dictionary<string, string>();
+            toolCategories["AutoEncode"] = "Encoding";
+            toolCategories["One Click Encoder"] = "Encoding";
+            toolCategories["Audio Cutter"] = "Audio";
+            toolCategories["AVC Quant Matrix Editor"] = "Video";
+            toolCategories["Bitrate Calculator"] = "Video";
+            toolCategories["File Indexer"] = "Video";
+            toolCategories["HD Streams Extractor"] = "Video";
+            toolCategories["AVS Cutter"] = "Avisynth";
+            toolCategories["AVS Script Creator"] = "Avisynth";
+            toolCategories["PGS Subtitle Extractor"] = "Subtitles";
+            toolCategories["VobSubber"] = "Subtitles";
+            toolCategories["Demuxer"] = "Muxing / Demuxing";
+            toolCategories["Muxer"] = "Muxing / Demuxing";
+            toolCategories["Chapter Creator"] = "Chapters";
+
+            Dictionary<string, List<MenuItem>> categories = new Dictionary<string, List<MenuItem>>();
+            foreach (string category in categoryOrder)
+                categories[category] = new List<MenuItem>();
+            MenuItem updateItem = null;     // stays at the top level, after the categories
+
+            categories["Video"].Add(mnutoolsD2VCreator);            // File Indexer
+            categories["Muxing / Demuxing"].Add(mnuMuxers);
+            categories["Muxing / Demuxing"].Add(mnuDemuxer);
 
             foreach (ITool tool in PackageSystem.Tools.Values)
             {
@@ -949,17 +972,37 @@ namespace MeGUI
 
                     if (shortcutAttempted && newMenuItem.Shortcut == Shortcut.None)
                         Log.Warn("Shortcut for '" + tool.Name + "' is already used. No shortcut selected.");
-                    toolsItems.Add(newMenuItem);
+
+                    if (tool.Name == "Update")
+                    {
+                        updateItem = newMenuItem;
+                        continue;
+                    }
+                    string toolCategory;
+                    if (!toolCategories.TryGetValue(tool.Name, out toolCategory))
+                        toolCategory = "Other";
+                    categories[toolCategory].Add(newMenuItem);
                 }
             }
 
-            toolsItems.Sort(new Comparison<MenuItem>(delegate(MenuItem a, MenuItem b) { return (a.Text.CompareTo(b.Text)); }));
-            index = 0;
-            foreach (MenuItem m in toolsItems)
+            Comparison<MenuItem> byText = new Comparison<MenuItem>(delegate(MenuItem a, MenuItem b) { return (a.Text.CompareTo(b.Text)); });
+            bool firstCategory = true;
+            foreach (string category in categoryOrder)
             {
-                m.Index = index;
-                index++;
-                mnuTools.MenuItems.Add(m);
+                List<MenuItem> items = categories[category];
+                if (items.Count == 0)
+                    continue;
+                items.Sort(byText);
+                if (!firstCategory)
+                    mnuTools.MenuItems.Add(new MenuItem("-"));
+                mnuTools.MenuItems.Add(new MenuItem(category, items.ToArray()));
+                firstCategory = false;
+            }
+            if (updateItem != null)
+            {
+                if (!firstCategory)
+                    mnuTools.MenuItems.Add(new MenuItem("-"));
+                mnuTools.MenuItems.Add(updateItem);
             }
         }
 
