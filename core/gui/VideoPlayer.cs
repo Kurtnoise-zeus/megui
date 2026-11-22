@@ -21,7 +21,9 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 using MeGUI.core.gui;
@@ -91,6 +93,10 @@ namespace MeGUI
                 ThemeManager.Mode = MainForm.Instance.Settings.ThemeMode;
             ThemeManager.ThemeChanged += OnThemeChanged;
             ApplyTheme();
+
+            bool showOsd = MainForm.Instance == null || MainForm.Instance.Settings == null || MainForm.Instance.Settings.PlayerShowOsd;
+            videoPreview.OsdVisible = showOsd;
+            osdItem.Checked = showOsd;
 		}
 
         public bool AllowClose
@@ -188,6 +194,7 @@ namespace MeGUI
                 else
                     iStart = reader.FrameCount / 2;
                 videoPreview.LoadVideo(reader, file.VideoInfo.FPS, iStart);
+                UpdateOsdInfo();
                 SetTitleText();
 				return true;
 			}
@@ -253,6 +260,7 @@ namespace MeGUI
                 else
                     iStart = reader.FrameCount / 2;
                 videoPreview.LoadVideo(reader, file.VideoInfo.FPS, iStart);
+                UpdateOsdInfo();
                 SetTitleText();
                 return true;
             }
@@ -959,6 +967,11 @@ namespace MeGUI
             {
                 this.Close();
             }
+            else if (e.KeyCode == Keys.I && !e.Control && !e.Alt)
+            {
+                osdItem_Click(null, EventArgs.Empty);
+                e.Handled = true;
+            }
         }
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -1021,6 +1034,63 @@ namespace MeGUI
             else if (this.Location.X + this.Size.Width > iScreenWidth)
                 this.Location = new Point(iScreenWidth - this.Size.Width, this.Location.Y);
         }
+
+        #region OSD
+        private void osdItem_Click(object sender, EventArgs e)
+        {
+            bool show = !videoPreview.OsdVisible;
+            videoPreview.OsdVisible = show;
+            osdItem.Checked = show;
+            if (MainForm.Instance != null && MainForm.Instance.Settings != null)
+                MainForm.Instance.Settings.PlayerShowOsd = show;
+        }
+
+        private void UpdateOsdInfo()
+        {
+            videoPreview.OsdInfo = BuildOsdInfo();
+        }
+
+        /// <summary>
+        /// The static part of the OSD: what the AviSynth Info() filter shows about the clip
+        /// (the frame number and the time are added for each picture by the video control)
+        /// </summary>
+        private string BuildOsdInfo()
+        {
+            VideoInformation vi = file.VideoInfo;
+            StringBuilder sb = new StringBuilder();
+            AvsFile avs = file as AvsFile;
+            if (avs != null && avs.Clip != null)
+            {
+                AviSynthClip clip = avs.Clip;
+                AvsProbe.StreamInfo i = clip.OriginalStreamInfo;
+                sb.AppendLine("ColorSpace: " + i.ColorSpace + ", Bit Depth: " + i.BitDepth + (i.FullRange ? ", Full range" : ", Limited range"));
+                sb.AppendLine("Width: " + i.Width + " pixels, Height: " + i.Height + " pixels");
+                sb.AppendLine("Frames per second: " + (i.FpsDen > 0 ? ((double)i.FpsNum / i.FpsDen).ToString("0.0000", CultureInfo.InvariantCulture) : "?")
+                    + " (" + i.FpsNum + "/" + i.FpsDen + ")");
+                sb.AppendLine("Duration: " + Util.converFrameNumberToTimecode(i.NumFrames, vi.FPS) + " (" + i.NumFrames + " frames)");
+                sb.AppendLine("FieldBased (Separated) Video: " + (i.IsFieldBased ? "YES" : "NO"));
+                sb.AppendLine("Parity: " + (i.IsTff ? "Top Field First" : i.IsBff ? "Bottom Field First" : "Unknown"));
+                sb.AppendLine("Video Pitch: " + i.VideoPitch + " bytes");
+                if (i.NumAudioSamples > 0)
+                {
+                    double seconds = i.AudioSampleRate > 0 ? i.NumAudioSamples / (double)i.AudioSampleRate : 0;
+                    sb.AppendLine("Audio: " + i.AudioChannels + " channel(s), " + clip.SampleType + ", " + i.AudioSampleRate + " Hz, "
+                        + i.NumAudioSamples + " samples (" + TimeSpan.FromSeconds(seconds).ToString(@"hh\:mm\:ss\.fff") + ")");
+                }
+                else
+                    sb.AppendLine("Audio: none");
+                if (clip.ConvertedToRGB24)
+                    sb.AppendLine("Preview: converted to RGB24");
+            }
+            else
+            {
+                sb.AppendLine("Width: " + vi.Width + " pixels, Height: " + vi.Height + " pixels");
+                sb.AppendLine("Frames per second: " + vi.FPS.ToString("0.0000", CultureInfo.InvariantCulture));
+                sb.AppendLine("Duration: " + Util.converFrameNumberToTimecode((int)vi.FrameCount, vi.FPS) + " (" + vi.FrameCount + " frames)");
+            }
+            return sb.ToString().TrimEnd('\r', '\n');
+        }
+        #endregion
 
         #region theme
         private void OnThemeChanged(object sender, EventArgs e)

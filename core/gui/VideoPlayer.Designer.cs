@@ -81,6 +81,7 @@ namespace MeGUI
             this.compareSplitItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compareSideItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSeparator0 = new System.Windows.Forms.ToolStripSeparator();
+            this.osdItem = new System.Windows.Forms.ToolStripMenuItem();
             this.goToFrameButton = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.zoneStartButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -317,6 +318,7 @@ namespace MeGUI
             this.compareSplitItem,
             this.compareSideItem,
             this.menuSeparator0,
+            this.osdItem,
             this.goToFrameButton,
             this.menuSeparator1,
             this.zoneStartButton,
@@ -355,6 +357,14 @@ namespace MeGUI
             // menuSeparator0
             // 
             this.menuSeparator0.Name = "menuSeparator0";
+            // 
+            // osdItem
+            // 
+            this.osdItem.Name = "osdItem";
+            this.osdItem.ShortcutKeyDisplayString = "I";
+            this.osdItem.Text = "Show video information (OSD)";
+            this.osdItem.ToolTipText = "Colour space, size, frame rate, duration... of the AviSynth clip, like the Info() filter";
+            this.osdItem.Click += new System.EventHandler(this.osdItem_Click);
             // 
             // goToFrameButton
             // 
@@ -557,6 +567,7 @@ namespace MeGUI
         private ToolStripMenuItem compareSplitItem;
         private ToolStripMenuItem compareSideItem;
         private ToolStripSeparator menuSeparator0;
+        private ToolStripMenuItem osdItem;
         private ToolStripMenuItem goToFrameButton;
         private ToolStripSeparator menuSeparator1;
         private ToolStripMenuItem zoneStartButton;

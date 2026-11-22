@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using MeGUI.core.util;
 using Timer = System.Threading.Timer;
 
 namespace MeGUI.core.gui
@@ -279,6 +280,8 @@ namespace MeGUI.core.gui
                         }
                     }
 
+                    DrawOsd(finalBitmap, pos);
+
                     // Swap the image on the GUI thread. The previous bitmap is disposed there too,
                     // after the PictureBox no longer references it.
                     Bitmap newImage = finalBitmap;
@@ -375,6 +378,61 @@ namespace MeGUI.core.gui
                 videoPreview.ContextMenuStrip = value;
             }
         }
+
+        #region OSD (AviSynth clip information)
+        private string osdInfo;
+        private bool osdVisible;
+
+        /// <summary>
+        /// Static clip information (colour space, size, frame rate...) shown under the frame number and time.
+        /// </summary>
+        public string OsdInfo
+        {
+            get { return osdInfo; }
+            set { osdInfo = value; UpdateVideo(); }
+        }
+
+        /// <summary>Shows or hides the information in the top left corner of the picture</summary>
+        public bool OsdVisible
+        {
+            get { return osdVisible; }
+            set { osdVisible = value; UpdateVideo(); }
+        }
+
+        /// <summary>
+        /// Draws the OSD, similar to the AviSynth Info() filter, on the top left of the rendered picture
+        /// </summary>
+        private void DrawOsd(Bitmap bmp, int pos)
+        {
+            string info = osdInfo;
+            if (!osdVisible || string.IsNullOrEmpty(info))
+                return;
+            try
+            {
+                int count = FrameCount;
+                string text = "Frame: " + pos + " of " + count + "\n"
+                    + "Time: " + Util.converFrameNumberToTimecode(pos, framerate)
+                    + " of " + Util.converFrameNumberToTimecode(count, framerate) + "\n"
+                    + info;
+
+                float size = Math.Max(10f, Math.Min(18f, bmp.Height / 50f));
+                using (Graphics g = Graphics.FromImage(bmp))
+                using (Font font = new Font("Consolas", size, FontStyle.Regular, GraphicsUnit.Pixel))
+                {
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                    SizeF sz = g.MeasureString(text, font);
+                    const int margin = 8;
+                    using (Brush back = new SolidBrush(Color.FromArgb(150, 0, 0, 0)))
+                        g.FillRectangle(back, margin, margin, sz.Width + 12, sz.Height + 8);
+                    g.DrawString(text, font, Brushes.White, margin + 6, margin + 4);
+                }
+            }
+            catch (Exception)
+            {
+                // the OSD is only informative: never let it break the rendering
+            }
+        }
+        #endregion
 
         #region Compare (source vs filtered)
         private const int SideBySideGap = 4;

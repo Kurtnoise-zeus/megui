@@ -64,6 +64,7 @@ namespace MeGUI
                        appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString, muxInputPath, muxOutputPath,
                        qaacPath;
         private ThemeMode themeMode = ThemeMode.System;
+        private bool playerShowOsd = true;
         private bool autoForceFilm, autoOpenScript, bUseQAAC, bUseDGIndexNV, bUseDGIndexIM, bInput8Bit,
                      overwriteStats, keep2of3passOutput, autoUpdate, deleteIntermediateFiles, workerAutoStart,
                      deleteAbortedOutput, openProgressWindow, bEac3toAutoSelectStreams, bUseFDKAac, bVobSubberKeepAll,
@@ -663,6 +664,15 @@ namespace MeGUI
         {
             get { return alwaysOnTop; }
             set { alwaysOnTop = value; }
+        }
+
+        /// <summary>
+        /// gets / sets whether the video player shows the AviSynth clip information (OSD) on the picture
+        /// </summary>
+        public bool PlayerShowOsd
+        {
+            get { return playerShowOsd; }
+            set { playerShowOsd = value; }
         }
 
         /// <summary>

@@ -207,6 +207,12 @@ namespace MeGUI
         public int  top_field_first   => _info.IsTff ? 1 : 0;
         public int  num_frames        => _info.NumFrames;
 
+        /// <summary>Probe result of the clip as the script produces it (before the RGB24 conversion used for the preview)</summary>
+        public AvsProbe.StreamInfo OriginalStreamInfo => _originalInfo;
+
+        /// <summary>true if the preview clip was converted to RGB24 and therefore differs from the script output</summary>
+        public bool ConvertedToRGB24 => !ReferenceEquals(_info, _originalInfo);
+
         public AviSynthColorspace PixelType         => _originalColorspace;
         public AviSynthColorspace OriginalColorspace => _originalColorspace;
 
