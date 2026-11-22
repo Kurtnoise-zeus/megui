@@ -876,7 +876,9 @@
     <Compile Include="packages\tools\hdbdextractor\HDStreamsExJob.cs" />
     <Compile Include="packages\tools\pgsextractor\PgsExtractJob.cs" />
     <Compile Include="packages\tools\pgsextractor\PgsSubtitleExtractor.cs" />
-    <Compile Include="packages\tools\pgsextractor\PgsExtractorWindow.cs" />
+    <Compile Include="packages\tools\pgsextractor\PgsExtractorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="packages\tools\pgsextractor\bluray\PgsModels.cs" />
     <Compile Include="packages\tools\pgsextractor\bluray\MplsReader.cs" />
     <Compile Include="packages\tools\pgsextractor\bluray\TsDemuxer.cs" />
