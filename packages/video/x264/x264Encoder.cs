@@ -105,7 +105,7 @@ namespace MeGUI
                 if (UseWrapper())
                 {
                     // add executable
-                    sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path  + "\" -loglevel level+error -i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | \"" + MainForm.Instance.Settings.X264.Path + "\" ");
+                    sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path  + "\" -loglevel level+error " + FileUtil.GetFFmpegAviSynthInputOption(input) + "-i \"" + input + "\" -strict -1 -f yuv4mpegpipe - | \"" + MainForm.Instance.Settings.X264.Path + "\" ");
                 }
             }
 

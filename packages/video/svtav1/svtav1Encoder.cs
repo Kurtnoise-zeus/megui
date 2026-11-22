@@ -119,7 +119,7 @@ namespace MeGUI
                 if (!String.IsNullOrEmpty(xs.CustomEncoderOptions))
                     log.LogEvent("custom command line: " + xs.CustomEncoderOptions);
 
-                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner  -i \"" + input + "\" ");
+                sb.Append("/c \"\"" + MainForm.Instance.Settings.FFmpeg.Path + "\" -loglevel level+error -hide_banner " + FileUtil.GetFFmpegAviSynthInputOption(input) + "-i \"" + input + "\" ");
                 
                 // bit-depth
                 if (xs.SVT10Bits)

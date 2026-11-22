@@ -37,6 +37,18 @@ namespace MeGUI.core.util
 
     class FileUtil
     {
+        /// <summary>
+        /// ffmpeg option to put right before "-i" so that an AviSynth script is read by the avisynth demuxer.
+        /// The automatic format detection of recent ffmpeg builds (9.1) does not select it and fails with
+        /// "Invalid data found when processing input".
+        /// </summary>
+        /// <param name="strInput">the input file of ffmpeg</param>
+        /// <returns>"-f avisynth " for an .avs file (trailing space included), otherwise an empty string</returns>
+        public static string GetFFmpegAviSynthInputOption(string strInput)
+        {
+            return !String.IsNullOrEmpty(strInput) && strInput.EndsWith(".avs", StringComparison.OrdinalIgnoreCase) ? "-f avisynth " : string.Empty;
+        }
+
         public static DirectoryInfo CreateTempDirectory()
         {
             while (true)

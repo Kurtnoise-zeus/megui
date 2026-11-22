@@ -93,7 +93,7 @@ namespace MeGUI
             ///</summary>
             ///
             // Input
-            sb.Append("-hide_banner -i "  + "\"" + input + "\" ");
+            sb.Append("-hide_banner " + FileUtil.GetFFmpegAviSynthInputOption(input) + "-i " + "\"" + input + "\" ");
 
             // Only FFV1.3 supported
             sb.Append("-vcodec ffv1 -level 3 "); 

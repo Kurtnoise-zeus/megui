@@ -53,7 +53,7 @@ new JobProcessorFactory(new ProcessorFactory(init), "FFmpegEncoder");
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append("-y -i \"" + Job.Input + "\" -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 \"" + Job.Output + "\" ");
+                sb.Append("-y " + FileUtil.GetFFmpegAviSynthInputOption(Job.Input) + "-i \"" + Job.Input + "\" -c:v ffvhuff -threads 0 -sn -an -context 1 -vstrict -2 -pred 2 \"" + Job.Output + "\" ");
                 return sb.ToString();
             }
         }
