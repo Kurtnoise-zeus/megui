@@ -60,8 +60,8 @@ namespace MeGUI
             if (disposing)
             {
                 // dispose managed resources
-                mre.Dispose();
-                file.Dispose();
+                mre?.Dispose();
+                file?.Dispose();
             }
             // free native resources
         }

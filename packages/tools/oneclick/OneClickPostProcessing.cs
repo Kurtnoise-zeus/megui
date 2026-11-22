@@ -464,59 +464,66 @@ namespace MeGUI
             catch (Exception ex)
             {
                 log.LogValue("An error occurred creating the AVS file", ex, ImageType.Error);
-                iMediaFile.Dispose();
+                iMediaFile?.Dispose();
                 return "";
             }
-            reader = iMediaFile.GetVideoReader();
+            int mod, inputWidth, inputHeight, inputFPS_D, inputFPS_N, inputFrameCount;
+            try
+            {
+                reader = iMediaFile.GetVideoReader();
             
-            // abort if the index file is invalid
-            if (reader.FrameCount < 1)
-            {
-                _log.Error("There are " + reader.FrameCount + " frames in the index file. Aborting...");
-                return "";
-            }
-
-            if (AR == null)
-            {
-                // AR needs to be detected automatically now
-                _log.LogValue("Auto-detect aspect ratio", AR == null);
-                customDAR = iMediaFile.VideoInfo.DAR;
-                if (customDAR.AR <= 0)
+                // abort if the index file is invalid
+                if (reader.FrameCount < 1)
                 {
-                    customDAR = Dar.ITU16x9PAL;
-                    _log.Warn(string.Format("No aspect ratio found, defaulting to {0}.", customDAR));
+                    _log.Error("There are " + reader.FrameCount + " frames in the index file. Aborting...");
+                    return "";
                 }
-            }
-            else
-                customDAR = AR.Value;
-            _log.LogValue("Aspect ratio", customDAR);
 
-            // check x264 settings (target device, chapter file)
-            if (settings != null && settings is x264Settings)
+                if (AR == null)
+                {
+                    // AR needs to be detected automatically now
+                    _log.LogValue("Auto-detect aspect ratio", AR == null);
+                    customDAR = iMediaFile.VideoInfo.DAR;
+                    if (customDAR.AR <= 0)
+                    {
+                        customDAR = Dar.ITU16x9PAL;
+                        _log.Warn(string.Format("No aspect ratio found, defaulting to {0}.", customDAR));
+                    }
+                }
+                else
+                    customDAR = AR.Value;
+                _log.LogValue("Aspect ratio", customDAR);
+
+                // check x264 settings (target device, chapter file)
+                if (settings != null && settings is x264Settings)
+                {
+                    x264Settings xs = (x264Settings)settings;
+                    xTargetDevice = xs.TargetDevice;
+                    _log.LogValue("Target device", xTargetDevice.Name);
+                }
+
+                // get mod value for resizing
+                mod = Resolution.GetModValue(avsSettings.ModValue, avsSettings.Mod16Method, signalAR);
+
+                // crop input as it may be required (autoCrop && !keepInputResolution or Blu-Ray)
+                if (Autocrop.autocrop(out cropValues, reader, signalAR, avsSettings.Mod16Method, avsSettings.ModValue) == false)
+                {
+                    _log.Error("Autocrop failed. Aborting...");
+                    return "";
+                }
+
+                inputWidth = (int)iMediaFile.VideoInfo.Width;
+                inputHeight = (int)iMediaFile.VideoInfo.Height;
+                inputFPS_D = (int)iMediaFile.VideoInfo.FPS_D;
+                inputFPS_N = (int)iMediaFile.VideoInfo.FPS_N;
+                inputFrameCount = (int)iMediaFile.VideoInfo.FrameCount;
+            }
+            finally
             {
-                x264Settings xs = (x264Settings)settings;
-                xTargetDevice = xs.TargetDevice;
-                _log.LogValue("Target device", xTargetDevice.Name);
+                // always release the input (source filter, index file) held by the AviSynth environment (#71),
+                // including on the early "return" paths and when an exception is thrown above
+                iMediaFile.Dispose();
             }
-
-            // get mod value for resizing
-            int mod = Resolution.GetModValue(avsSettings.ModValue, avsSettings.Mod16Method, signalAR);
-
-            // crop input as it may be required (autoCrop && !keepInputResolution or Blu-Ray)
-            if (Autocrop.autocrop(out cropValues, reader, signalAR, avsSettings.Mod16Method, avsSettings.ModValue) == false)
-            {
-                _log.Error("Autocrop failed. Aborting...");
-                return "";
-            }
-
-            int inputWidth = (int)iMediaFile.VideoInfo.Width;
-            int inputHeight = (int)iMediaFile.VideoInfo.Height;
-            int inputFPS_D = (int)iMediaFile.VideoInfo.FPS_D;
-            int inputFPS_N = (int)iMediaFile.VideoInfo.FPS_N;
-            int inputFrameCount = (int)iMediaFile.VideoInfo.FrameCount;
-
-            // force destruction of AVS script
-            iMediaFile.Dispose();
 
             Dar? suggestedDar = null;
             if (desiredOutputWidth == 0)
