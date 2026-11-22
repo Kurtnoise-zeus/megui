@@ -40,7 +40,7 @@ namespace MeGUI
             if (disposing)
             {
                 ThemeManager.ThemeChanged -= OnThemeChanged;
-                DisposeCompare();
+                DisposeCompare(false);
             }
             if (disposing && (components != null))
             {

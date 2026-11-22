@@ -118,7 +118,16 @@ namespace MeGUI.core.gui
         #region Rendering
         public void UpdateVideo()
         {
-            renderEvent.Set();
+            //the player may already be disposed (window closing): nothing to render any more
+            if (IsDisposed)
+                return;
+            try
+            {
+                renderEvent.Set();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
 
         /// <summary>

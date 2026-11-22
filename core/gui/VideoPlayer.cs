@@ -1234,14 +1234,24 @@ namespace MeGUI
 
         private void DisposeCompare()
         {
-            videoPreview.CompareMode = CompareMode.Off;
-            videoPreview.SetCompareReader(null); // returns when the render thread no longer uses the reader
+            DisposeCompare(true);
+        }
+
+        /// <param name="updateUi">false when the window itself is being disposed: its controls must not be touched any more</param>
+        private void DisposeCompare(bool updateUi)
+        {
+            if (!videoPreview.IsDisposed)
+            {
+                videoPreview.CompareMode = CompareMode.Off;
+                videoPreview.SetCompareReader(null); // returns when the render thread no longer uses the reader
+            }
             lock (_locker)
             {
                 compareFile?.Dispose();
                 compareFile = null;
             }
-            UpdateCompareButtons();
+            if (updateUi && !IsDisposed)
+                UpdateCompareButtons();
         }
 
         private void compareButton_Click(object sender, EventArgs e)
