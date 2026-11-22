@@ -1,3 +1,7 @@
+Changelog version 6666 20261122
+
+- ffmpeg: force the avisynth demuxer for .avs inputs
+
 Changelog version 6666 20261121
 
 - Removed the portable AviSynth build (tools\avs package, AviSynth.dll/DevIL.dll copies and the "Always use the included AviSynth" option)
