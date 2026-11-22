@@ -399,6 +399,48 @@ namespace MeGUI.core.gui
             set { osdVisible = value; UpdateVideo(); }
         }
 
+        private static string osdFontName;
+
+        /// <summary>
+        /// Monospaced font of the OSD: Cascadia Mono (Windows 11), else Cascadia Code, Consolas or Courier New
+        /// </summary>
+        private static string GetOsdFontName()
+        {
+            if (osdFontName != null)
+                return osdFontName;
+
+            string chosen = "Courier New"; // present on every Windows version
+            try
+            {
+                using (System.Drawing.Text.InstalledFontCollection installed = new System.Drawing.Text.InstalledFontCollection())
+                {
+                    foreach (string candidate in new[] { "Cascadia Mono", "Cascadia Code", "Consolas" })
+                    {
+                        bool found = false;
+                        foreach (FontFamily family in installed.Families)
+                        {
+                            if (string.Equals(family.Name, candidate, StringComparison.OrdinalIgnoreCase))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found)
+                        {
+                            chosen = candidate;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // fonts cannot be enumerated: keep Courier New
+            }
+            osdFontName = chosen;
+            return chosen;
+        }
+
         /// <summary>
         /// Draws the OSD, similar to the AviSynth Info() filter, on the top left of the rendered picture
         /// </summary>
@@ -417,7 +459,7 @@ namespace MeGUI.core.gui
 
                 float size = Math.Max(10f, Math.Min(18f, bmp.Height / 50f));
                 using (Graphics g = Graphics.FromImage(bmp))
-                using (Font font = new Font("Consolas", size, FontStyle.Regular, GraphicsUnit.Pixel))
+                using (Font font = new Font(GetOsdFontName(), size, FontStyle.Regular, GraphicsUnit.Pixel))
                 {
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
                     SizeF sz = g.MeasureString(text, font);
