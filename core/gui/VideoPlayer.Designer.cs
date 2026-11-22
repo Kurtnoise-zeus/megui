@@ -154,7 +154,7 @@ namespace MeGUI
             this.playButton.Location = new System.Drawing.Point(300, 44);
             this.playButton.Name = "playButton";
             this.playButton.Primary = true;
-            this.playButton.Size = new System.Drawing.Size(52, 52);
+            this.playButton.Size = new System.Drawing.Size(40, 40);
             this.playButton.TabIndex = 4;
             this.defaultToolTip.SetToolTip(this.playButton, "Play / stop");
             this.playButton.Click += new System.EventHandler(this.playButton_Click);
@@ -164,7 +164,7 @@ namespace MeGUI
             this.nextFrameButton.Glyph = MeGUI.core.gui.PlayerGlyph.NextFrame;
             this.nextFrameButton.Location = new System.Drawing.Point(356, 48);
             this.nextFrameButton.Name = "nextFrameButton";
-            this.nextFrameButton.Size = new System.Drawing.Size(44, 44);
+            this.nextFrameButton.Size = new System.Drawing.Size(32, 32);
             this.nextFrameButton.TabIndex = 6;
             this.defaultToolTip.SetToolTip(this.nextFrameButton, "Advance by 1 frame");
             this.nextFrameButton.Click += new System.EventHandler(this.nextFrameButton_Click);
@@ -175,7 +175,7 @@ namespace MeGUI
             this.previousFrameButton.Glyph = MeGUI.core.gui.PlayerGlyph.PreviousFrame;
             this.previousFrameButton.Location = new System.Drawing.Point(250, 48);
             this.previousFrameButton.Name = "previousFrameButton";
-            this.previousFrameButton.Size = new System.Drawing.Size(44, 44);
+            this.previousFrameButton.Size = new System.Drawing.Size(32, 32);
             this.previousFrameButton.TabIndex = 2;
             this.defaultToolTip.SetToolTip(this.previousFrameButton, "Go back 1 frame");
             this.previousFrameButton.Click += new System.EventHandler(this.previousFrameButton_Click);
@@ -186,7 +186,7 @@ namespace MeGUI
             this.ffButton.Glyph = MeGUI.core.gui.PlayerGlyph.Forward25;
             this.ffButton.Location = new System.Drawing.Point(406, 48);
             this.ffButton.Name = "ffButton";
-            this.ffButton.Size = new System.Drawing.Size(44, 44);
+            this.ffButton.Size = new System.Drawing.Size(32, 32);
             this.ffButton.TabIndex = 5;
             this.defaultToolTip.SetToolTip(this.ffButton, "Advance 25 frames");
             this.ffButton.Click += new System.EventHandler(this.ffButton_Click);
@@ -196,7 +196,7 @@ namespace MeGUI
             this.fwdButton.Glyph = MeGUI.core.gui.PlayerGlyph.Back25;
             this.fwdButton.Location = new System.Drawing.Point(200, 48);
             this.fwdButton.Name = "fwdButton";
-            this.fwdButton.Size = new System.Drawing.Size(44, 44);
+            this.fwdButton.Size = new System.Drawing.Size(32, 32);
             this.fwdButton.TabIndex = 3;
             this.defaultToolTip.SetToolTip(this.fwdButton, "Go back 25 frames");
             this.fwdButton.Click += new System.EventHandler(this.fwdButton_Click);
@@ -206,7 +206,7 @@ namespace MeGUI
             this.compareButton.Glyph = MeGUI.core.gui.PlayerGlyph.Compare;
             this.compareButton.Location = new System.Drawing.Point(480, 48);
             this.compareButton.Name = "compareButton";
-            this.compareButton.Size = new System.Drawing.Size(104, 44);
+            this.compareButton.Size = new System.Drawing.Size(100, 32);
             this.compareButton.TabIndex = 7;
             this.compareButton.Text = "Compare";
             this.compareButton.Visible = false;
@@ -217,7 +217,7 @@ namespace MeGUI
             // 
             this.compareModeButton.Location = new System.Drawing.Point(590, 48);
             this.compareModeButton.Name = "compareModeButton";
-            this.compareModeButton.Size = new System.Drawing.Size(104, 44);
+            this.compareModeButton.Size = new System.Drawing.Size(100, 32);
             this.compareModeButton.TabIndex = 8;
             this.compareModeButton.Text = "Split";
             this.compareModeButton.Visible = false;
@@ -229,7 +229,7 @@ namespace MeGUI
             this.moreButton.Glyph = MeGUI.core.gui.PlayerGlyph.More;
             this.moreButton.Location = new System.Drawing.Point(700, 48);
             this.moreButton.Name = "moreButton";
-            this.moreButton.Size = new System.Drawing.Size(44, 44);
+            this.moreButton.Size = new System.Drawing.Size(32, 32);
             this.moreButton.TabIndex = 9;
             this.defaultToolTip.SetToolTip(this.moreButton, "Zone, chapters, zoom, reload, theme...");
             this.moreButton.Click += new System.EventHandler(this.moreButton_Click);
@@ -253,7 +253,7 @@ namespace MeGUI
             this.buttonPanel.Location = new System.Drawing.Point(0, 225);
             this.buttonPanel.Margin = new System.Windows.Forms.Padding(0);
             this.buttonPanel.Name = "buttonPanel";
-            this.buttonPanel.Size = new System.Drawing.Size(760, 104);
+            this.buttonPanel.Size = new System.Drawing.Size(760, 84);
             this.buttonPanel.TabIndex = 8;
             this.buttonPanel.Resize += new System.EventHandler(this.buttonPanel_Resize);
             // 
@@ -261,7 +261,7 @@ namespace MeGUI
             // 
             this.lblCurrentTime.Location = new System.Drawing.Point(12, 6);
             this.lblCurrentTime.Name = "lblCurrentTime";
-            this.lblCurrentTime.Size = new System.Drawing.Size(84, 28);
+            this.lblCurrentTime.Size = new System.Drawing.Size(84, 24);
             this.lblCurrentTime.TabIndex = 20;
             this.lblCurrentTime.Text = "00:00:00.000";
             this.lblCurrentTime.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -271,7 +271,7 @@ namespace MeGUI
             this.positionSlider.Location = new System.Drawing.Point(100, 6);
             this.positionSlider.Margin = new System.Windows.Forms.Padding(0);
             this.positionSlider.Name = "positionSlider";
-            this.positionSlider.Size = new System.Drawing.Size(560, 28);
+            this.positionSlider.Size = new System.Drawing.Size(560, 24);
             this.positionSlider.TabIndex = 1;
             this.positionSlider.Scroll += new System.EventHandler(this.positionSlider_Scroll);
             // 
@@ -279,7 +279,7 @@ namespace MeGUI
             // 
             this.lblTotalTime.Location = new System.Drawing.Point(664, 6);
             this.lblTotalTime.Name = "lblTotalTime";
-            this.lblTotalTime.Size = new System.Drawing.Size(84, 28);
+            this.lblTotalTime.Size = new System.Drawing.Size(84, 24);
             this.lblTotalTime.TabIndex = 21;
             this.lblTotalTime.Text = "00:00:00.000";
             this.lblTotalTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -496,7 +496,7 @@ namespace MeGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(760, 329);
+            this.ClientSize = new System.Drawing.Size(760, 309);
             this.Controls.Add(this.videoPanel);
             this.Controls.Add(this.buttonPanel);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

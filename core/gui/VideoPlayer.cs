@@ -491,7 +491,7 @@ namespace MeGUI
             buttonPanel.Location = new Point(videoPanel.Left, videoPanel.Bottom);
 
             // Set Form Size to fit both panels
-            int totalHeight = videoPanel.Height + buttonPanel.Height
+            int totalHeight = videoPanel.Height + buttonPanel.Height + SystemInformation.CaptionHeight
                 + 2 * SystemInformation.FixedFrameBorderSize.Height + MainForm.Instance.Settings.DPIRescale(12);
             int totalWidth = videoPanelWidth + 2 * SystemInformation.FixedFrameBorderSize.Width + MainForm.Instance.Settings.DPIRescale(12);
             if (totalWidth > iScreenWidth) totalWidth = iScreenWidth;
