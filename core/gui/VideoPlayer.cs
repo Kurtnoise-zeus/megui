@@ -1081,7 +1081,7 @@ namespace MeGUI
             int gap = Math.Max(2, pad / 3);
             int center = fwdButton.Width + previousFrameButton.Width + playButton.Width + nextFrameButton.Width + ffButton.Width + 4 * gap;
             int left = lblFrame.Width;
-            int right = moreButton.Width;
+            int right = 0;
             if (compareButton.Visible)
             {
                 right += gap + compareButton.Width;
@@ -1122,16 +1122,17 @@ namespace MeGUI
 
             lblFrame.Location = new Point(pad, row2Top + (row2Height - lblFrame.Height) / 2);
 
-            int rx = w - pad - moreButton.Width;
-            moreButton.Location = new Point(rx, row2Top + (row2Height - moreButton.Height) / 2);
+            int rx = w - pad;
             if (compareModeButton.Visible)
             {
-                rx -= gap + compareModeButton.Width;
+                rx -= compareModeButton.Width;
                 compareModeButton.Location = new Point(rx, row2Top + (row2Height - compareModeButton.Height) / 2);
             }
             if (compareButton.Visible)
             {
                 rx -= gap + compareButton.Width;
+                if (!compareModeButton.Visible)
+                    rx += gap;
                 compareButton.Location = new Point(rx, row2Top + (row2Height - compareButton.Height) / 2);
             }
 
@@ -1164,9 +1165,32 @@ namespace MeGUI
             LayoutTransport();
         }
 
-        private void moreButton_Click(object sender, EventArgs e)
+        private void moreMenu_Opening(object sender, CancelEventArgs e)
         {
-            moreMenu.Show(moreButton, new Point(moreButton.Width, 0), ToolStripDropDownDirection.AboveLeft);
+            bool available = !string.IsNullOrEmpty(compareScript);
+            CompareMode mode = videoPreview.CompareMode;
+            compareSplitItem.Enabled = available;
+            compareSideItem.Enabled = available;
+            compareSplitItem.Checked = mode == CompareMode.Split;
+            compareSideItem.Checked = mode == CompareMode.SideBySide;
+            string hint = available ? null : "Available once a filtered preview is shown (click Preview in the AVS Script Creator)";
+            compareSplitItem.ToolTipText = hint ?? "Source (input file) on the left of a draggable divider, filtered video on the right";
+            compareSideItem.ToolTipText = hint ?? "Source (input file) and filtered video next to each other";
+        }
+
+        private void compareItem_Click(object sender, EventArgs e)
+        {
+            CompareMode chosen = sender == compareSideItem ? CompareMode.SideBySide : CompareMode.Split;
+            if (videoPreview.CompareMode == chosen)
+            {
+                videoPreview.CompareMode = CompareMode.Off; // clicking the checked mode switches the comparison off
+            }
+            else if (OpenCompareSource())
+            {
+                lastCompareMode = chosen;
+                videoPreview.CompareMode = chosen;
+            }
+            UpdateCompareButtons();
         }
         #endregion
 

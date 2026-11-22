@@ -70,7 +70,6 @@ namespace MeGUI
             this.fwdButton = new MeGUI.core.gui.PlayerButton();
             this.compareButton = new MeGUI.core.gui.PlayerButton();
             this.compareModeButton = new MeGUI.core.gui.PlayerButton();
-            this.moreButton = new MeGUI.core.gui.PlayerButton();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.lblCurrentTime = new System.Windows.Forms.Label();
             this.lblTotalTime = new System.Windows.Forms.Label();
@@ -79,6 +78,9 @@ namespace MeGUI
             this.arChooser = new MeGUI.core.gui.ARChooser();
             this.showPAR = new System.Windows.Forms.CheckBox();
             this.moreMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.compareSplitItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.compareSideItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSeparator0 = new System.Windows.Forms.ToolStripSeparator();
             this.goToFrameButton = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.zoneStartButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -224,16 +226,6 @@ namespace MeGUI
             this.defaultToolTip.SetToolTip(this.compareModeButton, "Switch between split view and side by side");
             this.compareModeButton.Click += new System.EventHandler(this.compareModeButton_Click);
             // 
-            // moreButton
-            // 
-            this.moreButton.Glyph = MeGUI.core.gui.PlayerGlyph.More;
-            this.moreButton.Location = new System.Drawing.Point(700, 48);
-            this.moreButton.Name = "moreButton";
-            this.moreButton.Size = new System.Drawing.Size(32, 32);
-            this.moreButton.TabIndex = 9;
-            this.defaultToolTip.SetToolTip(this.moreButton, "Zone, chapters, zoom, reload, theme...");
-            this.moreButton.Click += new System.EventHandler(this.moreButton_Click);
-            // 
             // buttonPanel
             // 
             this.buttonPanel.Controls.Add(this.lblCurrentTime);
@@ -249,9 +241,9 @@ namespace MeGUI
             this.buttonPanel.Controls.Add(this.ffButton);
             this.buttonPanel.Controls.Add(this.compareButton);
             this.buttonPanel.Controls.Add(this.compareModeButton);
-            this.buttonPanel.Controls.Add(this.moreButton);
             this.buttonPanel.Location = new System.Drawing.Point(0, 225);
             this.buttonPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonPanel.ContextMenuStrip = this.moreMenu;
             this.buttonPanel.Name = "buttonPanel";
             this.buttonPanel.Size = new System.Drawing.Size(760, 84);
             this.buttonPanel.TabIndex = 8;
@@ -322,6 +314,9 @@ namespace MeGUI
             // moreMenu
             // 
             this.moreMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.compareSplitItem,
+            this.compareSideItem,
+            this.menuSeparator0,
             this.goToFrameButton,
             this.menuSeparator1,
             this.zoneStartButton,
@@ -341,6 +336,25 @@ namespace MeGUI
             this.themeMenuItem});
             this.moreMenu.Name = "moreMenu";
             this.moreMenu.Size = new System.Drawing.Size(200, 330);
+            this.moreMenu.Opening += new System.ComponentModel.CancelEventHandler(this.moreMenu_Opening);
+            // 
+            // compareSplitItem
+            // 
+            this.compareSplitItem.Name = "compareSplitItem";
+            this.compareSplitItem.Text = "Compare: Split view";
+            this.compareSplitItem.ToolTipText = "Source (input file) on the left of a draggable divider, filtered video on the right";
+            this.compareSplitItem.Click += new System.EventHandler(this.compareItem_Click);
+            // 
+            // compareSideItem
+            // 
+            this.compareSideItem.Name = "compareSideItem";
+            this.compareSideItem.Text = "Compare: Side by side";
+            this.compareSideItem.ToolTipText = "Source (input file) and filtered video next to each other";
+            this.compareSideItem.Click += new System.EventHandler(this.compareItem_Click);
+            // 
+            // menuSeparator0
+            // 
+            this.menuSeparator0.Name = "menuSeparator0";
             // 
             // goToFrameButton
             // 
@@ -473,6 +487,7 @@ namespace MeGUI
             this.videoPanel.Controls.Add(this.videoPreview);
             this.videoPanel.Location = new System.Drawing.Point(0, 0);
             this.videoPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.videoPanel.ContextMenuStrip = this.moreMenu;
             this.videoPanel.Name = "videoPanel";
             this.videoPanel.Size = new System.Drawing.Size(399, 225);
             this.videoPanel.TabIndex = 11;
@@ -485,6 +500,7 @@ namespace MeGUI
             this.videoPreview.Framerate = 25D;
             this.videoPreview.Location = new System.Drawing.Point(1, 1);
             this.videoPreview.Margin = new System.Windows.Forms.Padding(0);
+            this.videoPreview.ContextMenuStrip = this.moreMenu;
             this.videoPreview.Name = "videoPreview";
             this.videoPreview.Position = 0;
             this.videoPreview.Size = new System.Drawing.Size(274, 164);
@@ -524,7 +540,6 @@ namespace MeGUI
         private MeGUI.core.gui.PlayerButton fwdButton;
         private MeGUI.core.gui.PlayerButton compareButton;
         private MeGUI.core.gui.PlayerButton compareModeButton;
-        private MeGUI.core.gui.PlayerButton moreButton;
         private System.Windows.Forms.Panel buttonPanel;
         private System.Windows.Forms.ContextMenu contextMenu1;
         private System.Windows.Forms.MenuItem mnuZoneStart;
@@ -539,6 +554,9 @@ namespace MeGUI
         private Label lblFrame;
         private MeGUI.core.gui.PlayerSeekBar positionSlider;
         private ContextMenuStrip moreMenu;
+        private ToolStripMenuItem compareSplitItem;
+        private ToolStripMenuItem compareSideItem;
+        private ToolStripSeparator menuSeparator0;
         private ToolStripMenuItem goToFrameButton;
         private ToolStripSeparator menuSeparator1;
         private ToolStripMenuItem zoneStartButton;

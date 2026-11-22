@@ -363,6 +363,19 @@ namespace MeGUI.core.gui
             }
         }
 
+        /// <summary>
+        /// The picture box covers the whole control: it must show the context menu too
+        /// </summary>
+        public override ContextMenuStrip ContextMenuStrip
+        {
+            get { return base.ContextMenuStrip; }
+            set
+            {
+                base.ContextMenuStrip = value;
+                videoPreview.ContextMenuStrip = value;
+            }
+        }
+
         #region Compare (source vs filtered)
         private const int SideBySideGap = 4;
 
