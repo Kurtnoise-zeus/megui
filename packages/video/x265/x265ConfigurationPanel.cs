@@ -1299,14 +1299,14 @@ namespace MeGUI.packages.video.x265
 
         private void x265VBVBufferSize_ValueChanged(object sender, EventArgs e)
         {
-            x265VBVBufferSize.ForeColor = System.Drawing.SystemColors.WindowText;
+            x265VBVBufferSize.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
 
             updateEvent(sender, e);
         }
 
         private void x265VBVMaxRate_ValueChanged(object sender, EventArgs e)
         {
-            x265VBVMaxRate.ForeColor = System.Drawing.SystemColors.WindowText;
+            x265VBVMaxRate.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
 
             updateEvent(sender, e);
         }

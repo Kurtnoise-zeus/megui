@@ -167,6 +167,10 @@ namespace MeGUI
             GetChangeLog();
             
             DeleteSourceDetectorLogFiles();
+
+            // colour theme (System / Dark / Light) for all the windows
+            ThemeManager.Install();
+            ThemeManager.ThemeWindow(this);
             
             // close splash screen
             startForm?.Close();
@@ -233,9 +237,9 @@ namespace MeGUI
 
                             txtChangeLog.Select(startIndex, line.Length);
                             if (bDark)
-                                txtChangeLog.SelectionColor = Color.Black;
+                                txtChangeLog.SelectionColor = ThemeManager.InputText;
                             else
-                                txtChangeLog.SelectionColor = Color.LightGray;
+                                txtChangeLog.SelectionColor = ThemeManager.IsDark ? ThemeManager.Palette.TextDim : Color.LightGray;
 
                             startIndex += line.Length + 1;
                         }
@@ -891,6 +895,7 @@ namespace MeGUI
             this.profileManager.LoadProfiles();
             this.mediaFileFactory = new MediaFileFactory(this);
             this.loadSettings();
+            ThemeManager.SetMode(this.settings.ThemeMode);
             MainForm.Instance.settings.DPIRescaleAll();
             this.dialogManager = new DialogManager(this);
         }
@@ -1350,6 +1355,7 @@ namespace MeGUI
                     MeGUISettings.StandbySettings oldStandbyValue = this.settings.StandbySetting;
                     
                     this.settings = sform.Settings;
+                    ThemeManager.SetMode(this.settings.ThemeMode);
                     this.saveSettings();
                     Jobs.ShowAfterEncodingStatus(settings);
 

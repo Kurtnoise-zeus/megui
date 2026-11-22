@@ -676,7 +676,7 @@ namespace MeGUI
         }
 
         /// <summary>
-        /// gets / sets the colour theme (system / dark / light) used by the video player
+        /// gets / sets the colour theme (system / dark / light) used by all the MeGUI windows
         /// </summary>
         public ThemeMode ThemeMode
         {

@@ -56,10 +56,10 @@ namespace MeGUI.core.gui
     }
 
     /// <summary>
-    /// Central place for the light / dark theme of MeGUI.
-    /// The video player uses it first; other windows can opt in with <see cref="Apply(Control)"/>.
+    /// Central place for the light / dark theme of MeGUI (the palette, the video player helpers and the
+    /// menus renderer). The application wide theming of all the windows is in ThemeEngine.cs.
     /// </summary>
-    public static class ThemeManager
+    public static partial class ThemeManager
     {
         private static readonly ThemePalette dark = new ThemePalette
         {
@@ -91,6 +91,7 @@ namespace MeGUI.core.gui
 
         private static ThemeMode mode = ThemeMode.System;
         private static bool systemEventsHooked;
+        private static bool? systemDark; // cached: IsDark is read very often (every idle, every paint)
 
         /// <summary>Raised (on the thread that changed the theme) when the effective colours change.</summary>
         public static event EventHandler ThemeChanged;
@@ -137,8 +138,13 @@ namespace MeGUI.core.gui
             {
                 SystemEvents.UserPreferenceChanged += delegate (object s, UserPreferenceChangedEventArgs e)
                 {
-                    if (mode == ThemeMode.System && (e.Category == UserPreferenceCategory.General || e.Category == UserPreferenceCategory.Color || e.Category == UserPreferenceCategory.VisualStyle))
-                        RaiseThemeChanged();
+                    if (e.Category == UserPreferenceCategory.General || e.Category == UserPreferenceCategory.Color || e.Category == UserPreferenceCategory.VisualStyle)
+                    {
+                        bool wasDark = IsDark;
+                        systemDark = null;
+                        if (mode == ThemeMode.System && wasDark != IsDark)
+                            RaiseThemeChanged();
+                    }
                 };
             }
             catch (Exception)
@@ -153,6 +159,13 @@ namespace MeGUI.core.gui
         }
 
         private static bool SystemUsesDarkMode()
+        {
+            if (systemDark == null)
+                systemDark = ReadSystemDarkMode();
+            return systemDark.Value;
+        }
+
+        private static bool ReadSystemDarkMode()
         {
             try
             {
@@ -279,11 +292,81 @@ namespace MeGUI.core.gui
         }
         #endregion
 
+        #region colours for code that sets colours itself
+        /// <summary>background of an input field (text box, numeric box): system colour in light mode</summary>
+        public static Color InputBack
+        {
+            get { return IsDark ? Palette.Surface : SystemColors.Window; }
+        }
+
+        /// <summary>text colour of an input field: system colour in light mode</summary>
+        public static Color InputText
+        {
+            get { return IsDark ? Palette.Text : SystemColors.WindowText; }
+        }
+
+        /// <summary>
+        /// Background of a list row. In light mode it returns lightColor; in dark mode the normal rows use the
+        /// surface colour and the highlighted / alternate ones a slightly tinted one.
+        /// </summary>
+        public static Color ListRowBack(Color lightColor, bool alternate)
+        {
+            if (!IsDark)
+                return lightColor;
+            ThemePalette p = Palette;
+            return alternate ? Blend(p.Surface, p.Accent, 0.18) : p.Surface;
+        }
+
+        private static Color Blend(Color a, Color b, double amount)
+        {
+            return Color.FromArgb(
+                (int)Math.Round(a.R + (b.R - a.R) * amount),
+                (int)Math.Round(a.G + (b.G - a.G) * amount),
+                (int)Math.Round(a.B + (b.B - a.B) * amount));
+        }
+        #endregion
+
         private sealed class ThemedToolStripRenderer : ToolStripProfessionalRenderer
         {
-            public ThemedToolStripRenderer(ProfessionalColorTable table) : base(table)
+            private readonly ThemePalette p;
+
+            public ThemedToolStripRenderer(ThemedColorTable table) : base(table)
             {
                 RoundedEdges = false;
+                p = table.Palette;
+            }
+
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                e.TextColor = e.Item.Enabled ? p.Text : p.TextDim;
+                base.OnRenderItemText(e);
+            }
+
+            protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+            {
+                e.ArrowColor = e.Item != null && e.Item.Enabled ? p.Text : p.TextDim;
+                base.OnRenderArrow(e);
+            }
+
+            protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e)
+            {
+                Rectangle r = e.ImageRectangle;
+                using (SolidBrush back = new SolidBrush(p.SurfaceHover))
+                using (Pen border = new Pen(p.Accent))
+                using (Pen tick = new Pen(p.Text, 2f))
+                {
+                    e.Graphics.FillRectangle(back, r);
+                    e.Graphics.DrawRectangle(border, r.X, r.Y, r.Width - 1, r.Height - 1);
+                    System.Drawing.Drawing2D.SmoothingMode old = e.Graphics.SmoothingMode;
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    e.Graphics.DrawLines(tick, new Point[]
+                    {
+                        new Point(r.Left + r.Width / 4, r.Top + r.Height / 2),
+                        new Point(r.Left + r.Width * 2 / 5, r.Top + r.Height * 2 / 3),
+                        new Point(r.Left + r.Width * 3 / 4, r.Top + r.Height / 3)
+                    });
+                    e.Graphics.SmoothingMode = old;
+                }
             }
         }
 
@@ -291,6 +374,38 @@ namespace MeGUI.core.gui
         {
             private readonly ThemePalette p;
             public ThemedColorTable(ThemePalette palette) { p = palette; UseSystemColors = false; }
+            public ThemePalette Palette { get { return p; } }
+            public override Color MenuStripGradientBegin { get { return p.Window; } }
+            public override Color MenuStripGradientEnd { get { return p.Window; } }
+            public override Color ToolStripGradientBegin { get { return p.Window; } }
+            public override Color ToolStripGradientMiddle { get { return p.Window; } }
+            public override Color ToolStripGradientEnd { get { return p.Window; } }
+            public override Color StatusStripGradientBegin { get { return p.Window; } }
+            public override Color StatusStripGradientEnd { get { return p.Window; } }
+            public override Color ToolStripBorder { get { return p.Border; } }
+            public override Color ToolStripContentPanelGradientBegin { get { return p.Window; } }
+            public override Color ToolStripContentPanelGradientEnd { get { return p.Window; } }
+            public override Color ToolStripPanelGradientBegin { get { return p.Window; } }
+            public override Color ToolStripPanelGradientEnd { get { return p.Window; } }
+            public override Color ButtonSelectedGradientBegin { get { return p.SurfaceHover; } }
+            public override Color ButtonSelectedGradientMiddle { get { return p.SurfaceHover; } }
+            public override Color ButtonSelectedGradientEnd { get { return p.SurfaceHover; } }
+            public override Color ButtonSelectedHighlight { get { return p.SurfaceHover; } }
+            public override Color ButtonSelectedBorder { get { return p.Accent; } }
+            public override Color ButtonPressedGradientBegin { get { return p.SurfaceHover; } }
+            public override Color ButtonPressedGradientMiddle { get { return p.SurfaceHover; } }
+            public override Color ButtonPressedGradientEnd { get { return p.SurfaceHover; } }
+            public override Color ButtonPressedHighlight { get { return p.SurfaceHover; } }
+            public override Color ButtonPressedBorder { get { return p.Accent; } }
+            public override Color ButtonCheckedGradientBegin { get { return p.SurfaceHover; } }
+            public override Color ButtonCheckedGradientMiddle { get { return p.SurfaceHover; } }
+            public override Color ButtonCheckedGradientEnd { get { return p.SurfaceHover; } }
+            public override Color ButtonCheckedHighlight { get { return p.SurfaceHover; } }
+            public override Color OverflowButtonGradientBegin { get { return p.Window; } }
+            public override Color OverflowButtonGradientMiddle { get { return p.Window; } }
+            public override Color OverflowButtonGradientEnd { get { return p.Window; } }
+            public override Color GripDark { get { return p.Border; } }
+            public override Color GripLight { get { return p.Surface; } }
             public override Color ToolStripDropDownBackground { get { return p.Surface; } }
             public override Color ImageMarginGradientBegin { get { return p.Surface; } }
             public override Color ImageMarginGradientMiddle { get { return p.Surface; } }

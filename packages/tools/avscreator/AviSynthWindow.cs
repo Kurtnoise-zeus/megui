@@ -1001,7 +1001,7 @@ namespace MeGUI
         {
             if (file == null)
             {
-                lblAspectError.BackColor = System.Drawing.SystemColors.Window;
+                lblAspectError.BackColor = MeGUI.core.gui.ThemeManager.InputBack;
                 lblAspectError.Text = "0.00000%";
                 return;
             }
@@ -1018,7 +1018,7 @@ namespace MeGUI
             decimal aspectError = Resolution.GetAspectRatioError((int)file.VideoInfo.Width, (int)file.VideoInfo.Height, outputWidth, outputHeight, Cropping, arChooser.Value, signalAR.Checked, suggestedDar);
             lblAspectError.Text = String.Format("{0:0.00000%}", aspectError);
             if (!signalAR.Checked || Math.Floor(Math.Abs(aspectError) * 100000000) <= this.GetProfileSettings().AcceptableAspectError * 1000000)
-                lblAspectError.ForeColor = System.Drawing.SystemColors.WindowText;
+                lblAspectError.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
             else
                 lblAspectError.ForeColor = System.Drawing.Color.Red;
         }
@@ -1033,16 +1033,16 @@ namespace MeGUI
                 if (bMarkRed)
                     oControl.ForeColor = System.Drawing.Color.Red;
                 else
-                    oControl.ForeColor = System.Drawing.SystemColors.WindowText;
-                oControl.BackColor = System.Drawing.SystemColors.Window;
+                    oControl.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
+                oControl.BackColor = MeGUI.core.gui.ThemeManager.InputBack;
             }
             else
             {
                 if (bMarkRed)
                     oControl.BackColor = System.Drawing.Color.FromArgb(255, 255, 180, 180);
                 else
-                    oControl.BackColor = System.Drawing.SystemColors.Window;
-                oControl.ForeColor = System.Drawing.SystemColors.WindowText;
+                    oControl.BackColor = MeGUI.core.gui.ThemeManager.InputBack;
+                oControl.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
             }
         }
 

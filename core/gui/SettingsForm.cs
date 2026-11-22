@@ -43,6 +43,8 @@ namespace MeGUI
 		public SettingsForm()
 		{
 			InitializeComponent();
+            InitThemeSelector();
+            MeGUI.core.gui.ThemeManager.ThemeWindow(this); // no flash of light colors when the dark theme is on
             List<string> keys = new List<string>(LanguageSelectionContainer.Languages.Keys);
             defaultLanguage2.DataSource = defaultLanguage1.DataSource = keys;
             defaultLanguage2.BindingContext = new BindingContext();
@@ -69,6 +71,36 @@ namespace MeGUI
 
                 cbStandbySettings.DataSource = EnumProxy.CreateArray(new object[] { MeGUISettings.StandbySettings.SystemDefault, MeGUISettings.StandbySettings.DisableSystemStandby, MeGUISettings.StandbySettings.DisableMonitorStandby });
             }
+        }
+
+        private GroupBox gbAppearance;
+        private ComboBox cbTheme;
+
+        /// <summary>
+        /// Adds the colour theme selector (System / Dark / Light) to the Main tab
+        /// </summary>
+        private void InitThemeSelector()
+        {
+            gbAppearance = new GroupBox();
+            gbAppearance.Text = " Appearance ";
+            gbAppearance.Location = new System.Drawing.Point(3, 372);
+            gbAppearance.Size = new System.Drawing.Size(579, 56);
+
+            Label lblTheme = new Label();
+            lblTheme.AutoSize = true;
+            lblTheme.Text = "Color theme (all windows):";
+            lblTheme.Location = new System.Drawing.Point(12, 25);
+
+            cbTheme = new ComboBox();
+            cbTheme.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbTheme.Items.AddRange(new object[] { "System (follow Windows)", "Dark", "Light" });
+            cbTheme.SelectedIndex = 0;
+            cbTheme.Location = new System.Drawing.Point(180, 21);
+            cbTheme.Size = new System.Drawing.Size(200, 21);
+
+            gbAppearance.Controls.Add(lblTheme);
+            gbAppearance.Controls.Add(cbTheme);
+            tabPage1.Controls.Add(gbAppearance);
         }
 
         /// <summary>
@@ -376,6 +408,7 @@ namespace MeGUI
                     settings.AfterEncodingCommand = command.Text;
                 }
                 settings.AutoOpenScript = openScript.Checked;
+                settings.ThemeMode = (MeGUI.core.gui.ThemeMode)Math.Max(0, cbTheme.SelectedIndex);
 				settings.DeleteIntermediateFiles = deleteIntermediateFiles.Checked;
 				settings.DeleteAbortedOutput = deleteAbortedOutput.Checked;
 				settings.OpenProgressWindow = openProgressWindow.Checked;
@@ -466,6 +499,7 @@ namespace MeGUI
                 rbCloseMeGUI.Checked = settings.AfterEncoding == AfterEncoding.CloseMeGUI;
                 command.Text = settings.AfterEncodingCommand;
                 openScript.Checked = settings.AutoOpenScript;
+                cbTheme.SelectedIndex = (int)settings.ThemeMode;
 				deleteIntermediateFiles.Checked = settings.DeleteIntermediateFiles;
 				deleteAbortedOutput.Checked = settings.DeleteAbortedOutput;
 				openProgressWindow.Checked = settings.OpenProgressWindow;

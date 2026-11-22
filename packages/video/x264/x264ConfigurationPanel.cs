@@ -2046,7 +2046,7 @@ namespace MeGUI.packages.video.x264
 
         private void x264VBVBufferSize_ValueChanged(object sender, EventArgs e)
         {
-            x264VBVBufferSize.ForeColor = System.Drawing.SystemColors.WindowText;
+            x264VBVBufferSize.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
             AVCLevels.Levels avcLevel = getAVCLevel();
             if (avcLevel != AVCLevels.Levels.L_UNRESTRICTED && avcProfile.SelectedIndex >= 0)
             {
@@ -2059,7 +2059,7 @@ namespace MeGUI.packages.video.x264
 
         private void x264VBVMaxRate_ValueChanged(object sender, EventArgs e)
         {
-            x264VBVMaxRate.ForeColor = System.Drawing.SystemColors.WindowText;
+            x264VBVMaxRate.ForeColor = MeGUI.core.gui.ThemeManager.InputText;
             AVCLevels.Levels avcLevel = getAVCLevel();
             if (avcLevel != AVCLevels.Levels.L_UNRESTRICTED && avcProfile.SelectedIndex >= 0)
             {

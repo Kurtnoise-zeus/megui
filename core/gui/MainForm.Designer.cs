@@ -550,7 +550,6 @@ namespace MeGUI
             this.toolStripSeparator1,
             this.exitMeGUIToolStripMenuItem});
             this.trayMenu.Name = "trayMenu";
-            this.trayMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.trayMenu.Size = new System.Drawing.Size(143, 54);
             // 
             // openMeGUIToolStripMenuItem
