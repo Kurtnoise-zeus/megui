@@ -21,6 +21,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows.Forms;
 
@@ -38,11 +40,96 @@ namespace MeGUI.core.gui
 
             _oLog = new LogItem("Log", ImageType.NoImage);
 
+            BuildImages();
+            ThemeManager.ThemeChanged += OnThemeChanged;
+            Disposed += delegate { ThemeManager.ThemeChanged -= OnThemeChanged; };
+        }
+
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            // may be raised from another thread (system colour change)
+            Util.ThreadSafeRun(treeView, delegate { BuildImages(); });
+        }
+
+        /// <summary>
+        /// Builds the Error / Warning / Information icons of the log (same order as <see cref="ImageType"/>).
+        /// 32 bit colour, sized for the DPI of the screen. Dark theme: flat icons drawn with the palette
+        /// (the system icons are heavy and blurry when they are scaled down on a dark background).
+        /// </summary>
+        private void BuildImages()
+        {
+            int size = Math.Max(16, (int)Math.Round(16 * DeviceDpi / 96.0));
             ImageList i = new ImageList();
-            i.Images.Add(System.Drawing.SystemIcons.Error);
-            i.Images.Add(System.Drawing.SystemIcons.Warning);
-            i.Images.Add(System.Drawing.SystemIcons.Information);
+            i.ColorDepth = ColorDepth.Depth32Bit;
+            i.ImageSize = new Size(size, size);
+            if (ThemeManager.IsDark)
+            {
+                i.Images.Add(DrawIcon(ImageType.Error, size));
+                i.Images.Add(DrawIcon(ImageType.Warning, size));
+                i.Images.Add(DrawIcon(ImageType.Information, size));
+            }
+            else
+            {
+                i.Images.Add(SystemIcons.Error);
+                i.Images.Add(SystemIcons.Warning);
+                i.Images.Add(SystemIcons.Information);
+            }
+            ImageList old = treeView.ImageList;
             treeView.ImageList = i;
+            if (old != null)
+                old.Dispose();
+        }
+
+        private static Bitmap DrawIcon(ImageType type, int s)
+        {
+            Bitmap bmp = new Bitmap(s, s, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                float f = s / 16f; // everything below is designed on a 16 x 16 grid
+                RectangleF body = new RectangleF(1 * f, 1 * f, 14 * f, 14 * f);
+
+                switch (type)
+                {
+                    case ImageType.Information:
+                        using (SolidBrush fill = new SolidBrush(Color.FromArgb(0x4C, 0xA8, 0xF0)))
+                        using (SolidBrush glyph = new SolidBrush(Color.White))
+                        {
+                            g.FillEllipse(fill, body);
+                            g.FillEllipse(glyph, 6.9f * f, 3.4f * f, 2.2f * f, 2.2f * f);          // dot
+                            g.FillRectangle(glyph, 7.0f * f, 6.8f * f, 2.0f * f, 5.6f * f);        // stem
+                        }
+                        break;
+
+                    case ImageType.Warning:
+                        using (SolidBrush fill = new SolidBrush(Color.FromArgb(0xFF, 0xB9, 0x00)))
+                        using (Pen join = new Pen(Color.FromArgb(0xFF, 0xB9, 0x00), 1.6f * f))
+                        using (SolidBrush glyph = new SolidBrush(Color.FromArgb(0x2B, 0x20, 0x00)))
+                        {
+                            join.LineJoin = LineJoin.Round;
+                            PointF[] tri = new PointF[] { new PointF(8f * f, 2.2f * f), new PointF(14.2f * f, 13.2f * f), new PointF(1.8f * f, 13.2f * f) };
+                            g.FillPolygon(fill, tri);
+                            g.DrawPolygon(join, tri);                                              // rounded corners
+                            g.FillRectangle(glyph, 7.1f * f, 6.0f * f, 1.8f * f, 4.0f * f);        // stem
+                            g.FillEllipse(glyph, 7.0f * f, 10.6f * f, 2.0f * f, 2.0f * f);         // dot
+                        }
+                        break;
+
+                    case ImageType.Error:
+                        using (SolidBrush fill = new SolidBrush(Color.FromArgb(0xE8, 0x4A, 0x4A)))
+                        using (Pen cross = new Pen(Color.White, 1.8f * f))
+                        {
+                            cross.StartCap = LineCap.Round;
+                            cross.EndCap = LineCap.Round;
+                            g.FillEllipse(fill, body);
+                            g.DrawLine(cross, 5.4f * f, 5.4f * f, 10.6f * f, 10.6f * f);
+                            g.DrawLine(cross, 10.6f * f, 5.4f * f, 5.4f * f, 10.6f * f);
+                        }
+                        break;
+                }
+            }
+            return bmp;
         }
 
         public LogItem Log
