@@ -49,7 +49,7 @@ namespace MeGUI.core.gui
             public readonly List<Action> Undo = new List<Action>();
             public bool Applied;
             public bool HooksSet;
-            public TabPainter Painter;
+            public OverlayPainter Painter;
         }
 
         private static readonly ConditionalWeakTable<Control, Memo> memos = new ConditionalWeakTable<Control, Memo>();
@@ -295,6 +295,8 @@ namespace MeGUI.core.gui
                     SetColor(c, "BackColor", p.Surface, undo);
                 if (!HasCustomColor(c, "ForeColor"))
                     SetColor(c, "ForeColor", p.Text, undo);
+                // the sunken 3D border is drawn white: use the flat one
+                SetFlatBorder(c, undo);
             }
             else
             {
@@ -313,6 +315,16 @@ namespace MeGUI.core.gui
                 if (gb != null && gb.FlatStyle == FlatStyle.System)
                     SetFlatStyle(gb, FlatStyle.Standard, undo);
             }
+
+            GroupBox group = c as GroupBox;
+            if (group != null && m.Painter == null)
+            {
+                m.Painter = new GroupPainter(group);
+                if (undo != null)
+                    undo.Add(delegate { DetachPainter(group); });
+            }
+            if (form != null)
+                ApplyMenu(form, true);
 
             if (link != null)
             {
@@ -343,19 +355,32 @@ namespace MeGUI.core.gui
             ApplyNativeTheme(c, false);
             Form f = c as Form;
             if (f != null)
+            {
                 ApplyTitleBar(f);
+                ApplyMenu(f, false);
+            }
             c.Invalidate();
         }
 
-        private static void DetachPainter(TabControl tabs)
+        private static void DetachPainter(Control c)
         {
             Memo m;
-            if (memos.TryGetValue(tabs, out m) && m.Painter != null)
+            if (memos.TryGetValue(c, out m) && m.Painter != null)
             {
                 m.Painter.Detach();
                 m.Painter = null;
             }
-            tabs.Invalidate();
+            c.Invalidate();
+        }
+
+        private static void SetFlatBorder(Control c, List<Action> undo)
+        {
+            PropertyDescriptor pd = TypeDescriptor.GetProperties(c)["BorderStyle"];
+            if (pd == null || !(pd.GetValue(c) is BorderStyle) || (BorderStyle)pd.GetValue(c) != BorderStyle.Fixed3D)
+                return;
+            if (undo != null)
+                undo.Add(delegate { pd.SetValue(c, BorderStyle.Fixed3D); });
+            pd.SetValue(c, BorderStyle.FixedSingle);
         }
         #endregion
 
@@ -479,29 +504,29 @@ namespace MeGUI.core.gui
         }
         #endregion
 
-        #region tab headers
+        #region painting over the standard drawing (tab headers, group boxes)
         /// <summary>
-        /// Paints the tab headers of a TabControl with the palette. It draws on top of the standard painting
-        /// (no owner draw, so the size of the tabs does not change).
+        /// Base of the painters which draw on top of the standard painting of a control
+        /// (no owner draw: sizes and layout do not change).
         /// </summary>
-        private sealed class TabPainter : NativeWindow
+        private abstract class OverlayPainter : NativeWindow
         {
             private const int WM_PAINT = 0x000F;
-            private readonly TabControl tab;
+            protected readonly Control Owner;
 
-            public TabPainter(TabControl tabControl)
+            protected OverlayPainter(Control control)
             {
-                tab = tabControl;
-                tab.HandleCreated += OnCreated;
-                tab.HandleDestroyed += OnDestroyed;
-                if (tab.IsHandleCreated)
-                    AssignHandle(tab.Handle);
+                Owner = control;
+                Owner.HandleCreated += OnCreated;
+                Owner.HandleDestroyed += OnDestroyed;
+                if (Owner.IsHandleCreated)
+                    AssignHandle(Owner.Handle);
             }
 
             public void Detach()
             {
-                tab.HandleCreated -= OnCreated;
-                tab.HandleDestroyed -= OnDestroyed;
+                Owner.HandleCreated -= OnCreated;
+                Owner.HandleDestroyed -= OnDestroyed;
                 if (Handle != IntPtr.Zero)
                     ReleaseHandle();
             }
@@ -509,7 +534,7 @@ namespace MeGUI.core.gui
             private void OnCreated(object sender, EventArgs e)
             {
                 if (Handle == IntPtr.Zero)
-                    AssignHandle(tab.Handle);
+                    AssignHandle(Owner.Handle);
             }
 
             private void OnDestroyed(object sender, EventArgs e)
@@ -521,11 +546,12 @@ namespace MeGUI.core.gui
             protected override void WndProc(ref Message m)
             {
                 base.WndProc(ref m);
-                if (m.Msg == WM_PAINT && IsDark)
+                if (m.Msg == WM_PAINT && IsDark && !Owner.IsDisposed)
                 {
                     try
                     {
-                        PaintHeaders();
+                        using (Graphics g = Graphics.FromHwnd(Handle))
+                            Paint(g);
                     }
                     catch (Exception)
                     {
@@ -534,10 +560,25 @@ namespace MeGUI.core.gui
                 }
             }
 
-            private void PaintHeaders()
+            protected abstract void Paint(Graphics g);
+        }
+
+        /// <summary>
+        /// Paints the tab headers and the frame of a TabControl with the palette.
+        /// </summary>
+        private sealed class TabPainter : OverlayPainter
+        {
+            private readonly TabControl tab;
+
+            public TabPainter(TabControl tabControl) : base(tabControl)
+            {
+                tab = tabControl;
+            }
+
+            protected override void Paint(Graphics g)
             {
                 int count = tab.TabCount;
-                if (count == 0 || tab.IsDisposed)
+                if (count == 0)
                     return;
 
                 ThemePalette p = Palette;
@@ -547,8 +588,8 @@ namespace MeGUI.core.gui
                 int width = tab.ClientSize.Width;
                 int height = tab.ClientSize.Height;
                 Rectangle selected = tab.SelectedIndex >= 0 ? tab.GetTabRect(tab.SelectedIndex) : Rectangle.Empty;
+                Rectangle display = tab.DisplayRectangle;
 
-                using (Graphics g = Graphics.FromHwnd(Handle))
                 using (SolidBrush back = new SolidBrush(p.Window))
                 using (Pen border = new Pen(p.Border))
                 using (SolidBrush accent = new SolidBrush(p.Accent))
@@ -556,7 +597,13 @@ namespace MeGUI.core.gui
                     // header band (including the free area on the right of the tabs)
                     g.FillRectangle(back, 0, 0, width, headerBottom);
 
-                    // border of the page, open below the selected tab
+                    // the standard 3D frame around the page (white): erase everything between the control
+                    // edge and the page, then draw a thin line on the edge
+                    g.SetClip(display, System.Drawing.Drawing2D.CombineMode.Exclude);
+                    g.FillRectangle(back, 0, headerBottom, width, height - headerBottom);
+                    g.ResetClip();
+
+                    // frame line, open below the selected tab
                     int y = headerBottom;
                     if (selected.IsEmpty)
                         g.DrawLine(border, 0, y, width - 1, y);
@@ -588,6 +635,254 @@ namespace MeGUI.core.gui
                             | TextFormatFlags.EndEllipsis | TextFormatFlags.HidePrefix);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Paints the frame and the title of a GroupBox with the palette (the standard drawing uses a white
+        /// frame and a title colour which cannot be changed).
+        /// </summary>
+        private sealed class GroupPainter : OverlayPainter
+        {
+            private readonly GroupBox group;
+
+            public GroupPainter(GroupBox groupBox) : base(groupBox)
+            {
+                group = groupBox;
+            }
+
+            protected override void Paint(Graphics g)
+            {
+                int width = group.ClientSize.Width;
+                int height = group.ClientSize.Height;
+                if (width < 12 || height < 12)
+                    return;
+
+                ThemePalette p = Palette;
+                TextFormatFlags flags = TextFormatFlags.NoPadding | TextFormatFlags.SingleLine | TextFormatFlags.Left | TextFormatFlags.NoClipping;
+                string text = group.Text;
+                Size textSize = string.IsNullOrEmpty(text)
+                    ? Size.Empty
+                    : TextRenderer.MeasureText(g, text, group.Font, new Size(int.MaxValue, int.MaxValue), flags);
+                int titleHeight = Math.Max(textSize.Height, group.Font.Height);
+                int top = titleHeight / 2;
+                const int band = 3;
+
+                using (SolidBrush back = new SolidBrush(group.BackColor))
+                using (Pen border = new Pen(p.Border))
+                {
+                    // erase the standard frame
+                    g.FillRectangle(back, 0, 0, width, titleHeight + 1);
+                    g.FillRectangle(back, 0, 0, band, height);
+                    g.FillRectangle(back, width - band, 0, band, height);
+                    g.FillRectangle(back, 0, height - band, width, band);
+
+                    // frame with a gap for the title
+                    int gapStart = 5;
+                    int gapEnd = textSize.IsEmpty ? 5 : 8 + textSize.Width + 3;
+                    g.DrawLine(border, 0, top, gapStart, top);
+                    g.DrawLine(border, gapEnd, top, width - 1, top);
+                    g.DrawLine(border, 0, top, 0, height - 1);
+                    g.DrawLine(border, width - 1, top, width - 1, height - 1);
+                    g.DrawLine(border, 0, height - 1, width - 1, height - 1);
+                }
+
+                if (!textSize.IsEmpty)
+                    TextRenderer.DrawText(g, text, group.Font, new Point(8, 0), group.Enabled ? p.Text : p.TextDim, flags);
+            }
+        }
+        #endregion
+
+        #region main menu (legacy MainMenu / MenuItem: drawn by Windows, so it is owner drawn)
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MENUINFO
+        {
+            public int cbSize;
+            public uint fMask;
+            public uint dwStyle;
+            public uint cyMax;
+            public IntPtr hbrBack;
+            public uint dwContextHelpID;
+            public IntPtr dwMenuData;
+        }
+
+        private const uint MIM_BACKGROUND = 0x00000002;
+        private const uint MIM_APPLYTOSUBMENUS = 0x80000000;
+
+        [DllImport("user32.dll")]
+        private static extern bool SetMenuInfo(IntPtr hmenu, ref MENUINFO lpcmi);
+
+        [DllImport("user32.dll")]
+        private static extern bool DrawMenuBar(IntPtr hWnd);
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr CreateSolidBrush(int colorRef);
+
+        // one brush for the whole application life (the dark colour never changes); a menu keeps using it
+        private static IntPtr menuBrush = IntPtr.Zero;
+
+        /// <summary>
+        /// Gives the menu bar and its drop-down menus the colours of the palette (dark) or the standard
+        /// look (light). The legacy menus have no colour properties: the items are drawn by us and the
+        /// background is set with SetMenuInfo.
+        /// </summary>
+        private static void ApplyMenu(Form form, bool dark)
+        {
+            MainMenu menu = form.Menu;
+            if (menu == null)
+                return;
+            try
+            {
+                SetMenuBackground(menu, dark);
+                foreach (MenuItem item in menu.MenuItems)
+                    ApplyMenuItem(item, dark);
+                if (form.IsHandleCreated)
+                    DrawMenuBar(form.Handle);
+            }
+            catch (Exception)
+            {
+                // keep the standard menu
+            }
+        }
+
+        private static void SetMenuBackground(Menu menu, bool dark)
+        {
+            IntPtr brush = IntPtr.Zero;
+            if (dark)
+            {
+                if (menuBrush == IntPtr.Zero)
+                    menuBrush = CreateSolidBrush(ColorTranslator.ToWin32(Palette.Window));
+                brush = menuBrush;
+            }
+
+            MENUINFO mi = new MENUINFO();
+            mi.cbSize = Marshal.SizeOf(typeof(MENUINFO));
+            mi.fMask = MIM_BACKGROUND | MIM_APPLYTOSUBMENUS;
+            mi.hbrBack = brush;
+            SetMenuInfo(menu.Handle, ref mi);
+        }
+
+        private static void ApplyMenuItem(MenuItem item, bool dark)
+        {
+            item.DrawItem -= MenuDrawItem;
+            item.MeasureItem -= MenuMeasureItem;
+            item.Popup -= MenuPopup;
+            if (dark)
+            {
+                item.DrawItem += MenuDrawItem;
+                item.MeasureItem += MenuMeasureItem;
+                item.Popup += MenuPopup; // items added by the application when the menu opens
+            }
+            item.OwnerDraw = dark;
+            foreach (MenuItem child in item.MenuItems)
+                ApplyMenuItem(child, dark);
+        }
+
+        private static void MenuPopup(object sender, EventArgs e)
+        {
+            MenuItem item = sender as MenuItem;
+            if (item == null || !IsDark)
+                return;
+            foreach (MenuItem child in item.MenuItems)
+            {
+                if (!child.OwnerDraw)
+                    ApplyMenuItem(child, true);
+            }
+        }
+
+        private static string ShortcutText(MenuItem item)
+        {
+            if (item.Parent is MainMenu || !item.ShowShortcut || item.Shortcut == Shortcut.None)
+                return null;
+            return TypeDescriptor.GetConverter(typeof(Keys)).ConvertToString((Keys)(int)item.Shortcut);
+        }
+
+        private static void MenuMeasureItem(object sender, MeasureItemEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            Font font = SystemFonts.MenuFont;
+            bool top = item.Parent is MainMenu;
+            if (item.Text == "-")
+            {
+                e.ItemWidth = 40;
+                e.ItemHeight = 7;
+                return;
+            }
+            Size size = TextRenderer.MeasureText(e.Graphics, item.Text, font, new Size(int.MaxValue, int.MaxValue),
+                TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
+            if (top)
+            {
+                e.ItemWidth = size.Width + 8;
+                e.ItemHeight = SystemInformation.MenuHeight;
+                return;
+            }
+            string shortcut = ShortcutText(item);
+            int shortcutWidth = 0;
+            if (shortcut != null)
+                shortcutWidth = 24 + TextRenderer.MeasureText(e.Graphics, shortcut, font, new Size(int.MaxValue, int.MaxValue),
+                    TextFormatFlags.SingleLine | TextFormatFlags.NoPadding).Width;
+            e.ItemWidth = 28 + size.Width + shortcutWidth + 22;
+            e.ItemHeight = Math.Max(font.Height + 8, 22);
+        }
+
+        private static void MenuDrawItem(object sender, DrawItemEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ThemePalette p = Palette;
+            Font font = SystemFonts.MenuFont;
+            bool top = item.Parent is MainMenu;
+            bool disabled = !item.Enabled;
+            bool selected = !disabled && (e.State & (DrawItemState.Selected | DrawItemState.HotLight)) != 0;
+            Rectangle r = e.Bounds;
+
+            using (SolidBrush back = new SolidBrush(selected ? p.SurfaceHover : (top ? p.Window : p.Surface)))
+                e.Graphics.FillRectangle(back, r);
+
+            if (item.Text == "-")
+            {
+                using (Pen line = new Pen(p.Border))
+                    e.Graphics.DrawLine(line, r.Left + 26, r.Top + r.Height / 2, r.Right - 4, r.Top + r.Height / 2);
+                return;
+            }
+
+            Color fore = disabled ? p.TextDim : p.Text;
+            TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding;
+            if ((e.State & DrawItemState.NoAccelerator) != 0)
+                flags |= TextFormatFlags.HidePrefix;
+
+            if (top)
+            {
+                TextRenderer.DrawText(e.Graphics, item.Text, font, r, fore, flags | TextFormatFlags.HorizontalCenter);
+                return;
+            }
+
+            Rectangle textRect = new Rectangle(r.Left + 28, r.Top, r.Width - 28 - 22, r.Height);
+            TextRenderer.DrawText(e.Graphics, item.Text, font, textRect, fore, flags | TextFormatFlags.Left);
+
+            string shortcut = ShortcutText(item);
+            if (shortcut != null)
+                TextRenderer.DrawText(e.Graphics, shortcut, font, new Rectangle(r.Left, r.Top, r.Width - 22, r.Height),
+                    p.TextDim, flags | TextFormatFlags.Right);
+
+            if (item.Checked)
+            {
+                using (Pen tick = new Pen(fore, 2f))
+                {
+                    System.Drawing.Drawing2D.SmoothingMode old = e.Graphics.SmoothingMode;
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    int cx = r.Left + 12;
+                    int cy = r.Top + r.Height / 2;
+                    e.Graphics.DrawLines(tick, new Point[] { new Point(cx - 4, cy), new Point(cx - 1, cy + 3), new Point(cx + 5, cy - 4) });
+                    e.Graphics.SmoothingMode = old;
+                }
+            }
+
+            if (item.IsParent)
+            {
+                int ax = r.Right - 12;
+                int ay = r.Top + r.Height / 2;
+                using (SolidBrush arrow = new SolidBrush(fore))
+                    e.Graphics.FillPolygon(arrow, new Point[] { new Point(ax, ay - 4), new Point(ax + 4, ay), new Point(ax, ay + 4) });
             }
         }
         #endregion
