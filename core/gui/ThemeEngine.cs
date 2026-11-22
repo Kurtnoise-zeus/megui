@@ -50,6 +50,7 @@ namespace MeGUI.core.gui
             public bool Applied;
             public bool HooksSet;
             public OverlayPainter Painter;
+            public ListHeaderPainter HeaderPainter;
         }
 
         private static readonly ConditionalWeakTable<Control, Memo> memos = new ConditionalWeakTable<Control, Memo>();
@@ -323,6 +324,13 @@ namespace MeGUI.core.gui
                 if (undo != null)
                     undo.Add(delegate { DetachPainter(group); });
             }
+            ListView listView = c as ListView;
+            if (listView != null && m.HeaderPainter == null)
+            {
+                m.HeaderPainter = new ListHeaderPainter(listView);
+                if (undo != null)
+                    undo.Add(delegate { DetachHeaderPainter(listView); });
+            }
             if (form != null)
                 ApplyMenu(form, true);
 
@@ -371,6 +379,17 @@ namespace MeGUI.core.gui
                 m.Painter = null;
             }
             c.Invalidate();
+        }
+
+        private static void DetachHeaderPainter(ListView lv)
+        {
+            Memo m;
+            if (memos.TryGetValue(lv, out m) && m.HeaderPainter != null)
+            {
+                m.HeaderPainter.Detach();
+                m.HeaderPainter = null;
+            }
+            lv.Invalidate();
         }
 
         private static void SetFlatBorder(Control c, List<Action> undo)
@@ -689,6 +708,120 @@ namespace MeGUI.core.gui
 
                 if (!textSize.IsEmpty)
                     TextRenderer.DrawText(g, text, group.Font, new Point(8, 0), group.Enabled ? p.Text : p.TextDim, flags);
+            }
+        }
+        #endregion
+
+        #region list view column headers
+        /// <summary>
+        /// Paints the column headers of a ListView (details view) with the palette: the native header ignores
+        /// the dark theme. It subclasses the header control of the list and draws over its standard painting.
+        /// </summary>
+        private sealed class ListHeaderPainter : NativeWindow
+        {
+            private const int WM_PAINT = 0x000F;
+            private const int LVM_GETHEADER = 0x101F;
+            private const int HDM_GETITEMRECT = 0x1207;
+
+            [StructLayout(LayoutKind.Sequential)]
+            private struct RECT
+            {
+                public int left, top, right, bottom;
+            }
+
+            [DllImport("user32.dll")]
+            private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+            [DllImport("user32.dll")]
+            private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref RECT lParam);
+
+            [DllImport("user32.dll")]
+            private static extern bool GetClientRect(IntPtr hWnd, out RECT rect);
+
+            private readonly ListView list;
+
+            public ListHeaderPainter(ListView listView)
+            {
+                list = listView;
+                list.HandleCreated += OnListHandleCreated;
+                list.HandleDestroyed += OnListHandleDestroyed;
+                Attach();
+            }
+
+            public void Detach()
+            {
+                list.HandleCreated -= OnListHandleCreated;
+                list.HandleDestroyed -= OnListHandleDestroyed;
+                if (Handle != IntPtr.Zero)
+                    ReleaseHandle();
+            }
+
+            private void Attach()
+            {
+                if (Handle != IntPtr.Zero || !list.IsHandleCreated)
+                    return;
+                IntPtr header = SendMessage(list.Handle, LVM_GETHEADER, IntPtr.Zero, IntPtr.Zero);
+                if (header != IntPtr.Zero)
+                    AssignHandle(header);
+            }
+
+            private void OnListHandleCreated(object sender, EventArgs e)
+            {
+                Attach();
+            }
+
+            private void OnListHandleDestroyed(object sender, EventArgs e)
+            {
+                if (Handle != IntPtr.Zero)
+                    ReleaseHandle();
+            }
+
+            protected override void WndProc(ref Message m)
+            {
+                base.WndProc(ref m);
+                if (m.Msg == WM_PAINT && IsDark && !list.IsDisposed)
+                {
+                    try
+                    {
+                        using (Graphics g = Graphics.FromHwnd(Handle))
+                            Paint(g);
+                    }
+                    catch (Exception)
+                    {
+                        // never let a painting problem break the window
+                    }
+                }
+            }
+
+            private void Paint(Graphics g)
+            {
+                ThemePalette p = Palette;
+                RECT client;
+                if (!GetClientRect(Handle, out client))
+                    return;
+
+                using (SolidBrush back = new SolidBrush(p.Surface))
+                using (Pen line = new Pen(p.Border))
+                {
+                    g.FillRectangle(back, 0, 0, client.right, client.bottom);
+                    g.DrawLine(line, 0, client.bottom - 1, client.right, client.bottom - 1);
+
+                    for (int i = 0; i < list.Columns.Count; i++)
+                    {
+                        RECT r = new RECT();
+                        if (SendMessage(Handle, HDM_GETITEMRECT, (IntPtr)i, ref r) == IntPtr.Zero)
+                            continue;
+                        g.DrawLine(line, r.right - 1, r.top + 3, r.right - 1, r.bottom - 4);
+
+                        TextFormatFlags flags = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine
+                            | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding;
+                        HorizontalAlignment align = list.Columns[i].TextAlign;
+                        flags |= align == HorizontalAlignment.Center ? TextFormatFlags.HorizontalCenter
+                               : align == HorizontalAlignment.Right ? TextFormatFlags.Right : TextFormatFlags.Left;
+                        Rectangle text = new Rectangle(r.left + 6, r.top, Math.Max(0, r.right - r.left - 12), r.bottom - r.top);
+                        TextRenderer.DrawText(g, list.Columns[i].Text, list.Font, text, p.Text, flags);
+                    }
+                }
             }
         }
         #endregion
