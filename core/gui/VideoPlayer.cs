@@ -80,7 +80,7 @@ namespace MeGUI
             this.Resize += new EventHandler(FormResized);
 
             baseButtonPanelHeight = buttonPanel.Size.Height;
-            formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing));
+            formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing + SystemInformation.CaptionHeight));
             buttonPanelMinWidth = ComputeMinWidth();
 
             zoomFactor = 100;
@@ -279,6 +279,9 @@ namespace MeGUI
         {
             bOriginalSize = true;
             zoomWidth = (int)file.VideoInfo.Width;
+            // never make the window larger than the screen: fall back to the largest size that fits
+            if (zoomMaxWidth > 0 && zoomWidth > zoomMaxWidth)
+                zoomWidth = zoomMaxWidth;
             zoomFactor = (int)((double)zoomWidth / zoomMaxWidth * 100.0);
             SetZoomButtons();
             resize(zoomWidth, showPAR.Checked);
@@ -1156,7 +1159,7 @@ namespace MeGUI
             if (hasAR)
                 height += arChooser.Height + pad;
             buttonPanel.Height = height;
-            formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing));
+            formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing + SystemInformation.CaptionHeight));
             buttonPanelMinWidth = ComputeMinWidth();
             LayoutTransport();
         }
