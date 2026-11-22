@@ -65,6 +65,12 @@ namespace MeGUI
         private string currentTime;
         private string strFileName; // the video file name
         private bool bInlineAVS;
+        private bool playing;
+        private int baseButtonPanelHeight; // height of the transport bar without the optional aspect ratio row
+        private string compareScript; // the source (input file) used by the compare modes
+        private bool compareInline;
+        private IMediaFile compareFile;
+        private CompareMode lastCompareMode = CompareMode.Split;
 
 		#endregion
 		#region constructor
@@ -73,12 +79,18 @@ namespace MeGUI
 			InitializeComponent();
             this.Resize += new EventHandler(FormResized);
 
+            baseButtonPanelHeight = buttonPanel.Size.Height;
             formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing));
-            buttonPanelMinWidth = (int)((showPAR.Location.X + showPAR.Size.Width));
+            buttonPanelMinWidth = ComputeMinWidth();
 
             zoomFactor = 100;
             SetZoomButtons();
             sizeLock = false;
+
+            if (MainForm.Instance != null && MainForm.Instance.Settings != null)
+                ThemeManager.Mode = MainForm.Instance.Settings.ThemeMode;
+            ThemeManager.ThemeChanged += OnThemeChanged;
+            ApplyTheme();
 		}
 
         public bool AllowClose
@@ -164,9 +176,9 @@ namespace MeGUI
 			{
                 this.positionSlider.Minimum = 0;
 				this.positionSlider.Maximum = reader.FrameCount - 1;
-                this.positionSlider.TickFrequency = this.positionSlider.Maximum / 20;
                 this.viewerType = type;
                 this.hasAR = hasAR;
+                ApplyLayoutForClip();
                 zoomMaxWidth = 0;
                 SetMaxZoomWidth();
                 DoInitialAdjustment();
@@ -233,7 +245,6 @@ namespace MeGUI
             {
                 this.positionSlider.Minimum = 0;
                 this.positionSlider.Maximum = reader.FrameCount - 1;
-                this.positionSlider.TickFrequency = this.positionSlider.Maximum / 20;
                 SetMaxZoomWidth();
                 DoInitialAdjustment();
                 int iStart;
@@ -253,8 +264,8 @@ namespace MeGUI
 		/// </summary>
 		public void disableIntroAndCredits()
 		{
-			buttonPanel.Controls.Remove(introEndButton);
-			buttonPanel.Controls.Remove(creditsStartButton);
+            introEndButton.Visible = false;
+            creditsStartButton.Visible = false;
 		}
 		#endregion
 
@@ -429,35 +440,15 @@ namespace MeGUI
 
         private void DoInitialAdjustment()
         {
-            switch (this.viewerType)
-            {
-                case PREVIEWTYPE.REGULAR:
-                    buttonPanel.Controls.Remove(creditsStartButton);
-                    buttonPanel.Controls.Remove(introEndButton);
-                    buttonPanel.Controls.Remove(chapterButton);
-                    buttonPanel.Controls.Remove(zoneStartButton);
-                    buttonPanel.Controls.Remove(zoneEndButton);
-                    buttonPanel.Controls.Remove(setZoneButton);
-                    break;
-                case PREVIEWTYPE.ZONES:
-                    buttonPanel.Controls.Remove(creditsStartButton);
-                    buttonPanel.Controls.Remove(introEndButton);
-                    buttonPanel.Controls.Remove(chapterButton);
-                    break;
-                case PREVIEWTYPE.CREDITS:
-                    buttonPanel.Controls.Remove(zoneStartButton);
-                    buttonPanel.Controls.Remove(zoneEndButton);
-                    buttonPanel.Controls.Remove(setZoneButton);
-                    buttonPanel.Controls.Remove(chapterButton);
-                    break;
-                case PREVIEWTYPE.CHAPTERS:
-                    buttonPanel.Controls.Remove(creditsStartButton);
-                    buttonPanel.Controls.Remove(introEndButton);
-                    buttonPanel.Controls.Remove(zoneStartButton);
-                    buttonPanel.Controls.Remove(zoneEndButton);
-                    buttonPanel.Controls.Remove(setZoneButton);
-                    break;
-            }
+            bool zones = viewerType == PREVIEWTYPE.ZONES;
+            bool credits = viewerType == PREVIEWTYPE.CREDITS;
+            bool chapters = viewerType == PREVIEWTYPE.CHAPTERS;
+            creditsStartButton.Visible = credits;
+            introEndButton.Visible = credits;
+            chapterButton.Visible = chapters;
+            zoneStartButton.Visible = zones;
+            zoneEndButton.Visible = zones;
+            setZoneButton.Visible = zones;
         }
 
 		/// <summary>
@@ -465,11 +456,6 @@ namespace MeGUI
 		/// </summary>
 		private void AdjustSize()
 		{
-            if (!hasAR)
-            {
-                buttonPanel.Controls.Remove(arChooser);
-                buttonPanel.Controls.Remove(showPAR);
-            }
             SuspendLayout();
             sizeLock = true;
 
@@ -549,7 +535,8 @@ namespace MeGUI
             }
 
             this.Visible = false;
-            videoPreview.UnloadVideo();
+			videoPreview.UnloadVideo();
+            DisposeCompare();
             file?.Dispose();
 			base.OnClosing(e);
 		}
@@ -574,6 +561,9 @@ namespace MeGUI
 		{
             totalTime = Util.converFrameNumberToTimecode(this.positionSlider.Maximum + 1, file.VideoInfo.FPS);
             currentTime = Util.converFrameNumberToTimecode(this.positionSlider.Value, file.VideoInfo.FPS);
+            lblCurrentTime.Text = currentTime;
+            lblTotalTime.Text = totalTime;
+            lblFrame.Text = "Frame " + CurrentFrame + " / " + FrameCount;
             if (this.zoneStart > -1 || this.zoneEnd > -1)
             {
                 this.Text = "Pos: " + CurrentFrame + "/" + FrameCount;
@@ -641,15 +631,17 @@ namespace MeGUI
 		/// <param name="e"></param>
 		private void playButton_Click(object sender, System.EventArgs e)
 		{
-			if (this.playButton.Text.Equals("Play"))
+			if (!playing)
 			{
-				this.playButton.Text = "Stop";
+                playing = true;
+                this.playButton.Glyph = PlayerGlyph.Pause;
                 videoPreview.EnsureCorrectPlaybackSpeed = MainForm.Instance.Settings.EnsureCorrectPlaybackSpeed;
                 videoPreview.Play();
 			}
 			else
 			{
-				this.playButton.Text = "Play";
+                playing = false;
+                this.playButton.Glyph = PlayerGlyph.Play;
                 videoPreview.Stop();
 			}
 		}
@@ -741,6 +733,8 @@ namespace MeGUI
 					ZoneSet(this.zoneStart, this.zoneEnd);
                     zoneStart = -1;
                     zoneEnd = -1;
+                    positionSlider.ZoneStart = -1;
+                    positionSlider.ZoneEnd = -1;
 					SetTitleText();
 				}
 				else
@@ -830,7 +824,8 @@ namespace MeGUI
 			get {return this.creditsStartFrame;}
 			set 
 			{
-				creditsStartFrame = value;
+					creditsStartFrame = value;
+                    positionSlider.CreditsStart = value;
 				SetTitleText();
 			}
 		}
@@ -843,7 +838,8 @@ namespace MeGUI
 			get {return this.introEndFrame;}
 			set 
 			{
-				introEndFrame = value;
+					introEndFrame = value;
+                    positionSlider.IntroEnd = value;
 				SetTitleText();
 			}
 		}
@@ -856,7 +852,8 @@ namespace MeGUI
 			get {return this.zoneStart;}
 			set 
 			{
-				zoneStart = value;
+					zoneStart = value;
+                    positionSlider.ZoneStart = value;
                 //positionSlider_Scroll(null, null);
                 SetTitleText();
 			}
@@ -870,7 +867,8 @@ namespace MeGUI
 			get {return this.zoneEnd;}
 			set
 			{
-				zoneEnd = value;
+					zoneEnd = value;
+                    positionSlider.ZoneEnd = value;
 				SetTitleText();
 			}
 		}
@@ -989,9 +987,10 @@ namespace MeGUI
 
         private void btnReloadVideo_Click(object sender, EventArgs e)
         {
-            if (playButton.Text.Equals("Stop"))
+            if (playing)
             {
-				this.playButton.Text = "Play";
+                playing = false;
+                this.playButton.Glyph = PlayerGlyph.Play;
                 videoPreview.Stop();
 			}
             ReloadVideo();
@@ -1019,5 +1018,246 @@ namespace MeGUI
             else if (this.Location.X + this.Size.Width > iScreenWidth)
                 this.Location = new Point(iScreenWidth - this.Size.Width, this.Location.Y);
         }
+
+        #region theme
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated)
+                return;
+            if (InvokeRequired)
+                BeginInvoke(new SimpleDelegate(ApplyTheme));
+            else
+                ApplyTheme();
+        }
+
+        private void ApplyTheme()
+        {
+            ThemePalette p = ThemeManager.Palette;
+            ThemeManager.Apply(this);
+            buttonPanel.BackColor = p.Window;
+            videoPanel.BackColor = p.VideoBack;
+            lblCurrentTime.ForeColor = p.TextDim;
+            lblTotalTime.ForeColor = p.TextDim;
+            lblFrame.ForeColor = p.TextDim;
+            ThemeManager.Apply(moreMenu);
+
+            ThemeMode mode = ThemeManager.Mode;
+            themeSystemItem.Checked = mode == ThemeMode.System;
+            themeDarkItem.Checked = mode == ThemeMode.Dark;
+            themeLightItem.Checked = mode == ThemeMode.Light;
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ThemeManager.ApplyTitleBar(this);
+        }
+
+        private void themeItem_Click(object sender, EventArgs e)
+        {
+            ThemeMode mode = ThemeMode.System;
+            if (sender == themeDarkItem)
+                mode = ThemeMode.Dark;
+            else if (sender == themeLightItem)
+                mode = ThemeMode.Light;
+
+            if (MainForm.Instance != null && MainForm.Instance.Settings != null)
+                MainForm.Instance.Settings.ThemeMode = mode;
+            ThemeManager.Mode = mode;
+            ApplyTheme(); // also refreshes the check marks when the effective theme did not change
+        }
+        #endregion
+
+        #region transport bar layout
+        /// <summary>
+        /// Minimum width of the transport bar for the controls currently visible
+        /// </summary>
+        private int ComputeMinWidth()
+        {
+            int pad = Math.Max(6, baseButtonPanelHeight / 9);
+            int gap = Math.Max(2, pad / 3);
+            int center = fwdButton.Width + previousFrameButton.Width + playButton.Width + nextFrameButton.Width + ffButton.Width + 4 * gap;
+            int left = lblFrame.Width;
+            int right = moreButton.Width;
+            if (compareButton.Visible)
+            {
+                right += gap + compareButton.Width;
+                if (compareModeButton.Visible)
+                    right += gap + compareModeButton.Width;
+            }
+            return 2 * (pad + Math.Max(left, right)) + center;
+        }
+
+        private void LayoutTransport()
+        {
+            int w = buttonPanel.ClientSize.Width;
+            if (w <= 0)
+                return;
+            int pad = Math.Max(6, baseButtonPanelHeight / 9);
+            int gap = Math.Max(2, pad / 3);
+
+            // row 1: current time | seek bar | total time
+            int row1Top = pad / 2;
+            int timeW = lblCurrentTime.Width;
+            lblCurrentTime.Location = new Point(pad, row1Top);
+            lblTotalTime.Location = new Point(w - pad - timeW, row1Top);
+            positionSlider.Location = new Point(pad + timeW + gap, row1Top);
+            positionSlider.Width = Math.Max(10, w - 2 * (pad + timeW + gap));
+            lblCurrentTime.Height = lblTotalTime.Height = positionSlider.Height;
+
+            // row 2: frame label | transport buttons (centered) | compare / menu
+            int row2Top = row1Top + positionSlider.Height + gap;
+            int row2Height = playButton.Height;
+
+            int clusterW = fwdButton.Width + previousFrameButton.Width + playButton.Width + nextFrameButton.Width + ffButton.Width + 4 * gap;
+            int x = (w - clusterW) / 2;
+            foreach (Control c in new Control[] { fwdButton, previousFrameButton, playButton, nextFrameButton, ffButton })
+            {
+                c.Location = new Point(x, row2Top + (row2Height - c.Height) / 2);
+                x += c.Width + gap;
+            }
+
+            lblFrame.Location = new Point(pad, row2Top + (row2Height - lblFrame.Height) / 2);
+
+            int rx = w - pad - moreButton.Width;
+            moreButton.Location = new Point(rx, row2Top + (row2Height - moreButton.Height) / 2);
+            if (compareModeButton.Visible)
+            {
+                rx -= gap + compareModeButton.Width;
+                compareModeButton.Location = new Point(rx, row2Top + (row2Height - compareModeButton.Height) / 2);
+            }
+            if (compareButton.Visible)
+            {
+                rx -= gap + compareButton.Width;
+                compareButton.Location = new Point(rx, row2Top + (row2Height - compareButton.Height) / 2);
+            }
+
+            // optional row 3: aspect ratio chooser
+            int row3Top = row2Top + row2Height + gap;
+            arChooser.Location = new Point(pad, row3Top);
+            showPAR.Location = new Point(arChooser.Right + gap, row3Top + (arChooser.Height - showPAR.Height) / 2);
+        }
+
+        private void buttonPanel_Resize(object sender, EventArgs e)
+        {
+            LayoutTransport();
+        }
+
+        /// <summary>
+        /// Shows or hides the aspect ratio row and recomputes the sizes that depend on it
+        /// </summary>
+        private void ApplyLayoutForClip()
+        {
+            arChooser.Visible = hasAR;
+            showPAR.Visible = hasAR;
+
+            int pad = Math.Max(6, baseButtonPanelHeight / 9);
+            int height = baseButtonPanelHeight;
+            if (hasAR)
+                height += arChooser.Height + pad;
+            buttonPanel.Height = height;
+            formHeightDelta = (int)((buttonPanel.Size.Height + 4 * defaultSpacing));
+            buttonPanelMinWidth = ComputeMinWidth();
+            LayoutTransport();
+        }
+
+        private void moreButton_Click(object sender, EventArgs e)
+        {
+            moreMenu.Show(moreButton, new Point(moreButton.Width, 0), ToolStripDropDownDirection.AboveLeft);
+        }
+        #endregion
+
+        #region compare source / filtered
+        /// <summary>
+        /// Sets the clip shown as "Source" by the compare modes: the input file before any filter.
+        /// The Compare button is only available while a source is set.
+        /// </summary>
+        /// <param name="script">path of the input (or index) file, or an AviSynth script if inlineAvs is true; null/empty to disable the compare modes</param>
+        /// <param name="inlineAvs">true if script contains an AviSynth script and not a file name</param>
+        public void SetCompareSource(string script, bool inlineAvs)
+        {
+            if (script == compareScript && inlineAvs == compareInline)
+                return; // unchanged: keep the opened source and the current compare mode
+
+            DisposeCompare();
+            compareScript = script;
+            compareInline = inlineAvs;
+            UpdateCompareButtons();
+        }
+
+        private void UpdateCompareButtons()
+        {
+            bool available = !string.IsNullOrEmpty(compareScript);
+            CompareMode mode = videoPreview.CompareMode;
+            compareButton.Visible = available;
+            compareButton.Toggled = mode != CompareMode.Off;
+            compareModeButton.Visible = available && mode != CompareMode.Off;
+            compareModeButton.Text = lastCompareMode == CompareMode.SideBySide ? "Side by side" : "Split";
+            buttonPanelMinWidth = ComputeMinWidth();
+            LayoutTransport();
+        }
+
+        private bool OpenCompareSource()
+        {
+            if (compareFile != null)
+                return true;
+            try
+            {
+                if (compareInline)
+                    compareFile = AvsFile.ParseScript(compareScript, true);
+                else
+                    compareFile = MainForm.Instance.MediaFileFactory.Open(compareScript);
+                if (compareFile == null)
+                    throw new Exception("The source video cannot be opened");
+                IVideoReader sourceReader = compareFile.GetVideoReader();
+                if (sourceReader == null || sourceReader.FrameCount <= 0)
+                    throw new Exception("The source video cannot be read");
+                videoPreview.SetCompareReader(sourceReader);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                videoPreview.SetCompareReader(null);
+                lock (_locker)
+                {
+                    compareFile?.Dispose();
+                    compareFile = null;
+                }
+                MessageBox.Show("The source cannot be opened for comparison.\r\n" + ex.Message, "Compare",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+        }
+
+        private void DisposeCompare()
+        {
+            videoPreview.CompareMode = CompareMode.Off;
+            videoPreview.SetCompareReader(null); // returns when the render thread no longer uses the reader
+            lock (_locker)
+            {
+                compareFile?.Dispose();
+                compareFile = null;
+            }
+            UpdateCompareButtons();
+        }
+
+        private void compareButton_Click(object sender, EventArgs e)
+        {
+            if (videoPreview.CompareMode != CompareMode.Off)
+                videoPreview.CompareMode = CompareMode.Off;
+            else if (OpenCompareSource())
+                videoPreview.CompareMode = lastCompareMode;
+            UpdateCompareButtons();
+        }
+
+        private void compareModeButton_Click(object sender, EventArgs e)
+        {
+            lastCompareMode = lastCompareMode == CompareMode.Split ? CompareMode.SideBySide : CompareMode.Split;
+            if (videoPreview.CompareMode != CompareMode.Off)
+                videoPreview.CompareMode = lastCompareMode;
+            UpdateCompareButtons();
+        }
+        #endregion
+
 	}
 }

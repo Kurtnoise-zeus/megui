@@ -63,6 +63,7 @@ namespace MeGUI
                        fdkAacPath, httpproxyaddress, httpproxyport, httpproxyuid, httpproxypwd, defaultOutputDir, exhalePath,
                        appendToForcedStreams, lastUsedOneClickFolder, lastUpdateServer, chapterCreatorSortString, muxInputPath, muxOutputPath,
                        qaacPath;
+        private ThemeMode themeMode = ThemeMode.System;
         private bool autoForceFilm, autoOpenScript, bUseQAAC, bUseDGIndexNV, bUseDGIndexIM, bInput8Bit,
                      overwriteStats, keep2of3passOutput, autoUpdate, deleteIntermediateFiles, workerAutoStart,
                      deleteAbortedOutput, openProgressWindow, bEac3toAutoSelectStreams, bUseFDKAac, bVobSubberKeepAll,
@@ -662,6 +663,15 @@ namespace MeGUI
         {
             get { return alwaysOnTop; }
             set { alwaysOnTop = value; }
+        }
+
+        /// <summary>
+        /// gets / sets the colour theme (system / dark / light) used by the video player
+        /// </summary>
+        public ThemeMode ThemeMode
+        {
+            get { return themeMode; }
+            set { themeMode = value; }
         }
 
         ///<summary>

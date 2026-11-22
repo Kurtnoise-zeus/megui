@@ -26,12 +26,28 @@ using Timer = System.Threading.Timer;
 
 namespace MeGUI.core.gui
 {
+    /// <summary>
+    /// How the player shows the source (input file) next to the filtered script output.
+    /// </summary>
+    public enum CompareMode
+    {
+        Off,
+        /// <summary>One picture, the source on the left of a draggable divider and the filtered output on the right</summary>
+        Split,
+        /// <summary>Source and filtered output next to each other</summary>
+        SideBySide
+    }
+
     public partial class VideoPlayerControl : UserControl
     {
         public VideoPlayerControl()
         {
             InitializeComponent();
             playTimer = new Timer(PlayNextFrame);
+
+            videoPreview.MouseDown += videoPreview_MouseDown;
+            videoPreview.MouseMove += videoPreview_MouseMove;
+            videoPreview.MouseUp += videoPreview_MouseUp;
         }
 
         //ensures that UnloadVideo only returns if the reader is not used by other threads any more
@@ -233,15 +249,25 @@ namespace MeGUI.core.gui
                 Bitmap finalBitmap = null;
                 try
                 {
-                    using (Bitmap b = GetFrame(pos))
+                    CompareMode cm = compareMode;
+                    if (cm != CompareMode.Off && HasCompareReader)
                     {
-                        if (b == null)
+                        finalBitmap = RenderCompare(pos, targetWidth, targetHeight, cm);
+                        if (finalBitmap == null)
                             continue;
+                    }
+                    else
+                    {
+                        using (Bitmap b = GetFrame(pos))
+                        {
+                            if (b == null)
+                                continue;
 
-                        //if (cropMargin != Padding.Empty) // only crop when necessary
-                        //    cropImage(b);
+                            //if (cropMargin != Padding.Empty) // only crop when necessary
+                            //    cropImage(b);
 
-                        finalBitmap = ResizeBitmap(b, targetWidth, targetHeight);
+                            finalBitmap = ResizeBitmap(b, targetWidth, targetHeight);
+                        }
                     }
 
                     // Swap the image on the GUI thread. The previous bitmap is disposed there too,
@@ -328,6 +354,230 @@ namespace MeGUI.core.gui
             }
         }
 
+        #region Compare (source vs filtered)
+        private const int SideBySideGap = 4;
+
+        private CompareMode compareMode = CompareMode.Off;
+        private float splitPosition = 0.5f;
+        private IVideoReader compareReader;
+
+        //resized frames of the last compare rendering: dragging the divider only recomposes them.
+        //They are only used by the render thread (and disposed after that thread has ended).
+        private Bitmap cacheFiltered, cacheSource;
+        private int cachePos = -1, cachePw, cachePh;
+        private Padding cacheCrop;
+        private volatile bool cacheDirty = true;
+
+        /// <summary>
+        /// Source clip (the input file without any filter) used by the compare modes.
+        /// Pass null to remove it. The caller keeps the ownership and must dispose the clip after removing it here.
+        /// </summary>
+        public void SetCompareReader(IVideoReader reader)
+        {
+            //the writer lock ensures that the render thread does not use the old reader any more when this returns
+            readerWriterLock.AcquireWriterLock(Timeout.Infinite);
+            try
+            {
+                compareReader = reader;
+            }
+            finally
+            {
+                readerWriterLock.ReleaseWriterLock();
+            }
+            cacheDirty = true;
+            if (reader == null)
+                compareMode = CompareMode.Off;
+            UpdateVideo();
+        }
+
+        public bool HasCompareReader
+        {
+            get { return compareReader != null; }
+        }
+
+        public CompareMode CompareMode
+        {
+            get { return compareMode; }
+            set
+            {
+                if (value != CompareMode.Off && !HasCompareReader)
+                    value = CompareMode.Off;
+                compareMode = value;
+                videoPreview.Cursor = value == CompareMode.Split ? Cursors.SizeWE : Cursors.Default;
+                cacheDirty = true;
+                UpdateVideo();
+            }
+        }
+
+        /// <summary>Position of the divider in Split mode (0 = all filtered, 1 = all source)</summary>
+        public float SplitPosition
+        {
+            get { return splitPosition; }
+            set
+            {
+                splitPosition = Math.Max(0f, Math.Min(1f, value));
+                UpdateVideo();
+            }
+        }
+
+        private Bitmap GetCompareFrame(int pos)
+        {
+            readerWriterLock.AcquireReaderLock(Timeout.Infinite);
+            try
+            {
+                IVideoReader reader = compareReader;
+                if (reader == null)
+                    return null;
+                int max = reader.FrameCount - 1;
+                if (max < 0)
+                    return null;
+                //the filters may have changed the frame count: stay inside the source
+                return reader.ReadFrameBitmap(Math.Min(pos, max));
+            }
+            finally
+            {
+                readerWriterLock.ReleaseReaderLock();
+            }
+        }
+
+        private Bitmap RenderCompare(int pos, int w, int h, CompareMode mode)
+        {
+            int pw = w, ph = h;
+            if (mode == CompareMode.SideBySide)
+            {
+                pw = Math.Max(1, (w - SideBySideGap) / 2);
+                ph = Math.Max(1, (int)Math.Round(pw * (double)h / w));
+            }
+
+            Padding crop = cropMargin;
+            bool valid = !cacheDirty && cacheFiltered != null && cacheSource != null
+                && cachePos == pos && cachePw == pw && cachePh == ph && cacheCrop == crop;
+            if (!valid)
+            {
+                cacheDirty = false; //reset first: an invalidation during the reading below is not lost
+                Bitmap filtered, source;
+                using (Bitmap rawFiltered = GetFrame(pos))
+                {
+                    if (rawFiltered == null)
+                        return null;
+                    filtered = ResizeBitmap(rawFiltered, pw, ph);
+                }
+                using (Bitmap rawSource = GetCompareFrame(pos))
+                {
+                    if (rawSource == null)
+                    {
+                        //no source frame available: show the filtered picture only
+                        Bitmap fallback = new Bitmap(w, h);
+                        using (Graphics fg = Graphics.FromImage(fallback))
+                            fg.DrawImage(filtered, 0, 0, w, h);
+                        filtered.Dispose();
+                        return fallback;
+                    }
+                    source = ResizeBitmap(rawSource, pw, ph);
+                }
+                cacheFiltered?.Dispose();
+                cacheSource?.Dispose();
+                cacheFiltered = filtered;
+                cacheSource = source;
+                cachePos = pos;
+                cachePw = pw;
+                cachePh = ph;
+                cacheCrop = crop;
+            }
+            return ComposeCompare(cacheSource, cacheFiltered, w, h, mode, splitPosition);
+        }
+
+        private static Bitmap ComposeCompare(Bitmap source, Bitmap filtered, int w, int h, CompareMode mode, float split)
+        {
+            Bitmap result = new Bitmap(w, h);
+            using (Graphics g = Graphics.FromImage(result))
+            {
+                g.Clear(Color.Black);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+
+                if (mode == CompareMode.Split)
+                {
+                    g.DrawImageUnscaled(source, 0, 0);
+                    int x = Math.Max(0, Math.Min(w, (int)Math.Round(w * split)));
+                    g.SetClip(new Rectangle(x, 0, w - x, h));
+                    g.DrawImageUnscaled(filtered, 0, 0);
+                    g.ResetClip();
+
+                    using (Pen line = new Pen(Color.White, 2f))
+                        g.DrawLine(line, x, 0, x, h);
+                    DrawDividerHandle(g, x, h / 2);
+                    DrawChip(g, "Source", 10, 10, false);
+                    DrawChip(g, "Filtered", w - 10, 10, true);
+                }
+                else
+                {
+                    int total = source.Width + SideBySideGap + filtered.Width;
+                    int left = Math.Max(0, (w - total) / 2);
+                    int top = Math.Max(0, (h - source.Height) / 2);
+                    g.DrawImageUnscaled(source, left, top);
+                    g.DrawImageUnscaled(filtered, left + source.Width + SideBySideGap, top);
+                    DrawChip(g, "Source", left + 10, top + 10, false);
+                    DrawChip(g, "Filtered", left + total - 10, top + 10, true);
+                }
+            }
+            return result;
+        }
+
+        private static void DrawDividerHandle(Graphics g, int x, int y)
+        {
+            const int d = 34;
+            g.FillEllipse(Brushes.White, x - d / 2, y - d / 2, d, d);
+            using (Brush arrow = new SolidBrush(Color.FromArgb(0x20, 0x20, 0x20)))
+            {
+                g.FillPolygon(arrow, new[] { new Point(x - 4, y - 6), new Point(x - 4, y + 6), new Point(x - 11, y) });
+                g.FillPolygon(arrow, new[] { new Point(x + 4, y - 6), new Point(x + 4, y + 6), new Point(x + 11, y) });
+            }
+        }
+
+        private static void DrawChip(Graphics g, string text, int x, int y, bool alignRight)
+        {
+            using (Font font = new Font("Segoe UI", 9f, FontStyle.Bold))
+            {
+                SizeF size = g.MeasureString(text, font);
+                float width = size.Width + 14;
+                float height = size.Height + 4;
+                float left = alignRight ? x - width : x;
+                using (Brush back = new SolidBrush(Color.FromArgb(170, 0, 0, 0)))
+                    g.FillRectangle(back, left, y, width, height);
+                g.DrawString(text, font, Brushes.White, left + 7, y + 2);
+            }
+        }
+
+        private bool draggingDivider;
+
+        private void MoveDivider(MouseEventArgs e)
+        {
+            if (compareMode == CompareMode.Split && videoPreview.Width > 0)
+                SplitPosition = e.X / (float)videoPreview.Width;
+        }
+
+        private void videoPreview_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (compareMode == CompareMode.Split && e.Button == MouseButtons.Left)
+            {
+                draggingDivider = true;
+                MoveDivider(e);
+            }
+        }
+
+        private void videoPreview_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (draggingDivider)
+                MoveDivider(e);
+        }
+
+        private void videoPreview_MouseUp(object sender, MouseEventArgs e)
+        {
+            draggingDivider = false;
+        }
+        #endregion
+
         private bool isPlaying;
 
         /// <summary>
@@ -388,6 +638,7 @@ namespace MeGUI.core.gui
                 readerWriterLock.ReleaseWriterLock();
             }
 
+            cacheDirty = true;
             Framerate = fps;
             Position = startPosition;
         }
@@ -406,6 +657,7 @@ namespace MeGUI.core.gui
                 readerWriterLock.ReleaseWriterLock();
             }
             position = 0;
+            cacheDirty = true;
         }
         #endregion
 
@@ -504,6 +756,7 @@ namespace MeGUI.core.gui
             set
             {
                 cropMargin = value;
+                cacheDirty = true;
                 UpdateVideo();
             }
         }
@@ -570,6 +823,8 @@ namespace MeGUI.core.gui
             }
 
             videoPreview.Image?.Dispose(); // get rid of bitmap
+            cacheFiltered?.Dispose();
+            cacheSource?.Dispose();
             nextFrameEvent.Dispose();
             renderEvent.Dispose();
 

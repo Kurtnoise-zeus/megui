@@ -595,6 +595,9 @@
     <Compile Include="packages\tools\update\UpdateWindow.designer.cs">
       <DependentUpon>UpdateWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="core\gui\PlayerButton.cs" />
+    <Compile Include="core\gui\PlayerSeekBar.cs" />
+    <Compile Include="core\gui\ThemeManager.cs" />
     <Compile Include="core\gui\VideoPlayer.cs">
       <SubType>Form</SubType>
     </Compile>

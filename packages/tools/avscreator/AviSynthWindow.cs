@@ -224,6 +224,8 @@ namespace MeGUI
 			if (player.LoadVideo(avisynthScript.Text, PREVIEWTYPE.REGULAR, false, true, player.CurrentFrame, true))
 			{
 				player.disableIntroAndCredits();
+                // "Source" of the compare modes = the input file before any filter
+                player.SetCompareSource(originalScript, originalInlineAvs);
                 reader = player.Reader;
                 isPreviewMode = true;
                 SendCropValues();
@@ -907,6 +909,7 @@ namespace MeGUI
             this.isPreviewMode = false;
             if (player.LoadVideo(originalScript, PREVIEWTYPE.REGULAR, false, originalInlineAvs, iCurrentFrame, true))
             {
+                player.SetCompareSource(null, false); // the original is shown: nothing to compare
                 reader = player.Reader;
                 SendCropValues();
                 if (this.Visible)

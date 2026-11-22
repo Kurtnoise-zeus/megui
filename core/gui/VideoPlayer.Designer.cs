@@ -37,6 +37,11 @@ namespace MeGUI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                ThemeManager.ThemeChanged -= OnThemeChanged;
+                DisposeCompare();
+            }
             if (disposing && (components != null))
             {
                 components.Dispose();
@@ -52,50 +57,55 @@ namespace MeGUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.Button goToFrameButton;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VideoPlayer));
             this.contextMenu1 = new System.Windows.Forms.ContextMenu();
             this.mnuIntroEnd = new System.Windows.Forms.MenuItem();
             this.mnuCreditsStart = new System.Windows.Forms.MenuItem();
             this.mnuZoneStart = new System.Windows.Forms.MenuItem();
             this.mnuZoneEnd = new System.Windows.Forms.MenuItem();
-            this.playButton = new System.Windows.Forms.Button();
-            this.nextFrameButton = new System.Windows.Forms.Button();
-            this.previousFrameButton = new System.Windows.Forms.Button();
-            this.ffButton = new System.Windows.Forms.Button();
-            this.fwdButton = new System.Windows.Forms.Button();
-            this.creditsStartButton = new System.Windows.Forms.Button();
+            this.playButton = new MeGUI.core.gui.PlayerButton();
+            this.nextFrameButton = new MeGUI.core.gui.PlayerButton();
+            this.previousFrameButton = new MeGUI.core.gui.PlayerButton();
+            this.ffButton = new MeGUI.core.gui.PlayerButton();
+            this.fwdButton = new MeGUI.core.gui.PlayerButton();
+            this.compareButton = new MeGUI.core.gui.PlayerButton();
+            this.compareModeButton = new MeGUI.core.gui.PlayerButton();
+            this.moreButton = new MeGUI.core.gui.PlayerButton();
             this.buttonPanel = new System.Windows.Forms.Panel();
-            this.positionSlider = new System.Windows.Forms.TrackBar();
-            this.btnFitScreen = new System.Windows.Forms.Button();
-            this.btnReloadVideo = new System.Windows.Forms.Button();
-            this.zoomOutButton = new System.Windows.Forms.Button();
-            this.zoomInButton = new System.Windows.Forms.Button();
+            this.lblCurrentTime = new System.Windows.Forms.Label();
+            this.lblTotalTime = new System.Windows.Forms.Label();
+            this.lblFrame = new System.Windows.Forms.Label();
+            this.positionSlider = new MeGUI.core.gui.PlayerSeekBar();
             this.arChooser = new MeGUI.core.gui.ARChooser();
             this.showPAR = new System.Windows.Forms.CheckBox();
-            this.originalSizeButton = new System.Windows.Forms.Button();
-            this.introEndButton = new System.Windows.Forms.Button();
-            this.zoneStartButton = new System.Windows.Forms.Button();
-            this.setZoneButton = new System.Windows.Forms.Button();
-            this.zoneEndButton = new System.Windows.Forms.Button();
-            this.chapterButton = new System.Windows.Forms.Button();
+            this.moreMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.goToFrameButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.zoneStartButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoneEndButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.setZoneButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.introEndButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.creditsStartButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.chapterButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnFitScreen = new System.Windows.Forms.ToolStripMenuItem();
+            this.originalSizeButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomInButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.zoomOutButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnReloadVideo = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.themeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.themeSystemItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.themeDarkItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.themeLightItem = new System.Windows.Forms.ToolStripMenuItem();
             this.defaultToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.videoPanel = new System.Windows.Forms.Panel();
             this.videoPreview = new MeGUI.core.gui.VideoPlayerControl();
-            goToFrameButton = new System.Windows.Forms.Button();
             this.buttonPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.positionSlider)).BeginInit();
+            this.moreMenu.SuspendLayout();
             this.videoPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // goToFrameButton
-            // 
-            goToFrameButton.Location = new System.Drawing.Point(4, 75);
-            goToFrameButton.Name = "goToFrameButton";
-            goToFrameButton.Size = new System.Drawing.Size(82, 20);
-            goToFrameButton.TabIndex = 13;
-            goToFrameButton.Text = "Go to frame";
-            goToFrameButton.Click += new System.EventHandler(this.goToFrameButton_Click);
             // 
             // contextMenu1
             // 
@@ -140,237 +150,322 @@ namespace MeGUI
             // 
             // playButton
             // 
-            this.playButton.Location = new System.Drawing.Point(50, 49);
+            this.playButton.Glyph = MeGUI.core.gui.PlayerGlyph.Play;
+            this.playButton.Location = new System.Drawing.Point(300, 44);
             this.playButton.Name = "playButton";
-            this.playButton.Size = new System.Drawing.Size(40, 20);
+            this.playButton.Primary = true;
+            this.playButton.Size = new System.Drawing.Size(52, 52);
             this.playButton.TabIndex = 4;
-            this.playButton.Text = "Play";
-            this.defaultToolTip.SetToolTip(this.playButton, "play");
+            this.defaultToolTip.SetToolTip(this.playButton, "Play / stop");
             this.playButton.Click += new System.EventHandler(this.playButton_Click);
             // 
             // nextFrameButton
             // 
-            this.nextFrameButton.Location = new System.Drawing.Point(120, 49);
+            this.nextFrameButton.Glyph = MeGUI.core.gui.PlayerGlyph.NextFrame;
+            this.nextFrameButton.Location = new System.Drawing.Point(356, 48);
             this.nextFrameButton.Name = "nextFrameButton";
-            this.nextFrameButton.Size = new System.Drawing.Size(16, 20);
+            this.nextFrameButton.Size = new System.Drawing.Size(44, 44);
             this.nextFrameButton.TabIndex = 6;
-            this.nextFrameButton.Text = ">";
             this.defaultToolTip.SetToolTip(this.nextFrameButton, "Advance by 1 frame");
             this.nextFrameButton.Click += new System.EventHandler(this.nextFrameButton_Click);
             this.nextFrameButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nextFrameButton_KeyDown);
             // 
             // previousFrameButton
             // 
-            this.previousFrameButton.Location = new System.Drawing.Point(4, 49);
+            this.previousFrameButton.Glyph = MeGUI.core.gui.PlayerGlyph.PreviousFrame;
+            this.previousFrameButton.Location = new System.Drawing.Point(250, 48);
             this.previousFrameButton.Name = "previousFrameButton";
-            this.previousFrameButton.Size = new System.Drawing.Size(16, 18);
+            this.previousFrameButton.Size = new System.Drawing.Size(44, 44);
             this.previousFrameButton.TabIndex = 2;
-            this.previousFrameButton.Text = "<";
             this.defaultToolTip.SetToolTip(this.previousFrameButton, "Go back 1 frame");
             this.previousFrameButton.Click += new System.EventHandler(this.previousFrameButton_Click);
             this.previousFrameButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.previousFrameButton_KeyDown);
             // 
             // ffButton
             // 
-            this.ffButton.Location = new System.Drawing.Point(90, 49);
+            this.ffButton.Glyph = MeGUI.core.gui.PlayerGlyph.Forward25;
+            this.ffButton.Location = new System.Drawing.Point(406, 48);
             this.ffButton.Name = "ffButton";
-            this.ffButton.Size = new System.Drawing.Size(30, 20);
+            this.ffButton.Size = new System.Drawing.Size(44, 44);
             this.ffButton.TabIndex = 5;
-            this.ffButton.Text = ">>";
             this.defaultToolTip.SetToolTip(this.ffButton, "Advance 25 frames");
             this.ffButton.Click += new System.EventHandler(this.ffButton_Click);
             // 
             // fwdButton
             // 
-            this.fwdButton.Location = new System.Drawing.Point(20, 49);
+            this.fwdButton.Glyph = MeGUI.core.gui.PlayerGlyph.Back25;
+            this.fwdButton.Location = new System.Drawing.Point(200, 48);
             this.fwdButton.Name = "fwdButton";
-            this.fwdButton.Size = new System.Drawing.Size(30, 20);
+            this.fwdButton.Size = new System.Drawing.Size(44, 44);
             this.fwdButton.TabIndex = 3;
-            this.fwdButton.Text = "<<";
             this.defaultToolTip.SetToolTip(this.fwdButton, "Go back 25 frames");
             this.fwdButton.Click += new System.EventHandler(this.fwdButton_Click);
             // 
-            // creditsStartButton
+            // compareButton
             // 
-            this.creditsStartButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.creditsStartButton.Location = new System.Drawing.Point(380, 75);
-            this.creditsStartButton.Name = "creditsStartButton";
-            this.creditsStartButton.Size = new System.Drawing.Size(44, 20);
-            this.creditsStartButton.TabIndex = 20;
-            this.creditsStartButton.Text = "Credits";
-            this.defaultToolTip.SetToolTip(this.creditsStartButton, "Set the frame where the credits start");
-            this.creditsStartButton.Click += new System.EventHandler(this.creditsStartButton_Click);
+            this.compareButton.Glyph = MeGUI.core.gui.PlayerGlyph.Compare;
+            this.compareButton.Location = new System.Drawing.Point(480, 48);
+            this.compareButton.Name = "compareButton";
+            this.compareButton.Size = new System.Drawing.Size(104, 44);
+            this.compareButton.TabIndex = 7;
+            this.compareButton.Text = "Compare";
+            this.compareButton.Visible = false;
+            this.defaultToolTip.SetToolTip(this.compareButton, "Compare the source (input file) with the filtered video");
+            this.compareButton.Click += new System.EventHandler(this.compareButton_Click);
+            // 
+            // compareModeButton
+            // 
+            this.compareModeButton.Location = new System.Drawing.Point(590, 48);
+            this.compareModeButton.Name = "compareModeButton";
+            this.compareModeButton.Size = new System.Drawing.Size(104, 44);
+            this.compareModeButton.TabIndex = 8;
+            this.compareModeButton.Text = "Split";
+            this.compareModeButton.Visible = false;
+            this.defaultToolTip.SetToolTip(this.compareModeButton, "Switch between split view and side by side");
+            this.compareModeButton.Click += new System.EventHandler(this.compareModeButton_Click);
+            // 
+            // moreButton
+            // 
+            this.moreButton.Glyph = MeGUI.core.gui.PlayerGlyph.More;
+            this.moreButton.Location = new System.Drawing.Point(700, 48);
+            this.moreButton.Name = "moreButton";
+            this.moreButton.Size = new System.Drawing.Size(44, 44);
+            this.moreButton.TabIndex = 9;
+            this.defaultToolTip.SetToolTip(this.moreButton, "Zone, chapters, zoom, reload, theme...");
+            this.moreButton.Click += new System.EventHandler(this.moreButton_Click);
             // 
             // buttonPanel
             // 
+            this.buttonPanel.Controls.Add(this.lblCurrentTime);
             this.buttonPanel.Controls.Add(this.positionSlider);
-            this.buttonPanel.Controls.Add(this.btnFitScreen);
-            this.buttonPanel.Controls.Add(this.btnReloadVideo);
-            this.buttonPanel.Controls.Add(this.zoomOutButton);
-            this.buttonPanel.Controls.Add(this.zoomInButton);
+            this.buttonPanel.Controls.Add(this.lblTotalTime);
+            this.buttonPanel.Controls.Add(this.lblFrame);
             this.buttonPanel.Controls.Add(this.arChooser);
             this.buttonPanel.Controls.Add(this.showPAR);
-            this.buttonPanel.Controls.Add(this.originalSizeButton);
-            this.buttonPanel.Controls.Add(this.introEndButton);
-            this.buttonPanel.Controls.Add(this.previousFrameButton);
             this.buttonPanel.Controls.Add(this.fwdButton);
+            this.buttonPanel.Controls.Add(this.previousFrameButton);
             this.buttonPanel.Controls.Add(this.playButton);
-            this.buttonPanel.Controls.Add(this.ffButton);
             this.buttonPanel.Controls.Add(this.nextFrameButton);
-            this.buttonPanel.Controls.Add(this.zoneStartButton);
-            this.buttonPanel.Controls.Add(this.creditsStartButton);
-            this.buttonPanel.Controls.Add(goToFrameButton);
-            this.buttonPanel.Controls.Add(this.setZoneButton);
-            this.buttonPanel.Controls.Add(this.zoneEndButton);
-            this.buttonPanel.Controls.Add(this.chapterButton);
-            this.buttonPanel.Location = new System.Drawing.Point(1, 225);
+            this.buttonPanel.Controls.Add(this.ffButton);
+            this.buttonPanel.Controls.Add(this.compareButton);
+            this.buttonPanel.Controls.Add(this.compareModeButton);
+            this.buttonPanel.Controls.Add(this.moreButton);
+            this.buttonPanel.Location = new System.Drawing.Point(0, 225);
             this.buttonPanel.Margin = new System.Windows.Forms.Padding(0);
             this.buttonPanel.Name = "buttonPanel";
-            this.buttonPanel.Size = new System.Drawing.Size(500, 118);
+            this.buttonPanel.Size = new System.Drawing.Size(760, 104);
             this.buttonPanel.TabIndex = 8;
+            this.buttonPanel.Resize += new System.EventHandler(this.buttonPanel_Resize);
+            // 
+            // lblCurrentTime
+            // 
+            this.lblCurrentTime.Location = new System.Drawing.Point(12, 6);
+            this.lblCurrentTime.Name = "lblCurrentTime";
+            this.lblCurrentTime.Size = new System.Drawing.Size(84, 28);
+            this.lblCurrentTime.TabIndex = 20;
+            this.lblCurrentTime.Text = "00:00:00.000";
+            this.lblCurrentTime.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // positionSlider
             // 
-            this.positionSlider.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.positionSlider.LargeChange = 1000;
-            this.positionSlider.Location = new System.Drawing.Point(0, 0);
+            this.positionSlider.Location = new System.Drawing.Point(100, 6);
             this.positionSlider.Margin = new System.Windows.Forms.Padding(0);
-            this.positionSlider.Minimum = -1;
             this.positionSlider.Name = "positionSlider";
-            this.positionSlider.Size = new System.Drawing.Size(495, 45);
+            this.positionSlider.Size = new System.Drawing.Size(560, 28);
             this.positionSlider.TabIndex = 1;
-            this.positionSlider.TickFrequency = 1500;
-            this.positionSlider.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.positionSlider.Value = -1;
             this.positionSlider.Scroll += new System.EventHandler(this.positionSlider_Scroll);
             // 
-            // btnFitScreen
+            // lblTotalTime
             // 
-            this.btnFitScreen.Location = new System.Drawing.Point(189, 49);
-            this.btnFitScreen.Name = "btnFitScreen";
-            this.btnFitScreen.Size = new System.Drawing.Size(26, 20);
-            this.btnFitScreen.TabIndex = 9;
-            this.btnFitScreen.Text = "Fit";
-            this.defaultToolTip.SetToolTip(this.btnFitScreen, "resets the zoom to the maximum screen size");
-            this.btnFitScreen.UseVisualStyleBackColor = true;
-            this.btnFitScreen.Click += new System.EventHandler(this.btnFitScreen_Click);
+            this.lblTotalTime.Location = new System.Drawing.Point(664, 6);
+            this.lblTotalTime.Name = "lblTotalTime";
+            this.lblTotalTime.Size = new System.Drawing.Size(84, 28);
+            this.lblTotalTime.TabIndex = 21;
+            this.lblTotalTime.Text = "00:00:00.000";
+            this.lblTotalTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btnReloadVideo
+            // lblFrame
             // 
-            this.btnReloadVideo.Location = new System.Drawing.Point(90, 75);
-            this.btnReloadVideo.Name = "btnReloadVideo";
-            this.btnReloadVideo.Size = new System.Drawing.Size(79, 20);
-            this.btnReloadVideo.TabIndex = 14;
-            this.btnReloadVideo.Text = "Reload Video";
-            this.defaultToolTip.SetToolTip(this.btnReloadVideo, "Reload the video file");
-            this.btnReloadVideo.Click += new System.EventHandler(this.btnReloadVideo_Click);
-            // 
-            // zoomOutButton
-            // 
-            this.zoomOutButton.Location = new System.Drawing.Point(215, 49);
-            this.zoomOutButton.Name = "zoomOutButton";
-            this.zoomOutButton.Size = new System.Drawing.Size(17, 20);
-            this.zoomOutButton.TabIndex = 10;
-            this.zoomOutButton.Text = "-";
-            this.defaultToolTip.SetToolTip(this.zoomOutButton, "zoom out");
-            this.zoomOutButton.UseVisualStyleBackColor = true;
-            this.zoomOutButton.Click += new System.EventHandler(this.zoomOutButton_Click);
-            // 
-            // zoomInButton
-            // 
-            this.zoomInButton.Location = new System.Drawing.Point(145, 49);
-            this.zoomInButton.Name = "zoomInButton";
-            this.zoomInButton.Size = new System.Drawing.Size(14, 20);
-            this.zoomInButton.TabIndex = 7;
-            this.zoomInButton.Text = "+";
-            this.defaultToolTip.SetToolTip(this.zoomInButton, "zoom in");
-            this.zoomInButton.UseVisualStyleBackColor = true;
-            this.zoomInButton.Click += new System.EventHandler(this.zoomInButton_Click);
+            this.lblFrame.Location = new System.Drawing.Point(12, 60);
+            this.lblFrame.Name = "lblFrame";
+            this.lblFrame.Size = new System.Drawing.Size(130, 20);
+            this.lblFrame.TabIndex = 22;
+            this.lblFrame.Text = "Frame 0 / 0";
+            this.lblFrame.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // arChooser
             // 
             this.arChooser.CustomDARs = new MeGUI.core.util.Dar[0];
             this.arChooser.HasLater = false;
-            this.arChooser.Location = new System.Drawing.Point(241, 45);
+            this.arChooser.Location = new System.Drawing.Point(12, 100);
             this.arChooser.MaximumSize = new System.Drawing.Size(1000, 29);
             this.arChooser.MinimumSize = new System.Drawing.Size(64, 29);
             this.arChooser.Name = "arChooser";
             this.arChooser.SelectedIndex = 0;
             this.arChooser.Size = new System.Drawing.Size(170, 29);
             this.arChooser.TabIndex = 11;
+            this.arChooser.Visible = false;
             this.arChooser.SelectionChanged += new MeGUI.StringChanged(this.arChooser_SelectionChanged);
             // 
             // showPAR
             // 
             this.showPAR.AutoSize = true;
-            this.showPAR.Location = new System.Drawing.Point(415, 51);
+            this.showPAR.Location = new System.Drawing.Point(190, 106);
             this.showPAR.Name = "showPAR";
             this.showPAR.Size = new System.Drawing.Size(88, 17);
             this.showPAR.TabIndex = 12;
             this.showPAR.Text = "Preview DAR";
             this.showPAR.UseVisualStyleBackColor = true;
+            this.showPAR.Visible = false;
             this.showPAR.CheckedChanged += new System.EventHandler(this.showPAR_CheckedChanged);
             // 
-            // originalSizeButton
+            // moreMenu
             // 
-            this.originalSizeButton.Location = new System.Drawing.Point(159, 49);
-            this.originalSizeButton.Name = "originalSizeButton";
-            this.originalSizeButton.Size = new System.Drawing.Size(30, 20);
-            this.originalSizeButton.TabIndex = 8;
-            this.originalSizeButton.Text = "1:1";
-            this.defaultToolTip.SetToolTip(this.originalSizeButton, "displays the original video size");
-            this.originalSizeButton.Click += new System.EventHandler(this.originalSizeButton_Click);
+            this.moreMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.goToFrameButton,
+            this.menuSeparator1,
+            this.zoneStartButton,
+            this.zoneEndButton,
+            this.setZoneButton,
+            this.introEndButton,
+            this.creditsStartButton,
+            this.chapterButton,
+            this.menuSeparator2,
+            this.btnFitScreen,
+            this.originalSizeButton,
+            this.zoomInButton,
+            this.zoomOutButton,
+            this.menuSeparator3,
+            this.btnReloadVideo,
+            this.menuSeparator4,
+            this.themeMenuItem});
+            this.moreMenu.Name = "moreMenu";
+            this.moreMenu.Size = new System.Drawing.Size(200, 330);
             // 
-            // introEndButton
+            // goToFrameButton
             // 
-            this.introEndButton.Location = new System.Drawing.Point(338, 75);
-            this.introEndButton.Name = "introEndButton";
-            this.introEndButton.Size = new System.Drawing.Size(38, 20);
-            this.introEndButton.TabIndex = 18;
-            this.introEndButton.Text = "Intro";
-            this.defaultToolTip.SetToolTip(this.introEndButton, "Set the frame where the intro ends");
-            this.introEndButton.Click += new System.EventHandler(this.introEndButton_Click);
+            this.goToFrameButton.Name = "goToFrameButton";
+            this.goToFrameButton.ShortcutKeyDisplayString = "Ctrl+G";
+            this.goToFrameButton.Text = "Go to frame...";
+            this.goToFrameButton.Click += new System.EventHandler(this.goToFrameButton_Click);
+            // 
+            // menuSeparator1
+            // 
+            this.menuSeparator1.Name = "menuSeparator1";
             // 
             // zoneStartButton
             // 
-            this.zoneStartButton.Location = new System.Drawing.Point(172, 75);
             this.zoneStartButton.Name = "zoneStartButton";
-            this.zoneStartButton.Size = new System.Drawing.Size(64, 20);
-            this.zoneStartButton.TabIndex = 15;
-            this.zoneStartButton.Text = "Zone Start";
-            this.defaultToolTip.SetToolTip(this.zoneStartButton, "Sets the start frame of a new zone");
+            this.zoneStartButton.Text = "Zone start";
+            this.zoneStartButton.ToolTipText = "Sets the start frame of a new zone";
             this.zoneStartButton.Click += new System.EventHandler(this.zoneStartButton_Click);
-            // 
-            // setZoneButton
-            // 
-            this.setZoneButton.Location = new System.Drawing.Point(306, 75);
-            this.setZoneButton.Name = "setZoneButton";
-            this.setZoneButton.Size = new System.Drawing.Size(30, 20);
-            this.setZoneButton.TabIndex = 17;
-            this.setZoneButton.Text = "Set";
-            this.defaultToolTip.SetToolTip(this.setZoneButton, "Adds the zone to the codec configuration");
-            this.setZoneButton.Click += new System.EventHandler(this.setZoneButton_Click);
             // 
             // zoneEndButton
             // 
-            this.zoneEndButton.Location = new System.Drawing.Point(239, 75);
             this.zoneEndButton.Name = "zoneEndButton";
-            this.zoneEndButton.Size = new System.Drawing.Size(64, 20);
-            this.zoneEndButton.TabIndex = 16;
-            this.zoneEndButton.Text = "Zone End";
-            this.defaultToolTip.SetToolTip(this.zoneEndButton, "Sets the end frame of a new zone");
+            this.zoneEndButton.Text = "Zone end";
+            this.zoneEndButton.ToolTipText = "Sets the end frame of a new zone";
             this.zoneEndButton.Click += new System.EventHandler(this.zoneEndButton_Click);
+            // 
+            // setZoneButton
+            // 
+            this.setZoneButton.Name = "setZoneButton";
+            this.setZoneButton.Text = "Add zone";
+            this.setZoneButton.ToolTipText = "Adds the zone to the codec configuration";
+            this.setZoneButton.Click += new System.EventHandler(this.setZoneButton_Click);
+            // 
+            // introEndButton
+            // 
+            this.introEndButton.Name = "introEndButton";
+            this.introEndButton.Text = "Set intro end";
+            this.introEndButton.ToolTipText = "Set the frame where the intro ends";
+            this.introEndButton.Click += new System.EventHandler(this.introEndButton_Click);
+            // 
+            // creditsStartButton
+            // 
+            this.creditsStartButton.Name = "creditsStartButton";
+            this.creditsStartButton.Text = "Set credits start";
+            this.creditsStartButton.ToolTipText = "Set the frame where the credits start";
+            this.creditsStartButton.Click += new System.EventHandler(this.creditsStartButton_Click);
             // 
             // chapterButton
             // 
-            this.chapterButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.chapterButton.Location = new System.Drawing.Point(338, 75);
             this.chapterButton.Name = "chapterButton";
-            this.chapterButton.Size = new System.Drawing.Size(72, 20);
-            this.chapterButton.TabIndex = 19;
-            this.chapterButton.Text = "Set Chapter";
-            this.defaultToolTip.SetToolTip(this.chapterButton, "Sets the end frame of a new zone");
+            this.chapterButton.Text = "Set chapter";
+            this.chapterButton.ToolTipText = "Sets a chapter at the current frame";
             this.chapterButton.Click += new System.EventHandler(this.chapterButton_Click);
+            // 
+            // menuSeparator2
+            // 
+            this.menuSeparator2.Name = "menuSeparator2";
+            // 
+            // btnFitScreen
+            // 
+            this.btnFitScreen.Name = "btnFitScreen";
+            this.btnFitScreen.Text = "Fit to screen";
+            this.btnFitScreen.ToolTipText = "resets the zoom to the maximum screen size";
+            this.btnFitScreen.Click += new System.EventHandler(this.btnFitScreen_Click);
+            // 
+            // originalSizeButton
+            // 
+            this.originalSizeButton.Name = "originalSizeButton";
+            this.originalSizeButton.Text = "Original size (1:1)";
+            this.originalSizeButton.ToolTipText = "displays the original video size";
+            this.originalSizeButton.Click += new System.EventHandler(this.originalSizeButton_Click);
+            // 
+            // zoomInButton
+            // 
+            this.zoomInButton.Name = "zoomInButton";
+            this.zoomInButton.Text = "Zoom in";
+            this.zoomInButton.Click += new System.EventHandler(this.zoomInButton_Click);
+            // 
+            // zoomOutButton
+            // 
+            this.zoomOutButton.Name = "zoomOutButton";
+            this.zoomOutButton.Text = "Zoom out";
+            this.zoomOutButton.Click += new System.EventHandler(this.zoomOutButton_Click);
+            // 
+            // menuSeparator3
+            // 
+            this.menuSeparator3.Name = "menuSeparator3";
+            // 
+            // btnReloadVideo
+            // 
+            this.btnReloadVideo.Name = "btnReloadVideo";
+            this.btnReloadVideo.Text = "Reload video";
+            this.btnReloadVideo.ToolTipText = "Reload the video file";
+            this.btnReloadVideo.Click += new System.EventHandler(this.btnReloadVideo_Click);
+            // 
+            // menuSeparator4
+            // 
+            this.menuSeparator4.Name = "menuSeparator4";
+            // 
+            // themeMenuItem
+            // 
+            this.themeMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.themeSystemItem,
+            this.themeDarkItem,
+            this.themeLightItem});
+            this.themeMenuItem.Name = "themeMenuItem";
+            this.themeMenuItem.Text = "Theme";
+            // 
+            // themeSystemItem
+            // 
+            this.themeSystemItem.Name = "themeSystemItem";
+            this.themeSystemItem.Text = "System (follow Windows)";
+            this.themeSystemItem.Click += new System.EventHandler(this.themeItem_Click);
+            // 
+            // themeDarkItem
+            // 
+            this.themeDarkItem.Name = "themeDarkItem";
+            this.themeDarkItem.Text = "Dark";
+            this.themeDarkItem.Click += new System.EventHandler(this.themeItem_Click);
+            // 
+            // themeLightItem
+            // 
+            this.themeLightItem.Name = "themeLightItem";
+            this.themeLightItem.Text = "Light";
+            this.themeLightItem.Click += new System.EventHandler(this.themeItem_Click);
             // 
             // videoPanel
             // 
@@ -401,10 +496,10 @@ namespace MeGUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(518, 352);
+            this.ClientSize = new System.Drawing.Size(760, 329);
             this.Controls.Add(this.videoPanel);
             this.Controls.Add(this.buttonPanel);
-            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -415,39 +510,55 @@ namespace MeGUI
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.VideoPlayer_KeyDown);
             this.buttonPanel.ResumeLayout(false);
             this.buttonPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.positionSlider)).EndInit();
+            this.moreMenu.ResumeLayout(false);
             this.videoPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
         #endregion
 
-        private System.Windows.Forms.Button playButton;
-        private System.Windows.Forms.Button nextFrameButton;
-        private System.Windows.Forms.Button previousFrameButton;
-        private System.Windows.Forms.Button ffButton;
-        private System.Windows.Forms.Button fwdButton;
-        private System.Windows.Forms.Button creditsStartButton;
+        private MeGUI.core.gui.PlayerButton playButton;
+        private MeGUI.core.gui.PlayerButton nextFrameButton;
+        private MeGUI.core.gui.PlayerButton previousFrameButton;
+        private MeGUI.core.gui.PlayerButton ffButton;
+        private MeGUI.core.gui.PlayerButton fwdButton;
+        private MeGUI.core.gui.PlayerButton compareButton;
+        private MeGUI.core.gui.PlayerButton compareModeButton;
+        private MeGUI.core.gui.PlayerButton moreButton;
         private System.Windows.Forms.Panel buttonPanel;
-        private System.Windows.Forms.Button zoneStartButton;
-        private System.Windows.Forms.Button zoneEndButton;
-        private System.Windows.Forms.Button setZoneButton;
         private System.Windows.Forms.ContextMenu contextMenu1;
         private System.Windows.Forms.MenuItem mnuZoneStart;
         private System.Windows.Forms.MenuItem mnuZoneEnd;
         private System.Windows.Forms.MenuItem mnuIntroEnd;
         private System.Windows.Forms.MenuItem mnuCreditsStart;
-        private System.Windows.Forms.Button introEndButton;
         private System.Windows.Forms.ToolTip defaultToolTip;
-        private System.Windows.Forms.Button chapterButton;
-        private Button originalSizeButton;
         private CheckBox showPAR;
         private ARChooser arChooser;
-        private Button zoomInButton;
-        private Button zoomOutButton;
-        private Button btnReloadVideo;
-        private Button btnFitScreen;
-        private TrackBar positionSlider;
+        private Label lblCurrentTime;
+        private Label lblTotalTime;
+        private Label lblFrame;
+        private MeGUI.core.gui.PlayerSeekBar positionSlider;
+        private ContextMenuStrip moreMenu;
+        private ToolStripMenuItem goToFrameButton;
+        private ToolStripSeparator menuSeparator1;
+        private ToolStripMenuItem zoneStartButton;
+        private ToolStripMenuItem zoneEndButton;
+        private ToolStripMenuItem setZoneButton;
+        private ToolStripMenuItem introEndButton;
+        private ToolStripMenuItem creditsStartButton;
+        private ToolStripMenuItem chapterButton;
+        private ToolStripSeparator menuSeparator2;
+        private ToolStripMenuItem btnFitScreen;
+        private ToolStripMenuItem originalSizeButton;
+        private ToolStripMenuItem zoomInButton;
+        private ToolStripMenuItem zoomOutButton;
+        private ToolStripSeparator menuSeparator3;
+        private ToolStripMenuItem btnReloadVideo;
+        private ToolStripSeparator menuSeparator4;
+        private ToolStripMenuItem themeMenuItem;
+        private ToolStripMenuItem themeSystemItem;
+        private ToolStripMenuItem themeDarkItem;
+        private ToolStripMenuItem themeLightItem;
         private Panel videoPanel;
         private VideoPlayerControl videoPreview;
 
