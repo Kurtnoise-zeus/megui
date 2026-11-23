@@ -24,6 +24,8 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Windows.Forms;
+using System.Drawing;
+using Gui = MeGUI.core.gui;
 
 namespace MeGUI
 {
@@ -44,7 +46,6 @@ namespace MeGUI
 		{
 			InitializeComponent();
             InitThemeSelector();
-            MeGUI.core.gui.ThemeManager.ThemeWindow(this); // no flash of light colors when the dark theme is on
             List<string> keys = new List<string>(LanguageSelectionContainer.Languages.Keys);
             defaultLanguage2.DataSource = defaultLanguage1.DataSource = keys;
             defaultLanguage2.BindingContext = new BindingContext();
@@ -71,36 +72,22 @@ namespace MeGUI
 
                 cbStandbySettings.DataSource = EnumProxy.CreateArray(new object[] { MeGUISettings.StandbySettings.SystemDefault, MeGUISettings.StandbySettings.DisableSystemStandby, MeGUISettings.StandbySettings.DisableMonitorStandby });
             }
+
+            BuildModernLayout();
+            MeGUI.core.gui.ThemeManager.ThemeWindow(this); // no flash of light colors when the dark theme is on
         }
 
-        private GroupBox gbAppearance;
         private ComboBox cbTheme;
 
         /// <summary>
-        /// Adds the colour theme selector (System / Dark / Light) to the Main tab
+        /// Creates the colour theme selector (System / Dark / Light); it is shown in the Main page
         /// </summary>
         private void InitThemeSelector()
         {
-            gbAppearance = new GroupBox();
-            gbAppearance.Text = " Appearance ";
-            gbAppearance.Location = new System.Drawing.Point(3, 372);
-            gbAppearance.Size = new System.Drawing.Size(579, 56);
-
-            Label lblTheme = new Label();
-            lblTheme.AutoSize = true;
-            lblTheme.Text = "Color theme (all windows):";
-            lblTheme.Location = new System.Drawing.Point(12, 25);
-
             cbTheme = new ComboBox();
             cbTheme.DropDownStyle = ComboBoxStyle.DropDownList;
             cbTheme.Items.AddRange(new object[] { "System (follow Windows)", "Dark", "Light" });
             cbTheme.SelectedIndex = 0;
-            cbTheme.Location = new System.Drawing.Point(180, 21);
-            cbTheme.Size = new System.Drawing.Size(200, 21);
-
-            gbAppearance.Controls.Add(lblTheme);
-            gbAppearance.Controls.Add(cbTheme);
-            tabPage1.Controls.Add(gbAppearance);
         }
 
         /// <summary>
@@ -152,6 +139,366 @@ namespace MeGUI
 
             return (HelpText.ToString());
         }
+        #endregion
+
+        #region Windows 11 settings look
+        // navigation list + pages of rounded cards, built with the existing controls (names, events and the
+        // Settings property are untouched: the controls are only moved from the tab pages into the cards)
+        private float uiScale = 1f;
+        private Font sectionFont;
+        private Gui.SettingsNav nav;
+        private Label pageTitle;
+        private Gui.SettingsSurface footer;
+        private readonly List<Gui.SettingsPage> pages = new List<Gui.SettingsPage>();
+        private readonly List<Button> flatButtons = new List<Button>();
+
+        private int S(int value)
+        {
+            return (int)Math.Round(value * uiScale);
+        }
+
+        private void BuildModernLayout()
+        {
+            uiScale = MainForm.Instance != null ? MainForm.Instance.Settings.DPIRescale(1000) / 1000f : 1f;
+            SuspendLayout();
+
+            // all the sizes below are computed with uiScale: no automatic scaling on top of it
+            AutoScaleMode = AutoScaleMode.None;
+            Font = new Font("Segoe UI", 10F);
+            sectionFont = new Font("Segoe UI Semibold", 10.5F);
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
+            Rectangle area = Screen.PrimaryScreen.WorkingArea;
+            ClientSize = new Size(Math.Min(S(1040), area.Width - S(60)), Math.Min(S(780), area.Height - S(120)));
+            MinimumSize = new Size(Math.Min(S(760), area.Width), Math.Min(S(520), area.Height));
+
+            // the pages
+            BuildMainPage();
+            BuildExtendedPage();
+            BuildWorkerPage();
+            BuildExternalPage();
+
+            // the window: pages (fill), title, navigation (left), footer (bottom). Added in this order: the
+            // docked controls added last are laid out first
+            Controls.Clear();
+
+            Gui.SettingsSurface content = new Gui.SettingsSurface(Gui.SettingsSurfaceKind.Window);
+            content.Dock = DockStyle.Fill;
+            foreach (Gui.SettingsPage page in pages)
+            {
+                page.Visible = false;
+                content.Controls.Add(page);
+            }
+            pageTitle = new Label();
+            pageTitle.AutoSize = false;
+            pageTitle.Dock = DockStyle.Top;
+            pageTitle.Height = S(66);
+            pageTitle.Padding = new Padding(S(34), S(6), 0, 0);
+            pageTitle.TextAlign = ContentAlignment.MiddleLeft;
+            pageTitle.Font = new Font("Segoe UI Semibold", 20F);
+            pageTitle.UseMnemonic = false;
+            content.Controls.Add(pageTitle);
+
+            nav = new Gui.SettingsNav(uiScale);
+            nav.Dock = DockStyle.Left;
+            nav.Width = S(260);
+            nav.AddItem(tabPage1.Text, "");
+            nav.AddItem(tabPage3.Text, "");
+            nav.AddItem(tabPage4.Text, "");
+            nav.AddItem(tabPage2.Text, "");
+            nav.SelectedIndexChanged += delegate { ShowPage(nav.SelectedIndex); };
+
+            footer = new Gui.SettingsSurface(Gui.SettingsSurfaceKind.Footer);
+            footer.Dock = DockStyle.Bottom;
+            footer.Height = S(64);
+            foreach (Control c in new Control[] { helpButton1, saveButton, cancelButton })
+            {
+                c.Dock = DockStyle.None;
+                c.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                footer.Controls.Add(c);
+            }
+            saveButton.Size = new Size(S(120), S(34));
+            cancelButton.Size = new Size(S(120), S(34));
+            flatButtons.Add(saveButton);
+            flatButtons.Add(cancelButton);
+            footer.Resize += delegate { LayoutFooter(); };
+            LayoutFooter();
+
+            Controls.Add(content);
+            Controls.Add(nav);
+            Controls.Add(footer);
+
+            ApplyModernTheme();
+            Gui.ThemeManager.ThemeChanged += OnModernThemeChanged;
+            Disposed += delegate { Gui.ThemeManager.ThemeChanged -= OnModernThemeChanged; };
+
+            ResumeLayout(true);
+            nav.SelectedIndex = 0;
+        }
+
+        private void LayoutFooter()
+        {
+            int top = (footer.Height - saveButton.Height) / 2;
+            cancelButton.Location = new Point(footer.Width - S(24) - cancelButton.Width, top);
+            saveButton.Location = new Point(cancelButton.Left - S(10) - saveButton.Width, top);
+            helpButton1.Location = new Point(S(24), (footer.Height - helpButton1.Height) / 2);
+        }
+
+        private void ShowPage(int index)
+        {
+            if (index < 0 || index >= pages.Count)
+                return;
+            string[] titles = { tabPage1.Text, tabPage3.Text, tabPage4.Text, tabPage2.Text };
+            pageTitle.Text = titles[index];
+            for (int i = 0; i < pages.Count; i++)
+                pages[i].Visible = (i == index);
+        }
+
+        private void OnModernThemeChanged(object sender, EventArgs e)
+        {
+            // may be raised from another thread (system colour change)
+            if (IsHandleCreated && !IsDisposed)
+                BeginInvoke(new MethodInvoker(ApplyModernTheme));
+        }
+
+        private void ApplyModernTheme()
+        {
+            foreach (Button b in flatButtons)
+                StyleButton(b, b == saveButton);
+            Invalidate(true);
+        }
+
+        /// <summary>flat button with the colours of the palette (accent colour for the main button)</summary>
+        private void StyleButton(Button b, bool primary)
+        {
+            Gui.ThemePalette p = Gui.ThemeManager.Palette;
+            bool dark = Gui.ThemeManager.IsDark;
+            b.UseVisualStyleBackColor = false;
+            b.FlatStyle = FlatStyle.Flat;
+            if (primary)
+            {
+                b.BackColor = p.Accent;
+                b.ForeColor = p.OnAccent;
+                b.FlatAppearance.BorderColor = p.Accent;
+                b.FlatAppearance.MouseOverBackColor = Gui.ThemeManager.Blend(p.Accent, dark ? Color.White : Color.Black, 0.12);
+                b.FlatAppearance.MouseDownBackColor = Gui.ThemeManager.Blend(p.Accent, dark ? Color.Black : Color.White, 0.15);
+            }
+            else
+            {
+                b.BackColor = Gui.ThemeManager.Blend(p.Surface, p.Text, dark ? 0.08 : 0.02);
+                b.ForeColor = p.Text;
+                b.FlatAppearance.BorderColor = Gui.ThemeManager.Blend(p.Surface, p.Text, 0.18);
+                b.FlatAppearance.MouseOverBackColor = Gui.ThemeManager.Blend(p.Surface, p.Text, 0.14);
+                b.FlatAppearance.MouseDownBackColor = Gui.ThemeManager.Blend(p.Surface, p.Text, 0.10);
+            }
+        }
+
+        #region helpers to fill the pages
+        private Gui.SettingsPage NewPage()
+        {
+            Gui.SettingsPage page = new Gui.SettingsPage(uiScale);
+            pages.Add(page);
+            return page;
+        }
+
+        private void Section(Gui.SettingsPage page, string title)
+        {
+            page.AddSection(title, sectionFont);
+        }
+
+        private static string Cap(string text)
+        {
+            text = text.Replace("  ", " ").Trim().TrimEnd(':').Trim();
+            return text.Length == 0 ? text : char.ToUpper(text[0]) + text.Substring(1);
+        }
+
+        /// <summary>a card with a toggle switch (its Text is the title); other controls can go on the left of the switch</summary>
+        private void ToggleRow(Gui.SettingsPage page, Gui.ToggleSwitch toggle, string description, params Control[] leftOfSwitch)
+        {
+            toggle.AutoSize = false;
+            toggle.Size = new Size(S(96), S(26));
+            page.AddCard().AddToggle(toggle, description, leftOfSwitch);
+        }
+
+        /// <summary>a card with a title and the controls of the setting on the right</summary>
+        private void ValueRow(Gui.SettingsPage page, string title, string description, params Control[] controls)
+        {
+            page.AddCard().AddRow(title, description, controls);
+        }
+
+        private Control Wide(Control c, int width)
+        {
+            c.Width = S(width);
+            return c;
+        }
+
+        private Button Btn(Button b)
+        {
+            b.AutoSize = false;
+            b.Height = S(32);
+            b.Width = b.Text.Length <= 2
+                ? S(34)
+                : Math.Max(S(96), TextRenderer.MeasureText(b.Text, Font).Width + S(36));
+            if (!flatButtons.Contains(b))
+                flatButtons.Add(b);
+            return b;
+        }
+
+        private Control Bar(FileBar bar, int width)
+        {
+            bar.Size = new Size(S(width), S(30));
+            return bar;
+        }
+        #endregion
+
+        #region pages
+        private Gui.SettingsPage BuildMainPage()
+        {
+            Gui.SettingsPage page = NewPage();
+
+            Section(page, "Appearance");
+            ValueRow(page, "Color theme", "Applies to all MeGUI windows", Wide(cbTheme, 240));
+
+            Section(page, "General");
+            ToggleRow(page, chkDebugInformation, null);
+            ToggleRow(page, cbUseITUValues, null);
+            ToggleRow(page, openProgressWindow, null);
+            ToggleRow(page, deleteIntermediateFiles, null);
+            ToggleRow(page, deleteAbortedOutput, null);
+            ToggleRow(page, openScript, null);
+
+            Section(page, "Miscellaneous");
+            ValueRow(page, Cap(lblMinimumLength.Text), null, Wide(minimumTitleLength, 90));
+            ValueRow(page, Cap(label15.Text), null, Wide(acceptableFPSError, 90));
+            ValueRow(page, "Dialogs", null, Btn(resetDialogs));
+            ValueRow(page, "Source detector", null, Btn(configSourceDetector));
+
+            Section(page, "Default output");
+            ValueRow(page, "Default output directory", null, Bar(defaultOutputDir, 340), Btn(btnClearOutputDirecoty));
+            ValueRow(page, "Custom file size values", null, Wide(targetSizeSCBox1, 300));
+
+            Section(page, "Default languages");
+            ValueRow(page, "Default language 1", null, Wide(defaultLanguage1, 220));
+            ValueRow(page, "Default language 2", null, Wide(defaultLanguage2, 220));
+
+            Section(page, "AviSynth / AviSynth+");
+            ToggleRow(page, chkEnableHwd, null, Wide(cbHwdDecoder, 180));
+            ToggleRow(page, chkInput8Bit, null);
+            ValueRow(page, Cap(lblffmsThreads.Text), null, Wide(ffmsThreads, 90));
+            ToggleRow(page, chkDirectShowSource, null);
+            return page;
+        }
+
+        private Gui.SettingsPage BuildExtendedPage()
+        {
+            Gui.SettingsPage page = NewPage();
+
+            Section(page, "Auto update");
+            ToggleRow(page, useAutoUpdateCheckbox, null);
+            ValueRow(page, "Update servers", null, Wide(cbAutoUpdateServerSubList, 200), Btn(configureServersButton));
+            ToggleRow(page, backupfiles, null);
+
+            Section(page, "Network");
+            Gui.SettingsCard proxy = page.AddCard();
+            proxy.AddRow("HTTP proxy for auto update", null, Wide(cbHttpProxyMode, 220));
+            proxy.AddSubRow("Server", Wide(txt_httpproxyaddress, 260));
+            proxy.AddSubRow("Port", Wide(txt_httpproxyport, 100));
+            proxy.AddSubRow("Login", Wide(txt_httpproxyuid, 220));
+            proxy.AddSubRow("Password", Wide(txt_httpproxypwd, 220));
+
+            Section(page, "After encoding");
+            Gui.SettingsCard after = page.AddCard();
+            foreach (RadioButton r in new RadioButton[] { donothing, rbCloseMeGUI, shutdown, runCommand })
+                r.AutoSize = true;
+            after.AddLeft(donothing);
+            after.AddLeft(rbCloseMeGUI);
+            after.AddLeft(shutdown);
+            after.AddLeft(runCommand, Wide(command, 320));
+
+            Section(page, "Video preview");
+            ToggleRow(page, chkEnsureCorrectPlaybackSpeed, null);
+            ToggleRow(page, cbAddTimePos, null);
+            ToggleRow(page, chAlwaysOnTop, null);
+
+            Section(page, "Automated encoding");
+            ValueRow(page, "AutoEncode defaults", null, Btn(configAutoEncodeDefaults));
+            ValueRow(page, Cap(label13.Text), null, Wide(nbPasses, 90));
+            ToggleRow(page, keep2ndPassLogFile, null);
+            ToggleRow(page, keep2ndPassOutput, null);
+
+            Section(page, "Optional output extensions");
+            ValueRow(page, Cap(label12.Text), null, Wide(videoExtension, 160));
+            ValueRow(page, Cap(label11.Text), null, Wide(audioExtension, 160));
+            ValueRow(page, Cap(lblForcedName.Text), null, Wide(txtForcedName, 240));
+            return page;
+        }
+
+        private Gui.SettingsPage BuildWorkerPage()
+        {
+            Gui.SettingsPage page = NewPage();
+
+            Section(page, "Global worker settings");
+            ValueRow(page, Cap(label6.Text), null, Wide(workerMaximumCount, 90));
+            ToggleRow(page, cbAutoStart, null);
+            ToggleRow(page, cbAutoStartOnStartup, null);
+            ToggleRow(page, cbRemoveJob, null);
+            ValueRow(page, "Standby", Cap(label7.Text), Wide(cbStandbySettings, 240));
+
+            Section(page, "Worker priority");
+            ValueRow(page, Cap(label3.Text), null, Wide(cbJobType, 200));
+            ValueRow(page, Cap(label5.Text), null, Wide(cbProcessPriority, 200));
+            ValueRow(page, Cap(label4.Text), null, Wide(cbIOPriority, 200));
+
+            Section(page, "Worker rules");
+            workerSettingsListBox.Height = S(130);
+            page.AddCard().AddWide("Worker rule sets", "Defines how many jobs of specific types can run in parallel",
+                workerSettingsListBox, Btn(btnDeleteSettings), Btn(btnResetSettings));
+
+            workerJobsListBox.Height = S(130);
+            label2.AutoSize = false;
+            label2.Height = S(40);
+            page.AddCard().AddWide("New worker rule set", "Select the job types, then the maximum number of parallel jobs",
+                workerJobsListBox, label2, numericUpDown1, Btn(btnAddSettings));
+            return page;
+        }
+
+        private Gui.SettingsPage BuildExternalPage()
+        {
+            Gui.SettingsPage page = NewPage();
+
+            Section(page, "AAC encoders");
+            ProgramCard(page, useQAAC, lblQaac, qaacLocation);
+            ProgramCard(page, useFDKAac, lblFDK, fdkaacLocation);
+            ProgramCard(page, useNeroAacEnc, lblNero, neroaacencLocation);
+
+            Section(page, "DGIndex tools");
+            ToggleRow(page, useDGIndexIM, null);
+            ToggleRow(page, useDGIndexNV, null);
+            ToggleRow(page, cbAutoLoadDG, null);
+            autoForceFilm.AutoSize = false;
+            autoForceFilm.Size = new Size(S(96), S(26));
+            Gui.SettingsCard film = page.AddCard();
+            film.AddToggle(autoForceFilm, null);
+            film.AddSubRow("Percent", Wide(forceFilmPercentage, 90));
+
+            Section(page, "Misc");
+            if (!MainForm.Instance.Settings.IsMeGUIx64 && MainForm.Instance.Settings.IsOSx64)
+                ToggleRow(page, chk64Bit, null);
+            ToggleRow(page, chx264ExternalMuxer, null);
+            ValueRow(page, "Temp directory for MP4 muxer", null, Bar(tempDirMP4, 340), Btn(btnClearMP4TempDirectory));
+            return page;
+        }
+
+        /// <summary>an encoder: enable switch, and its location under it</summary>
+        private void ProgramCard(Gui.SettingsPage page, Gui.ToggleSwitch enable, Label locationLabel, FileBar location)
+        {
+            enable.AutoSize = false;
+            enable.Size = new Size(S(96), S(26));
+            Gui.SettingsCard card = page.AddCard();
+            card.AddToggle(enable, null);
+            card.AddSubRow(Cap(locationLabel.Text), Bar(location, 380));
+        }
+        #endregion
         #endregion
 
         #region worker tab

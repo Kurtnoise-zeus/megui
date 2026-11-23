@@ -323,7 +323,7 @@ namespace MeGUI.core.gui
             return alternate ? Blend(p.Surface, p.Accent, 0.18) : p.Surface;
         }
 
-        private static Color Blend(Color a, Color b, double amount)
+        internal static Color Blend(Color a, Color b, double amount)
         {
             return Color.FromArgb(
                 (int)Math.Round(a.R + (b.R - a.R) * amount),
