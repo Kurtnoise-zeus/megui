@@ -35,6 +35,7 @@ namespace MeGUI
         public AutoEncodeDefaults()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         public AutoEncodeDefaultsSettings Settings
@@ -163,6 +164,27 @@ namespace MeGUI
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see MeGUI.core.gui.ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Output options");
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(containerLabel.Text), null, d.Wide(container, 160));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(DeviceLabel.Text), null, d.Wide(device, 160));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(splitSize, 220));
+            d.Section("Size and bitrate");
+            AverageBitrateLabel.AutoSize = true;
+            d.Radios(300,
+                MeGUI.core.gui.ModernDialog.R(FileSizeRadio, d.Wide(fileSize, 220)),
+                MeGUI.core.gui.ModernDialog.R(averageBitrateRadio, d.Wide(projectedBitrateKBits, 90), AverageBitrateLabel),
+                MeGUI.core.gui.ModernDialog.R(noTargetRadio));
+            d.Section("Additional content");
+            d.Toggle(addSubsNChapters, null);
+            d.Finish(null, 680, saveButton, cancelButton);
         }
     }
 }

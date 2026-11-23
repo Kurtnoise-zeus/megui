@@ -29,6 +29,7 @@ namespace MeGUI
         public SourceDetectorConfigWindow()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         private void portionsAllowed_CheckedChanged(object sender, EventArgs e)
@@ -66,6 +67,27 @@ namespace MeGUI
                 maximumPortions.Value = value.MaxPortions;
                 priority.SelectedIndex = (int)value.Priority;
             }
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see MeGUI.core.gui.ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Analysis");
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(analysisPercentLabel.Text), null, d.Wide(analysisPercent, 110));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(minAnalyseSectionsLabel.Text), null, d.Wide(minAnalyseSections, 110));
+            d.Section("Hybrid detection");
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(hybridThresholdLabel.Text), null, d.Wide(hybridThreshold, 110));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(hybridFOThresholdLabel.Text), null, d.Wide(hybridFOThreshold, 110));
+            d.Section("Portions");
+            d.Toggle(portionsAllowed, null);
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(portionThresholdLabel.Text), null, d.Wide(portionThreshold, 110));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(maximumPortionsLabel.Text), null, d.Wide(maximumPortions, 110));
+            d.Section("Process");
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(priorityLabel.Text), null, d.Wide(priority, 160));
+            d.Finish(helpButton1, 620, saveButton, cancelButton);
         }
     }
 }

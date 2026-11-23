@@ -62,7 +62,7 @@ namespace MeGUI
             this.averageBitrateRadio = new System.Windows.Forms.RadioButton();
             this.FileSizeRadio = new System.Windows.Forms.RadioButton();
             this.AverageBitrateLabel = new System.Windows.Forms.Label();
-            this.queueButton = new System.Windows.Forms.Button();
+            this.queueButton = new MeGUI.core.gui.RoundedButton();
             this.OutputGroupBox = new System.Windows.Forms.GroupBox();
             this.device = new System.Windows.Forms.ComboBox();
             this.DeviceLabel = new System.Windows.Forms.Label();
@@ -71,8 +71,8 @@ namespace MeGUI
             this.containerLabel = new System.Windows.Forms.Label();
             this.muxedOutputLabel = new System.Windows.Forms.Label();
             this.muxedOutput = new MeGUI.FileBar();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.addSubsNChapters = new System.Windows.Forms.CheckBox();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
+            this.addSubsNChapters = new MeGUI.core.gui.ToggleSwitch();
             this.defaultToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             label1 = new System.Windows.Forms.Label();
@@ -360,10 +360,10 @@ namespace MeGUI
         private System.Windows.Forms.RadioButton FileSizeRadio;
         private System.Windows.Forms.Label AverageBitrateLabel;
         private System.Windows.Forms.GroupBox OutputGroupBox;
-        private System.Windows.Forms.Button queueButton;
-        private System.Windows.Forms.Button cancelButton;
+        private MeGUI.core.gui.RoundedButton queueButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
         private System.Windows.Forms.TextBox projectedBitrateKBits;
-        private System.Windows.Forms.CheckBox addSubsNChapters;
+        private MeGUI.core.gui.ToggleSwitch addSubsNChapters;
         private System.Windows.Forms.RadioButton averageBitrateRadio;
         private System.Windows.Forms.RadioButton noTargetRadio;
         private System.Windows.Forms.Label muxedOutputLabel;

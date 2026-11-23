@@ -36,8 +36,8 @@ namespace MeGUI
             this.FileSizeRadio = new System.Windows.Forms.RadioButton();
             this.projectedBitrateKBits = new System.Windows.Forms.TextBox();
             this.AverageBitrateLabel = new System.Windows.Forms.Label();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.saveButton = new System.Windows.Forms.Button();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
+            this.saveButton = new MeGUI.core.gui.RoundedButton();
             this.OutputGroupBox = new System.Windows.Forms.GroupBox();
             this.DeviceLabel = new System.Windows.Forms.Label();
             this.device = new System.Windows.Forms.ComboBox();
@@ -45,7 +45,7 @@ namespace MeGUI
             this.splitSize = new MeGUI.core.gui.TargetSizeSCBox();
             this.container = new System.Windows.Forms.ComboBox();
             this.containerLabel = new System.Windows.Forms.Label();
-            this.addSubsNChapters = new System.Windows.Forms.CheckBox();
+            this.addSubsNChapters = new MeGUI.core.gui.ToggleSwitch();
             this.AutomaticEncodingGroup.SuspendLayout();
             this.OutputGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -267,12 +267,12 @@ namespace MeGUI
         private System.Windows.Forms.RadioButton FileSizeRadio;
         private System.Windows.Forms.TextBox projectedBitrateKBits;
         private System.Windows.Forms.Label AverageBitrateLabel;
-        private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button saveButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
+        private MeGUI.core.gui.RoundedButton saveButton;
         private System.Windows.Forms.GroupBox OutputGroupBox;
         private System.Windows.Forms.ComboBox container;
         private System.Windows.Forms.Label containerLabel;
-        private System.Windows.Forms.CheckBox addSubsNChapters;
+        private MeGUI.core.gui.ToggleSwitch addSubsNChapters;
         private MeGUI.core.gui.TargetSizeSCBox fileSize;
         private MeGUI.core.gui.TargetSizeSCBox splitSize;
         private System.Windows.Forms.Label label1;

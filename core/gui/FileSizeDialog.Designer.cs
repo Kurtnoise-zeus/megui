@@ -31,8 +31,8 @@ namespace MeGUI.core.gui
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileSizeDialog));
             this.number = new System.Windows.Forms.NumericUpDown();
             this.units = new System.Windows.Forms.ComboBox();
-            this.okButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
+            this.okButton = new MeGUI.core.gui.RoundedButton();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.number)).BeginInit();
             this.SuspendLayout();
@@ -126,8 +126,8 @@ namespace MeGUI.core.gui
 
         private System.Windows.Forms.NumericUpDown number;
         private System.Windows.Forms.ComboBox units;
-        private System.Windows.Forms.Button okButton;
-        private System.Windows.Forms.Button cancelButton;
+        private MeGUI.core.gui.RoundedButton okButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
         private System.Windows.Forms.Label label1;
     }
 }

@@ -35,7 +35,7 @@ namespace MeGUI.packages.tools.besplitter
             this.input = new MeGUI.FileBar();
             this.cuts = new MeGUI.FileBar();
             this.output = new MeGUI.FileBar();
-            this.goButton = new System.Windows.Forms.Button();
+            this.goButton = new MeGUI.core.gui.RoundedButton();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.SuspendLayout();
             // 
@@ -156,7 +156,7 @@ namespace MeGUI.packages.tools.besplitter
         private FileBar input;
         private FileBar cuts;
         private FileBar output;
-        private System.Windows.Forms.Button goButton;
+        private MeGUI.core.gui.RoundedButton goButton;
         private MeGUI.core.gui.HelpButton helpButton1;
     }
 }

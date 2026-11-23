@@ -41,9 +41,9 @@ namespace MeGUI
             this.portionThreshold = new System.Windows.Forms.NumericUpDown();
             this.maximumPortionsLabel = new System.Windows.Forms.Label();
             this.maximumPortions = new System.Windows.Forms.NumericUpDown();
-            this.portionsAllowed = new System.Windows.Forms.CheckBox();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
+            this.portionsAllowed = new MeGUI.core.gui.ToggleSwitch();
+            this.saveButton = new MeGUI.core.gui.RoundedButton();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
             this.priority = new System.Windows.Forms.ComboBox();
             this.priorityLabel = new System.Windows.Forms.Label();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
@@ -333,9 +333,9 @@ namespace MeGUI
         private System.Windows.Forms.NumericUpDown portionThreshold;
         private System.Windows.Forms.Label maximumPortionsLabel;
         private System.Windows.Forms.NumericUpDown maximumPortions;
-        private System.Windows.Forms.CheckBox portionsAllowed;
-        private System.Windows.Forms.Button saveButton;
-        private System.Windows.Forms.Button cancelButton;
+        private MeGUI.core.gui.ToggleSwitch portionsAllowed;
+        private MeGUI.core.gui.RoundedButton saveButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
         private System.Windows.Forms.ComboBox priority;
         private System.Windows.Forms.Label priorityLabel;
         private MeGUI.core.gui.HelpButton helpButton1;

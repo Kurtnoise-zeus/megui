@@ -37,6 +37,7 @@ namespace MeGUI.packages.tools.besplitter
         {
             this.info = info;
             InitializeComponent();
+            BuildModernLayout();
 
             filters = new OutputFileType[] {
                     AudioType.AC3,
@@ -168,6 +169,18 @@ namespace MeGUI.packages.tools.besplitter
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see MeGUI.core.gui.ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Bar(input, 380));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(label2.Text), null, d.Bar(cuts, 380));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(label3.Text), null, d.Bar(output, 380));
+            d.Finish(helpButton1, 680, goButton);
         }
     }
 

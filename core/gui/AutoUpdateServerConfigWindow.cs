@@ -33,6 +33,7 @@ namespace MeGUI.core.gui
         public AutoUpdateServerConfigWindow()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         private void addServerButton_Click(object sender, EventArgs e)
@@ -173,6 +174,19 @@ namespace MeGUI.core.gui
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            d.Row(ModernDialog.Cap(label1.Text), null, d.Wide(subList, 260));
+            serverList.Height = d.S(200);
+            d.Section("Servers");
+            d.Card().AddWide(null, null, serverList, d.Btn(addServerButton), d.Btn(removeSelectedServersButton));
+            d.Finish(helpButton1, 560, okButton, cancelButton);
         }
     }
 }

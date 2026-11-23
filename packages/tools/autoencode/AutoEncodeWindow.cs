@@ -47,6 +47,7 @@ namespace MeGUI
         public AutoEncodeWindow()
 		{
             InitializeComponent();
+            BuildModernLayout();
         }
         public AutoEncodeWindow(VideoStream videoStream, List<AudioJob> audioStreams, bool prerender, VideoInfo vInfo) : this()
         {
@@ -459,6 +460,29 @@ namespace MeGUI
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see MeGUI.core.gui.ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Output options");
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(containerLabel.Text), null, d.Wide(container, 160));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(DeviceLabel.Text), null, d.Wide(device, 160));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(splitting, 220));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(muxedOutputLabel.Text), null, d.Bar(muxedOutput, 380));
+            d.Section("Size and bitrate");
+            AverageBitrateLabel.AutoSize = true;
+            d.Radios(300,
+                MeGUI.core.gui.ModernDialog.R(FileSizeRadio, d.Wide(targetSize, 220)),
+                MeGUI.core.gui.ModernDialog.R(averageBitrateRadio, d.Wide(projectedBitrateKBits, 90), AverageBitrateLabel),
+                MeGUI.core.gui.ModernDialog.R(noTargetRadio));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap(label2.Text), null, d.Wide(videoSize, 140));
+            d.Section("Additional content");
+            d.Toggle(addSubsNChapters, null);
+            d.Finish(helpButton1, 720, queueButton, cancelButton);
         }
     }
     public class AutoEncodeTool : ITool

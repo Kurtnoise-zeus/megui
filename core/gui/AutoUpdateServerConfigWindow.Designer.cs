@@ -31,11 +31,11 @@ namespace MeGUI.core.gui
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutoUpdateServerConfigWindow));
             this.serverList = new System.Windows.Forms.ListBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.addServerButton = new System.Windows.Forms.Button();
-            this.removeSelectedServersButton = new System.Windows.Forms.Button();
+            this.addServerButton = new MeGUI.core.gui.RoundedButton();
+            this.removeSelectedServersButton = new MeGUI.core.gui.RoundedButton();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.okButton = new System.Windows.Forms.Button();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
+            this.okButton = new MeGUI.core.gui.RoundedButton();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
@@ -196,11 +196,11 @@ namespace MeGUI.core.gui
 
         private System.Windows.Forms.ListBox serverList;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button addServerButton;
-        private System.Windows.Forms.Button removeSelectedServersButton;
+        private MeGUI.core.gui.RoundedButton addServerButton;
+        private MeGUI.core.gui.RoundedButton removeSelectedServersButton;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button okButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
+        private MeGUI.core.gui.RoundedButton okButton;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox subList;

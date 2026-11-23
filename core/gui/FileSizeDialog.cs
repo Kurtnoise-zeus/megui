@@ -35,6 +35,7 @@ namespace MeGUI.core.gui
         public FileSizeDialog()
         {
             InitializeComponent();
+            BuildModernLayout();
             CurrentUnit = Unit.MB;
         }
 
@@ -130,6 +131,16 @@ namespace MeGUI.core.gui
         {
             if (e.KeyChar == '\r')
                 okButton.PerformClick();
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            d.Row(ModernDialog.Cap(label1.Text), null, d.Wide(number, 160), d.Wide(units, 90));
+            d.Finish(null, 520, okButton, cancelButton);
         }
     }
 }
