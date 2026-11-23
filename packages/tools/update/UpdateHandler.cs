@@ -1,4 +1,4 @@
-﻿// ****************************************************************************
+// ****************************************************************************
 // 
 // Copyright (C) 2005-2026 Doom9 & al
 // 
@@ -255,6 +255,7 @@ namespace MeGUI
                 // WebClient sends no User-Agent by default, which some servers/CDNs answer with an HTML page
                 wc.Headers[HttpRequestHeader.UserAgent] = "MeGUI/" + Application.ProductVersion;
                 long lastActivityTicks = DateTime.UtcNow.Ticks;
+                long lastProgressUpdateTicks = 0;
                 wc.DownloadFileCompleted += delegate(object sender, AsyncCompletedEventArgs e)
                 {
                     if (e.Cancelled)
@@ -280,8 +281,9 @@ namespace MeGUI
                 wc.DownloadProgressChanged += delegate(object sender, DownloadProgressChangedEventArgs e)
                 {
                     Interlocked.Exchange(ref lastActivityTicks, DateTime.UtcNow.Ticks);
-                    if (_updateWindow != null)
+                    if (_updateWindow != null && (e.ProgressPercentage == 100 || DateTime.UtcNow.Ticks - Interlocked.Read(ref lastProgressUpdateTicks) >= TimeSpan.TicksPerMillisecond * 100))
                     {
+                        Interlocked.Exchange(ref lastProgressUpdateTicks, DateTime.UtcNow.Ticks);
                         string text = string.Format("Downloading {0} - {1} kb / {2} kb", packageName, (e.BytesReceived / 1024d).ToString("##,#"), (e.TotalBytesToReceive / 1024d).ToString("##,#"));
                         text += string.Format(" ({0} kb/s)", (e.BytesReceived / 1024d / sw.Elapsed.TotalSeconds).ToString("##,#"));
                         _updateWindow.SetProgressBar(0, (int)e.TotalBytesToReceive, (int)e.BytesReceived, text);
