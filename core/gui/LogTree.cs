@@ -48,7 +48,29 @@ namespace MeGUI.core.gui
         private void OnThemeChanged(object sender, EventArgs e)
         {
             // may be raised from another thread (system colour change)
-            Util.ThreadSafeRun(treeView, delegate { BuildImages(); });
+            Util.ThreadSafeRun(treeView, delegate
+            {
+                BuildImages();
+                ApplyTreeTheme();
+                // the theme engine restores the native theme of the tree in its own pass: apply ours after it
+                if (treeView.IsHandleCreated)
+                    treeView.BeginInvoke(new MethodInvoker(ApplyTreeTheme));
+            });
+        }
+
+        /// <summary>native theme of the tree (scroll bars): explorer style in light mode, dark explorer style in dark mode</summary>
+        private void ApplyTreeTheme()
+        {
+            if (!OSInfo.IsWindowsVistaOrNewer || !treeView.IsHandleCreated)
+                return;
+            try
+            {
+                OSInfo.SetWindowTheme(treeView.Handle, ThemeManager.IsDark ? "DarkMode_Explorer" : "explorer", null);
+            }
+            catch (Exception)
+            {
+                // dark scroll bars not available: keep the standard ones
+            }
         }
 
         /// <summary>
@@ -289,8 +311,7 @@ namespace MeGUI.core.gui
 
         private void LogTree_Load(object sender, EventArgs e)
         {
-            if (OSInfo.IsWindowsVistaOrNewer)
-                OSInfo.SetWindowTheme(treeView.Handle, "explorer", null);
+            ApplyTreeTheme();
         }
 
         private void ResetOverlayIcon_Click(object sender, EventArgs e)

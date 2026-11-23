@@ -794,7 +794,7 @@ namespace MeGUI.core.gui
         private void JobQueue_Load(object sender, EventArgs e)
         {
 
-            if (OSInfo.IsWindowsVistaOrNewer)
+            if (OSInfo.IsWindowsVistaOrNewer && !MeGUI.core.gui.ThemeManager.IsDark) // dark: native theme set by the theme engine
                 OSInfo.SetWindowTheme(queueListView.Handle, "explorer", null);
         }
 

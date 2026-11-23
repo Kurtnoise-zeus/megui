@@ -776,7 +776,7 @@ namespace MeGUI
             else if (this.Location.X + this.Size.Width > iScreenWidth)
                 this.Location = new Point(iScreenWidth - this.Size.Width, this.Location.Y);
 
-            if (OSInfo.IsWindowsVistaOrNewer)
+            if (OSInfo.IsWindowsVistaOrNewer && !MeGUI.core.gui.ThemeManager.IsDark) // dark: native theme set by the theme engine
                 OSInfo.SetWindowTheme(listViewDetails.Handle, "explorer", null);
         }
         #endregion

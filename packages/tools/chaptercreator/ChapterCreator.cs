@@ -79,7 +79,7 @@ namespace MeGUI
 
         private void ChapterCreator_Load(object sender, EventArgs e)
         {
-            if (OSInfo.IsWindowsVistaOrNewer)
+            if (OSInfo.IsWindowsVistaOrNewer && !MeGUI.core.gui.ThemeManager.IsDark) // dark: native theme set by the theme engine
                 OSInfo.SetWindowTheme(chapterListView.Handle, "explorer", null);
         }
 
