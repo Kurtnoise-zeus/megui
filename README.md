@@ -16,7 +16,7 @@ Just open the MeGUI.sln file using Visual Studio and restaure NuGet missing pack
 
 ## What's new
 
-Nothing really new comparing to the official release except :
+Main new things comparing to the official release :
 
 - Audio transcoding in order to use channel mask values. This requires avisynth+ 3.7.3 or higher.
 - Demuxers tool, mainly for mkv/webm/mp4/mov/ts/m2ts
@@ -24,7 +24,11 @@ Nothing really new comparing to the official release except :
 - FFmpeg DCA/EAC3/THD Audio Encoders (https://ffmpeg.org/)
 - BestSource avisynth support (https://github.com/vapoursynth/bestsource/releases)
 - FFV1 Lossless Video Encoder (https://ffmpeg.org/)
-- SVT-AV1-Essential Video Encoder (https://github.com/nekotrix/SVT-AV1-Essential) 
+- SVT-AV1-Essential Video Encoder (https://github.com/nekotrix/SVT-AV1-Essential)
+- PGS Subtitles Extractor including colors preview
+- Video preview/player improvements
+- Dark/Light/System Colors Theme
+- Removed several libraries dependencies 
 
 ## Release
 
