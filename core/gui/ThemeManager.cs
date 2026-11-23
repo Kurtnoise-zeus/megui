@@ -293,6 +293,12 @@ namespace MeGUI.core.gui
         #endregion
 
         #region colours for code that sets colours itself
+        /// <summary>fill colour of the progress bars in dark mode (white text stays readable on it)</summary>
+        public static Color ProgressFill
+        {
+            get { return Color.FromArgb(0x00, 0x78, 0xD4); }
+        }
+
         /// <summary>background of an input field (text box, numeric box): system colour in light mode</summary>
         public static Color InputBack
         {

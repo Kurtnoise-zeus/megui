@@ -57,6 +57,12 @@ namespace MeGUI.core.gui
                 return;
             }
 
+            if (ThemeManager.IsDark)
+            {
+                PaintDark(e.Graphics);
+                return;
+            }
+
             Rectangle rect = ClientRectangle;
             Graphics g = e.Graphics;
 
@@ -79,6 +85,33 @@ namespace MeGUI.core.gui
                 Point location = new Point(Convert.ToInt32((rect.Width / 2) - (len.Width / 2)), Convert.ToInt32((rect.Height / 2) - (len.Height / 2)));
                 // Draw the custom text
                 g.DrawString(text, f, Brushes.Black, location);
+            }
+        }
+
+        /// <summary>dark theme: flat bar painted with the palette (the visual style bar is always light)</summary>
+        private void PaintDark(Graphics g)
+        {
+            ThemePalette p = ThemeManager.Palette;
+            Rectangle rect = ClientRectangle;
+            using (SolidBrush back = new SolidBrush(p.Surface))
+            using (Pen border = new Pen(p.Border))
+            {
+                g.FillRectangle(back, rect);
+                if (Value > 0 && Maximum > 0)
+                {
+                    int width = (int)Math.Round(((float)Value / Maximum) * (rect.Width - 2));
+                    using (SolidBrush fill = new SolidBrush(ThemeManager.ProgressFill))
+                        g.FillRectangle(fill, rect.X + 1, rect.Y + 1, width, rect.Height - 2);
+                }
+                g.DrawRectangle(border, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            }
+
+            string text = DisplayStyle == ProgressBarDisplayText.Percentage ? Value.ToString() + '%' : CustomText;
+            if (!string.IsNullOrEmpty(text))
+            {
+                using (Font f = new Font("Tahoma", 8.25f))
+                    TextRenderer.DrawText(g, text, f, rect, p.Text,
+                        TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPadding);
             }
         }
 

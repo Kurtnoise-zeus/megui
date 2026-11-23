@@ -77,6 +77,7 @@ namespace MeGUI.core.gui
                 else
                     ApplyToOpenForms();
             };
+            InstallShowHook();
             Application.Idle += delegate
             {
                 if (uiContext == null)
@@ -166,6 +167,77 @@ namespace MeGUI.core.gui
         }
         #endregion
 
+        #region theme a window before it is shown (no flash of light colours)
+        private delegate IntPtr HookProc(int code, IntPtr wParam, IntPtr lParam);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct CWPSTRUCT
+        {
+            public IntPtr lParam;
+            public IntPtr wParam;
+            public uint message;
+            public IntPtr hwnd;
+        }
+
+        private const int WH_CALLWNDPROC = 4;
+        private const uint WM_SHOWWINDOW = 0x0018;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll")]
+        private static extern uint GetCurrentThreadId();
+
+        private static HookProc showHook; // kept in a field: the delegate must not be collected
+        private static IntPtr showHookHandle = IntPtr.Zero;
+
+        /// <summary>
+        /// A window which is about to be shown for the first time gets the theme right away
+        /// (WM_SHOWWINDOW is sent before it becomes visible); Application.Idle would be too late
+        /// and the window would flash with the light colours.
+        /// </summary>
+        private static void InstallShowHook()
+        {
+            if (showHookHandle != IntPtr.Zero)
+                return;
+            try
+            {
+                showHook = ShowHookProc;
+                showHookHandle = SetWindowsHookEx(WH_CALLWNDPROC, showHook, IntPtr.Zero, GetCurrentThreadId());
+            }
+            catch (Exception)
+            {
+                // the Idle event still themes the new windows, only a bit later
+            }
+        }
+
+        private static IntPtr ShowHookProc(int code, IntPtr wParam, IntPtr lParam)
+        {
+            if (code >= 0 && IsDark)
+            {
+                try
+                {
+                    CWPSTRUCT msg = (CWPSTRUCT)Marshal.PtrToStructure(lParam, typeof(CWPSTRUCT));
+                    if (msg.message == WM_SHOWWINDOW && msg.wParam != IntPtr.Zero)
+                    {
+                        Form f = Control.FromHandle(msg.hwnd) as Form;
+                        object known;
+                        if (f != null && !f.IsDisposed && !knownForms.TryGetValue(f, out known))
+                            ThemeWindow(f);
+                    }
+                }
+                catch (Exception)
+                {
+                    // never break the message loop
+                }
+            }
+            return CallNextHookEx(showHookHandle, code, wParam, lParam);
+        }
+        #endregion
+
         #region walking the control tree
         private static void ApplyTree(Control c, bool dark)
         {
@@ -186,6 +258,18 @@ namespace MeGUI.core.gui
 
             if (c.ContextMenuStrip != null && !c.ContextMenuStrip.IsDisposed)
                 ApplyTree(c.ContextMenuStrip, dark);
+
+            ToolStrip hostStrip = c as ToolStrip;
+            if (hostStrip != null)
+            {
+                // progress bars of status strips are controls hosted by the items
+                foreach (ToolStripItem item in hostStrip.Items)
+                {
+                    ToolStripControlHost host = item as ToolStripControlHost;
+                    if (host != null && host.Control is ProgressBar)
+                        ApplyTree(host.Control, dark);
+                }
+            }
 
             // the parts of these controls are managed by the control itself
             if (c is UpDownBase || c is ComboBox || c is ToolStrip)
@@ -276,6 +360,23 @@ namespace MeGUI.core.gui
                         undo.Add(delegate { DetachPainter(tabs); });
                 }
                 tabs.Invalidate();
+            }
+            else if (c is ProgressBar)
+            {
+                // CustomProgressBar paints itself; the standard one only takes the colours without visual style
+                if (!(c is CustomProgressBar))
+                {
+                    ProgressBar bar = (ProgressBar)c;
+                    if (bar.Style == ProgressBarStyle.Blocks)
+                    {
+                        if (undo != null)
+                            undo.Add(delegate { bar.Style = ProgressBarStyle.Blocks; });
+                        bar.Style = ProgressBarStyle.Continuous;
+                    }
+                    SetColor(c, "BackColor", p.Surface, undo);
+                    SetColor(c, "ForeColor", ProgressFill, undo);
+                }
+                c.Invalidate();
             }
             else if (button != null)
             {
@@ -490,11 +591,32 @@ namespace MeGUI.core.gui
         [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hwnd, string subAppName, string subIdList);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
         private static void ApplyNativeTheme(Control c, bool dark)
         {
             if (!c.IsHandleCreated)
                 return; // done again from HandleCreated
             string name = null;
+            if (c is ProgressBar && !(c is CustomProgressBar))
+            {
+                // no visual style: the bar then uses the colours of the control
+                try
+                {
+                    SetWindowTheme(c.Handle, dark ? "" : null, dark ? "" : null);
+                    if (dark)
+                    {
+                        SendMessage(c.Handle, 0x2001 /*PBM_SETBKCOLOR*/, IntPtr.Zero, (IntPtr)ColorTranslator.ToWin32(Palette.Surface));
+                        SendMessage(c.Handle, 0x0409 /*PBM_SETBARCOLOR*/, IntPtr.Zero, (IntPtr)ColorTranslator.ToWin32(ProgressFill));
+                    }
+                }
+                catch (Exception)
+                {
+                    // keep the standard bar
+                }
+                return;
+            }
             if (c is ComboBox)
                 name = "DarkMode_CFD";
             else if (c is ListView || c is UpDownBase)
