@@ -840,4 +840,133 @@ namespace MeGUI.core.gui
             }
         }
     }
+
+    /// <summary>
+    /// Button with the rounded corners of the Windows 11 buttons. It is painted with BackColor, ForeColor and
+    /// FlatAppearance (BorderColor, MouseOverBackColor, MouseDownBackColor), which the Options window sets
+    /// from the palette; Click, DialogResult, Enabled work as for any Button.
+    /// </summary>
+    public class RoundedButton : Button
+    {
+        private bool hot;
+        private bool pressed;
+
+        public RoundedButton()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            hot = true;
+            Invalidate();
+            base.OnMouseEnter(e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            hot = false;
+            pressed = false;
+            Invalidate();
+            base.OnMouseLeave(e);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs mevent)
+        {
+            if (mevent.Button == MouseButtons.Left)
+            {
+                pressed = true;
+                Invalidate();
+            }
+            base.OnMouseDown(mevent);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs mevent)
+        {
+            pressed = false;
+            Invalidate();
+            base.OnMouseUp(mevent);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs kevent)
+        {
+            if (kevent.KeyCode == Keys.Space)
+            {
+                pressed = true;
+                Invalidate();
+            }
+            base.OnKeyDown(kevent);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs kevent)
+        {
+            pressed = false;
+            Invalidate();
+            base.OnKeyUp(kevent);
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            Invalidate();
+            base.OnEnabledChanged(e);
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            Invalidate();
+            base.OnGotFocus(e);
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            Invalidate();
+            base.OnLostFocus(e);
+        }
+
+        protected override void OnPaint(PaintEventArgs pevent)
+        {
+            Graphics g = pevent.Graphics;
+            Color outside = Parent != null ? Parent.BackColor : ThemeManager.Palette.Window;
+            g.Clear(outside);
+
+            Color back = BackColor;
+            if (Enabled && pressed)
+                back = FlatAppearance.MouseDownBackColor.IsEmpty ? back : FlatAppearance.MouseDownBackColor;
+            else if (Enabled && hot)
+                back = FlatAppearance.MouseOverBackColor.IsEmpty ? back : FlatAppearance.MouseOverBackColor;
+            Color border = FlatAppearance.BorderColor.IsEmpty ? back : FlatAppearance.BorderColor;
+            Color text = ForeColor;
+            if (!Enabled)
+            {
+                back = ThemeManager.Blend(outside, back, 0.5);
+                border = ThemeManager.Blend(outside, border, 0.5);
+                text = ThemeManager.Blend(back, ForeColor, 0.45);
+            }
+
+            // 4 px corners at 100 % (the radius follows the height, so the DPI scale)
+            float radius = Math.Max(3f, Height / 8f);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            using (GraphicsPath path = SettingsDraw.RoundRect(new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f), radius))
+            using (SolidBrush fill = new SolidBrush(back))
+            using (Pen pen = new Pen(border))
+            {
+                g.FillPath(fill, path);
+                g.DrawPath(pen, path);
+            }
+            g.SmoothingMode = SmoothingMode.Default;
+
+            TextFormatFlags flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding;
+            if (!ShowKeyboardCues)
+                flags |= TextFormatFlags.HidePrefix;
+            Rectangle textRect = new Rectangle(4, 0, Math.Max(0, Width - 8), Height);
+            TextRenderer.DrawText(g, Text, Font, textRect, text, flags);
+
+            if (Focused && ShowFocusCues)
+            {
+                using (GraphicsPath focus = SettingsDraw.RoundRect(new RectangleF(2.5f, 2.5f, Width - 5f, Height - 5f), Math.Max(2f, radius - 2f)))
+                using (Pen pen = new Pen(Color.FromArgb(160, ForeColor)))
+                    g.DrawPath(pen, focus);
+            }
+        }
+    }
 }
