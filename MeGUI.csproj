@@ -601,6 +601,7 @@
     <Compile Include="core\gui\PlayerSeekBar.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="core\gui\SettingsControls.cs" />	
     <Compile Include="core\gui\ThemeEngine.cs" />
     <Compile Include="core\gui\ThemeManager.cs" />
     <Compile Include="core\gui\VideoPlayer.cs">
