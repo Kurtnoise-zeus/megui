@@ -1,3 +1,7 @@
+Changelog version 6666 20261123
+
+- Fix download progress freeze, flickering and focus switching in Updater UI
+
 Changelog version 6666 20261122
 
 - ffmpeg: force the avisynth demuxer for .avs inputs
@@ -98,3 +102,4 @@ Changelog version 6666.2308
 - Applied correctly the drc information from LSMASH-Works & FFMS2 as preferred audio source decoder. Fix issue #984 (https://sourceforge.net/p/megui/bugs/984/)
 - Added time modification 23 <-> 24 for audio conversion. Feature Request #690 (https://sourceforge.net/p/megui/feature-requests/690/)
 - Allowed UTF8 encoding format as Reader/Writer for avisynth input files. Feature Request #692 (https://sourceforge.net/p/megui/feature-requests/692/)
+
