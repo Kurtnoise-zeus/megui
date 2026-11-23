@@ -389,6 +389,14 @@ namespace MeGUI.core.gui
                     button.FlatAppearance.MouseDownBackColor = p.SurfaceHover;
                     SetColor(c, "BackColor", p.Surface, undo);
                     SetColor(c, "ForeColor", p.Text, undo);
+
+                    // rounded corners like the Windows 11 buttons (RoundedButton paints itself)
+                    if (m.Painter == null && !(button is MeGUI.core.gui.RoundedButton))
+                    {
+                        m.Painter = new ButtonPainter(button);
+                        if (undo != null)
+                            undo.Add(delegate { DetachPainter(button); });
+                    }
                 }
             }
             else if (c is TextBoxBase || c is ComboBox || c is ListControl || c is UpDownBase || c is ListView || c is TreeView)
@@ -664,7 +672,7 @@ namespace MeGUI.core.gui
                     AssignHandle(Owner.Handle);
             }
 
-            public void Detach()
+            public virtual void Detach()
             {
                 Owner.HandleCreated -= OnCreated;
                 Owner.HandleDestroyed -= OnDestroyed;
@@ -702,6 +710,158 @@ namespace MeGUI.core.gui
             }
 
             protected abstract void Paint(Graphics g);
+        }
+
+        /// <summary>
+        /// Paints the buttons with the rounded corners of the Windows 11 buttons (the flat style used in dark
+        /// mode has square corners). It draws the whole button over the standard painting, in one blit.
+        /// The button which is the default one of its form gets the accent colour.
+        /// </summary>
+        private sealed class ButtonPainter : OverlayPainter
+        {
+            private readonly Button button;
+            private bool hot;
+            private bool pressed;
+
+            public ButtonPainter(Button b) : base(b)
+            {
+                button = b;
+                button.MouseEnter += OnEnter;
+                button.MouseLeave += OnLeave;
+                button.MouseDown += OnDown;
+                button.MouseUp += OnUp;
+            }
+
+            public override void Detach()
+            {
+                button.MouseEnter -= OnEnter;
+                button.MouseLeave -= OnLeave;
+                button.MouseDown -= OnDown;
+                button.MouseUp -= OnUp;
+                base.Detach();
+            }
+
+            private void OnEnter(object sender, EventArgs e)
+            {
+                hot = true;
+                button.Invalidate();
+            }
+
+            private void OnLeave(object sender, EventArgs e)
+            {
+                hot = false;
+                pressed = false;
+                button.Invalidate();
+            }
+
+            private void OnDown(object sender, MouseEventArgs e)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    pressed = true;
+                    button.Invalidate();
+                }
+            }
+
+            private void OnUp(object sender, MouseEventArgs e)
+            {
+                pressed = false;
+                button.Invalidate();
+            }
+
+            private static TextFormatFlags Align(ContentAlignment a)
+            {
+                TextFormatFlags flags = TextFormatFlags.Default;
+                if (a == ContentAlignment.TopLeft || a == ContentAlignment.MiddleLeft || a == ContentAlignment.BottomLeft)
+                    flags |= TextFormatFlags.Left;
+                else if (a == ContentAlignment.TopRight || a == ContentAlignment.MiddleRight || a == ContentAlignment.BottomRight)
+                    flags |= TextFormatFlags.Right;
+                else
+                    flags |= TextFormatFlags.HorizontalCenter;
+                if (a == ContentAlignment.TopLeft || a == ContentAlignment.TopCenter || a == ContentAlignment.TopRight)
+                    flags |= TextFormatFlags.Top;
+                else if (a == ContentAlignment.BottomLeft || a == ContentAlignment.BottomCenter || a == ContentAlignment.BottomRight)
+                    flags |= TextFormatFlags.Bottom;
+                else
+                    flags |= TextFormatFlags.VerticalCenter;
+                return flags;
+            }
+
+            protected override void Paint(Graphics g)
+            {
+                if (button.Image != null || button.BackgroundImage != null)
+                    return; // keep the standard painting of the buttons with a picture
+                int w = button.ClientSize.Width;
+                int h = button.ClientSize.Height;
+                if (w < 6 || h < 6)
+                    return;
+
+                ThemePalette p = Palette;
+                bool enabled = button.Enabled;
+                Color outside = button.Parent != null ? button.Parent.BackColor : p.Window;
+                Color back, fore, border;
+                if (button.IsDefault)
+                {
+                    back = p.Accent;
+                    fore = p.OnAccent;
+                    border = p.Accent;
+                    if (enabled && pressed)
+                        back = Blend(p.Accent, Color.Black, 0.15);
+                    else if (enabled && hot)
+                        back = Blend(p.Accent, Color.White, 0.12);
+                }
+                else
+                {
+                    back = Blend(outside, p.Text, 0.09);
+                    border = Blend(outside, p.Text, 0.17);
+                    fore = p.Text;
+                    if (enabled && pressed)
+                        back = Blend(outside, p.Text, 0.06);
+                    else if (enabled && hot)
+                        back = Blend(outside, p.Text, 0.14);
+                }
+                if (!enabled)
+                {
+                    back = Blend(outside, back, 0.5);
+                    border = Blend(outside, border, 0.5);
+                    fore = Blend(back, p.TextDim, 0.6);
+                }
+
+                int uiState = SendMessage(Handle, 0x0129 /*WM_QUERYUISTATE*/, IntPtr.Zero, IntPtr.Zero).ToInt32();
+                using (Bitmap bmp = new Bitmap(w, h))
+                {
+                    using (Graphics bg = Graphics.FromImage(bmp))
+                    {
+                        bg.Clear(outside);
+                        bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                        float radius = Math.Max(3f, h / 8f);
+                        using (System.Drawing.Drawing2D.GraphicsPath path = SettingsDraw.RoundRect(new RectangleF(0.5f, 0.5f, w - 1f, h - 1f), radius))
+                        using (SolidBrush fill = new SolidBrush(back))
+                        using (Pen pen = new Pen(border))
+                        {
+                            bg.FillPath(fill, path);
+                            bg.DrawPath(pen, path);
+                        }
+                        bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+
+                        TextFormatFlags flags = Align(button.TextAlign) | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding;
+                        if (!button.UseMnemonic)
+                            flags |= TextFormatFlags.NoPrefix;
+                        else if ((uiState & 0x2) != 0) // UISF_HIDEACCEL
+                            flags |= TextFormatFlags.HidePrefix;
+                        TextRenderer.DrawText(bg, button.Text, button.Font, new Rectangle(4, 0, w - 8, h), fore, flags);
+
+                        if (enabled && button.Focused && (uiState & 0x1) == 0) // UISF_HIDEFOCUS
+                        {
+                            bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                            using (System.Drawing.Drawing2D.GraphicsPath focus = SettingsDraw.RoundRect(new RectangleF(2.5f, 2.5f, w - 5f, h - 5f), Math.Max(2f, radius - 2f)))
+                            using (Pen pen = new Pen(Color.FromArgb(150, fore)))
+                                bg.DrawPath(pen, focus);
+                        }
+                    }
+                    g.DrawImageUnscaled(bmp, 0, 0);
+                }
+            }
         }
 
         /// <summary>
