@@ -800,7 +800,8 @@ namespace MeGUI.core.gui
                 bool enabled = button.Enabled;
                 Color outside = button.Parent != null ? button.Parent.BackColor : p.Window;
                 Color back, fore, border;
-                if (button.IsDefault)
+                Form owner = button.FindForm();
+                if (owner != null && object.ReferenceEquals(owner.AcceptButton, button))
                 {
                     back = p.Accent;
                     fore = p.OnAccent;
