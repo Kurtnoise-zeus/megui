@@ -40,6 +40,7 @@ namespace MeGUI.packages.video.svtav1
             : base()
         {
             InitializeComponent();
+            BuildModernLayout();
             svtEncodingMode.SelectedIndex = 0;
             gbPresets.Text = "Preset #" + tbsvtPresets.Value.ToString();
             svtTunes.Items.AddRange(EnumProxy.CreateArray(svtav1Settings.SupportedPsyTuningModes));
@@ -51,6 +52,54 @@ namespace MeGUI.packages.video.svtav1
         /// </summary>
         /// <param name="mode">selected encoding mode</param>
         /// <returns>true if the mode is a bitrate mode, false otherwise</returns>
+        /// <summary>
+        /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
+        /// names, events and the settings are unchanged. The labels which the code changes are used as titles of their rows.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            MeGUI.core.gui.SettingsPage main = d.CurrentPage;
+            d.Section("Encoding mode");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            c1.AddRow("Encoding mode", null, d.Wide(svtEncodingMode, 200));
+            c1.AddLabelRow(svtBitrateQuantizerLabel, null, d.Wide(svtBitrateQuantizer, 110));
+            Label presetSection = d.Section(gbPresets.Text);
+            gbPresets.TextChanged += delegate { presetSection.Text = gbPresets.Text; };
+            MeGUI.core.gui.SettingsCard presetCard = d.Card();
+            d.Block(tbsvtPresets, 560, 45, presetCard);
+            lbPreset.AutoSize = false;
+            lbPreset.Size = new Size(d.S(560), d.S(26));
+            presetCard.AddWide(null, null, lbPreset);
+            d.Section("Tuning");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            c2.AddRow("Tuning", null, d.Wide(svtTunes, 200));
+            d.Section("Other settings");
+            MeGUI.core.gui.SettingsCard c3 = d.Card();
+            chSvt10Bits.Text = "Force 10-bits encoding";
+            d.ToggleIn(c3, chSvt10Bits, null);
+            c3.AddRow("Help", null, helpButton1);
+            MeGUI.core.gui.SettingsPage misc = d.BeginPage();
+            d.Section("Custom command line");
+            d.Block(customCommandlineOptions, 600, 70, d.Card());
+
+            // each tab of the control gets its page of cards
+            AttachPage(mainTabPage, main);
+            AttachPage(MiscTabPage, misc);
+            Size = new Size(d.S(700), d.S(520));
+            tabControl1.Bounds = new Rectangle(0, 0, Width, Height - d.S(96));
+            commandline.Bounds = new Rectangle(0, Height - d.S(90), Width, d.S(90));
+            d.AttachTheme();
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
         private bool isBitrateMode(VideoCodecSettings.VideoEncodingMode mode)
         {
             return !(mode == VideoCodecSettings.VideoEncodingMode.CQ ||

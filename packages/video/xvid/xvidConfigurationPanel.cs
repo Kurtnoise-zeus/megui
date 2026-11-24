@@ -38,10 +38,100 @@ namespace MeGUI.packages.video.xvid
             : base()
         {
             InitializeComponent();
+            BuildModernLayout();
             cqmComboBox1.StandardItems = new string[] { xvidSettings.H263Matrix, xvidSettings.MPEGMatrix };
         }
         #endregion
         #region adjustments
+        private MeGUI.core.gui.SettingsCard rcCard, cbrCard;
+
+        /// <summary>
+        /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
+        /// names, events and the settings are unchanged. The labels which the code changes are used as titles of their rows.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            MeGUI.core.gui.SettingsPage main = d.CurrentPage;
+            d.Section("General");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            c1.AddRow("Mode", null, d.Wide(xvidEncodingMode, 180));
+            xvidTurbo.Text = "Turbo";
+            d.ToggleIn(c1, xvidTurbo, null);
+            c1.AddLabelRow(xvidBitrateQuantLabel, null, d.Wide(xvidBitrateQuantizer, 120));
+            c1.AddRow("Logfile", null, d.Wide(logfile, 260), d.Btn(logfileOpenButton));
+            d.Section("Tools");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            c2.AddRow("VHQ mode", null, d.Wide(xvidVHQ, 180));
+            c2.AddRow("Use VHQ for B-frames", null, Tg(d, xvidUseVHQForBframes));
+            c2.AddRow("QPel", null, Tg(d, xvidQpel));
+            c2.AddRow("GMC", null, Tg(d, xvidGMC));
+            c2.AddRow("Chroma motion", null, Tg(d, xvidChromaMotion));
+            c2.AddRow("Closed GOP", null, Tg(d, xvidClosedGop));
+            c2.AddRow("HVS masking", null, d.Wide(HVSMasking, 180));
+            c2.AddRow("Quantization type", null, d.Wide(cqmComboBox1, 300));
+            d.Section("Other settings");
+            MeGUI.core.gui.SettingsCard c3 = d.Card();
+            xvidTrellisQuant.Text = "Trellis quant";
+            d.ToggleIn(c3, xvidTrellisQuant, null);
+            xvidInterlaced.Text = "Interlaced";
+            d.ToggleIn(c3, xvidInterlaced, null);
+            c3.AddRow("Packed bitstream", null, Tg(d, xvidPackedBitstream));
+            c3.AddRow("Max keyframe interval", null, d.Wide(xvidKeyframeInterval, 90));
+            c3.AddRow("Number of B-frames", null, d.Wide(xvidNbBFrames, 90));
+            c3.AddRow("Threads", null, d.Wide(nbThreads, 90));
+            c3.AddRow("Motion search precision", null, d.Wide(xvidMotionSearchPrecision, 200));
+            c3.AddRow("Profile", null, d.Wide(xvidProfile, 200));
+            c3.AddRow("VBV buffer", null, d.Wide(xvidVbvBuffer, 90));
+            c3.AddRow("VBV max rate", null, d.Wide(xvidVbvMaxRate, 90));
+            c3.AddRow("VBV peak rate", null, d.Wide(xvidVbvPeakRate, 90));
+            d.Section("Other options");
+            MeGUI.core.gui.SettingsCard c4 = d.Card();
+            c4.AddRow("Custom commandline options", null, d.Wide(xvidCustomCommandlineOptions, 300));
+            MeGUI.core.gui.SettingsPage adv = d.BeginPage();
+            d.Section("Quantizers");
+            MeGUI.core.gui.SettingsCard c5 = d.Card();
+            c5.AddRow("I-frame quantizer (min / max)", null, d.Wide(xvidMinIQuant, 80), d.Wide(xvidMaxIQuant, 80));
+            c5.AddRow("P-frame quantizer (min / max)", null, d.Wide(xvidMinPQuant, 80), d.Wide(xvidMaxPQuant, 80));
+            c5.AddRow("B-frame quantizer (min / max)", null, d.Wide(xvidMinBQuant, 80), d.Wide(xvidMaxBQuant, 80));
+            c5.AddRow("Credits quantizer", null, d.Wide(xvidCreditsQuantizer, 90));
+            c5.AddRow("B-frame quantizer ratio", null, d.Wide(xvidBframeQuantRatio, 90));
+            c5.AddRow("B-frame quantizer offset", null, d.Wide(xvidBframeQuantOffset, 90));
+            d.Section("Rate control");
+            rcCard = d.Card();
+            rcCard.AddRow("I-frame boost (10x %)", null, d.Wide(xvidIframeBoost, 90));
+            rcCard.AddRow("I-frames closer than ... (frames)", null, d.Wide(xvidKeyframeTreshold, 90));
+            rcCard.AddRow("... are reduced by (%)", null, d.Wide(xvidKeyframeReduction, 90));
+            rcCard.AddRow("Overflow control strength (%)", null, d.Wide(xvidOverflowControlStrength, 90));
+            rcCard.AddRow("Max overflow improvement (%)", null, d.Wide(xvidMaxOverflowImprovement, 90));
+            rcCard.AddRow("Max overflow degradation (%)", null, d.Wide(xvidMaxOverflowDegradation, 90));
+            rcCard.AddRow("High bitrate scenes degradation (%)", null, d.Wide(xvidHighBitrateDegradation, 90));
+            rcCard.AddRow("Low bitrate scenes improvement (%)", null, d.Wide(xvidLowBitrateImprovement, 90));
+            d.Section("CBR rate control");
+            MeGUI.core.gui.SettingsCard cbrCard = d.Card();
+            cbrCard.AddRow("Reaction delay factor", null, d.Wide(xvidRCDelayFactor, 90));
+            cbrCard.AddRow("Averaging period", null, d.Wide(xvidRCAveragingPeriod, 90));
+            cbrCard.AddRow("RC buffer size", null, d.Wide(xvidRCBufferSize, 90));
+            d.Section("Custom command line");
+            d.Block(customCommandlineOptions, 600, 34, d.Card());
+
+            // each tab of the control gets its page of cards
+            AttachPage(mainTabPage, main);
+            AttachPage(advancedTabPage, adv);
+            Size = new Size(d.S(700), d.S(600));
+            tabControl1.Bounds = new Rectangle(0, 0, Width, Height - d.S(96));
+            commandline.Bounds = new Rectangle(0, Height - d.S(90), Width, d.S(90));
+            d.AttachTheme();
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
         private void doCheckBoxAdjustments()
         {
             if ((int)xvidNbBFrames.Value > 0)
@@ -102,36 +192,36 @@ namespace MeGUI.packages.video.xvid
                     xvidProfile.Enabled = false;
                     xvidTurbo.Checked = false;
                     xvidTurbo.Enabled = false;
-                    xvidRCGroupbox.Enabled = false;
-                    xvidCBRRcGroupBox.Enabled = true;
+                    rcCard.Enabled = false;
+                    cbrCard.Enabled = true;
                     break;
                 case 1: // CQ
                     xvidProfile.SelectedIndex = 0;
                     xvidProfile.Enabled = false;
                     xvidTurbo.Checked = false;
                     xvidTurbo.Enabled = false;
-                    xvidRCGroupbox.Enabled = false;
-                    xvidCBRRcGroupBox.Enabled = true;
+                    rcCard.Enabled = false;
+                    cbrCard.Enabled = true;
                     break;
                 case 2: // 2pass first pass
                     xvidProfile.Enabled = true;
                     xvidTurbo.Enabled = true;
-                    xvidRCGroupbox.Enabled = true;
-                    xvidCBRRcGroupBox.Enabled = false;
+                    rcCard.Enabled = true;
+                    cbrCard.Enabled = false;
                     logfileOpenButton.Enabled = true;
                     break;
                 case 3: // 2 pass 2nd pass
                     xvidProfile.Enabled = true;
                     xvidTurbo.Enabled = true;
-                    xvidRCGroupbox.Enabled = true;
-                    xvidCBRRcGroupBox.Enabled = false;
+                    rcCard.Enabled = true;
+                    cbrCard.Enabled = false;
                     logfileOpenButton.Enabled = true;
                     break;
                 case 4: // automated 2pass
                     xvidProfile.Enabled = true;
                     xvidTurbo.Enabled = true;
-                    xvidRCGroupbox.Enabled = true;
-                    xvidCBRRcGroupBox.Enabled = false;
+                    rcCard.Enabled = true;
+                    cbrCard.Enabled = false;
                     logfileOpenButton.Enabled = true;
                     break;
             }

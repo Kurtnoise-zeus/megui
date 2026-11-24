@@ -40,6 +40,7 @@ namespace MeGUI.packages.video.ffv1
             : base()
         {
             InitializeComponent();
+            BuildModernLayout();
             ffv1Coder.SelectedIndex = 1;
             ffv1Slices.SelectedIndex = 0;
             ffv1EncodingMode.SelectedIndex = 0;
@@ -50,6 +51,51 @@ namespace MeGUI.packages.video.ffv1
         /// </summary>
         /// <param name="mode">selected encoding mode</param>
         /// <returns>true if the mode is a bitrate mode, false otherwise</returns>
+        /// <summary>
+        /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
+        /// names, events and the settings are unchanged. The labels which the code changes are used as titles of their rows.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            MeGUI.core.gui.SettingsPage main = d.CurrentPage;
+            d.Section("Encoding mode");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            c1.AddRow("Encoding mode", null, d.Wide(ffv1EncodingMode, 200));
+            d.Section("FFV1 settings");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            c2.AddRow("GOP size", null, d.Wide(nmGOPSize, 90));
+            c2.AddRow("Threads (0 = auto)", null, d.Wide(ffv1NbThreads, 90));
+            c2.AddRow("Coder", null, d.Wide(ffv1Coder, 160));
+            c2.AddRow("Slices", null, d.Wide(ffv1Slices, 160));
+            chErrorCorrection.Text = "Enable error correction";
+            d.ToggleIn(c2, chErrorCorrection, null);
+            chContext.Text = "Enable context";
+            d.ToggleIn(c2, chContext, null);
+            ch10BitsEncoder.Text = "Enable 10-bits encoding";
+            d.ToggleIn(c2, ch10BitsEncoder, null);
+            c2.AddRow("Help", null, helpButton1);
+            MeGUI.core.gui.SettingsPage misc = d.BeginPage();
+            d.Section("Custom command line");
+            d.Block(customCommandlineOptions, 600, 70, d.Card());
+
+            // each tab of the control gets its page of cards
+            AttachPage(mainTabPage, main);
+            AttachPage(MiscTabPage, misc);
+            Size = new Size(d.S(700), d.S(520));
+            tabControl1.Bounds = new Rectangle(0, 0, Width, Height - d.S(96));
+            commandline.Bounds = new Rectangle(0, Height - d.S(90), Width, d.S(90));
+            d.AttachTheme();
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
         private bool isBitrateMode(VideoCodecSettings.VideoEncodingMode mode)
         {
             return !(mode == VideoCodecSettings.VideoEncodingMode.none);

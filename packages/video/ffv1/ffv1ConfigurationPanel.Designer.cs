@@ -59,9 +59,9 @@ namespace MeGUI.packages.video.ffv1
             this.customCommandlineOptions = new System.Windows.Forms.TextBox();
             this.ffv1ThreadsLabel = new System.Windows.Forms.Label();
             this.ffv1NbThreads = new System.Windows.Forms.NumericUpDown();
-            this.ch10BitsEncoder = new System.Windows.Forms.CheckBox();
-            this.chErrorCorrection = new System.Windows.Forms.CheckBox();
-            this.chContext = new System.Windows.Forms.CheckBox();
+            this.ch10BitsEncoder = new MeGUI.core.gui.ToggleSwitch();
+            this.chErrorCorrection = new MeGUI.core.gui.ToggleSwitch();
+            this.chContext = new MeGUI.core.gui.ToggleSwitch();
             this.lbGOPSize = new System.Windows.Forms.Label();
             this.nmGOPSize = new System.Windows.Forms.NumericUpDown();
             this.gbExtra = new System.Windows.Forms.GroupBox();
@@ -403,9 +403,9 @@ namespace MeGUI.packages.video.ffv1
         private System.Windows.Forms.TextBox customCommandlineOptions;
         private System.Windows.Forms.Label ffv1ThreadsLabel;
         private System.Windows.Forms.NumericUpDown ffv1NbThreads;
-        private System.Windows.Forms.CheckBox ch10BitsEncoder;
-        private System.Windows.Forms.CheckBox chErrorCorrection;
-        private System.Windows.Forms.CheckBox chContext;
+        private MeGUI.core.gui.ToggleSwitch ch10BitsEncoder;
+        private MeGUI.core.gui.ToggleSwitch chErrorCorrection;
+        private MeGUI.core.gui.ToggleSwitch chContext;
         private System.Windows.Forms.Label lbGOPSize;
         private System.Windows.Forms.NumericUpDown nmGOPSize;
         private System.Windows.Forms.GroupBox gbExtra;

@@ -66,7 +66,7 @@ namespace MeGUI.packages.video.svtav1
             this.tbsvtPresets = new System.Windows.Forms.TrackBar();
             this.gbTunes = new System.Windows.Forms.GroupBox();
             this.svtTunes = new System.Windows.Forms.ComboBox();
-            this.chSvt10Bits = new System.Windows.Forms.CheckBox();
+            this.chSvt10Bits = new MeGUI.core.gui.ToggleSwitch();
             this.tabControl1.SuspendLayout();
             this.mainTabPage.SuspendLayout();
             this.MiscTabPage.SuspendLayout();
@@ -359,6 +359,6 @@ namespace MeGUI.packages.video.svtav1
         private System.Windows.Forms.TrackBar tbsvtPresets;
         private System.Windows.Forms.GroupBox gbTunes;
         private System.Windows.Forms.ComboBox svtTunes;
-        private System.Windows.Forms.CheckBox chSvt10Bits;
+        private MeGUI.core.gui.ToggleSwitch chSvt10Bits;
     }
 }
