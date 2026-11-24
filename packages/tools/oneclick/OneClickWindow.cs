@@ -227,6 +227,10 @@ namespace MeGUI
         {
             MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
 
+            // the stream controls follow the width of their tab (the new tabs copy this)
+            oneClickAudioStreamControl1.Dock = DockStyle.Fill;
+            oneClickSubtitleStreamControl1.Dock = DockStyle.Fill;
+
             // general tab
             MeGUI.core.gui.SettingsPage general = d.CurrentPage;
             d.Section("Video");
@@ -235,7 +239,7 @@ namespace MeGUI
             d.Block(audioTab, 640, 200, d.Card());
             subtitlesSection = d.Section("Subtitles");
             subtitlesCard = d.Card();
-            d.Block(subtitlesTab, 640, 170, subtitlesCard);
+            d.Block(subtitlesTab, 640, 190, subtitlesCard);
             d.Section("Output");
             MeGUI.core.gui.SettingsCard outputCard = d.Card();
             outputCard.AddRow("Output file", null, d.Bar(output, 400));

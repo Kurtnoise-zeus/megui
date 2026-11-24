@@ -48,7 +48,7 @@ namespace MeGUI.core.gui
         /// </summary>
         private void InitializeComponent()
         {
-            this.config = new System.Windows.Forms.Button();
+            this.config = new MeGUI.core.gui.RoundedButton();
             this.SuspendLayout();
             // 
             // config
@@ -79,6 +79,6 @@ namespace MeGUI.core.gui
 
         #endregion
 
-        private System.Windows.Forms.Button config;
+        private MeGUI.core.gui.RoundedButton config;
     }
 }

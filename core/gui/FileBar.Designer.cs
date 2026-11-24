@@ -49,7 +49,7 @@ namespace MeGUI
         private void InitializeComponent()
         {
             this.filename = new System.Windows.Forms.TextBox();
-            this.openButton = new System.Windows.Forms.Button();
+            this.openButton = new MeGUI.core.gui.RoundedButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -107,7 +107,7 @@ namespace MeGUI
         #endregion
 
         private System.Windows.Forms.TextBox filename;
-        private System.Windows.Forms.Button openButton;
+        private MeGUI.core.gui.RoundedButton openButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
