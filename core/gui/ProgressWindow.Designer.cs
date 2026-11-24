@@ -40,8 +40,8 @@
             this.actionLabel = new System.Windows.Forms.Label();
             this.priorityLabel = new System.Windows.Forms.Label();
             this.priority = new System.Windows.Forms.ComboBox();
-            this.abortButton = new System.Windows.Forms.Button();
-            this.btnSuspend = new System.Windows.Forms.Button();
+            this.abortButton = new MeGUI.core.gui.RoundedButton();
+            this.btnSuspend = new MeGUI.core.gui.RoundedButton();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -399,8 +399,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label priorityLabel;
         private System.Windows.Forms.ComboBox priority;
-        private System.Windows.Forms.Button abortButton;
-        private System.Windows.Forms.Button btnSuspend;
+        private MeGUI.core.gui.RoundedButton abortButton;
+        private MeGUI.core.gui.RoundedButton btnSuspend;
         private System.Windows.Forms.TextBox currentFPS;
         private System.Windows.Forms.Label actionLabel;
     }

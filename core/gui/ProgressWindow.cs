@@ -23,6 +23,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using MeGUI.core.gui;
 using MeGUI.core.util;
 
 namespace MeGUI
@@ -51,6 +52,7 @@ namespace MeGUI
 		public ProgressWindow()
         {
             InitializeComponent();
+            BuildModernLayout();
             isUserClosing = true;
             bIsSuspended = false;
 
@@ -59,6 +61,31 @@ namespace MeGUI
             
             if (OSInfo.IsWindows7OrNewer)
                 taskbarProgress = (ITaskbarList3)new ProgressTaskbar();
+        }
+
+        /// <summary>
+        /// Windows 11 settings look (see ModernDialog). The controls are only moved: names and events are unchanged.
+        /// The Suspend and Abort buttons go to the footer, the status bar stays at the bottom.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            d.Section("Progress");
+            SettingsCard c1 = d.Card();
+            c1.AddRow("Current / Total length", null, d.Wide(positionInClip, 90), d.Wide(positionInClipTotal, 90));
+            c1.AddRow("Current / Total frames", null, d.Wide(currentVideoFrame, 90), d.Wide(totalVideoFrame, 90));
+            c1.AddRow("Current / Estimated filesize", null, d.Wide(currentFileSize, 90), d.Wide(estimatedFileSize, 90));
+            c1.AddRow("Current / Average speed", null, d.Wide(currentFPS, 90), d.Wide(overallFPS, 90));
+            c1.AddRow("Elapsed / Remaining time", null, d.Wide(timeElapsed, 90), d.Wide(totalTime, 90));
+            c1.AddRow("Progress", null, d.Wide(progress, 220));
+            d.Section("Job");
+            SettingsCard c2 = d.Card();
+            c2.AddRow("Priority", null, d.Wide(priority, 160));
+            d.Finish(null, 520, btnSuspend, abortButton);
+            // the status bar (job name and status) stays below the footer
+            statusStrip1.Dock = DockStyle.Bottom;
+            Controls.Add(statusStrip1);
+            ClientSize = new System.Drawing.Size(ClientSize.Width, ClientSize.Height + statusStrip1.Height);
         }
 
         /// <summary>
