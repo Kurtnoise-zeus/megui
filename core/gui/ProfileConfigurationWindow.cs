@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 using MeGUI.core.plugins.interfaces;
@@ -76,6 +77,7 @@ namespace MeGUI.core.gui
             panel1.Controls.Add(t);
             this.Icon = MainForm.Instance.Icon;
             this.TopMost = MainForm.Instance.Settings.AlwaysOnTop;
+            BuildModernLayout();
         }
 
         private void loadDefaultsButton_Click(object sender, EventArgs e)
@@ -269,6 +271,111 @@ namespace MeGUI.core.gui
         public bool SavePresets()
         {
             return bSaveSettings;
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the presets are a card on top of the window, the OK / Cancel buttons are in
+        /// a footer, the configuration panel keeps the rest of the window. The window is scaled here once
+        /// (the configuration panel keeps its own layout), then its automatic scaling is switched off.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            PerformAutoScale();
+            AutoScaleMode = AutoScaleMode.None;
+            float scale = MainForm.Instance.Settings.DPIRescale(1000) / 1000f;
+            Font ui = new Font("Segoe UI", 10F);
+            Size panelSize = panel1.Size;
+            SuspendLayout();
+
+            // presets
+            SettingsSurface top = new SettingsSurface(SettingsSurfaceKind.Window);
+            top.Dock = DockStyle.Top;
+            top.Font = ui;
+            SettingsCard card = new SettingsCard(scale);
+            card.Font = ui;
+            card.Location = new Point(Scaled(24, scale), Scaled(8, scale));
+            card.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Button[] presetButtons = new Button[] { newVideoProfileButton, deleteVideoProfileButton, updateButton, loadDefaultsButton };
+            foreach (Button b in presetButtons)
+            {
+                b.AutoSize = false;
+                b.Font = ui;
+                b.Height = Scaled(32, scale);
+                b.Width = TextRenderer.MeasureText(b.Text, ui).Width + Scaled(28, scale);
+            }
+            videoProfile.Font = ui;
+            videoProfile.Width = Scaled(200, scale);
+            card.AddRow("Preset", null, videoProfile, newVideoProfileButton, deleteVideoProfileButton, updateButton, loadDefaultsButton);
+            top.Controls.Add(card);
+            top.Height = card.Height + Scaled(16, scale);
+
+            // footer
+            SettingsSurface footer = new SettingsSurface(SettingsSurfaceKind.Footer);
+            footer.Dock = DockStyle.Bottom;
+            footer.Height = Scaled(64, scale);
+            footer.Font = ui;
+            Button[] footerButtons = new Button[] { okButton, cancelButton };
+            foreach (Button b in footerButtons)
+            {
+                b.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                b.AutoSize = false;
+                b.Font = ui;
+                b.Size = new Size(Math.Max(Scaled(96, scale), TextRenderer.MeasureText(b.Text, ui).Width + Scaled(36, scale)), Scaled(34, scale));
+                footer.Controls.Add(b);
+            }
+            MethodInvoker layoutFooter = delegate
+            {
+                int right = footer.Width - Scaled(24, scale);
+                for (int i = footerButtons.Length - 1; i >= 0; i--)
+                {
+                    footerButtons[i].Location = new Point(right - footerButtons[i].Width, (footer.Height - footerButtons[i].Height) / 2);
+                    right = footerButtons[i].Left - Scaled(10, scale);
+                }
+            };
+            footer.Resize += delegate { layoutFooter(); };
+            top.Resize += delegate { card.Width = Math.Max(Scaled(100, scale), top.Width - Scaled(48, scale)); };
+
+            // the docked control added first is laid out last (it gets the remaining space)
+            Controls.Clear();
+            panel1.Dock = DockStyle.Fill;
+            Controls.Add(panel1);
+            Controls.Add(top);
+            Controls.Add(footer);
+
+            Rectangle area = Screen.PrimaryScreen.WorkingArea;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            SizeGripStyle = SizeGripStyle.Show;
+            ClientSize = new Size(Math.Min(Math.Max(panelSize.Width, Scaled(780, scale)), area.Width),
+                Math.Min(top.Height + panelSize.Height + footer.Height, area.Height - Scaled(60, scale)));
+            MinimumSize = Size;
+            top.Width = ClientSize.Width;
+            card.Width = Math.Max(Scaled(100, scale), top.Width - Scaled(48, scale));
+            layoutFooter();
+
+            MethodInvoker theme = delegate
+            {
+                foreach (Button b in presetButtons)
+                    ModernDialog.StyleButton(b, false);
+                ModernDialog.StyleButton(okButton, true);
+                ModernDialog.StyleButton(cancelButton, false);
+                Invalidate(true);
+            };
+            theme();
+            EventHandler themeChanged = delegate
+            {
+                if (IsHandleCreated && !IsDisposed)
+                    BeginInvoke(theme);
+            };
+            ThemeManager.ThemeChanged += themeChanged;
+            Disposed += delegate { ThemeManager.ThemeChanged -= themeChanged; };
+            // the theme engine colours the window when it is shown: restyle after it
+            Shown += delegate { BeginInvoke(theme); };
+            ResumeLayout(true);
+        }
+
+        private static int Scaled(int value, float scale)
+        {
+            return (int)Math.Round(value * scale);
         }
     }
 }

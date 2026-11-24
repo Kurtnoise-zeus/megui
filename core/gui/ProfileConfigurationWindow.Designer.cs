@@ -6,13 +6,13 @@ namespace MeGUI.core.gui
     {
         protected GroupBox presetsGroupbox;
         private Panel panel1;
-        protected Button cancelButton;
-        protected Button okButton;
-        private Button updateButton;
-        private Button loadDefaultsButton;
+        protected MeGUI.core.gui.RoundedButton cancelButton;
+        protected MeGUI.core.gui.RoundedButton okButton;
+        private MeGUI.core.gui.RoundedButton updateButton;
+        private MeGUI.core.gui.RoundedButton loadDefaultsButton;
         private ComboBox videoProfile;
-        private Button newVideoProfileButton;
-        private Button deleteVideoProfileButton;
+        private MeGUI.core.gui.RoundedButton newVideoProfileButton;
+        private MeGUI.core.gui.RoundedButton deleteVideoProfileButton;
 
 
         /// <summary>
@@ -42,14 +42,14 @@ namespace MeGUI.core.gui
         private void InitializeComponent()
         {
             this.presetsGroupbox = new System.Windows.Forms.GroupBox();
-            this.updateButton = new System.Windows.Forms.Button();
-            this.loadDefaultsButton = new System.Windows.Forms.Button();
+            this.updateButton = new MeGUI.core.gui.RoundedButton();
+            this.loadDefaultsButton = new MeGUI.core.gui.RoundedButton();
             this.videoProfile = new System.Windows.Forms.ComboBox();
-            this.newVideoProfileButton = new System.Windows.Forms.Button();
-            this.deleteVideoProfileButton = new System.Windows.Forms.Button();
+            this.newVideoProfileButton = new MeGUI.core.gui.RoundedButton();
+            this.deleteVideoProfileButton = new MeGUI.core.gui.RoundedButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.okButton = new System.Windows.Forms.Button();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
+            this.okButton = new MeGUI.core.gui.RoundedButton();
             this.presetsGroupbox.SuspendLayout();
             this.SuspendLayout();
             // 
