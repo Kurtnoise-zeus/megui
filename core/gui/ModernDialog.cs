@@ -34,6 +34,7 @@ namespace MeGUI.core.gui
     public sealed class ModernDialog
     {
         private readonly Form form;
+        private readonly Control host;
         private readonly float scale;
         private readonly Font sectionFont;
         private SettingsPage page;
@@ -43,9 +44,36 @@ namespace MeGUI.core.gui
         private Control help;
         private SettingsSurface footer;
 
+        /// <summary>
+        /// For a user control (the panel of a window hosted by another form): the sections and cards are built
+        /// like in a form, then AttachTheme is called; the caller puts the pages in its own containers.
+        /// </summary>
+        public ModernDialog(UserControl panel)
+        {
+            host = panel;
+            scale = MainForm.Instance != null ? MainForm.Instance.Settings.DPIRescale(1000) / 1000f : 1f;
+            panel.AutoScaleMode = AutoScaleMode.None;
+            panel.Font = new Font("Segoe UI", 10F);
+            sectionFont = new Font("Segoe UI Semibold", 10.5F);
+            page = NewPage();
+        }
+
+        /// <summary>end of the construction of a panel: end strips, colours, theme changes</summary>
+        public void AttachTheme()
+        {
+            foreach (SettingsPage p in pages)
+                AddEndStrip(p);
+            footerButtons = new Button[0];
+            ApplyTheme();
+            ThemeManager.ThemeChanged += OnThemeChanged;
+            host.HandleCreated += delegate { host.BeginInvoke(new MethodInvoker(ApplyTheme)); };
+            host.Disposed += delegate { ThemeManager.ThemeChanged -= OnThemeChanged; };
+        }
+
         public ModernDialog(Form form)
         {
             this.form = form;
+            host = form;
             scale = MainForm.Instance != null ? MainForm.Instance.Settings.DPIRescale(1000) / 1000f : 1f;
             // the sizes are computed with the scale: no automatic scaling on top of it
             form.AutoScaleMode = AutoScaleMode.None;
@@ -175,7 +203,7 @@ namespace MeGUI.core.gui
             b.Height = S(32);
             b.Width = b.Text.Length <= 2
                 ? S(34)
-                : Math.Max(S(96), TextRenderer.MeasureText(b.Text, form.Font).Width + S(36));
+                : Math.Max(S(96), TextRenderer.MeasureText(b.Text, host.Font).Width + S(36));
             if (!buttons.Contains(b))
                 buttons.Add(b);
             return b;
@@ -219,7 +247,7 @@ namespace MeGUI.core.gui
                 b.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 b.AutoSize = false;
                 b.Size = new Size(S(96), S(34));
-                b.Width = Math.Max(S(96), TextRenderer.MeasureText(b.Text, form.Font).Width + S(36));
+                b.Width = Math.Max(S(96), TextRenderer.MeasureText(b.Text, host.Font).Width + S(36));
                 footer.Controls.Add(b);
             }
             footer.Resize += delegate { LayoutFooter(); };
@@ -287,7 +315,7 @@ namespace MeGUI.core.gui
                 b.Anchor = AnchorStyles.Top | AnchorStyles.Left;
                 b.AutoSize = false;
                 b.Size = new Size(S(96), S(34));
-                b.Width = Math.Max(S(96), TextRenderer.MeasureText(b.Text, form.Font).Width + S(36));
+                b.Width = Math.Max(S(96), TextRenderer.MeasureText(b.Text, host.Font).Width + S(36));
                 footer.Controls.Add(b);
             }
             footer.Resize += delegate { LayoutFooter(); };
@@ -336,8 +364,8 @@ namespace MeGUI.core.gui
         private void OnThemeChanged(object sender, EventArgs e)
         {
             // may be raised from another thread (system colour change)
-            if (form.IsHandleCreated && !form.IsDisposed)
-                form.BeginInvoke(new MethodInvoker(ApplyTheme));
+            if (host.IsHandleCreated && !host.IsDisposed)
+                host.BeginInvoke(new MethodInvoker(ApplyTheme));
         }
 
         private void ApplyTheme()
@@ -348,7 +376,7 @@ namespace MeGUI.core.gui
                 StyleButton(footerButtons[i], i == 0);
             foreach (SettingsPage p in pages)
                 StyleLabels(p);
-            form.Invalidate(true);
+            host.Invalidate(true);
         }
 
         /// <summary>the labels inside the cards take the colour of the card</summary>

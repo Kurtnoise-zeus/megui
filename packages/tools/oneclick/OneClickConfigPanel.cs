@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MeGUI.packages.tools.oneclick
@@ -48,6 +49,7 @@ namespace MeGUI.packages.tools.oneclick
         public OneClickConfigPanel() 
         {
             InitializeComponent();
+            BuildModernLayout();
             mainForm = MainForm.Instance;
             // We do this because the designer will attempt to put such a long string in the resources otherwise
             containerFormatLabel.Text = "Since the possible output filetypes are not known until the input is configured, the output type cannot be configured in a profile. Instead, here is a list of known file-types. You choose which you are happy with, and MeGUI will attempt to encode to one of those on the list.";
@@ -61,6 +63,132 @@ namespace MeGUI.packages.tools.oneclick
             audioConfigurations = new List<OneClickAudioControl>();
             audioConfigurations.Add(oneClickAudioControl1);
             oneClickAudioControl1.SetDefault();
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
+        /// names, events and the settings are unchanged.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            const int wide = 620;
+
+            // video tab
+            MeGUI.core.gui.SettingsPage video = d.CurrentPage;
+            d.Section("Video setup");
+            MeGUI.core.gui.SettingsCard videoCard = d.Card();
+            d.ToggleIn(videoCard, chkDontEncodeVideo, null);
+            usechaptersmarks.Text = "Force key frames for chapters marks";
+            d.ToggleIn(videoCard, usechaptersmarks, null);
+            videoCard.AddRow("Encoder", null, d.Wide(videoProfile, 380));
+            videoCard.AddRow("Force input DAR", null, d.Wide(ar, 380));
+            d.Section("AviSynth setup");
+            MeGUI.core.gui.SettingsCard avsCard = d.Card();
+            keepInputResolution.Text = "Keep input resolution (disable crop and resize)";
+            d.ToggleIn(avsCard, keepInputResolution, null);
+            d.ToggleIn(avsCard, autoCrop, null);
+            avsCard.AddRow("Output resolution (max. width)", null, d.Wide(horizontalResolution, 120));
+            avsCard.AddRow("AviSynth profile", null, d.Wide(avsProfile, 380));
+            d.ToggleIn(avsCard, preprocessVideo, null);
+            d.ToggleIn(avsCard, autoDeint, null);
+
+            // audio tab
+            MeGUI.core.gui.SettingsPage audio = d.BeginPage();
+            d.Section("Audio setup (audio settings for specific languages)");
+            oneClickAudioControl1.Dock = DockStyle.Fill;
+            d.Block(audioTab, wide, 210, d.Card());
+
+            // output tab
+            MeGUI.core.gui.SettingsPage output = d.BeginPage();
+            d.Section("File");
+            MeGUI.core.gui.SettingsCard fileCard = d.Card();
+            fileCard.AddRow("Filesize", null, d.Wide(fileSize, 340));
+            fileCard.AddRow("Splitting", null, d.Wide(splitSize, 340));
+            d.Section("Container");
+            d.Message(containerFormatLabel, wide, 70);
+            d.Block(containerTypeList, 320, 150, d.Card());
+
+            // language tab
+            MeGUI.core.gui.SettingsPage language = d.BeginPage();
+            d.Section("Default audio language (tracks with this language will be preselected)");
+            d.Block(Picker(d, lbDefaultAudio, lbNonDefaultAudio, btnAudioUp, btnRemoveAudio, btnAddAudio, btnAudioDown), wide, 120, d.Card());
+            d.Section("Default subtitle language (tracks with this language will be preselected)");
+            d.Block(Picker(d, lbDefaultSubtitle, lbNonDefaultSubtitle, btnSubtitleUp, btnRemoveSubtitle, btnAddSubtitle, btnSubtitleDown), wide, 120, d.Card());
+            d.Section("Fallback");
+            d.Row("Languages to select if the selection does not match", null, d.Wide(cbLanguageSelect, 140));
+
+            // other tab
+            MeGUI.core.gui.SettingsPage other = d.BeginPage();
+            d.Section("Default directories");
+            MeGUI.core.gui.SettingsCard dirs = d.Card();
+            dirs.AddRow("Output", null, d.Bar(outputDirectory, 340), d.Btn(deleteOutput));
+            dirs.AddRow("Working", null, d.Bar(workingDirectory, 340), d.Btn(deleteWorking));
+            d.Section("Project name");
+            MeGUI.core.gui.SettingsCard names = d.Card();
+            names.AddRow("Prefix", null, d.Wide(txtPrefixName, 200));
+            names.AddRow("Suffix", null, d.Wide(txtSuffixName, 200));
+            names.AddRow("Replace", null, d.Wide(txtWorkingNameDelete, 200));
+            names.AddRow("With", null, d.Wide(txtWorkingNameReplaceWith, 200));
+            d.Section("Indexer / opener priority");
+            d.Block(Picker(d, lbIndexerPriority, null, btnIndexerUp, null, null, btnIndexerDown), wide, 120, d.Card());
+            d.Section("Intermediate files");
+            MeGUI.core.gui.SettingsCard mkvCard = d.Card();
+            chkDisableIntermediateMKV.Text = "Disable intermediate MKV file";
+            d.ToggleIn(mkvCard, chkDisableIntermediateMKV, null);
+
+            // each tab of the control gets its page of cards
+            AttachPage(tabPage1, video);
+            AttachPage(tabPage3, audio);
+            AttachPage(tabPage2, output);
+            AttachPage(tabPage4, language);
+            AttachPage(tabPage5, other);
+            tabControl1.Dock = DockStyle.Fill;
+            Size = new Size(d.S(700), d.S(540));
+            d.AttachTheme();
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
+        /// <summary>a list, the buttons to move / remove / add an item and (optionally) a second list, in one container</summary>
+        private static Control Picker(MeGUI.core.gui.ModernDialog d, ListBox left, ListBox right, Button up, Button remove, Button add, Button down)
+        {
+            Panel p = new Panel();
+            p.Size = new Size(d.S(520), d.S(112));
+            left.Dock = DockStyle.None;
+            left.Bounds = new Rectangle(0, 0, d.S(180), d.S(112));
+            p.Controls.Add(left);
+            int x = d.S(190);
+            foreach (Button b in new Button[] { up, remove, add, down })
+            {
+                if (b == null)
+                    continue;
+                b.Dock = DockStyle.None;
+                b.AutoSize = false;
+                b.Size = new Size(d.S(44), d.S(28));
+                p.Controls.Add(b);
+            }
+            up.Location = new Point(x, 0);
+            if (remove != null)
+                remove.Location = new Point(x, d.S(42));
+            down.Location = new Point(x, d.S(84));
+            if (add != null)
+            {
+                add.Location = new Point(x + d.S(52), d.S(42));
+            }
+            if (right != null)
+            {
+                right.Dock = DockStyle.None;
+                right.Bounds = new Rectangle(x + d.S(104), 0, d.S(180), d.S(112));
+                p.Controls.Add(right);
+            }
+            return p;
         }
 
         #region Gettable<OneClickSettings> Members
