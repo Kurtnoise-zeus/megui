@@ -122,6 +122,7 @@ namespace MeGUI.core.gui
         public SettingsCard Message(Label label, int width, int height)
         {
             label.AutoSize = false;
+            label.Dock = DockStyle.None;
             label.Size = new Size(S(width), S(height));
             SettingsCard card = page.AddCard();
             card.AddWide(null, null, label);
@@ -131,6 +132,8 @@ namespace MeGUI.core.gui
         /// <summary>a card with one wide control (a list, a progress bar...)</summary>
         public void Block(Control c, int width, int height, SettingsCard card)
         {
+            // a control which was docked in its old container is resized by it: undock first
+            c.Dock = DockStyle.None;
             c.Size = new Size(S(width), S(height));
             if (card == null)
                 card = page.AddCard();
@@ -139,12 +142,14 @@ namespace MeGUI.core.gui
 
         public Control Wide(Control c, int width)
         {
+            c.Dock = DockStyle.None;
             c.Width = S(width);
             return c;
         }
 
         public Button Btn(Button b)
         {
+            b.Dock = DockStyle.None;
             b.AutoSize = false;
             b.Height = S(32);
             b.Width = b.Text.Length <= 2
@@ -157,6 +162,7 @@ namespace MeGUI.core.gui
 
         public Control Bar(FileBar bar, int width)
         {
+            bar.Dock = DockStyle.None;
             bar.Size = new Size(S(width), S(30));
             return bar;
         }
