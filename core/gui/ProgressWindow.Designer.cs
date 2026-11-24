@@ -24,7 +24,7 @@
             this.positionInClipTotal = new System.Windows.Forms.TextBox();
             this.totalTime = new System.Windows.Forms.TextBox();
             this.progressLabel = new System.Windows.Forms.Label();
-            this.progress = new System.Windows.Forms.ProgressBar();
+            this.progress = new MeGUI.core.gui.RoundedProgressBar();
             this.timeElapsed = new System.Windows.Forms.TextBox();
             this.timeElapsedLabel = new System.Windows.Forms.Label();
             this.overallFPS = new System.Windows.Forms.TextBox();
@@ -386,7 +386,7 @@
         private System.Windows.Forms.TextBox timeElapsed;
         private System.Windows.Forms.TextBox totalTime;
         private System.Windows.Forms.Label progressLabel;
-        private System.Windows.Forms.ProgressBar progress;
+        private MeGUI.core.gui.RoundedProgressBar progress;
         private System.Windows.Forms.TextBox positionInClip;
         private System.Windows.Forms.Label currentPositionLabel;
         private System.Windows.Forms.StatusStrip statusStrip1;

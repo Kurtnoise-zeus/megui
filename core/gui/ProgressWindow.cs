@@ -72,11 +72,12 @@ namespace MeGUI
             ModernDialog d = new ModernDialog(this);
             d.Section("Progress");
             SettingsCard c1 = d.Card();
-            c1.AddRow("Current / Total length", null, d.Wide(positionInClip, 90), d.Wide(positionInClipTotal, 90));
-            c1.AddRow("Current / Total frames", null, d.Wide(currentVideoFrame, 90), d.Wide(totalVideoFrame, 90));
-            c1.AddRow("Current / Estimated filesize", null, d.Wide(currentFileSize, 90), d.Wide(estimatedFileSize, 90));
-            c1.AddRow("Current / Average speed", null, d.Wide(currentFPS, 90), d.Wide(overallFPS, 90));
-            c1.AddRow("Elapsed / Remaining time", null, d.Wide(timeElapsed, 90), d.Wide(totalTime, 90));
+            c1.AddRow("Current / Total length", null, new RoundedBox(positionInClip, d.S(90), d.S(32)), new RoundedBox(positionInClipTotal, d.S(90), d.S(32)));
+            c1.AddRow("Current / Total frames", null, new RoundedBox(currentVideoFrame, d.S(90), d.S(32)), new RoundedBox(totalVideoFrame, d.S(90), d.S(32)));
+            c1.AddRow("Current / Estimated filesize", null, new RoundedBox(currentFileSize, d.S(90), d.S(32)), new RoundedBox(estimatedFileSize, d.S(90), d.S(32)));
+            c1.AddRow("Current / Average speed", null, new RoundedBox(currentFPS, d.S(90), d.S(32)), new RoundedBox(overallFPS, d.S(90), d.S(32)));
+            c1.AddRow("Elapsed / Remaining time", null, new RoundedBox(timeElapsed, d.S(90), d.S(32)), new RoundedBox(totalTime, d.S(90), d.S(32)));
+            progress.Height = d.S(12);
             c1.AddRow("Progress", null, d.Wide(progress, 220));
             d.Section("Job");
             SettingsCard c2 = d.Card();

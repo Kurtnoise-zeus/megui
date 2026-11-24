@@ -1041,4 +1041,119 @@ namespace MeGUI.core.gui
             }
         }
     }
+
+    /// <summary>
+    /// A rounded frame around a text box or a numeric box (their own border is square and cannot be changed):
+    /// the control keeps its name, events and value, it is only placed inside the frame without its border.
+    /// </summary>
+    public class RoundedBox : Panel
+    {
+        private readonly Control inner;
+
+        public RoundedBox(Control control, int width, int height)
+        {
+            inner = control;
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+            TextBox text = control as TextBox;
+            if (text != null)
+                text.BorderStyle = BorderStyle.None;
+            NumericUpDown number = control as NumericUpDown;
+            if (number != null)
+                number.BorderStyle = BorderStyle.None;
+            control.Dock = DockStyle.None;
+            control.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            Controls.Add(control);
+            Size = new Size(width, height);
+            Margin = control.Margin;
+            control.BackColorChanged += delegate { Invalidate(); };
+            control.GotFocus += delegate { Invalidate(); };
+            control.LostFocus += delegate { Invalidate(); };
+            control.EnabledChanged += delegate { Invalidate(); };
+            PlaceInner();
+        }
+
+        private void PlaceInner()
+        {
+            int pad = Math.Max(4, Height / 5);
+            inner.Width = Math.Max(10, Width - 2 * pad);
+            inner.Location = new Point(pad, Math.Max(1, (Height - inner.Height) / 2));
+        }
+
+        protected override void OnResize(EventArgs eventargs)
+        {
+            base.OnResize(eventargs);
+            if (inner != null)
+                PlaceInner();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Color outside = ThemeManager.Palette.Window;
+            for (Control parent = Parent; parent != null; parent = parent.Parent)
+            {
+                if (parent.BackColor.A == 255)
+                {
+                    outside = parent.BackColor;
+                    break;
+                }
+            }
+            g.Clear(outside);
+            Color back = inner.BackColor;
+            Color border = inner.Focused ? ThemeManager.Palette.Accent : SettingsDraw.Line(back);
+            if (!inner.Enabled)
+                back = ThemeManager.Blend(outside, back, 0.5);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            float radius = Math.Max(3f, Height / 6f);
+            using (GraphicsPath path = SettingsDraw.RoundRect(new RectangleF(0.5f, 0.5f, Width - 1f, Height - 1f), radius))
+            using (SolidBrush fill = new SolidBrush(back))
+            using (Pen pen = new Pen(border))
+            {
+                g.FillPath(fill, path);
+                g.DrawPath(pen, path);
+            }
+            g.SmoothingMode = SmoothingMode.Default;
+        }
+    }
+
+    /// <summary>a progress bar with rounded ends (same Value / Minimum / Maximum as the standard one)</summary>
+    public class RoundedProgressBar : ProgressBar
+    {
+        public RoundedProgressBar()
+        {
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Color outside = ThemeManager.Palette.Window;
+            for (Control parent = Parent; parent != null; parent = parent.Parent)
+            {
+                if (parent.BackColor.A == 255)
+                {
+                    outside = parent.BackColor;
+                    break;
+                }
+            }
+            g.Clear(outside);
+            ThemePalette pal = ThemeManager.Palette;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            float radius = Height / 2f;
+            RectangleF all = new RectangleF(0f, 0f, Width - 1f, Height - 1f);
+            using (GraphicsPath track = SettingsDraw.RoundRect(all, radius))
+            using (SolidBrush trackBrush = new SolidBrush(ThemeManager.Blend(outside, pal.Text, ThemeManager.IsDark ? 0.18 : 0.12)))
+                g.FillPath(trackBrush, track);
+            int range = Math.Max(1, Maximum - Minimum);
+            float width = (Width - 1f) * Math.Max(0, Math.Min(range, Value - Minimum)) / range;
+            if (width >= 1f)
+            {
+                width = Math.Max(width, Height - 1f);
+                using (GraphicsPath fill = SettingsDraw.RoundRect(new RectangleF(0f, 0f, Math.Min(width, Width - 1f), Height - 1f), radius))
+                using (SolidBrush fillBrush = new SolidBrush(ThemeManager.IsDark ? ThemeManager.ProgressFill : pal.Accent))
+                    g.FillPath(fillBrush, fill);
+            }
+            g.SmoothingMode = SmoothingMode.Default;
+        }
+    }
 }
