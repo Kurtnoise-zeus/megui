@@ -19,6 +19,7 @@
 // ****************************************************************************
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MeGUI.core.gui
@@ -28,10 +29,87 @@ namespace MeGUI.core.gui
         public AviSynthProfileConfigPanel() 
         {
             InitializeComponent();
+            BuildModernLayout();
             this.resizeFilterType.DataSource = ScriptServer.ListOfResizeFilterType;
             this.resizeFilterType.BindingContext = new BindingContext();
             this.noiseFilterType.DataSource = ScriptServer.ListOfDenoiseFilterType;
             this.noiseFilterType.BindingContext = new BindingContext();
+        }
+
+        /// <summary>
+        /// Windows 11 settings look (see ModernDialog): one page of cards per tab. The controls are only moved:
+        /// names, events and the settings are unchanged.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            MeGUI.core.gui.SettingsPage tpl = d.CurrentPage;
+            d.Section("Script template");
+            MeGUI.core.gui.SettingsCard c0 = d.Card();
+            flowLayoutPanel1.Dock = DockStyle.None;
+            flowLayoutPanel1.AutoSize = false;
+            flowLayoutPanel1.WrapContents = true;
+            foreach (Control b in flowLayoutPanel1.Controls)
+            {
+                Button bt = b as Button;
+                if (bt != null)
+                {
+                    d.Btn(bt);
+                    bt.Margin = new Padding(0, 0, d.S(8), d.S(4));
+                }
+            }
+            flowLayoutPanel1.Size = new Size(d.S(600), d.S(76));
+            c0.AddWide(null, null, flowLayoutPanel1);
+            avisynthScript.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            avisynthScript.Dock = DockStyle.None;
+            d.Block(avisynthScript, 600, 300, d.Card());
+            d.Section("Plugins");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            dllBar.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            c1.AddRow("Load DLL", null, d.Bar(dllBar, 360));
+
+            MeGUI.core.gui.SettingsPage extra = d.BeginPage();
+            d.Section("Filters");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            c2.AddToggle(Tg(d, resize), null, d.Wide(resizeFilterType, 160));
+            c2.AddToggle(Tg(d, noiseFilter), null, d.Wide(noiseFilterType, 160));
+            d.Section("Misc");
+            MeGUI.core.gui.SettingsCard c3 = d.Card();
+            c3.AddToggle(Tg(d, dss2), null);
+            c3.AddToggle(Tg(d, cbPreferAnimeDeinterlacing), null);
+            d.Section("Mpeg options");
+            MeGUI.core.gui.SettingsCard c4 = d.Card();
+            c4.AddToggle(Tg(d, mpeg2Deblocking), null);
+            c4.AddToggle(Tg(d, colourCorrect), null);
+            d.Section("Resize options");
+            MeGUI.core.gui.SettingsCard c5 = d.Card();
+            c5.AddToggle(Tg(d, signalAR), null, d.Wide(mod16Box, 180));
+            c5.AddRow("Acceptable anamorphic aspect error", null, d.Wide(acceptableAspectError, 90));
+            c5.AddToggle(Tg(d, upsize), null);
+            c5.AddRow("MOD value used for resizing", null, d.Wide(modValueBox, 90));
+            d.Section("DGI source");
+            MeGUI.core.gui.SettingsCard c6 = d.Card();
+            c6.AddToggle(Tg(d, chkNvResize), null);
+
+            AttachPage(templatePage, tpl);
+            AttachPage(extraSetupPage, extra);
+            Size = new Size(d.S(660), d.S(560));
+            d.AttachTheme();
+        }
+
+        private static MeGUI.core.gui.ToggleSwitch Tg(MeGUI.core.gui.ModernDialog d, MeGUI.core.gui.ToggleSwitch t)
+        {
+            t.AutoSize = false;
+            t.Size = new Size(d.S(96), d.S(26));
+            return t;
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
         }
 
         #region Gettable<AviSynthSettings> Members
