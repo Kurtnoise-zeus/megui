@@ -92,7 +92,7 @@ namespace MeGUI.core.gui
         }
 
         /// <summary>the radio buttons of a group (one per row, the controls of a radio button follow it); all have the same width so that the controls are aligned</summary>
-        public void Radios(int radioWidth, params KeyValuePair<RadioButton, Control[]>[] rows)
+        public SettingsCard Radios(int radioWidth, params KeyValuePair<RadioButton, Control[]>[] rows)
         {
             SettingsCard card = page.AddCard();
             foreach (KeyValuePair<RadioButton, Control[]> row in rows)
@@ -101,6 +101,15 @@ namespace MeGUI.core.gui
                 row.Key.Size = new Size(S(radioWidth), S(26));
                 card.AddLeft(row.Key, row.Value);
             }
+            return card;
+        }
+
+        /// <summary>a toggle switch as a row of an existing card</summary>
+        public void ToggleIn(SettingsCard card, ToggleSwitch toggle, string description)
+        {
+            toggle.AutoSize = false;
+            toggle.Size = new Size(S(96), S(26));
+            card.AddToggle(toggle, description);
         }
 
         /// <summary>a radio button and the controls which follow it (for <see cref="Radios"/>)</summary>

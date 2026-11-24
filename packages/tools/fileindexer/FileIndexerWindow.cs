@@ -49,6 +49,8 @@ namespace MeGUI
         private bool dialogMode = false; // $%£%$^>*"%$%%$#{"!!! Affects the public behaviour!
         private bool configured = false;
         private MediaInfoFile iFile;
+        private Label fileInfoSection, audioSection;
+        private MeGUI.core.gui.SettingsCard cardInput, cardIndexer, cardAudio, cardOutput, closeOnQueueCard;
         #endregion
 
         #region start / stop
@@ -73,8 +75,7 @@ namespace MeGUI
             checkIndexIO();
             if (!showCloseOnQueue)
             {
-                this.closeOnQueue.Hide();
-                this.Controls.Remove(this.closeOnQueue);
+                closeOnQueueCard.Visible = false;
             }
             this.closeOnQueue.Checked = closeOnQueue;
         }
@@ -82,6 +83,7 @@ namespace MeGUI
         public FileIndexerWindow(MainForm mainForm)
         {
             InitializeComponent();
+            BuildModernLayout();
             CheckDGIIndexer();
         }
 
@@ -120,7 +122,6 @@ namespace MeGUI
                     input.FilterIndex = 5;
                 btnDGI.Visible = MainForm.Instance.Settings.IsDGIIndexerAvailable();
                 btnDGM.Visible = MainForm.Instance.Settings.IsDGMIndexerAvailable();
-                btnFFMS.Location = new System.Drawing.Point(MainForm.Instance.Settings.DPIRescale(262), MainForm.Instance.Settings.DPIRescale(20));
                 
             }
             else
@@ -130,7 +131,6 @@ namespace MeGUI
                 input.Filter = filter;
                 input.FilterIndex = 4;
                 btnDGM.Visible = btnDGI.Visible = false;
-                btnFFMS.Location = new System.Drawing.Point(MainForm.Instance.Settings.DPIRescale(171), MainForm.Instance.Settings.DPIRescale(20));
             }
         }
 
@@ -142,8 +142,8 @@ namespace MeGUI
                     {
                         this.output.Filter = "DGIndexNV project files|*.dgi";
                         this.demuxTracks.Enabled = true;
-                        this.gbAudio.Text = " Audio Demux ";
-                        this.gbOutput.Enabled = true;
+                        this.audioSection.Text = "Audio demux";
+                        this.cardOutput.Enabled = true;
                         this.demuxVideo.Enabled = true;
                         IndexerUsed = IndexType.DGI;
                         btnDGI.Checked = true;
@@ -153,8 +153,8 @@ namespace MeGUI
                     {
                         this.output.Filter = "DGIndexIM project files|*.dgi";
                         this.demuxTracks.Enabled = true;
-                        this.gbAudio.Text = " Audio Demux ";
-                        this.gbOutput.Enabled = true;
+                        this.audioSection.Text = "Audio demux";
+                        this.cardOutput.Enabled = true;
                         this.demuxVideo.Enabled = true;
                         IndexerUsed = IndexType.DGM;
                         btnDGM.Checked = true;
@@ -164,8 +164,8 @@ namespace MeGUI
                     {
                         this.output.Filter = "DGIndex project files|*.d2v";
                         this.demuxTracks.Enabled = true;
-                        //this.gbOutput.Enabled = true;
-                        this.gbAudio.Text = " Audio Demux ";
+                        //this.cardOutput.Enabled = true;
+                        this.audioSection.Text = "Audio demux";
                         this.demuxVideo.Enabled = true;
                         IndexerUsed = IndexType.D2V;
                         btnD2V.Checked = true;
@@ -174,7 +174,7 @@ namespace MeGUI
                 case IndexType.FFMS:
                     {
                         this.output.Filter = "FFMSIndex project files|*.ffindex";
-                        //this.gbOutput.Enabled = false;
+                        //this.cardOutput.Enabled = false;
                         this.demuxTracks.Enabled = true;
                         this.demuxVideo.Checked = false;
                         this.demuxVideo.Enabled = false;
@@ -182,15 +182,15 @@ namespace MeGUI
                         btnFFMS.Checked = true;
                         if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") ||
                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM"))
-                            this.gbAudio.Text = " Audio Demux ";
+                            this.audioSection.Text = "Audio demux";
                         else
-                            this.gbAudio.Text = " Audio Encoding ";
+                            this.audioSection.Text = "Audio encoding";
                         break;
                     }
                 case IndexType.LSMASH:
                     {
                         this.output.Filter = "LSMASHIndex project files|*.lwi";
-                        //this.gbOutput.Enabled = false;
+                        //this.cardOutput.Enabled = false;
                         this.demuxTracks.Enabled = true;
                         this.demuxVideo.Checked = false;
                         this.demuxVideo.Enabled = false;
@@ -198,9 +198,9 @@ namespace MeGUI
                         btnLSMASH.Checked = true;
                         if (txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("MATROSKA") || 
                             txtContainerInformation.Text.Trim().ToUpperInvariant().Equals("WEBM"))
-                            this.gbAudio.Text = " Audio Demux ";
+                            this.audioSection.Text = "Audio demux";
                         else
-                            this.gbAudio.Text = " Audio Encoding ";
+                            this.audioSection.Text = "Audio encoding";
                         break;
                     }
             }
@@ -243,12 +243,12 @@ namespace MeGUI
             if (bDisableControls)
             {
                 this.Cursor = Cursors.WaitCursor;
-                gbInput.Enabled = queueButton.Enabled = gbOutput.Enabled = gbIndexer.Enabled = gbAudio.Enabled = false;
+                cardInput.Enabled = queueButton.Enabled = cardOutput.Enabled = cardIndexer.Enabled = cardAudio.Enabled = false;
             }
             else
             {
                 this.Cursor = Cursors.Default;
-                gbInput.Enabled = queueButton.Enabled = true;
+                cardInput.Enabled = queueButton.Enabled = true;
             }
         }
 
@@ -263,7 +263,7 @@ namespace MeGUI
                 MainForm.Instance.FileIndexerLog = _oLog;
             }
 
-            gbFileInformation.Text = " File Information ";
+            fileInfoSection.Text = "File information";
             iFile = null;
             if (GetDVDorBluraySource(fileName, ref iFile))
             {
@@ -272,7 +272,7 @@ namespace MeGUI
                     fileName = iFile.FileName;
                     string strText = (iFile.VideoInfo.PGCNumber > 1 ? " - PGC " + iFile.VideoInfo.PGCNumber.ToString("D2") : string.Empty) + (iFile.VideoInfo.AngleNumber > 0 ? " - Angle " + iFile.VideoInfo.AngleNumber + " " : string.Empty);
                     if (strText.Trim().Length > 0)
-                        gbFileInformation.Text += strText.Trim() + " ";
+                        fileInfoSection.Text += " " + strText.Trim();
                 }
             }
             else
@@ -324,7 +324,7 @@ namespace MeGUI
                     btnFFMS.Enabled = iFile.isFFMSIndexable();
                     btnLSMASH.Enabled = iFile.isLSMASHIndexable();
 
-                    gbIndexer.Enabled = gbAudio.Enabled = gbOutput.Enabled = true;
+                    cardIndexer.Enabled = cardAudio.Enabled = cardOutput.Enabled = true;
                     changeIndexer(newType);
                     setControlState(false);
                     return;
@@ -333,7 +333,7 @@ namespace MeGUI
 
             // source file not supported
             btnD2V.Enabled = btnDGM.Enabled = btnDGI.Enabled = btnFFMS.Enabled = btnLSMASH.Enabled = false;
-            gbIndexer.Enabled = gbAudio.Enabled = gbOutput.Enabled = false;
+            cardIndexer.Enabled = cardAudio.Enabled = cardOutput.Enabled = false;
             btnFFMS.Checked = btnD2V.Checked = btnDGM.Checked = btnDGI.Checked = btnLSMASH.Checked = false;
             output.Filename = "";
             demuxNoAudiotracks.Checked = true;
@@ -803,6 +803,63 @@ namespace MeGUI
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog).
+        /// The cards replace the group boxes: they are enabled / disabled the same way.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+
+            d.Section("Input");
+            cardInput = d.Card();
+            cardInput.AddRow("Input file", null, d.Bar(input, 380));
+            fileInfoSection = d.Section("File information");
+            MeGUI.core.gui.SettingsCard info = d.Card();
+            info.AddRow("Codec", null, d.Wide(txtCodecInformation, 240));
+            info.AddRow("Scan type", null, d.Wide(txtScanTypeInformation, 240));
+            info.AddRow("Container", null, d.Wide(txtContainerInformation, 240));
+
+            d.Section("File indexer");
+            cardIndexer = d.Card();
+            System.Collections.Generic.List<Control> indexers = new System.Collections.Generic.List<Control>();
+            indexers.Add(SizeRadio(d, btnD2V, 90));
+            if (MainForm.Instance.Settings.IsDGMIndexerAvailable())
+                indexers.Add(SizeRadio(d, btnDGM, 100));
+            if (MainForm.Instance.Settings.IsDGIIndexerAvailable())
+                indexers.Add(SizeRadio(d, btnDGI, 110));
+            indexers.Add(SizeRadio(d, btnFFMS, 110));
+            indexers.Add(SizeRadio(d, btnLSMASH, 140));
+            cardIndexer.AddRow("Indexer", null, indexers.ToArray());
+
+            audioSection = d.Section("Audio demux");
+            cardAudio = d.Radios(240,
+                MeGUI.core.gui.ModernDialog.R(demuxNoAudiotracks),
+                MeGUI.core.gui.ModernDialog.R(demuxTracks),
+                MeGUI.core.gui.ModernDialog.R(demuxAll));
+            d.Block(AudioTracks, 600, 90, cardAudio);
+
+            d.Section("Output");
+            cardOutput = d.Card();
+            cardOutput.AddRow("Output file", null, d.Bar(output, 380));
+            d.ToggleIn(cardOutput, demuxVideo, null);
+
+            d.Section("After queueing");
+            d.Toggle(loadOnComplete, null);
+            closeOnQueueCard = d.Card();
+            closeOnQueue.Text = "Close after queue";
+            d.ToggleIn(closeOnQueueCard, closeOnQueue, null);
+
+            d.Finish(helpButton1, 760, queueButton);
+        }
+
+        private static Control SizeRadio(MeGUI.core.gui.ModernDialog d, RadioButton radio, int width)
+        {
+            radio.AutoSize = false;
+            radio.Size = new System.Drawing.Size(d.S(width), d.S(26));
+            return radio;
         }
     }
 
