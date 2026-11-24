@@ -239,6 +239,7 @@ namespace MeGUI.core.gui
 
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE_OLD = 19;
         private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+        private const int WM_NCACTIVATE = 0x0086;
 
         [DllImport("dwmapi.dll")]
         private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
@@ -255,6 +256,11 @@ namespace MeGUI.core.gui
                 int useDark = IsDark ? 1 : 0;
                 if (DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref useDark, sizeof(int)) != 0)
                     DwmSetWindowAttribute(form.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref useDark, sizeof(int));
+                
+                // fix: Windows 10 does not update the window titlebar after changing theme:
+                bool isActive = Form.ActiveForm == form;
+                SendMessage(form.Handle, WM_NCACTIVATE, isActive ? IntPtr.Zero : new IntPtr(1), IntPtr.Zero);
+                SendMessage(form.Handle, WM_NCACTIVATE, isActive ? new IntPtr(1) : IntPtr.Zero, IntPtr.Zero);
             }
             catch (Exception)
             {
