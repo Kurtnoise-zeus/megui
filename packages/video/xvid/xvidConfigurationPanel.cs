@@ -49,6 +49,13 @@ namespace MeGUI.packages.video.xvid
         /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
         /// names, events and the settings are unchanged. The labels which the code changes are used as titles of their rows.
         /// </summary>
+        private static MeGUI.core.gui.ToggleSwitch Tg(MeGUI.core.gui.ModernDialog d, MeGUI.core.gui.ToggleSwitch t)
+        {
+            t.AutoSize = false;
+            t.Size = new Size(d.S(96), d.S(26));
+            return t;
+        }
+
         private void BuildModernLayout()
         {
             MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
@@ -108,7 +115,7 @@ namespace MeGUI.packages.video.xvid
             rcCard.AddRow("High bitrate scenes degradation (%)", null, d.Wide(xvidHighBitrateDegradation, 90));
             rcCard.AddRow("Low bitrate scenes improvement (%)", null, d.Wide(xvidLowBitrateImprovement, 90));
             d.Section("CBR rate control");
-            MeGUI.core.gui.SettingsCard cbrCard = d.Card();
+            cbrCard = d.Card();
             cbrCard.AddRow("Reaction delay factor", null, d.Wide(xvidRCDelayFactor, 90));
             cbrCard.AddRow("Averaging period", null, d.Wide(xvidRCAveragingPeriod, 90));
             cbrCard.AddRow("RC buffer size", null, d.Wide(xvidRCBufferSize, 90));
