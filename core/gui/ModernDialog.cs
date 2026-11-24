@@ -208,7 +208,12 @@ namespace MeGUI.core.gui
             foreach (Control c in page.Controls)
                 height += c.Height + c.Margin.Vertical;
             Rectangle area = Screen.PrimaryScreen.WorkingArea;
+            // resizable borders: the cards follow the width, the page scrolls when it is too short
+            form.FormBorderStyle = FormBorderStyle.Sizable;
+            form.SizeGripStyle = SizeGripStyle.Show;
             form.ClientSize = new Size(Math.Min(S(clientWidth), area.Width), Math.Min(height + footer.Height, area.Height - S(100)));
+            // not narrower than the initial width (the controls of the cards have a fixed width), not lower than a few cards
+            form.MinimumSize = new Size(form.Width, Math.Min(form.Height, S(380)));
 
             ApplyTheme();
             ThemeManager.ThemeChanged += OnThemeChanged;
