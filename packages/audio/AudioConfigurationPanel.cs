@@ -31,6 +31,9 @@ namespace MeGUI.core.details.audio
     public partial class AudioConfigurationPanel : UserControl
     {
         private EnumProxy[] _avisynthChannelSet;
+        private MeGUI.core.gui.ModernDialog modern;
+        private Label encoderSection;
+        private MeGUI.core.gui.SettingsCard encoderCard;
 	    
         /// <summary>
         /// Removes the "Extra" tab (custom command line) for the encoders which do not use it
@@ -119,6 +122,68 @@ namespace MeGUI.core.details.audio
             this.cbDownmixMode.SelectedIndex = 0;
             this.cbSampleRate.SelectedIndex = 0;
             this.cbTimeModification.SelectedIndex = 0;
+            BuildModernLayout();
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the general options and the custom command line are cards (see ModernDialog).
+        /// The options of the encoder are moved into the first card by ModernizeEncoderOptions, which the panels
+        /// of the encoders call at the end of their InitializeComponent.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            modern = new MeGUI.core.gui.ModernDialog(this);
+            MeGUI.core.gui.ModernDialog d = modern;
+
+            MeGUI.core.gui.SettingsPage general = d.CurrentPage;
+            encoderSection = d.Section("Encoder");
+            encoderCard = d.Card();
+            d.Section("Audio processing");
+            MeGUI.core.gui.SettingsCard processing = d.Card();
+            processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(primaryDecoding, 240));
+            processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(BesweetChannelsLabel.Text), null, d.Wide(cbDownmixMode, 240));
+            processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(lbSampleRate.Text), null, d.Wide(cbSampleRate, 240));
+            processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(lbTimeModification.Text), null, d.Wide(cbTimeModification, 300));
+            autoGain.AutoSize = false;
+            autoGain.Size = new Size(d.S(96), d.S(26));
+            normalize.Dock = DockStyle.None;
+            normalize.Width = d.S(100);
+            processing.AddToggle(autoGain, null, normalize);
+            d.ToggleIn(processing, applyDRC, null);
+
+            MeGUI.core.gui.SettingsPage extra = d.BeginPage();
+            d.Section("Custom command line");
+            d.Block(tbAudioCLI, 560, 34, d.Card());
+
+            Controls.Remove(encoderGroupBox);
+            AttachPage(Page1, general);
+            AttachPage(Page2, extra);
+            tabControl1.Dock = DockStyle.Fill;
+            d.AttachTheme();
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
+        /// <summary>
+        /// Moves the options of the encoder (the group box filled by the panel of the encoder) into the first
+        /// card. To call after the InitializeComponent of the panel of the encoder.
+        /// </summary>
+        protected void ModernizeEncoderOptions()
+        {
+            if (modern == null)
+                return;
+            // the designer of the panel of the encoder sets a small size and the automatic scaling again
+            AutoScaleMode = AutoScaleMode.None;
+            modern.FillCard(encoderCard, encoderGroupBox);
+            encoderSection.Text = MeGUI.core.gui.ModernDialog.Cap(encoderGroupBox.Text);
+            encoderGroupBox.TextChanged += delegate { encoderSection.Text = MeGUI.core.gui.ModernDialog.Cap(encoderGroupBox.Text); };
+            Size = new Size(modern.S(640), modern.S(600));
         }
 	    
 		#endregion

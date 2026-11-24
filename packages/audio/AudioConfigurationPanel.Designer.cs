@@ -62,8 +62,8 @@ namespace MeGUI.core.details.audio
             this.lbSampleRate = new System.Windows.Forms.Label();
             this.lbTimeModification = new System.Windows.Forms.Label();
             this.normalize = new System.Windows.Forms.NumericUpDown();
-            this.applyDRC = new System.Windows.Forms.CheckBox();
-            this.autoGain = new System.Windows.Forms.CheckBox();
+            this.applyDRC = new MeGUI.core.gui.ToggleSwitch();
+            this.autoGain = new MeGUI.core.gui.ToggleSwitch();
             this.Page2 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -342,9 +342,9 @@ namespace MeGUI.core.details.audio
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label BesweetChannelsLabel;
         private System.Windows.Forms.Label lbSampleRate;
-        private System.Windows.Forms.CheckBox autoGain;
+        private MeGUI.core.gui.ToggleSwitch autoGain;
         private System.Windows.Forms.NumericUpDown normalize;
-        private System.Windows.Forms.CheckBox applyDRC;
+        private MeGUI.core.gui.ToggleSwitch applyDRC;
         private System.Windows.Forms.Label lbTimeModification;
         private System.Windows.Forms.TabPage Page2;
         private System.Windows.Forms.GroupBox groupBox1;

@@ -30,6 +30,7 @@ namespace MeGUI.packages.audio.qaac
         public qaacConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             cbMode.Items.AddRange(EnumProxy.CreateArray(QaacSettings.SupportedModes));
             cbProfile.Items.AddRange(EnumProxy.CreateArray(QaacSettings.SupportedProfiles));
         }

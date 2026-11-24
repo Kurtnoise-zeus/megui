@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.lame
         public lameConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             cbrBitrate.DataSource = MP3Settings.SupportedBitrates;
             cbrBitrate.BindingContext = new BindingContext();
             cbrBitrate.SelectedItem = 128;

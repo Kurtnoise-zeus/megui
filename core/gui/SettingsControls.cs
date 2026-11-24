@@ -373,6 +373,7 @@ namespace MeGUI.core.gui
             row.Title = title;
             row.Description = description;
             row.Wide = wide;
+            wide.VisibleChanged += delegate { PerformLayout(); };
             if (aside != null)
                 row.Aside.AddRange(aside);
             if (string.IsNullOrEmpty(title))
@@ -412,9 +413,19 @@ namespace MeGUI.core.gui
         }
 
         // a row whose title label is hidden by the code takes no room
-        private static bool Collapsed(Row row)
+        private bool Collapsed(Row row)
         {
-            return row.TitleLabel != null && !row.TitleLabel.Visible;
+            if (row.TitleLabel != null)
+                return !row.TitleLabel.Visible;
+            // a big control without a title which the code hides (a track bar...): no room while it is hidden
+            // (when the card itself is hidden, e.g. on another tab, Visible is false for all the controls)
+            return row.Wide != null && string.IsNullOrEmpty(row.Title) && Visible && !row.Wide.Visible;
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            PerformLayout();
         }
 
         private void ComputeTops()

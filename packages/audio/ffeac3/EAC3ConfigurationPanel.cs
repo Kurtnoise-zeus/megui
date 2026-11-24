@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.ffeac3
         public EAC3ConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             comboBox1.Items.AddRange(EAC3Settings.SupportedBitrates);
         }
 

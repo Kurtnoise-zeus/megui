@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.ffdca
         public DCAConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             comboBox1.Items.AddRange(DCASettings.SupportedBitrates);
         }
 

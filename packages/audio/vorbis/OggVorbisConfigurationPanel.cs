@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.vorbis
         public OggVorbisConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             vQuality_ValueChanged(null, null);
         }
         #region properties

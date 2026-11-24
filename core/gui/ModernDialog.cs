@@ -224,6 +224,139 @@ namespace MeGUI.core.gui
         #endregion
 
         /// <summary>
+        /// Moves the controls of a group box into a card: the rows are rebuilt from the positions of the controls
+        /// (a label gives the title of its row, a toggle / radio button leads its row, a track bar, a long text or a
+        /// multi-line text box has a row of its own). The labels are kept as the titles of their rows, so the code
+        /// which changes their text / enabled / visible state keeps working.
+        /// </summary>
+        public void FillCard(SettingsCard card, GroupBox box)
+        {
+            List<Control> items = new List<Control>();
+            foreach (Control c in box.Controls)
+                items.Add(c);
+            box.Controls.Clear();
+            items.Sort(delegate (Control a, Control b)
+            {
+                return a.Top != b.Top ? a.Top.CompareTo(b.Top) : a.Left.CompareTo(b.Left);
+            });
+
+            List<List<Control>> rows = new List<List<Control>>();
+            foreach (Control c in items)
+            {
+                List<Control> last = rows.Count > 0 ? rows[rows.Count - 1] : null;
+                if (last != null && Math.Abs(c.Top - last[0].Top) <= 8 && !IsBlock(c) && !IsBlock(last[0]))
+                    last.Add(c);
+                else
+                {
+                    last = new List<Control>();
+                    last.Add(c);
+                    rows.Add(last);
+                }
+            }
+
+            // a multi-line text box a little higher than its label: the label first
+            for (int i = 0; i + 1 < rows.Count; i++)
+            {
+                TextBox tb = rows[i].Count == 1 ? rows[i][0] as TextBox : null;
+                if (tb != null && tb.Multiline && rows[i + 1].Count == 1 && rows[i + 1][0] is Label
+                    && Math.Abs(rows[i + 1][0].Top - tb.Top) <= 8)
+                {
+                    List<Control> swap = rows[i];
+                    rows[i] = rows[i + 1];
+                    rows[i + 1] = swap;
+                    i++;
+                }
+            }
+
+            foreach (List<Control> row in rows)
+            {
+                row.Sort(delegate (Control a, Control b) { return a.Left.CompareTo(b.Left); });
+                if (row.Count == 1 && IsBlock(row[0]))
+                {
+                    AddBlockRow(card, row[0]);
+                    continue;
+                }
+
+                Label title = null;
+                List<Control> others = new List<Control>();
+                foreach (Control c in row)
+                {
+                    Label l = c as Label;
+                    if (l != null && title == null)
+                        title = l;
+                    else
+                        others.Add(Fit(c));
+                }
+
+                if (title != null)
+                    card.AddLabelRow(title, null, others.ToArray());
+                else if (others[0] is ToggleSwitch)
+                {
+                    ToggleSwitch toggle = (ToggleSwitch)others[0];
+                    others.RemoveAt(0);
+                    card.AddToggle(toggle, null, others.ToArray());
+                }
+                else if (others[0] is RadioButton)
+                {
+                    RadioButton radio = (RadioButton)others[0];
+                    others.RemoveAt(0);
+                    radio.AutoSize = false;
+                    radio.Size = new Size(TextRenderer.MeasureText(radio.Text, host.Font).Width + S(40), S(26));
+                    card.AddLeft(radio, others.ToArray());
+                }
+                else
+                    card.AddRow("", null, others.ToArray());
+            }
+
+            if (footerButtons != null)
+                ApplyTheme();
+        }
+
+        private static bool IsBlock(Control c)
+        {
+            TextBox t = c as TextBox;
+            Label l = c as Label;
+            return c is TrackBar || (t != null && t.Multiline) || (l != null && l.Text.Length > 40);
+        }
+
+        private void AddBlockRow(SettingsCard card, Control c)
+        {
+            Label l = c as Label;
+            if (l != null)
+            {
+                // a text of the dialog: it wraps, its height follows the text
+                l.AutoSize = false;
+                int width = S(560);
+                int height = TextRenderer.MeasureText(l.Text, host.Font, new Size(width, 0), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height;
+                l.Size = new Size(width, height + S(6));
+            }
+            else if (c is TrackBar)
+                c.Height = S(45);
+            else
+                c.Height = Math.Max(S(70), c.Height);
+            card.AddWide(null, null, c);
+        }
+
+        /// <summary>size of a control placed on the right of a row</summary>
+        private Control Fit(Control c)
+        {
+            if (c is NumericUpDown)
+                c.Width = S(100);
+            else if (c is ComboBox)
+                c.Width = Math.Max(S(130), Math.Min(S(260), S(c.Width)));
+            else if (c is ToggleSwitch)
+            {
+                ((ToggleSwitch)c).AutoSize = false;
+                c.Size = new Size(S(96), S(26));
+            }
+            else if (c is TextBox)
+                c.Width = Math.Max(S(150), Math.Min(S(360), S(c.Width)));
+            else if (c is Button)
+                Btn((Button)c);
+            return c;
+        }
+
+        /// <summary>
         /// Puts the content and the footer in the form. footerButtons: from left to right, the first one is the
         /// main one (accent colour); help (can be null) is placed at the left of the footer.
         /// </summary>

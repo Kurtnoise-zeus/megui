@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.ffac3
         public AC3ConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             comboBox1.Items.AddRange(AC3Settings.SupportedBitrates);
         }
 

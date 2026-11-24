@@ -34,6 +34,7 @@ namespace MeGUI.packages.audio.ffaac
             : base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             cbMode.Items.AddRange(EnumProxy.CreateArray(FFAACSettings.SupportedModes));
             cbProfile.Items.AddRange(EnumProxy.CreateArray(FFAACSettings.SupportedProfiles));
         }

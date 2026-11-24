@@ -34,6 +34,7 @@ namespace MeGUI.packages.audio.fdkaac
             : base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             cbMode.Items.AddRange(EnumProxy.CreateArray(FDKAACSettings.SupportedModes));
             cbProfile.Items.AddRange(EnumProxy.CreateArray(FDKAACSettings.SupportedProfiles));
         }

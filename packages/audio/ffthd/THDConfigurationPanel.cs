@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.ffthd
         public THDConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
         }
 
         #region properties

@@ -39,6 +39,7 @@ namespace MeGUI.packages.audio.exhale
             : base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             cbProfile.Items.AddRange(EnumProxy.CreateArray(ExhaleSettings.SupportedProfiles));
         }
 

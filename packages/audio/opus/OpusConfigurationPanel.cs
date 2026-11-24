@@ -36,6 +36,7 @@ namespace MeGUI.packages.audio.opus
         public OpusConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             cbMode.Items.AddRange(EnumProxy.CreateArray(OpusSettings.SupportedModes));
             trackBar_ValueChanged(null, null);
         }

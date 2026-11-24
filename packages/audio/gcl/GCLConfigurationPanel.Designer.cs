@@ -30,7 +30,7 @@
         {
             this.lblEncoderPath = new System.Windows.Forms.Label();
             this.tbEncoderPath = new System.Windows.Forms.TextBox();
-            this.btnBrowseEncoder = new System.Windows.Forms.Button();
+            this.btnBrowseEncoder = new MeGUI.core.gui.RoundedButton();
             this.lblExtension = new System.Windows.Forms.Label();
             this.tbExtension = new System.Windows.Forms.TextBox();
             this.lblInputHeader = new System.Windows.Forms.Label();
@@ -161,7 +161,7 @@
 
         private System.Windows.Forms.Label lblEncoderPath;
         private System.Windows.Forms.TextBox tbEncoderPath;
-        private System.Windows.Forms.Button btnBrowseEncoder;
+        private MeGUI.core.gui.RoundedButton btnBrowseEncoder;
         private System.Windows.Forms.Label lblExtension;
         private System.Windows.Forms.TextBox tbExtension;
         private System.Windows.Forms.Label lblInputHeader;

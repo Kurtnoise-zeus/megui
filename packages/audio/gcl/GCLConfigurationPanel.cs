@@ -29,6 +29,7 @@ namespace MeGUI.packages.audio.gcl
             : base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             HideExtraTab();
             cbInputHeader.Items.AddRange(EnumProxy.CreateArray(GCLSettings.SupportedInputHeaders));
         }

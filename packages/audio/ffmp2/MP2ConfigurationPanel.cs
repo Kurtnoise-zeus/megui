@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.ffmp2
         public MP2ConfigurationPanel():base() 
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
             comboBox1.Items.AddRange(MP2Settings.SupportedBitrates);
         }
         #region properties

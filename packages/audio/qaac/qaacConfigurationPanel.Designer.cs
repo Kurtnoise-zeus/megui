@@ -57,7 +57,7 @@ namespace MeGUI.packages.audio.qaac
             this.trackBar = new System.Windows.Forms.TrackBar();
             this.label3 = new System.Windows.Forms.Label();
             this.cbProfile = new System.Windows.Forms.ComboBox();
-            this.chNoDelay = new System.Windows.Forms.CheckBox();
+            this.chNoDelay = new MeGUI.core.gui.ToggleSwitch();
             this.cbQuality = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.encoderGroupBox.SuspendLayout();
@@ -194,7 +194,7 @@ namespace MeGUI.packages.audio.qaac
         public System.Windows.Forms.TrackBar trackBar;
         public System.Windows.Forms.ComboBox cbMode;
         public System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox chNoDelay;
+        private MeGUI.core.gui.ToggleSwitch chNoDelay;
         private System.Windows.Forms.ComboBox cbQuality;
         public System.Windows.Forms.Label label4;
      }

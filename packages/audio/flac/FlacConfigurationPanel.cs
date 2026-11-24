@@ -33,6 +33,7 @@ namespace MeGUI.packages.audio.flac
        public FlacConfigurationPanel():base()
         {
             InitializeComponent();
+            ModernizeEncoderOptions();
         }
 
         #region properties
