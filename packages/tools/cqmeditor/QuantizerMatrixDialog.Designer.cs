@@ -124,10 +124,10 @@ namespace MeGUI
             this.matrixTypeLabel = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.loadMatrixButton = new System.Windows.Forms.Button();
-            this.saveMatrixButton = new System.Windows.Forms.Button();
+            this.loadMatrixButton = new MeGUI.core.gui.RoundedButton();
+            this.saveMatrixButton = new MeGUI.core.gui.RoundedButton();
             this.operationsGroupbox = new System.Windows.Forms.GroupBox();
-            this.okButton = new System.Windows.Forms.Button();
+            this.okButton = new MeGUI.core.gui.RoundedButton();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.matrixGroupbox.SuspendLayout();
             this.operationsGroupbox.SuspendLayout();
@@ -1010,9 +1010,9 @@ namespace MeGUI
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Label matrixSizeLabel;
         private System.Windows.Forms.Label matrixTypeLabel;
-        private System.Windows.Forms.Button loadMatrixButton;
-        private System.Windows.Forms.Button saveMatrixButton;
-        private System.Windows.Forms.Button okButton;
+        private MeGUI.core.gui.RoundedButton loadMatrixButton;
+        private MeGUI.core.gui.RoundedButton saveMatrixButton;
+        private MeGUI.core.gui.RoundedButton okButton;
         private System.Windows.Forms.GroupBox operationsGroupbox;
         private System.Windows.Forms.TextBox mat1x2;
         private MeGUI.core.gui.HelpButton helpButton1;

@@ -26,6 +26,8 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using MeGUI.core.gui;
+
 namespace MeGUI
 {
     /// <summary>
@@ -47,6 +49,7 @@ namespace MeGUI
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
+			BuildModernLayout();
 			currentMatrix = new int[16, 16];
 			jvtI4x4 = new int[,] {{6,13,20,28}, {13,20,28,32}, {20,28,32,37},
 					{28,32,37,42}};
@@ -67,6 +70,31 @@ namespace MeGUI
 				{16,16,16,16,16,16,16,16},{16,16,16,16,16,16,16,16}, 
 				{16,16,16,16,16,16,16,16},{16,16,16,16,16,16,16,16}};
 			sb = new StringBuilder();
+		}
+
+		/// <summary>
+		/// Windows 11 settings look (see ModernDialog). The controls are only moved: names and events are unchanged.
+		/// The coefficient grid stays in its group box (placed in a card) and is scaled with the dialog.
+		/// </summary>
+		private SettingsCard operationsCard;
+
+		private void BuildModernLayout()
+		{
+			ModernDialog d = new ModernDialog(this);
+			d.Section("Matrix");
+			SettingsCard c1 = d.Card();
+			c1.AddRow("Select matrix", null, d.Wide(predefinedMatrix, 200));
+			c1.AddRow("Matrix file", null, d.Btn(loadMatrixButton), d.Btn(saveMatrixButton));
+			d.Section("Operations");
+			operationsCard = d.Card();
+			operationsCard.AddRow("Size", null, d.Wide(matrixSize, 120));
+			operationsCard.AddRow("Type", null, d.Wide(matrixType, 120));
+			d.Section("Coefficients");
+			foreach (Control c in matrixGroupbox.Controls)
+				c.Bounds = new Rectangle(d.S((int)(c.Left * 1.4)), d.S((int)(c.Top * 1.2)), d.S((int)(c.Width * 1.4)), d.S((int)(c.Height * 1.2)));
+			matrixGroupbox.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+			d.Block(matrixGroupbox, 300, 250, d.Card());
+			d.Finish(helpButton1, 560, okButton);
 		}
 
 		private void QuantizerMatrixDialog_Load(object sender, System.EventArgs e)
@@ -427,7 +455,7 @@ namespace MeGUI
 				case 0: // none
 					disableMatrix();
 					matrixGroupbox.Enabled = false;
-					operationsGroupbox.Enabled = false;
+					operationsCard.Enabled = false;
 					break;
 				case 1: // jvt
 					disableMatrix();
@@ -440,7 +468,7 @@ namespace MeGUI
 					this.P4x4CU = this.jvtP4x4;
 					this.P4x4CY = this.jvtP4x4;
 					matrixGroupbox.Enabled = true;
-					operationsGroupbox.Enabled = true;
+					operationsCard.Enabled = true;
 					matrixSize.Enabled = true;
 					matrixSize.SelectedIndex = 0;
 					matrixType.Enabled = true;
@@ -459,7 +487,7 @@ namespace MeGUI
 					this.P4x4CU = this.flat4x4;
 					this.P4x4CY = this.flat4x4;
 					matrixGroupbox.Enabled = true;
-					operationsGroupbox.Enabled = true;
+					operationsCard.Enabled = true;
 					matrixSize.Enabled = true;
 					matrixSize.SelectedIndex = 0;
 					matrixType.Enabled = true;
@@ -469,7 +497,7 @@ namespace MeGUI
 					break;
 				case 3: // custom
 					matrixGroupbox.Enabled = true;
-					operationsGroupbox.Enabled = true;
+					operationsCard.Enabled = true;
 					matrixSize.Enabled = true;
 					matrixSize.SelectedIndex = 0;
 					matrixType.Enabled = true;

@@ -29,7 +29,7 @@ namespace MeGUI.core.gui
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TextViewer));
-            this.button2 = new System.Windows.Forms.Button();
+            this.button2 = new MeGUI.core.gui.RoundedButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
@@ -77,7 +77,7 @@ namespace MeGUI.core.gui
 
         #endregion
 
-        private System.Windows.Forms.Button button2;
+        private MeGUI.core.gui.RoundedButton button2;
         private System.Windows.Forms.TextBox textBox1;
     }
 }

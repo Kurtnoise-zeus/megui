@@ -33,6 +33,16 @@ namespace MeGUI.core.gui
         public TextViewer()
         {
             InitializeComponent();
+            BuildModernLayout();
+        }
+
+        /// <summary>Windows 11 settings look (see ModernDialog): the text in a card, OK in the footer</summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            d.Block(textBox1, 760, 420, d.Card());
+            d.Finish(null, 820, button2);
         }
 
         public string Contents
