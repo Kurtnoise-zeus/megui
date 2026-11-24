@@ -401,12 +401,21 @@ namespace MeGUI.core.gui
             }
             else if (c is TextBoxBase || c is ComboBox || c is ListControl || c is UpDownBase || c is ListView || c is TreeView)
             {
+                ComboBox combo = c as ComboBox;
                 if (!HasCustomColor(c, "BackColor"))
-                    SetColor(c, "BackColor", p.Surface, undo);
+                    SetColor(c, "BackColor", combo != null ? ComboPainter.FillColor(combo) : p.Surface, undo);
                 if (!HasCustomColor(c, "ForeColor"))
                     SetColor(c, "ForeColor", p.Text, undo);
                 // the sunken 3D border is drawn white: use the flat one
                 SetFlatBorder(c, undo);
+
+                // rounded corners like the Windows 11 combo boxes
+                if (combo != null && m.Painter == null && combo.DrawMode == DrawMode.Normal)
+                {
+                    m.Painter = new ComboPainter(combo);
+                    if (undo != null)
+                        undo.Add(delegate { DetachPainter(combo); });
+                }
             }
             else
             {
@@ -710,6 +719,150 @@ namespace MeGUI.core.gui
             }
 
             protected abstract void Paint(Graphics g);
+        }
+
+        /// <summary>
+        /// Rounded combo box like the Windows 11 settings: lighter field, thin border, chevron on the right.
+        /// A drop down list is painted completely; for an editable combo box the edit control is left alone.
+        /// </summary>
+        private sealed class ComboPainter : OverlayPainter
+        {
+            [StructLayout(LayoutKind.Sequential)]
+            private struct WRECT
+            {
+                public int left, top, right, bottom;
+            }
+
+            [DllImport("user32.dll")]
+            private static extern IntPtr GetWindow(IntPtr hWnd, int uCmd);
+
+            [DllImport("user32.dll")]
+            private static extern bool GetWindowRect(IntPtr hWnd, out WRECT rect);
+
+            private readonly ComboBox combo;
+            private bool hot;
+
+            public ComboPainter(ComboBox c) : base(c)
+            {
+                combo = c;
+                combo.MouseEnter += OnEnter;
+                combo.MouseLeave += OnLeave;
+            }
+
+            public override void Detach()
+            {
+                combo.MouseEnter -= OnEnter;
+                combo.MouseLeave -= OnLeave;
+                base.Detach();
+            }
+
+            private void OnEnter(object sender, EventArgs e)
+            {
+                hot = true;
+                combo.Invalidate();
+            }
+
+            private void OnLeave(object sender, EventArgs e)
+            {
+                hot = false;
+                combo.Invalidate();
+            }
+
+            private static Color Outside(Control c)
+            {
+                return c.Parent != null ? c.Parent.BackColor : Palette.Window;
+            }
+
+            /// <summary>colour of the field (also the background of the edit control and of the drop down list)</summary>
+            public static Color FillColor(ComboBox c)
+            {
+                return Blend(Outside(c), Palette.Text, 0.07);
+            }
+
+            protected override void Paint(Graphics g)
+            {
+                int w = combo.ClientSize.Width;
+                int h = combo.ClientSize.Height;
+                if (w < 20 || h < 12)
+                    return;
+                if (combo.DropDownStyle == ComboBoxStyle.Simple)
+                    return;
+
+                ThemePalette p = Palette;
+                bool enabled = combo.Enabled;
+                bool list = combo.DropDownStyle == ComboBoxStyle.DropDownList;
+                Color outside = Outside(combo);
+                Color back = Blend(outside, p.Text, 0.07);
+                Color border = Blend(outside, p.Text, 0.14);
+                Color fore = p.Text;
+                if (enabled && hot)
+                    back = Blend(outside, p.Text, 0.11);
+                if (enabled && (combo.DroppedDown || combo.ContainsFocus))
+                    border = Blend(back, p.Accent, 0.85);
+                if (!enabled)
+                {
+                    back = Blend(outside, back, 0.5);
+                    border = Blend(outside, border, 0.5);
+                    fore = Blend(back, p.TextDim, 0.6);
+                }
+
+                // the edit control of an editable combo box paints itself
+                Rectangle edit = Rectangle.Empty;
+                if (!list)
+                {
+                    IntPtr child = GetWindow(Handle, 5 /*GW_CHILD*/);
+                    WRECT r;
+                    if (child != IntPtr.Zero && GetWindowRect(child, out r))
+                        edit = combo.RectangleToClient(Rectangle.FromLTRB(r.left, r.top, r.right, r.bottom));
+                }
+
+                using (Bitmap bmp = new Bitmap(w, h))
+                {
+                    using (Graphics bg = Graphics.FromImage(bmp))
+                    {
+                        bg.Clear(outside);
+                        bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                        float radius = Math.Max(3f, h / 6f);
+                        using (System.Drawing.Drawing2D.GraphicsPath path = SettingsDraw.RoundRect(new RectangleF(0.5f, 0.5f, w - 1f, h - 1f), radius))
+                        using (SolidBrush fill = new SolidBrush(back))
+                        using (Pen pen = new Pen(border))
+                        {
+                            bg.FillPath(fill, path);
+                            bg.DrawPath(pen, path);
+                        }
+
+                        // chevron
+                        float half = Math.Max(3f, h * 0.14f);
+                        float cx = w - Math.Max(11f, h * 0.5f);
+                        float cy = h / 2f;
+                        using (Pen chevron = new Pen(fore, Math.Max(1.2f, h / 20f)))
+                        {
+                            chevron.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                            chevron.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                            chevron.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
+                            bg.DrawLines(chevron, new PointF[] {
+                                new PointF(cx - half, cy - half / 2f),
+                                new PointF(cx, cy + half / 2f),
+                                new PointF(cx + half, cy - half / 2f) });
+                        }
+                        bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+
+                        if (list)
+                        {
+                            string text = combo.SelectedIndex >= 0 ? combo.GetItemText(combo.SelectedItem) : combo.Text;
+                            int left = Math.Max(6, h / 3);
+                            int right = (int)(w - Math.Max(11f, h * 0.5f) - half - 4);
+                            TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine
+                                | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding;
+                            TextRenderer.DrawText(bg, text, combo.Font, new Rectangle(left, 0, Math.Max(1, right - left), h), fore, flags);
+                        }
+                    }
+                    if (!edit.IsEmpty)
+                        g.SetClip(edit, System.Drawing.Drawing2D.CombineMode.Exclude);
+                    g.DrawImageUnscaled(bmp, 0, 0);
+                    g.ResetClip();
+                }
+            }
         }
 
         /// <summary>
