@@ -739,8 +739,67 @@ namespace MeGUI.core.gui
             [DllImport("user32.dll")]
             private static extern bool GetWindowRect(IntPtr hWnd, out WRECT rect);
 
+            [StructLayout(LayoutKind.Sequential)]
+            private struct PAINTSTRUCT
+            {
+                public IntPtr hdc;
+                public bool fErase;
+                public WRECT rcPaint;
+                public bool fRestore;
+                public bool fIncUpdate;
+                [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
+                public byte[] rgbReserved;
+            }
+
+            [DllImport("user32.dll")]
+            private static extern IntPtr BeginPaint(IntPtr hWnd, out PAINTSTRUCT ps);
+
+            [DllImport("user32.dll")]
+            private static extern bool EndPaint(IntPtr hWnd, ref PAINTSTRUCT ps);
+
+            private const int WM_PAINT_MSG = 0x000F;
+            private const int WM_ERASEBKGND_MSG = 0x0014;
+
             private readonly ComboBox combo;
             private bool hot;
+
+            /// <summary>
+            /// The standard painting is not done at all (painting over it flickers when the state changes):
+            /// the whole control is painted here, in one go.
+            /// </summary>
+            protected override void WndProc(ref Message m)
+            {
+                if (IsDark && !combo.IsDisposed && combo.DropDownStyle != ComboBoxStyle.Simple)
+                {
+                    if (m.Msg == WM_ERASEBKGND_MSG)
+                    {
+                        m.Result = (IntPtr)1;
+                        return;
+                    }
+                    if (m.Msg == WM_PAINT_MSG)
+                    {
+                        PAINTSTRUCT ps = new PAINTSTRUCT();
+                        bool own = m.WParam == IntPtr.Zero;
+                        IntPtr hdc = own ? BeginPaint(Handle, out ps) : m.WParam;
+                        try
+                        {
+                            using (Graphics g = Graphics.FromHdc(hdc))
+                                Paint(g);
+                        }
+                        catch (Exception)
+                        {
+                            // never let a painting problem break the window
+                        }
+                        finally
+                        {
+                            if (own)
+                                EndPaint(Handle, ref ps);
+                        }
+                        return;
+                    }
+                }
+                base.WndProc(ref m);
+            }
 
             public ComboPainter(ComboBox c) : base(c)
             {
