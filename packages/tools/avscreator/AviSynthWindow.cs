@@ -18,14 +18,14 @@
 // 
 // ****************************************************************************
 
+using MeGUI.core.util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows.Forms;
-
-using MeGUI.core.util;
 
 namespace MeGUI
 {
@@ -125,7 +125,7 @@ namespace MeGUI
             d.Section("Deinterlacing");
             deintCard = d.Card();
             deintCard.AddRow("Source info", "Click on 'Analyse...' for autodetection", d.Btn(analyseButton));
-            deintCard.AddRow("Source type", null, d.Wide(deintSourceType, 220), d.Wide(label5, 24), d.Wide(deintM, 70));
+            deintCard.AddRow("Source type", null, d.Wide(deintSourceType, 220), new System.Windows.Forms.Label { Text = "M:", AutoSize = true }, d.Wide(deintM, 70));
             deintCard.AddRow("Field order", null, d.Wide(deintFieldOrder, 220));
             deintCard.AddToggle(Tg(d, deinterlace), null, d.Wide(deinterlaceType, 220));
             deintCard.AddToggle(Tg(d, deintIsAnime), null);
