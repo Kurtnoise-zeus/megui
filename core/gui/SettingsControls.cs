@@ -927,7 +927,16 @@ namespace MeGUI.core.gui
         protected override void OnPaint(PaintEventArgs pevent)
         {
             Graphics g = pevent.Graphics;
-            Color outside = Parent != null ? Parent.BackColor : ThemeManager.Palette.Window;
+            // the first opaque background behind the button (a transparent parent would clear to black)
+            Color outside = ThemeManager.Palette.Window;
+            for (Control parent = Parent; parent != null; parent = parent.Parent)
+            {
+                if (parent.BackColor.A == 255)
+                {
+                    outside = parent.BackColor;
+                    break;
+                }
+            }
             g.Clear(outside);
 
             // a button which is not styled (light theme, no ModernDialog): the colours of the palette
