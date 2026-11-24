@@ -22,6 +22,8 @@ using System;
 using System.Security.Policy;
 using System.Windows.Forms;
 
+using MeGUI.core.gui;
+
 namespace MeGUI
 {
     public partial class ZonesControl : UserControl
