@@ -471,7 +471,7 @@ namespace MeGUI
             d.Section("Output options");
             d.Row(MeGUI.core.gui.ModernDialog.Cap(containerLabel.Text), null, d.Wide(container, 160));
             d.Row(MeGUI.core.gui.ModernDialog.Cap(DeviceLabel.Text), null, d.Wide(device, 160));
-            d.Row(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(splitting, 220));
+            d.Row(MeGUI.core.gui.ModernDialog.Cap("Splitting"), null, d.Wide(splitting, 220));
             d.Row(MeGUI.core.gui.ModernDialog.Cap(muxedOutputLabel.Text), null, d.Bar(muxedOutput, 380));
             d.Section("Size and bitrate");
             AverageBitrateLabel.AutoSize = true;
