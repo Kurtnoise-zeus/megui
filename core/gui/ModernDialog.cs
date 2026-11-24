@@ -109,6 +109,25 @@ namespace MeGUI.core.gui
             return new KeyValuePair<RadioButton, Control[]>(radio, after);
         }
 
+        /// <summary>a card with a text only (the message of a dialog, set by the code of the form), the text wraps</summary>
+        public SettingsCard Message(Label label, int width, int height)
+        {
+            label.AutoSize = false;
+            label.Size = new Size(S(width), S(height));
+            SettingsCard card = page.AddCard();
+            card.AddWide(null, null, label);
+            return card;
+        }
+
+        /// <summary>a card with one wide control (a list, a progress bar...)</summary>
+        public void Block(Control c, int width, int height, SettingsCard card)
+        {
+            c.Size = new Size(S(width), S(height));
+            if (card == null)
+                card = page.AddCard();
+            card.AddWide(null, null, c);
+        }
+
         public Control Wide(Control c, int width)
         {
             c.Width = S(width);
@@ -184,6 +203,8 @@ namespace MeGUI.core.gui
 
             ApplyTheme();
             ThemeManager.ThemeChanged += OnThemeChanged;
+            // the theme engine colours the form when it is shown: restyle after it
+            form.Shown += delegate { form.BeginInvoke(new MethodInvoker(ApplyTheme)); };
             form.Disposed += delegate { ThemeManager.ThemeChanged -= OnThemeChanged; };
             form.ResumeLayout(true);
         }
@@ -215,7 +236,23 @@ namespace MeGUI.core.gui
                 StyleButton(b, false);
             for (int i = 0; i < footerButtons.Length; i++)
                 StyleButton(footerButtons[i], i == 0);
+            StyleLabels(page);
             form.Invalidate(true);
+        }
+
+        /// <summary>the labels inside the cards take the colour of the card</summary>
+        private static void StyleLabels(Control parent)
+        {
+            foreach (Control c in parent.Controls)
+            {
+                Label l = c as Label;
+                if (l != null && c.Parent is SettingsCard)
+                {
+                    l.BackColor = Color.Transparent;
+                    l.ForeColor = ThemeManager.Palette.Text;
+                }
+                StyleLabels(c);
+            }
         }
 
         /// <summary>flat button with the colours of the palette (accent colour for the main button)</summary>

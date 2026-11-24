@@ -31,6 +31,7 @@ namespace MeGUI.core.gui
         private AspectRatioChooser()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         public static DialogResult ShowDialog(Dar defaultDar, out Dar newDar)
@@ -90,6 +91,21 @@ namespace MeGUI.core.gui
             if (ar.Y >= numericUpDown3.Minimum && ar.Y <= numericUpDown3.Maximum)
                 numericUpDown3.Value = ar.Y;
             bDisableEvents = false;
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            radioButton1.Text = "Aspect ratio";
+            radioButton2.Text = "Width : height";
+            label1.AutoSize = true;
+            d.Radios(220,
+                ModernDialog.R(radioButton1, d.Wide(numericUpDown1, 150)),
+                ModernDialog.R(radioButton2, d.Wide(numericUpDown2, 80), label1, d.Wide(numericUpDown3, 80)));
+            d.Finish(null, 520, button2, button1);
         }
     }
 }

@@ -29,8 +29,8 @@ namespace MeGUI.core.gui
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputBox));
-            this.btnOk = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOk = new MeGUI.core.gui.RoundedButton();
+            this.btnCancel = new MeGUI.core.gui.RoundedButton();
             this.text = new System.Windows.Forms.TextBox();
             this.lblMessage = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -93,8 +93,8 @@ namespace MeGUI.core.gui
 
         #endregion
 
-        private System.Windows.Forms.Button btnOk;
-        private System.Windows.Forms.Button btnCancel;
+        private MeGUI.core.gui.RoundedButton btnOk;
+        private MeGUI.core.gui.RoundedButton btnCancel;
         private System.Windows.Forms.TextBox text;
         private System.Windows.Forms.Label lblMessage;
     }

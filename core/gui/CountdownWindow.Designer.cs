@@ -31,7 +31,7 @@ namespace MeGUI.core.gui
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CountdownWindow));
             this.label1 = new System.Windows.Forms.Label();
-            this.cancelButton = new System.Windows.Forms.Button();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
@@ -92,7 +92,7 @@ namespace MeGUI.core.gui
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button cancelButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Timer timer;
     }

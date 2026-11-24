@@ -36,12 +36,14 @@ namespace MeGUI.core.gui
         public CountdownWindow()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         public CountdownWindow(int countdown)
         {
             this.countdown = countdown;
             InitializeComponent();
+            BuildModernLayout();
         }
 
         private void CountdownWindow_Load(object sender, EventArgs e)
@@ -103,6 +105,17 @@ namespace MeGUI.core.gui
                 SetButtonText("0");
                 base.DialogResult = DialogResult.OK;
             }
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            SettingsCard card = d.Message(label1, 420, 56);
+            d.Block(progressBar, 420, 20, card);
+            d.Finish(null, 520, cancelButton);
         }
     }
 }

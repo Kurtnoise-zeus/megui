@@ -33,6 +33,7 @@ namespace MeGUI.core.gui
         private InputBox()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -70,6 +71,17 @@ namespace MeGUI.core.gui
             {
                 btnCancel_Click(null, null);
             }
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            SettingsCard card = d.Message(lblMessage, 420, 44);
+            d.Block(text, 420, 30, card);
+            d.Finish(null, 520, btnOk, btnCancel);
         }
     }
 }

@@ -48,16 +48,15 @@ namespace MeGUI.core.gui
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.Button button1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AspectRatioChooser));
-            this.button2 = new System.Windows.Forms.Button();
+            this.button2 = new MeGUI.core.gui.RoundedButton();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            button1 = new System.Windows.Forms.Button();
+            this.button1 = new MeGUI.core.gui.RoundedButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
@@ -225,7 +224,8 @@ namespace MeGUI.core.gui
         #endregion
 
         private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Button button2;
+        private MeGUI.core.gui.RoundedButton button2;
+        private MeGUI.core.gui.RoundedButton button1;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.NumericUpDown numericUpDown2;

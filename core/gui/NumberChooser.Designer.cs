@@ -28,15 +28,14 @@ namespace MeGUI.core.gui
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.Button button1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NumberChooser));
-            this.button2 = new System.Windows.Forms.Button();
+            this.button2 = new MeGUI.core.gui.RoundedButton();
             this.label1 = new System.Windows.Forms.Label();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            button1 = new System.Windows.Forms.Button();
+            this.button1 = new MeGUI.core.gui.RoundedButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
@@ -149,7 +148,8 @@ namespace MeGUI.core.gui
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Button button2;
+        private MeGUI.core.gui.RoundedButton button2;
+        private MeGUI.core.gui.RoundedButton button1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numericUpDown2;

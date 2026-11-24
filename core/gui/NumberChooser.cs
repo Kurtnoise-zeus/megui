@@ -33,6 +33,7 @@ namespace MeGUI.core.gui
         private NumberChooser()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
 
@@ -81,6 +82,18 @@ namespace MeGUI.core.gui
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            SettingsCard card = d.Message(label1, 420, 44);
+            card.AddRow(ModernDialog.Cap(label2.Text), null, d.Wide(numericUpDown1, 150));
+            card.AddRow(ModernDialog.Cap(label3.Text), null, d.Wide(numericUpDown2, 150));
+            d.Finish(null, 520, button2, button1);
         }
     }
 }
