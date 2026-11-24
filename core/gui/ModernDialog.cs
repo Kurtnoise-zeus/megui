@@ -36,7 +36,8 @@ namespace MeGUI.core.gui
         private readonly Form form;
         private readonly float scale;
         private readonly Font sectionFont;
-        private readonly SettingsPage page;
+        private SettingsPage page;
+        private readonly List<SettingsPage> pages = new List<SettingsPage>();
         private readonly List<Button> buttons = new List<Button>();
         private Button[] footerButtons;
         private Control help;
@@ -50,8 +51,28 @@ namespace MeGUI.core.gui
             form.AutoScaleMode = AutoScaleMode.None;
             form.Font = new Font("Segoe UI", 10F);
             sectionFont = new Font("Segoe UI Semibold", 10.5F);
-            page = new SettingsPage(scale);
-            page.Padding = new Padding(S(24), S(8), S(24), S(16));
+            page = NewPage();
+        }
+
+        private SettingsPage NewPage()
+        {
+            SettingsPage p = new SettingsPage(scale);
+            p.Padding = new Padding(S(24), S(8), S(24), S(16));
+            pages.Add(p);
+            return p;
+        }
+
+        /// <summary>the page which receives the sections and the cards</summary>
+        public SettingsPage CurrentPage
+        {
+            get { return page; }
+        }
+
+        /// <summary>starts another page (for a window with tabs): the following sections and cards go to it</summary>
+        public SettingsPage BeginPage()
+        {
+            page = NewPage();
+            return page;
         }
 
         public int S(int value)
@@ -236,6 +257,59 @@ namespace MeGUI.core.gui
             form.ResumeLayout(true);
         }
 
+        /// <summary>
+        /// Like Finish for a window whose content is a tab control: its pages already hold the pages built with
+        /// BeginPage. clientHeight is the height of the tab control.
+        /// </summary>
+        public void FinishTabs(TabControl tabs, Control help, int clientWidth, int clientHeight, params Button[] footerButtons)
+        {
+            this.help = help;
+            this.footerButtons = footerButtons;
+            form.SuspendLayout();
+
+            SettingsSurface content = new SettingsSurface(SettingsSurfaceKind.Window);
+            content.Dock = DockStyle.Fill;
+            tabs.Dock = DockStyle.Fill;
+            content.Controls.Add(tabs);
+
+            footer = new SettingsSurface(SettingsSurfaceKind.Footer);
+            footer.Dock = DockStyle.Bottom;
+            footer.Height = S(64);
+            if (help != null)
+            {
+                help.Dock = DockStyle.None;
+                help.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                footer.Controls.Add(help);
+            }
+            foreach (Button b in footerButtons)
+            {
+                b.Dock = DockStyle.None;
+                b.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                b.AutoSize = false;
+                b.Size = new Size(S(96), S(34));
+                b.Width = Math.Max(S(96), TextRenderer.MeasureText(b.Text, form.Font).Width + S(36));
+                footer.Controls.Add(b);
+            }
+            footer.Resize += delegate { LayoutFooter(); };
+            LayoutFooter();
+
+            form.Controls.Clear();
+            form.Controls.Add(content);
+            form.Controls.Add(footer);
+
+            Rectangle area = Screen.PrimaryScreen.WorkingArea;
+            form.FormBorderStyle = FormBorderStyle.Sizable;
+            form.SizeGripStyle = SizeGripStyle.Show;
+            form.ClientSize = new Size(Math.Min(S(clientWidth), area.Width), Math.Min(S(clientHeight) + footer.Height, area.Height - S(100)));
+            form.MinimumSize = new Size(form.Width, Math.Min(form.Height, S(380)));
+
+            ApplyTheme();
+            ThemeManager.ThemeChanged += OnThemeChanged;
+            form.Shown += delegate { form.BeginInvoke(new MethodInvoker(ApplyTheme)); };
+            form.Disposed += delegate { ThemeManager.ThemeChanged -= OnThemeChanged; };
+            form.ResumeLayout(true);
+        }
+
         private void LayoutFooter()
         {
             int top = (footer.Height - S(34)) / 2;
@@ -263,7 +337,8 @@ namespace MeGUI.core.gui
                 StyleButton(b, false);
             for (int i = 0; i < footerButtons.Length; i++)
                 StyleButton(footerButtons[i], i == 0);
-            StyleLabels(page);
+            foreach (SettingsPage p in pages)
+                StyleLabels(p);
             form.Invalidate(true);
         }
 

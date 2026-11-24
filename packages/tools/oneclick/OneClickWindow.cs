@@ -122,6 +122,7 @@ namespace MeGUI
             }
             acceptableContainerTypes = MainForm.Instance.MuxProvider.GetSupportedContainers().ToArray();
             InitializeComponent();
+            BuildModernLayout();
 
             
             //add all container types
@@ -200,36 +201,89 @@ namespace MeGUI
             else
                 MainForm.Instance.Settings.OneClickGUIMode = (MeGUISettings.OCGUIMode)o.RealValue;
 
-            if (MainForm.Instance.Settings.OneClickGUIMode == MeGUISettings.OCGUIMode.Advanced)
+            // the cards are built by BuildModernLayout: nothing to show / hide before
+            if (subtitlesSection == null)
+                return;
+
+            MeGUISettings.OCGUIMode mode = MainForm.Instance.Settings.OneClickGUIMode;
+            subtitlesSection.Visible = subtitlesCard.Visible = mode != MeGUISettings.OCGUIMode.Basic;
+            if (mode == MeGUISettings.OCGUIMode.Advanced)
             {
-                audioTab.Height = MainForm.Instance.Settings.DPIRescale(175);
-                subtitlesTab.Location = new Point(subtitlesTab.Location.X, MainForm.Instance.Settings.DPIRescale(258));
-                subtitlesTab.Visible = true;
-                outputTab.Location = new Point(outputTab.Location.X, MainForm.Instance.Settings.DPIRescale(379));
-                this.Height = MainForm.Instance.Settings.DPIRescale(583);
                 if (!tabControl1.TabPages.Contains(encoderConfigTab))
                     tabControl1.TabPages.Add(encoderConfigTab);
             }
-            else if (MainForm.Instance.Settings.OneClickGUIMode == MeGUISettings.OCGUIMode.Basic)
-            {
-                audioTab.Height = MainForm.Instance.Settings.DPIRescale(90);
-                subtitlesTab.Location = new Point(subtitlesTab.Location.X, MainForm.Instance.Settings.DPIRescale(198));
-                subtitlesTab.Visible = false;
-                outputTab.Location = new Point(outputTab.Location.X, MainForm.Instance.Settings.DPIRescale(173));
-                this.Height = MainForm.Instance.Settings.DPIRescale(377);
-                if (tabControl1.TabPages.Contains(encoderConfigTab))
-                    tabControl1.TabPages.Remove(encoderConfigTab);
-            }
-            else
-            {
-                audioTab.Height = MainForm.Instance.Settings.DPIRescale(115);
-                subtitlesTab.Location = new Point(subtitlesTab.Location.X, MainForm.Instance.Settings.DPIRescale(198));
-                subtitlesTab.Visible = true;
-                outputTab.Location = new Point(outputTab.Location.X, MainForm.Instance.Settings.DPIRescale(319));
-                this.Height = MainForm.Instance.Settings.DPIRescale(523);
-                if (tabControl1.TabPages.Contains(encoderConfigTab))
-                    tabControl1.TabPages.Remove(encoderConfigTab);
-            }
+            else if (tabControl1.TabPages.Contains(encoderConfigTab))
+                tabControl1.TabPages.Remove(encoderConfigTab);
+        }
+
+        private Label subtitlesSection;
+        private MeGUI.core.gui.SettingsCard subtitlesCard;
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog), one page per tab.
+        /// The interface mode only shows / hides the subtitles section and the advanced tab.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+
+            // general tab
+            MeGUI.core.gui.SettingsPage general = d.CurrentPage;
+            d.Section("Video");
+            d.Row("Input", null, d.Wide(input, 460));
+            d.Section("Audio");
+            d.Block(audioTab, 640, 200, d.Card());
+            subtitlesSection = d.Section("Subtitles");
+            subtitlesCard = d.Card();
+            d.Block(subtitlesTab, 640, 170, subtitlesCard);
+            d.Section("Output");
+            MeGUI.core.gui.SettingsCard outputCard = d.Card();
+            outputCard.AddRow("Output file", null, d.Bar(output, 400));
+            outputCard.AddRow("OneClick profile", null, d.Wide(oneclickProfile, 400));
+            d.Section("Interface");
+            MeGUI.core.gui.SettingsCard modeCard = d.Card();
+            modeCard.AddRow("Mode", null, d.Wide(cbGUIMode, 180));
+            openOnQueue.Text = "Close after queue";
+            d.ToggleIn(modeCard, openOnQueue, null);
+
+            // advanced configuration tab
+            MeGUI.core.gui.SettingsPage advanced = d.BeginPage();
+            d.Section("Video settings");
+            MeGUI.core.gui.SettingsCard video = d.Card();
+            d.ToggleIn(video, chkDontEncodeVideo, null);
+            video.AddRow("Encoder settings", null, d.Wide(videoProfile, 400));
+            video.AddRow("Input DAR", null, d.Wide(ar, 400));
+            d.ToggleIn(video, usechaptersmarks, null);
+            d.ToggleIn(video, addPrerenderJob, null);
+            d.Section("AviSynth settings");
+            MeGUI.core.gui.SettingsCard avs = d.Card();
+            keepInputResolution.Text = "Keep input resolution (disable crop and resize)";
+            d.ToggleIn(avs, keepInputResolution, null);
+            d.ToggleIn(avs, autoCrop, null);
+            avs.AddRow("AviSynth profile", null, d.Wide(avsProfile, 400));
+            avs.AddRow("Output resolution (max. width)", null, d.Wide(horizontalResolution, 120));
+            d.ToggleIn(avs, autoDeint, null);
+            d.Section("Output settings");
+            MeGUI.core.gui.SettingsCard sizes = d.Card();
+            sizes.AddRow("Filesize", null, d.Wide(fileSize, 300));
+            sizes.AddRow("Splitting", null, d.Wide(splitting, 300));
+            sizes.AddRow("Container format", null, d.Wide(containerFormat, 160));
+            sizes.AddRow("Device type", null, d.Wide(devicetype, 160));
+            d.Section("Extra I/O");
+            MeGUI.core.gui.SettingsCard io = d.Card();
+            io.AddRow("Working directory", null, d.Bar(workingDirectory, 340), d.Btn(deleteWorking));
+            io.AddRow("Chapter file", null, d.Bar(chapterFile, 340), d.Btn(deleteChapter));
+            io.AddRow("Video track name", null, d.Wide(inputName, 300));
+
+            // each page of the tab control gets its page of cards
+            tabPage1.Controls.Clear();
+            general.Dock = DockStyle.Fill;
+            tabPage1.Controls.Add(general);
+            encoderConfigTab.Controls.Clear();
+            advanced.Dock = DockStyle.Fill;
+            encoderConfigTab.Controls.Add(advanced);
+
+            d.FinishTabs(tabControl1, helpButton1, 780, 720, goButton);
         }
 
         private void containerFormat_SelectedIndexChanged(object sender, EventArgs e)
