@@ -58,12 +58,14 @@ namespace MeGUI
         /// gets / sets the end frame of the intro
         /// </summary>
         public int IntroEndFrame { get; set; } = 0;
+        private Label chaptersSection;
         #endregion
 
         #region start / stop
         public ChapterCreator()
 		{
 			InitializeComponent();
+            BuildModernLayout();
             pgc = new ChapterInfo();
             pgc.FramesPerSecond = 0;
             chkCounter.Checked = MainForm.Instance.Settings.ChapterCreatorCounter;
@@ -425,14 +427,14 @@ namespace MeGUI
 
             ResetChapterView(-1);
 
-            chaptersGroupbox.Text = " Chapters ";
+            chaptersSection.Text = "Chapters";
             if (chapterListView.Items.Count != 0)
                 chapterListView.Items[0].Selected = true;
 
             string fileName = Path.GetFileNameWithoutExtension(input.Text);
             if (this.pgc.PGCNumber > 0)
             {
-                chaptersGroupbox.Text += "- VTS " + pgc.TitleNumber.ToString("D2") + " - PGC " + pgc.PGCNumber.ToString("D2") + " ";
+                chaptersSection.Text += " - VTS " + pgc.TitleNumber.ToString("D2") + " - PGC " + pgc.PGCNumber.ToString("D2");
                 if (FileUtil.RegExMatch(fileName, @"_\d{1,2}\z", false))
                 {
                     // file ends with e.g. _1 as in VTS_01_1
@@ -639,9 +641,9 @@ namespace MeGUI
                 chapterListView.Columns[3].Width = 143;
             }
             if (fpsChooserOut.Value != null)
-                chaptersGroupbox.Text = " Chapters (based on Output FPS) ";
+                chaptersSection.Text = "Chapters (based on output FPS)";
             else
-                chaptersGroupbox.Text = " Chapters (based on Input FPS) ";
+                chaptersSection.Text = "Chapters (based on input FPS)";
         }
 
         private void chkOnTop_CheckedChanged(object sender, EventArgs e)
@@ -673,6 +675,51 @@ namespace MeGUI
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Input");
+            MeGUI.core.gui.SettingsCard source = d.Radios(200,
+                MeGUI.core.gui.ModernDialog.R(rbFromFile),
+                MeGUI.core.gui.ModernDialog.R(rbFromDisk));
+            source.AddRow("Input", null, d.Wide(input, 300), d.Btn(btInput));
+            source.AddRow("Frame rate", null, d.Wide(fpsChooserIn, 130));
+
+            chaptersSection = d.Section("Chapters");
+            MeGUI.core.gui.SettingsCard chapters = d.Card();
+            chapters.AddRow("Chapters", null, d.Btn(addZoneButton), d.Btn(removeZoneButton), d.Btn(clearZonesButton), d.Btn(showVideoButton));
+            d.Block(chapterListView, 640, 220, chapters);
+            MeGUI.core.gui.SettingsCard edit = d.Card();
+            edit.AddRow("Start time", null, d.Wide(startTime, 180));
+            edit.AddRow("Name", null, d.Wide(chapterName, 260));
+            chkCounter.Text = "Counter";
+            d.ToggleIn(edit, chkCounter, null);
+
+            d.Section("Chapter output file");
+            MeGUI.core.gui.SettingsCard target = d.Card();
+            SizeRadio(d, rbTXT, 70);
+            SizeRadio(d, rbQPF, 70);
+            SizeRadio(d, rbXML, 70);
+            target.AddRow("Format", null, rbTXT, rbQPF, rbXML);
+            target.AddRow("Frame rate", null, d.Wide(fpsChooserOut, 130));
+            target.AddRow("Output file", null, d.Wide(output, 300), d.Btn(btOutput));
+
+            d.Section("Options");
+            d.Toggle(chkOnTop, null);
+            closeOnQueue.Text = "Close after queue";
+            d.Toggle(closeOnQueue, null);
+            d.Finish(helpButton1, 800, saveButton);
+        }
+
+        private static void SizeRadio(MeGUI.core.gui.ModernDialog d, RadioButton radio, int width)
+        {
+            radio.AutoSize = false;
+            radio.Size = new System.Drawing.Size(d.S(width), d.S(26));
         }
     }
 

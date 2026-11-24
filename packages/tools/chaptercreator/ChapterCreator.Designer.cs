@@ -49,7 +49,7 @@ namespace MeGUI
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChapterCreator));
             this.chaptersGroupbox = new System.Windows.Forms.GroupBox();
-            this.chkCounter = new System.Windows.Forms.CheckBox();
+            this.chkCounter = new MeGUI.core.gui.ToggleSwitch();
             this.chapterName = new System.Windows.Forms.TextBox();
             this.chapterNameLabel = new System.Windows.Forms.Label();
             this.chapterListView = new System.Windows.Forms.ListView();
@@ -59,30 +59,30 @@ namespace MeGUI
             this.nameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.startTime = new System.Windows.Forms.TextBox();
             this.startTimeLabel = new System.Windows.Forms.Label();
-            this.addZoneButton = new System.Windows.Forms.Button();
-            this.clearZonesButton = new System.Windows.Forms.Button();
-            this.showVideoButton = new System.Windows.Forms.Button();
-            this.removeZoneButton = new System.Windows.Forms.Button();
+            this.addZoneButton = new MeGUI.core.gui.RoundedButton();
+            this.clearZonesButton = new MeGUI.core.gui.RoundedButton();
+            this.showVideoButton = new MeGUI.core.gui.RoundedButton();
+            this.removeZoneButton = new MeGUI.core.gui.RoundedButton();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.gbInput = new System.Windows.Forms.GroupBox();
             this.lblFPSIn = new System.Windows.Forms.Label();
             this.fpsChooserIn = new MeGUI.core.gui.FPSChooser();
-            this.btInput = new System.Windows.Forms.Button();
+            this.btInput = new MeGUI.core.gui.RoundedButton();
             this.input = new System.Windows.Forms.TextBox();
             this.rbFromFile = new System.Windows.Forms.RadioButton();
             this.rbFromDisk = new System.Windows.Forms.RadioButton();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.closeOnQueue = new System.Windows.Forms.CheckBox();
+            this.saveButton = new MeGUI.core.gui.RoundedButton();
+            this.closeOnQueue = new MeGUI.core.gui.ToggleSwitch();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblFPSOut = new System.Windows.Forms.Label();
             this.fpsChooserOut = new MeGUI.core.gui.FPSChooser();
             this.rbXML = new System.Windows.Forms.RadioButton();
             this.rbQPF = new System.Windows.Forms.RadioButton();
             this.rbTXT = new System.Windows.Forms.RadioButton();
-            this.btOutput = new System.Windows.Forms.Button();
+            this.btOutput = new MeGUI.core.gui.RoundedButton();
             this.output = new System.Windows.Forms.TextBox();
-            this.chkOnTop = new System.Windows.Forms.CheckBox();
+            this.chkOnTop = new MeGUI.core.gui.ToggleSwitch();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.chaptersGroupbox.SuspendLayout();
             this.gbInput.SuspendLayout();
@@ -499,15 +499,15 @@ namespace MeGUI
         #endregion
 
         private System.Windows.Forms.GroupBox chaptersGroupbox;
-        private System.Windows.Forms.Button addZoneButton;
-        private System.Windows.Forms.Button clearZonesButton;
-        private System.Windows.Forms.Button showVideoButton;
-        private System.Windows.Forms.Button removeZoneButton;
+        private MeGUI.core.gui.RoundedButton addZoneButton;
+        private MeGUI.core.gui.RoundedButton clearZonesButton;
+        private MeGUI.core.gui.RoundedButton showVideoButton;
+        private MeGUI.core.gui.RoundedButton removeZoneButton;
         private System.Windows.Forms.ColumnHeader timecodeInColumn;
         private System.Windows.Forms.ColumnHeader nameColumn;
         private System.Windows.Forms.Label startTimeLabel;
         private System.Windows.Forms.Label chapterNameLabel;
-        private System.Windows.Forms.Button saveButton;
+        private MeGUI.core.gui.RoundedButton saveButton;
         private System.Windows.Forms.TextBox startTime;
         private System.Windows.Forms.TextBox chapterName;
         private System.Windows.Forms.ListView chapterListView;
@@ -516,12 +516,12 @@ namespace MeGUI
         private System.Windows.Forms.GroupBox gbInput;
         private System.Windows.Forms.RadioButton rbFromFile;
         private System.Windows.Forms.RadioButton rbFromDisk;
-        private System.Windows.Forms.Button btInput;
+        private MeGUI.core.gui.RoundedButton btInput;
         private System.Windows.Forms.TextBox input;
         private MeGUI.core.gui.HelpButton helpButton1;
-        private System.Windows.Forms.CheckBox closeOnQueue;
+        private MeGUI.core.gui.ToggleSwitch closeOnQueue;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btOutput;
+        private MeGUI.core.gui.RoundedButton btOutput;
         private System.Windows.Forms.TextBox output;
         private System.Windows.Forms.RadioButton rbXML;
         private System.Windows.Forms.RadioButton rbQPF;
@@ -530,9 +530,9 @@ namespace MeGUI
         private System.Windows.Forms.Label lblFPSOut;
         private System.Windows.Forms.Label lblFPSIn;
         private core.gui.FPSChooser fpsChooserIn;
-        private System.Windows.Forms.CheckBox chkCounter;
+        private MeGUI.core.gui.ToggleSwitch chkCounter;
         private System.Windows.Forms.ColumnHeader timecodeOutColumn;
-        private System.Windows.Forms.CheckBox chkOnTop;
+        private MeGUI.core.gui.ToggleSwitch chkOnTop;
         private System.Windows.Forms.ColumnHeader frameColumn;
     }
 }

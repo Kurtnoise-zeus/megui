@@ -39,6 +39,7 @@ namespace MeGUI.packages.tools.cutter
         public Cutter(string scriptName)
         {
             InitializeComponent();
+            BuildModernLayout();
             this.scriptName = scriptName;
 
             transitionStyle.DataSource = EnumProxy.CreateArray(typeof(TransitionStyle));
@@ -342,6 +343,26 @@ namespace MeGUI.packages.tools.cutter
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("AviSynth script");
+            d.Message(avsScript, 600, 44);
+            d.Section("New section");
+            MeGUI.core.gui.SettingsCard frames = d.Card();
+            frames.AddRow(MeGUI.core.gui.ModernDialog.Cap(startFrameLabel.Text), null, d.Wide(startFrame, 140));
+            frames.AddRow(MeGUI.core.gui.ModernDialog.Cap(endFrameLabel.Text), null, d.Wide(endFrame, 140));
+            frames.AddRow(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(transitionStyle, 180));
+            d.Section("Included sections");
+            MeGUI.core.gui.SettingsCard list = d.Card();
+            list.AddRow("Sections", null, d.Btn(addZoneButton), d.Btn(updateZoneButton), d.Btn(removeZoneButton), d.Btn(clearZonesButton));
+            d.Block(sections, 600, 200, list);
+            d.Finish(helpButton1, 760, doAllClose, saveCuts, addCutsToScript, closeButton);
         }
     }
 }

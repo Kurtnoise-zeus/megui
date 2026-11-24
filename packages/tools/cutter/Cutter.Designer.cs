@@ -50,10 +50,10 @@ namespace MeGUI.packages.tools.cutter
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cutter));
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.addZoneButton = new System.Windows.Forms.Button();
-            this.clearZonesButton = new System.Windows.Forms.Button();
-            this.updateZoneButton = new System.Windows.Forms.Button();
-            this.removeZoneButton = new System.Windows.Forms.Button();
+            this.addZoneButton = new MeGUI.core.gui.RoundedButton();
+            this.clearZonesButton = new MeGUI.core.gui.RoundedButton();
+            this.updateZoneButton = new MeGUI.core.gui.RoundedButton();
+            this.removeZoneButton = new MeGUI.core.gui.RoundedButton();
             this.label1 = new System.Windows.Forms.Label();
             this.transitionStyle = new System.Windows.Forms.ComboBox();
             this.startFrameLabel = new System.Windows.Forms.Label();
@@ -62,10 +62,10 @@ namespace MeGUI.packages.tools.cutter
             this.startFrame = new System.Windows.Forms.NumericUpDown();
             this.endFrame = new System.Windows.Forms.NumericUpDown();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.doAllClose = new System.Windows.Forms.Button();
-            this.closeButton = new System.Windows.Forms.Button();
-            this.saveCuts = new System.Windows.Forms.Button();
-            this.addCutsToScript = new System.Windows.Forms.Button();
+            this.doAllClose = new MeGUI.core.gui.RoundedButton();
+            this.closeButton = new MeGUI.core.gui.RoundedButton();
+            this.saveCuts = new MeGUI.core.gui.RoundedButton();
+            this.addCutsToScript = new MeGUI.core.gui.RoundedButton();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.avsScript = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -382,27 +382,27 @@ namespace MeGUI.packages.tools.cutter
         #endregion
 
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button addZoneButton;
-        private System.Windows.Forms.Button clearZonesButton;
-        private System.Windows.Forms.Button updateZoneButton;
-        private System.Windows.Forms.Button removeZoneButton;
+        private MeGUI.core.gui.RoundedButton addZoneButton;
+        private MeGUI.core.gui.RoundedButton clearZonesButton;
+        private MeGUI.core.gui.RoundedButton updateZoneButton;
+        private MeGUI.core.gui.RoundedButton removeZoneButton;
         private System.Windows.Forms.Label startFrameLabel;
         private System.Windows.Forms.Label endFrameLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox transitionStyle;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button closeButton;
-        private System.Windows.Forms.Button saveCuts;
+        private MeGUI.core.gui.RoundedButton closeButton;
+        private MeGUI.core.gui.RoundedButton saveCuts;
         private System.Windows.Forms.NumericUpDown startFrame;
         private System.Windows.Forms.NumericUpDown endFrame;
-        private System.Windows.Forms.Button addCutsToScript;
+        private MeGUI.core.gui.RoundedButton addCutsToScript;
         private System.Windows.Forms.Label avsScript;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ListView sections;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.Button doAllClose;
+        private MeGUI.core.gui.RoundedButton doAllClose;
         private MeGUI.core.gui.HelpButton helpButton1;        
     }
 }
