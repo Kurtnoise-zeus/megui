@@ -61,8 +61,14 @@ namespace MeGUI.core.gui
         /// <summary>end of the construction of a panel: end strips, colours, theme changes</summary>
         public void AttachTheme()
         {
+            // the scrolling area of a flow panel ignores the bottom margin of its last control
             foreach (SettingsPage p in pages)
-                AddEndStrip(p);
+            {
+                Panel end = new Panel();
+                end.Height = S(24);
+                end.Margin = new Padding(0);
+                p.Controls.Add(end);
+            }
             footerButtons = new Button[0];
             ApplyTheme();
             ThemeManager.ThemeChanged += OnThemeChanged;
