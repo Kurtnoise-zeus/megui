@@ -46,8 +46,52 @@ namespace MeGUI
         private bool isUpdating = false;
         private bool calculating = false;
         
+        /// <summary>
+        /// Windows 11 settings look (see ModernDialog). The controls are only moved: names and events are unchanged.
+        /// The labels which the code shows / hides (hours, total seconds) are the titles of their rows.
+        /// The audio and extra size tabs keep their own layout in a list.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Video");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            c1.AddRow("Codec", null, d.Wide(videoCodec, 160));
+            bframes.AutoSize = false;
+            bframes.Size = new Size(d.S(96), d.S(26));
+            c1.AddToggle(bframes, null);
+            complexity.Height = d.S(40);
+            c1.AddRow("Complexity (low to high)", null, d.Wide(complexity, 200));
+            hoursLabel.Text = "Length (hours, minutes, seconds)";
+            c1.AddLabelRow(hoursLabel, null, d.Wide(hours, 70), d.Wide(minutes, 70), d.Wide(seconds, 70));
+            c1.AddLabelRow(totalSecondsLabel, null, d.Wide(totalSeconds, 100), d.Wide(timeText, 110));
+            picTime.Size = new Size(d.S(32), d.S(32));
+            c1.AddRow("Length display", "Click the icon to switch between hours / minutes / seconds and total seconds", picTime);
+            c1.AddRow("Framerate", null, d.Wide(fpsChooser, 150));
+            c1.AddRow("Total frames", null, d.Wide(nbFrames, 110));
+            c1.AddRow("Frame size (width, height)", null, d.Wide(width, 80), d.Wide(height, 80));
+            d.Section("Container");
+            d.Row("Container format", null, d.Wide(containerFormat, 180));
+            d.Section("Calculate by");
+            MeGUI.core.gui.SettingsCard calc = d.Radios(190,
+                MeGUI.core.gui.ModernDialog.R(averageBitrateRadio, d.Wide(projectedBitrate, 90), AverageBitrateLabel),
+                MeGUI.core.gui.ModernDialog.R(bppRadio, d.Wide(bpp, 90)),
+                MeGUI.core.gui.ModernDialog.R(qEstRadio, d.Wide(qest, 90)),
+                MeGUI.core.gui.ModernDialog.R(fileSizeRadio, d.Wide(targetSize, 220)));
+            calc.AddRow("Video size", null, d.Wide(videoSize, 120));
+            d.Section("Audio & extra");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            addAudioLink.AutoSize = false;
+            addAudioLink.Size = new Size(d.S(80), d.S(24));
+            c2.AddRow("Add an audio track or an extra file", null, addAudioLink);
+            audioExtraFlow.Dock = DockStyle.None;
+            d.Block(audioExtraFlow, 470, 200, d.Card());
+            d.Finish(helpButton1, 720, applyButton, cancelButton);
+        }
+
 		public Calculator(MainForm mainForm) : this()
 		{
+            BuildModernLayout();
             this.mainForm = mainForm;
             this.muxProvider = mainForm.MuxProvider;
             this.videoCodec.Items.AddRange(CodecManager.VideoEncoderTypes.ValuesArray);

@@ -17,15 +17,15 @@ namespace MeGUI
         private System.Windows.Forms.Label secondsLabel;
         private System.Windows.Forms.Label framerateLabel;
         private System.Windows.Forms.Label totalSecondsLabel;
-        private System.Windows.Forms.Button applyButton;
+        private MeGUI.core.gui.RoundedButton applyButton;
         private System.Windows.Forms.GroupBox sizeGroupbox;
         private System.Windows.Forms.RadioButton averageBitrateRadio;
         private System.Windows.Forms.RadioButton fileSizeRadio;
         private System.Windows.Forms.Label AverageBitrateLabel;
         private System.Windows.Forms.Label nbFramesLabel;
-        private System.Windows.Forms.Button cancelButton;
+        private MeGUI.core.gui.RoundedButton cancelButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
-        private System.Windows.Forms.CheckBox bframes;
+        private MeGUI.core.gui.ToggleSwitch bframes;
         private ComboBox videoCodec;
         private ComboBox containerFormat;
         private NumericUpDown nbFrames;
@@ -105,7 +105,7 @@ namespace MeGUI
             this.videoCodec = new System.Windows.Forms.ComboBox();
             this.fpsChooser = new MeGUI.core.gui.FPSChooser();
             this.nbFrames = new System.Windows.Forms.NumericUpDown();
-            this.bframes = new System.Windows.Forms.CheckBox();
+            this.bframes = new MeGUI.core.gui.ToggleSwitch();
             this.nbFramesLabel = new System.Windows.Forms.Label();
             this.framerateLabel = new System.Windows.Forms.Label();
             this.secondsLabel = new System.Windows.Forms.Label();
@@ -119,7 +119,7 @@ namespace MeGUI
             this.totalSecondsLabel = new System.Windows.Forms.Label();
             this.totalSeconds = new System.Windows.Forms.NumericUpDown();
             this.timeText = new System.Windows.Forms.TextBox();
-            this.applyButton = new System.Windows.Forms.Button();
+            this.applyButton = new MeGUI.core.gui.RoundedButton();
             this.containerFormat = new System.Windows.Forms.ComboBox();
             this.sizeGroupbox = new System.Windows.Forms.GroupBox();
             this.qEstRadio = new System.Windows.Forms.RadioButton();
@@ -132,7 +132,7 @@ namespace MeGUI
             this.fileSizeRadio = new System.Windows.Forms.RadioButton();
             this.AverageBitrateLabel = new System.Windows.Forms.Label();
             this.averageBitrateRadio = new System.Windows.Forms.RadioButton();
-            this.cancelButton = new System.Windows.Forms.Button();
+            this.cancelButton = new MeGUI.core.gui.RoundedButton();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addAudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
