@@ -54,6 +54,107 @@ namespace MeGUI
         private LogItem _oLog;
 		#endregion
 
+        #region Windows 11 look
+        private MeGUI.core.gui.SettingsCard resCard, deintCard, filtersCard, mpegCard, aviCard, dgCard;
+
+        private static MeGUI.core.gui.ToggleSwitch Tg(MeGUI.core.gui.ModernDialog d, MeGUI.core.gui.ToggleSwitch t)
+        {
+            t.AutoSize = false;
+            t.Size = new System.Drawing.Size(d.S(96), d.S(26));
+            return t;
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
+        /// names, events and the settings are unchanged. The group boxes which the code enables / disables are cards now.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+
+            // I/O
+            MeGUI.core.gui.SettingsPage io = d.CurrentPage;
+            d.Section("Input");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            c1.AddRow("Video input", null, d.Bar(input, 380));
+            c1.AddRow("Original video player", null, d.Btn(reopenOriginal));
+            c1.AddLabelRow(inputDARLabel, null, d.Wide(arChooser, 200), d.Wide(tvTypeLabel, 60));
+            c1.AddRow("AviSynth profile", null, d.Wide(avsProfile, 380));
+            d.Section("Crop & Resize");
+            resCard = d.Card();
+            resCard.AddToggle(Tg(d, signalAR), null, d.Wide(mod16Box, 200));
+            resCard.AddToggle(Tg(d, crop), null, d.Btn(autoCropButton));
+            resCard.AddRow("Crop left / right", null, d.Wide(cropLeft, 80), d.Wide(cropRight, 80));
+            resCard.AddRow("Crop top / bottom", null, d.Wide(cropTop, 80), d.Wide(cropBottom, 80));
+            resCard.AddToggle(Tg(d, resize), null, d.Wide(horizontalResolution, 80), d.Wide(verticalResolution, 80));
+            resCard.AddToggle(Tg(d, suggestResolution), null);
+            resCard.AddRow("Mod value", null, d.Wide(modValueBox, 90));
+            resCard.AddLabelRow(lblAR, null, d.Wide(lblAspectError, 110));
+            resCard.AddToggle(Tg(d, chAutoPreview), null);
+            d.Section("Output");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            c2.AddRow("Video output", null, d.Bar(videoOutput, 380));
+            c2.AddToggle(Tg(d, onSaveLoadScript), null);
+
+            // filters
+            MeGUI.core.gui.SettingsPage filters = d.BeginPage();
+            d.Section("MPEG2 source");
+            mpegCard = d.Card();
+            mpegCard.AddToggle(Tg(d, mpeg2Deblocking), null);
+            mpegCard.AddToggle(Tg(d, colourCorrect), null);
+            d.Section("AVI source / DSSource");
+            aviCard = d.Card();
+            aviCard.AddToggle(Tg(d, flipVertical), null);
+            aviCard.AddToggle(Tg(d, dss2), null);
+            aviCard.AddRow("FPS", null, d.Wide(fpsBox, 110));
+            d.Section("DGI source");
+            dgCard = d.Card();
+            dgCard.AddToggle(Tg(d, nvDeInt), null, d.Wide(cbNvDeInt, 200));
+            dgCard.AddToggle(Tg(d, nvResize), null);
+            d.Section("BestSource");
+            MeGUI.core.gui.SettingsCard best = d.Card();
+            best.AddToggle(Tg(d, chTimecodesv2), null);
+            d.Section("Deinterlacing");
+            deintCard = d.Card();
+            deintCard.AddRow("Source info", "Click on 'Analyse...' for autodetection", d.Btn(analyseButton));
+            deintCard.AddRow("Source type", null, d.Wide(deintSourceType, 220), d.Wide(label5, 24), d.Wide(deintM, 70));
+            deintCard.AddRow("Field order", null, d.Wide(deintFieldOrder, 220));
+            deintCard.AddToggle(Tg(d, deinterlace), null, d.Wide(deinterlaceType, 220));
+            deintCard.AddToggle(Tg(d, deintIsAnime), null);
+            d.Section("Filters");
+            filtersCard = d.Card();
+            filtersCard.AddLabelRow(resizeFilterLabel, null, d.Wide(resizeFilterType, 220));
+            filtersCard.AddToggle(Tg(d, noiseFilter), null, d.Wide(noiseFilterType, 220));
+            d.Section("Subtitles");
+            MeGUI.core.gui.SettingsCard subs = d.Card();
+            subs.AddRow("File", null, d.Wide(SubtitlesPath, 260), d.Btn(openSubtitlesButton), d.Btn(deleteSubtitle));
+            subs.AddRow("Charset", null, d.Wide(cbCharset, 220));
+
+            // script
+            MeGUI.core.gui.SettingsPage script = d.BeginPage();
+            d.Section("Script");
+            avisynthScript.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            avisynthScript.Dock = DockStyle.None;
+            d.Block(avisynthScript, 620, 340, d.Card());
+            d.Section("Plugins");
+            MeGUI.core.gui.SettingsCard plugins = d.Card();
+            plugins.AddRow("Load DLL", null, d.Wide(dllPath, 300), d.Btn(openDLLButton));
+
+            AttachPage(optionsTab, io);
+            AttachPage(filterTab, filters);
+            AttachPage(editTab, script);
+            d.FinishTabs(tabControl1, helpButton1, 720, 760, previewAvsButton, saveButton);
+        }
+        #endregion
+
 		#region construction/deconstruction
         public AviSynthWindow(MainForm mainForm)
         {
@@ -61,17 +162,18 @@ namespace MeGUI
             eventsOn = false;
             this.mainForm = mainForm;
 			InitializeComponent();
+            BuildModernLayout();
 
             lblAspectError.Size = new System.Drawing.Size(MainForm.Instance.Settings.DPIRescale(75), MainForm.Instance.Settings.DPIRescale(21));
 
             this.controlsToDisable = new List<Control>
             {
                 reopenOriginal,
-                filtersGroupbox,
-                deinterlacingGroupBox,
-                mpegOptGroupBox,
-                aviOptGroupBox,
-                resNCropGroupbox,
+                filtersCard,
+                deintCard,
+                mpegCard,
+                aviCard,
+                resCard,
                 previewAvsButton,
                 saveButton,
                 arChooser,
@@ -79,7 +181,7 @@ namespace MeGUI
                 signalAR,
                 avisynthScript,
                 openDLLButton,
-                dgOptions
+                dgCard
             };
             EnableControls(false);
 
@@ -542,7 +644,7 @@ namespace MeGUI
                     this.fpsBox.Enabled = false;
                     this.flipVertical.Enabled = false;
                     this.flipVertical.Checked = false;
-                    this.dgOptions.Enabled = false;
+                    this.dgCard.Enabled = false;
                     this.dss2.Enabled = false;
                     this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage1;
@@ -558,7 +660,7 @@ namespace MeGUI
                     this.flipVertical.Checked = false;
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
-                    this.dgOptions.Enabled = false;
+                    this.dgCard.Enabled = false;
                     this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage1;
                     break;
@@ -571,7 +673,7 @@ namespace MeGUI
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
                     this.flipVertical.Enabled = true;
-                    this.dgOptions.Enabled = false;
+                    this.dgCard.Enabled = false;
                     this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage1;
                     break;
@@ -583,7 +685,7 @@ namespace MeGUI
                     this.dss2.Enabled = true;
                     this.fpsBox.Enabled = true;
                     this.flipVertical.Enabled = true;
-                    this.dgOptions.Enabled = false;
+                    this.dgCard.Enabled = false;
                     this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage2;
                     break;
@@ -596,7 +698,7 @@ namespace MeGUI
                     this.flipVertical.Checked = false;
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
-                    this.dgOptions.Enabled = true;
+                    this.dgCard.Enabled = true;
                     this.nvDeInt.Enabled = true;
                     this.nvResize.Enabled = true;
                     this.chTimecodesv2.Enabled = false;
@@ -611,7 +713,7 @@ namespace MeGUI
                     this.flipVertical.Checked = false;
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
-                    this.dgOptions.Enabled = false;
+                    this.dgCard.Enabled = false;
                     this.chTimecodesv2.Enabled = false;
                     this.tabSources.SelectedTab = tabPage3;
                     break;
@@ -624,7 +726,7 @@ namespace MeGUI
                     this.flipVertical.Checked = false;
                     this.dss2.Enabled = false;
                     this.fpsBox.Enabled = false;
-                    this.dgOptions.Enabled = false;
+                    this.dgCard.Enabled = false;
                     this.chTimecodesv2.Enabled = true;
                     this.tabSources.SelectedTab = tabPage4;
                     break;
