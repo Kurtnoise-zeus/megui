@@ -37,6 +37,7 @@ namespace MeGUI
         private bool configured = false;
         private int iPGC = 1;
         private int iAngle = 0;
+        private Label subtitleSection;
         #endregion
 
         #region start / stop
@@ -61,6 +62,7 @@ namespace MeGUI
         public VobSubIndexWindow(MainForm mainForm)
         {
             InitializeComponent();
+            BuildModernLayout();
             this.chkSingleFileExport.Checked = MainForm.Instance.Settings.VobSubberSingleFileExport;
             this.chkKeepAllStreams.Checked = MainForm.Instance.Settings.VobSubberKeepAll;
             this.chkShowAllStreams.Checked = MainForm.Instance.Settings.VobSubberShowAll;
@@ -114,7 +116,7 @@ namespace MeGUI
         /// <param name="args"></param>
         private void input_FileSelected(FileBar sender, FileBarEventArgs args)
         {
-            subtitleGroupbox.Text = " Subtitles ";
+            subtitleSection.Text = "Subtitles";
             subtitleTracks.Items.Clear();
             output.Filename = string.Empty;
 
@@ -126,7 +128,7 @@ namespace MeGUI
                 return;
             }
 
-            subtitleGroupbox.Text += "- PGC " + iPGC + (iAngle > 0 ? " - Angle " + iAngle + " " : " "); 
+            subtitleSection.Text += " - PGC " + iPGC + (iAngle > 0 ? " - Angle " + iAngle : "");
 
             if (!input.Filename.Equals(strIFOFile))
                 input.Filename = strIFOFile;
@@ -326,6 +328,26 @@ namespace MeGUI
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Files");
+            d.Row("Input", null, d.Bar(input, 380));
+            d.Row("Output", null, d.Bar(output, 380));
+            subtitleSection = d.Section("Subtitles");
+            d.Toggle(chkKeepAllStreams, null);
+            d.Toggle(chkShowAllStreams, null);
+            d.Toggle(chkExtractForced, null);
+            d.Toggle(chkSingleFileExport, null);
+            d.Block(subtitleTracks, 560, 160, d.Card());
+            closeOnQueue.Text = "Close after queue";
+            d.Toggle(closeOnQueue, null);
+            d.Finish(helpButton1, 680, queueButton);
         }
     }
 

@@ -34,6 +34,7 @@ namespace MeGUI
         public DemuxWindow()
         {
             InitializeComponent();
+            BuildModernLayout();
         }
 
         private void btnBrowseInput_Click(object sender, EventArgs e)
@@ -217,6 +218,20 @@ namespace MeGUI
                 mediaInfo = null;
             }
             base.OnFormClosing(e);
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog)
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Row("Input file", null, d.Wide(txtInputFile, 300), d.Btn(btnBrowseInput));
+            MeGUI.core.gui.SettingsCard tracks = d.Card();
+            tracks.AddRow("Tracks", null);
+            d.Block(clbTracks, 560, 200, tracks);
+            d.Toggle(chkCloseOnQueue, null);
+            d.Finish(null, 640, btnQueue, btnRemove);
         }
     }
 }

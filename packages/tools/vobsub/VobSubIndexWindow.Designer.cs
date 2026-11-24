@@ -36,13 +36,13 @@ namespace MeGUI
             this.output = new MeGUI.FileBar();
             this.nameLabel = new System.Windows.Forms.Label();
             this.subtitleGroupbox = new System.Windows.Forms.GroupBox();
-            this.chkExtractForced = new System.Windows.Forms.CheckBox();
-            this.chkKeepAllStreams = new System.Windows.Forms.CheckBox();
-            this.chkSingleFileExport = new System.Windows.Forms.CheckBox();
-            this.chkShowAllStreams = new System.Windows.Forms.CheckBox();
+            this.chkExtractForced = new MeGUI.core.gui.ToggleSwitch();
+            this.chkKeepAllStreams = new MeGUI.core.gui.ToggleSwitch();
+            this.chkSingleFileExport = new MeGUI.core.gui.ToggleSwitch();
+            this.chkShowAllStreams = new MeGUI.core.gui.ToggleSwitch();
             this.subtitleTracks = new System.Windows.Forms.CheckedListBox();
-            this.closeOnQueue = new System.Windows.Forms.CheckBox();
-            this.queueButton = new System.Windows.Forms.Button();
+            this.closeOnQueue = new MeGUI.core.gui.ToggleSwitch();
+            this.queueButton = new MeGUI.core.gui.RoundedButton();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
             this.inputGroupbox.SuspendLayout();
             this.outputGroupbox.SuspendLayout();
@@ -238,15 +238,15 @@ namespace MeGUI
         private System.Windows.Forms.GroupBox outputGroupbox;
         private System.Windows.Forms.Label nameLabel;
         private System.Windows.Forms.GroupBox subtitleGroupbox;
-        private System.Windows.Forms.CheckBox closeOnQueue;
-        private System.Windows.Forms.Button queueButton;
+        private MeGUI.core.gui.ToggleSwitch closeOnQueue;
+        private MeGUI.core.gui.RoundedButton queueButton;
         private System.Windows.Forms.CheckedListBox subtitleTracks;
         private MeGUI.core.gui.HelpButton helpButton1;
         private FileBar input;
         private FileBar output;
-        private System.Windows.Forms.CheckBox chkShowAllStreams;
-        private System.Windows.Forms.CheckBox chkSingleFileExport;
-        private System.Windows.Forms.CheckBox chkKeepAllStreams;
-        private System.Windows.Forms.CheckBox chkExtractForced;
+        private MeGUI.core.gui.ToggleSwitch chkShowAllStreams;
+        private MeGUI.core.gui.ToggleSwitch chkSingleFileExport;
+        private MeGUI.core.gui.ToggleSwitch chkKeepAllStreams;
+        private MeGUI.core.gui.ToggleSwitch chkExtractForced;
     }
 }

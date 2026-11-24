@@ -548,7 +548,7 @@ namespace MeGUI.core.gui
         }
 
         /// <summary>a section title; the cards added after it belong to it</summary>
-        public void AddSection(string title, Font font)
+        public Label AddSection(string title, Font font)
         {
             Label label = new Label();
             label.Text = title;
@@ -559,6 +559,7 @@ namespace MeGUI.core.gui
             label.UseMnemonic = false;
             label.Font = font;
             Controls.Add(label);
+            return label;
         }
 
         public SettingsCard AddCard()

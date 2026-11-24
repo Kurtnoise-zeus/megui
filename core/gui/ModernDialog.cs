@@ -67,9 +67,9 @@ namespace MeGUI.core.gui
         }
 
         #region content
-        public void Section(string title)
+        public Label Section(string title)
         {
-            page.AddSection(title, sectionFont);
+            return page.AddSection(title, sectionFont);
         }
 
         public SettingsCard Card()

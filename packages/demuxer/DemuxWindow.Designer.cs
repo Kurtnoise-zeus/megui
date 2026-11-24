@@ -30,15 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DemuxWindow));
             this.grpInput = new System.Windows.Forms.GroupBox();
-            this.btnRemove = new System.Windows.Forms.Button();
-            this.btnOpen = new System.Windows.Forms.Button();
+            this.btnRemove = new MeGUI.core.gui.RoundedButton();
+            this.btnOpen = new MeGUI.core.gui.RoundedButton();
             this.txtInputFile = new System.Windows.Forms.TextBox();
             this.grpTracks = new System.Windows.Forms.GroupBox();
-            this.btnSelectNone = new System.Windows.Forms.Button();
-            this.btnSelectAll = new System.Windows.Forms.Button();
+            this.btnSelectNone = new MeGUI.core.gui.RoundedButton();
+            this.btnSelectAll = new MeGUI.core.gui.RoundedButton();
             this.clbTracks = new System.Windows.Forms.CheckedListBox();
-            this.btnQueue = new System.Windows.Forms.Button();
-            this.chkCloseOnQueue = new System.Windows.Forms.CheckBox();
+            this.btnQueue = new MeGUI.core.gui.RoundedButton();
+            this.chkCloseOnQueue = new MeGUI.core.gui.ToggleSwitch();
             this.grpInput.SuspendLayout();
             this.grpTracks.SuspendLayout();
             this.SuspendLayout();
@@ -193,14 +193,14 @@
         #endregion
 
         private System.Windows.Forms.GroupBox grpInput;
-        private System.Windows.Forms.Button btnRemove;
-        private System.Windows.Forms.Button btnOpen;
+        private MeGUI.core.gui.RoundedButton btnRemove;
+        private MeGUI.core.gui.RoundedButton btnOpen;
         private System.Windows.Forms.TextBox txtInputFile;
         private System.Windows.Forms.GroupBox grpTracks;
-        private System.Windows.Forms.Button btnSelectNone;
-        private System.Windows.Forms.Button btnSelectAll;
+        private MeGUI.core.gui.RoundedButton btnSelectNone;
+        private MeGUI.core.gui.RoundedButton btnSelectAll;
         private System.Windows.Forms.CheckedListBox clbTracks;
-        private System.Windows.Forms.Button btnQueue;
-        private System.Windows.Forms.CheckBox chkCloseOnQueue;
+        private MeGUI.core.gui.RoundedButton btnQueue;
+        private MeGUI.core.gui.ToggleSwitch chkCloseOnQueue;
     }
 }
