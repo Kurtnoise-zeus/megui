@@ -572,9 +572,9 @@ namespace MeGUI
             videoCard.AddRow("Name", null, d.Wide(videoName, 240));
 
             d.Section("Audio");
-            d.Block(audio, 640, 240, d.Card());
+            d.Block(audio, 640, 170, d.Card());
             d.Section("Subtitles");
-            d.Block(subtitles, 640, 270, d.Card());
+            d.Block(subtitles, 640, 170, d.Card());
 
             d.Section("Chapters");
             chaptersCard = d.Card();
