@@ -41,6 +41,7 @@ namespace MeGUI
         public AdaptiveMuxWindow() : base(null)
         {
             InitializeComponent();
+            BuildModernLayout(true);
             muxProvider = MainForm.Instance.MuxProvider;
 
             audioTracks[0].Filter = VideoUtil.GenerateCombinedFilter(ContainerManager.AudioTypes.ValuesArray);
@@ -267,7 +268,7 @@ namespace MeGUI
             knownAudioTypes = audioTypes;
 
             // disable controls where required
-            videoGroupbox.Enabled = false;
+            VideoEnabled = false;
 
             if (audioStreams != null)
             {

@@ -48,7 +48,7 @@ namespace MeGUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.muxButton = new System.Windows.Forms.Button();
+            this.muxButton = new MeGUI.core.gui.RoundedButton();
             this.videoGroupbox = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.videoInputLabel = new System.Windows.Forms.Label();
@@ -57,9 +57,9 @@ namespace MeGUI
             this.videoNameLabel = new System.Windows.Forms.Label();
             this.vInput = new MeGUI.FileBar();
             this.MuxFPSLabel = new System.Windows.Forms.Label();
-            this.removeVideoTrack = new System.Windows.Forms.Button();
+            this.removeVideoTrack = new MeGUI.core.gui.RoundedButton();
             this.chaptersGroupbox = new System.Windows.Forms.GroupBox();
-            this.deleteChapterFile = new System.Windows.Forms.Button();
+            this.deleteChapterFile = new MeGUI.core.gui.RoundedButton();
             this.chaptersInputLabel = new System.Windows.Forms.Label();
             this.chapters = new MeGUI.FileBar();
             this.outputGroupbox = new System.Windows.Forms.GroupBox();
@@ -90,7 +90,7 @@ namespace MeGUI
             this.muxStreamControl1 = new MeGUI.core.details.mux.MuxStreamControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.helpButton1 = new MeGUI.core.gui.HelpButton();
-            this.chkCloseOnQueue = new System.Windows.Forms.CheckBox();
+            this.chkCloseOnQueue = new MeGUI.core.gui.ToggleSwitch();
             this.videoGroupbox.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.chaptersGroupbox.SuspendLayout();
@@ -640,10 +640,10 @@ namespace MeGUI
         protected System.Windows.Forms.TextBox videoName;
         protected System.Windows.Forms.TabControl subtitles;
         protected System.Windows.Forms.GroupBox videoGroupbox;
-        protected System.Windows.Forms.Button muxButton;
+        protected MeGUI.core.gui.RoundedButton muxButton;
         protected System.Windows.Forms.Label label1;
         protected System.Windows.Forms.Label lbContainer;
-        protected System.Windows.Forms.CheckBox chkCloseOnQueue;
+        protected MeGUI.core.gui.ToggleSwitch chkCloseOnQueue;
         protected System.Windows.Forms.GroupBox chaptersGroupbox;
         protected System.Windows.Forms.ComboBox cbType;
         protected System.Windows.Forms.ComboBox cbContainer;
@@ -665,7 +665,7 @@ namespace MeGUI
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.Button removeVideoTrack;
+        private MeGUI.core.gui.RoundedButton removeVideoTrack;
         private System.Windows.Forms.Label videoInputLabel;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Label MuxFPSLabel;
@@ -673,7 +673,7 @@ namespace MeGUI
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.GroupBox outputGroupbox;
         private System.Windows.Forms.Label videoNameLabel;
-        private System.Windows.Forms.Button deleteChapterFile;
+        private MeGUI.core.gui.RoundedButton deleteChapterFile;
         private System.Windows.Forms.Label chaptersInputLabel;
         protected FileBar chapters;
     }

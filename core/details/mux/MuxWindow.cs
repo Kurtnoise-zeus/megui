@@ -50,6 +50,7 @@ namespace MeGUI
         public MuxWindow(IMuxing muxer) : base(muxer)
         {
             InitializeComponent();
+            BuildModernLayout(false);
             
             if (muxer == null)
                 return;
@@ -58,7 +59,7 @@ namespace MeGUI
             if (muxer.GetSupportedAudioTypes().Count == 0)
                 audio.Enabled = false;
             if (muxer.GetSupportedChapterTypes().Count == 0)
-                chaptersGroupbox.Enabled = false;
+                ChaptersEnabled = false;
             if (muxer.GetSupportedSubtitleTypes().Count == 0)
                 subtitles.Enabled = false;
             else if (this.muxer.MuxerType == MuxerType.MKVMERGE)
@@ -77,7 +78,7 @@ namespace MeGUI
             }
 
             if (muxer.GetSupportedChapterTypes().Count == 0)
-                chaptersGroupbox.Enabled = false;
+                ChaptersEnabled = false;
             if (muxer.GetSupportedDeviceTypes().Count == 0)
                 cbType.Enabled = false;
             muxedInput.Filter = muxer.GetMuxedInputFilter();

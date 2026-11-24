@@ -36,6 +36,7 @@ namespace MeGUI
     public partial class baseMuxWindow : Form
     {
         #region variables
+        protected MeGUI.core.gui.SettingsCard videoCard, chaptersCard, closeOnQueueCard;
         protected List<MuxStreamControl> audioTracks;
         protected List<MuxStreamControl> subtitleTracks;
         protected Dar? dar;
@@ -135,7 +136,10 @@ namespace MeGUI
             this.output.Filename = output;
             this.splitting.Value = splitSize;
             this.muxButton.Text = "Update";
-            this.chkCloseOnQueue.Visible = false;
+            if (closeOnQueueCard != null)
+                closeOnQueueCard.Visible = false;
+            else
+                this.chkCloseOnQueue.Visible = false;
             this.cbType.Text = deviceType;
             CheckIO();
         }
@@ -510,18 +514,85 @@ namespace MeGUI
             if (muxer != null 
                 && (muxer.MuxerType == MuxerType.AVIMUXGUI 
                 || (muxer.MuxerType == MuxerType.TSMUXER && cbType.SelectedItem.ToString() == "Standard")))
-                chaptersGroupbox.Enabled = false;
+                ChaptersEnabled = false;
             else if (cbContainer.SelectedItem != null 
                 && (cbContainer.SelectedItem.ToString().Equals("AVI") 
                 || (cbContainer.SelectedItem.ToString().Equals("M2TS") && cbType.SelectedItem.ToString() == "Standard")))
-                chaptersGroupbox.Enabled = false;
+                ChaptersEnabled = false;
             else
-                chaptersGroupbox.Enabled = true;
+                ChaptersEnabled = true;
         }
 
         private void cbType_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateChapterBox();
+        }
+
+        /// <summary>the cards replace the group boxes: they are enabled / disabled the same way</summary>
+        protected bool ChaptersEnabled
+        {
+            set
+            {
+                if (chaptersCard != null)
+                    chaptersCard.Enabled = value;
+                else
+                    chaptersGroupbox.Enabled = value;
+            }
+        }
+
+        protected bool VideoEnabled
+        {
+            set
+            {
+                if (videoCard != null)
+                    videoCard.Enabled = value;
+                else
+                    videoGroupbox.Enabled = value;
+            }
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: the controls are moved into rounded cards (see ModernDialog).
+        /// Called at the end of the constructors of the derived windows (their InitializeComponent
+        /// changes the size and the scaling of the form).
+        /// </summary>
+        protected void BuildModernLayout(bool showContainer)
+        {
+            // Visual Studio designer: the window is not rebuilt
+            if (MainForm.Instance == null)
+                return;
+
+            AutoSize = false;
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+
+            d.Section("Video");
+            videoCard = d.Card();
+            videoCard.AddRow("Video input", null, d.Bar(vInput, 340), d.Btn(removeVideoTrack));
+            videoCard.AddRow("Frame rate", null, d.Wide(fps, 130));
+            videoCard.AddRow("Name", null, d.Wide(videoName, 240));
+
+            d.Section("Audio");
+            d.Block(audio, 640, 240, d.Card());
+            d.Section("Subtitles");
+            d.Block(subtitles, 640, 270, d.Card());
+
+            d.Section("Chapters");
+            chaptersCard = d.Card();
+            chaptersCard.AddRow("Chapters file", null, d.Bar(chapters, 340), d.Btn(deleteChapterFile));
+
+            d.Section("Output");
+            MeGUI.core.gui.SettingsCard outputCard = d.Card();
+            outputCard.AddRow("Muxed output", null, d.Bar(this.output, 340));
+            outputCard.AddRow("Splitting", null, d.Wide(splitting, 220));
+            outputCard.AddRow("Device type", null, d.Wide(cbType, 180));
+            if (showContainer)
+                outputCard.AddRow("Container", null, d.Wide(cbContainer, 180));
+
+            chkCloseOnQueue.Text = "Close after queue";
+            closeOnQueueCard = d.Card();
+            d.ToggleIn(closeOnQueueCard, chkCloseOnQueue, null);
+
+            d.Finish(helpButton1, 820, muxButton);
         }
     }
 }
