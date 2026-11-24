@@ -35,6 +35,8 @@ namespace MeGUI.packages.tools.calculator
         public AudioTrackSizeTab()
         {
             InitializeComponent();
+            SizeTabLayout.Apply(this, removeLink, audioLabel, name, selectButton, label2, size,
+                new System.Windows.Forms.Label[] { audio1TypeLabel, label1 }, new Control[] { audio1Type, audio1Bitrate }, new int[] { 100, 90 });
             this.audio1Type.Items.AddRange(ContainerManager.AudioTypes.ValuesArray);
 
             DragDropUtil.RegisterSingleFileDragDrop(this, selectAudioFile, this.filter);

@@ -33,6 +33,59 @@ using MediaInfoWrapper;
 
 namespace MeGUI.packages.tools.calculator
 {
+    /// <summary>
+    /// Windows 11 look of the rows of the audio and extra files list of the calculator: captions above the fields,
+    /// rounded text boxes and button, the name follows the width. The controls only move: names and events are unchanged.
+    /// </summary>
+    internal static class SizeTabLayout
+    {
+        public static void Apply(UserControl tab, LinkLabel remove, System.Windows.Forms.Label title, TextBox name, Button selectBtn,
+            System.Windows.Forms.Label sizeCaption, TextBox size, System.Windows.Forms.Label[] captions, Control[] controls, int[] widths)
+        {
+            float k = MainForm.Instance != null ? MainForm.Instance.Settings.DPIRescale(1000) / 1000f : 1f;
+            Func<int, int> S = delegate (int v) { return (int)Math.Round(v * k); };
+            tab.AutoScaleMode = AutoScaleMode.None;
+            tab.Font = new System.Drawing.Font("Segoe UI", 10F);
+            tab.Size = new System.Drawing.Size(S(610), S(64));
+
+            int right = tab.Width - S(8);
+            MeGUI.core.gui.RoundedBox sizeBox = new MeGUI.core.gui.RoundedBox(size, S(90), S(32));
+            sizeBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            sizeBox.Location = new System.Drawing.Point(right - sizeBox.Width, S(26));
+            tab.Controls.Add(sizeBox);
+            sizeCaption.AutoSize = true;
+            sizeCaption.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            sizeCaption.Location = new System.Drawing.Point(sizeBox.Left, S(4));
+            right = sizeBox.Left - S(8);
+
+            for (int i = controls.Length - 1; i >= 0; i--)
+            {
+                Control c = controls[i];
+                c.Width = S(widths[i]);
+                c.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                c.Location = new System.Drawing.Point(right - c.Width, S(26) + (S(32) - c.Height) / 2);
+                captions[i].AutoSize = true;
+                captions[i].Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                captions[i].Location = new System.Drawing.Point(c.Left, S(4));
+                right = c.Left - S(8);
+            }
+
+            selectBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            selectBtn.Size = new System.Drawing.Size(S(34), S(32));
+            selectBtn.Location = new System.Drawing.Point(right - selectBtn.Width, S(26));
+            right = selectBtn.Left - S(8);
+
+            MeGUI.core.gui.RoundedBox nameBox = new MeGUI.core.gui.RoundedBox(name, right - S(8), S(32));
+            nameBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            nameBox.Location = new System.Drawing.Point(S(8), S(26));
+            tab.Controls.Add(nameBox);
+
+            remove.Location = new System.Drawing.Point(S(4), S(2));
+            title.AutoSize = true;
+            title.Location = new System.Drawing.Point(S(34), S(5));
+        }
+    }
+
     public partial class ExtraSizeTab : UserControl
     {
         public event EventHandler SomethingChanged;
@@ -40,6 +93,7 @@ namespace MeGUI.packages.tools.calculator
         public ExtraSizeTab()
         {
             InitializeComponent();
+            SizeTabLayout.Apply(this, removeLink, audioLabel, name, selectButton, label2, size, new System.Windows.Forms.Label[0], new Control[0], new int[0]);
             //DragDropUtil.RegisterSingleFileDragDrop(this, selectExtraFile, this.filter);
         }
 

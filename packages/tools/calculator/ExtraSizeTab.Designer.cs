@@ -31,7 +31,7 @@ namespace MeGUI.packages.tools.calculator
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtraSizeTab));
             this.label2 = new System.Windows.Forms.Label();
-            this.selectButton = new System.Windows.Forms.Button();
+            this.selectButton = new MeGUI.core.gui.RoundedButton();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.audioLabel = new System.Windows.Forms.Label();
             this.name = new System.Windows.Forms.TextBox();
@@ -130,7 +130,7 @@ namespace MeGUI.packages.tools.calculator
         #endregion
 
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button selectButton;
+        private MeGUI.core.gui.RoundedButton selectButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Label audioLabel;
         private System.Windows.Forms.TextBox name;

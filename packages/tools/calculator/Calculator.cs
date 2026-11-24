@@ -85,7 +85,7 @@ namespace MeGUI
             addAudioLink.Size = new Size(d.S(80), d.S(24));
             c2.AddRow("Add an audio track or an extra file", null, addAudioLink);
             audioExtraFlow.Dock = DockStyle.None;
-            d.Block(audioExtraFlow, 470, 200, d.Card());
+            d.Block(audioExtraFlow, 640, 230, d.Card());
             d.Finish(helpButton1, 720, applyButton, cancelButton);
         }
 

@@ -33,7 +33,7 @@ namespace MeGUI.packages.tools.calculator
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.audio1Bitrate = new System.Windows.Forms.NumericUpDown();
-            this.selectButton = new System.Windows.Forms.Button();
+            this.selectButton = new MeGUI.core.gui.RoundedButton();
             this.audio1Type = new System.Windows.Forms.ComboBox();
             this.audio1TypeLabel = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -193,7 +193,7 @@ namespace MeGUI.packages.tools.calculator
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown audio1Bitrate;
-        private System.Windows.Forms.Button selectButton;
+        private MeGUI.core.gui.RoundedButton selectButton;
         private System.Windows.Forms.ComboBox audio1Type;
         private System.Windows.Forms.Label audio1TypeLabel;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
