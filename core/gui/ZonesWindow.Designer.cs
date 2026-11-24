@@ -51,8 +51,8 @@ namespace MeGUI.core.gui
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZonesWindow));
             this.zonesControl1 = new MeGUI.ZonesControl();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new MeGUI.core.gui.RoundedButton();
+            this.button1 = new MeGUI.core.gui.RoundedButton();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -125,7 +125,7 @@ namespace MeGUI.core.gui
 
         private ZonesControl zonesControl1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private MeGUI.core.gui.RoundedButton button2;
+        private MeGUI.core.gui.RoundedButton button1;
     }
 }

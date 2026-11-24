@@ -35,6 +35,45 @@ namespace MeGUI
             zones = Array.Empty<Zone>();
             input = "";
             InitializeComponent();
+            BuildModernLayout();
+        }
+
+        /// <summary>
+        /// Windows 11 settings look (see ModernDialog). The controls are only moved: names and events are unchanged.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            ModernDialog d = new ModernDialog(this);
+            d.Section("Zones");
+            zoneListView.Dock = DockStyle.None;
+            d.Block(zoneListView, 560, 240, d.Card());
+            SettingsCard buttons = d.Card();
+            flowLayoutPanel1.Dock = DockStyle.None;
+            flowLayoutPanel1.AutoSize = false;
+            flowLayoutPanel1.WrapContents = true;
+            foreach (Control b in flowLayoutPanel1.Controls)
+            {
+                Button bt = b as Button;
+                if (bt != null)
+                {
+                    d.Btn(bt);
+                    bt.Margin = new Padding(0, 0, d.S(8), d.S(4));
+                }
+            }
+            flowLayoutPanel1.Size = new System.Drawing.Size(d.S(560), d.S(44));
+            buttons.AddWide(null, null, flowLayoutPanel1);
+            d.Section("Zone settings");
+            SettingsCard c = d.Card();
+            c.AddRow("Start frame", null, d.Wide(startFrame, 110));
+            c.AddRow("End frame", null, d.Wide(endFrame, 110));
+            c.AddRow("Mode", null, d.Wide(zoneMode, 160));
+            c.AddLabelRow(modifierLabel, null, d.Wide(zoneModifier, 110));
+            Size = new System.Drawing.Size(d.S(620), d.S(640));
+            SettingsPage page = d.CurrentPage;
+            Controls.Clear();
+            page.Dock = DockStyle.Fill;
+            Controls.Add(page);
+            d.AttachTheme();
         }
 
         #region variables

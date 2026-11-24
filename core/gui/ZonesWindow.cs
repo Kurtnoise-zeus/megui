@@ -28,6 +28,7 @@ namespace MeGUI.core.gui
         public ZonesWindow(string input)
         {
             InitializeComponent();
+            ClientSize = new System.Drawing.Size(zonesControl1.Width, zonesControl1.Height + flowLayoutPanel1.Height);
             zonesControl1.Input = input;
         }
 

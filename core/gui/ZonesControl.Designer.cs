@@ -44,11 +44,11 @@ namespace MeGUI
             this.startFrameLabel = new System.Windows.Forms.Label();
             this.modifierLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.showVideoButton = new System.Windows.Forms.Button();
-            this.removeZoneButton = new System.Windows.Forms.Button();
-            this.updateZoneButton = new System.Windows.Forms.Button();
-            this.clearZonesButton = new System.Windows.Forms.Button();
-            this.addZoneButton = new System.Windows.Forms.Button();
+            this.showVideoButton = new MeGUI.core.gui.RoundedButton();
+            this.removeZoneButton = new MeGUI.core.gui.RoundedButton();
+            this.updateZoneButton = new MeGUI.core.gui.RoundedButton();
+            this.clearZonesButton = new MeGUI.core.gui.RoundedButton();
+            this.addZoneButton = new MeGUI.core.gui.RoundedButton();
             this.zonesGroupbox.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.zoneModifier)).BeginInit();
@@ -319,11 +319,11 @@ namespace MeGUI
         private System.Windows.Forms.ColumnHeader modifierColumn;
         private System.Windows.Forms.Label startFrameLabel;
         private System.Windows.Forms.Label endFrameLabel;
-        private System.Windows.Forms.Button addZoneButton;
-        private System.Windows.Forms.Button clearZonesButton;
-        private System.Windows.Forms.Button updateZoneButton;
-        private System.Windows.Forms.Button showVideoButton;
-        private System.Windows.Forms.Button removeZoneButton;
+        private MeGUI.core.gui.RoundedButton addZoneButton;
+        private MeGUI.core.gui.RoundedButton clearZonesButton;
+        private MeGUI.core.gui.RoundedButton updateZoneButton;
+        private MeGUI.core.gui.RoundedButton showVideoButton;
+        private MeGUI.core.gui.RoundedButton removeZoneButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
