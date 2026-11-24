@@ -266,6 +266,7 @@ namespace MeGUI.core.gui
         private sealed class Row
         {
             public string Title;
+            public Label TitleLabel;
             public string Description;
             public bool Sub;
             public Control Left;
@@ -316,6 +317,25 @@ namespace MeGUI.core.gui
             row.Height = row.HeaderHeight;
             if (right != null)
                 row.Right.AddRange(right);
+            return Add(row);
+        }
+
+        /// <summary>
+        /// a row whose title is an existing label (not added to the card): its Text, Enabled and Visible
+        /// are followed, so the code which changes the label keeps working
+        /// </summary>
+        public SettingsCard AddLabelRow(Label title, string description, params Control[] right)
+        {
+            Row row = new Row();
+            row.TitleLabel = title;
+            row.Description = description;
+            row.HeaderHeight = string.IsNullOrEmpty(description) ? S(56) : S(64);
+            row.Height = row.HeaderHeight;
+            if (right != null)
+                row.Right.AddRange(right);
+            title.TextChanged += delegate { Invalidate(); };
+            title.EnabledChanged += delegate { Invalidate(); };
+            title.VisibleChanged += delegate { PerformLayout(); };
             return Add(row);
         }
 
@@ -370,9 +390,6 @@ namespace MeGUI.core.gui
 
         private SettingsCard Add(Row row)
         {
-            row.Top = 0;
-            foreach (Row existing in rows)
-                row.Top += existing.Height;
             rows.Add(row);
 
             List<Control> controls = new List<Control>();
@@ -389,9 +406,28 @@ namespace MeGUI.core.gui
                 Controls.Add(c);
             }
 
-            Height = row.Top + row.Height;
+            ComputeTops();
             PerformLayout();
             return this;
+        }
+
+        // a row whose title label is hidden by the code takes no room
+        private static bool Collapsed(Row row)
+        {
+            return row.TitleLabel != null && !row.TitleLabel.Visible;
+        }
+
+        private void ComputeTops()
+        {
+            int top = 0;
+            foreach (Row r in rows)
+            {
+                r.Top = top;
+                if (!Collapsed(r))
+                    top += r.Height;
+            }
+            if (Height != top)
+                Height = top;
         }
         #endregion
 
@@ -400,6 +436,7 @@ namespace MeGUI.core.gui
             // positions are computed here, the anchors / docks of the controls are not used
             int pad = S(16);
             int gap = S(8);
+            ComputeTops();
             foreach (Row row in rows)
             {
                 if (row.Left != null)
@@ -441,6 +478,12 @@ namespace MeGUI.core.gui
                     }
                 }
             }
+            Invalidate();
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
             Invalidate();
         }
 
@@ -505,6 +548,8 @@ namespace MeGUI.core.gui
             bool first = true;
             foreach (Row row in rows)
             {
+                if (Collapsed(row))
+                    continue;
                 if (!first)
                 {
                     using (Pen sep = new Pen(line))
@@ -512,17 +557,19 @@ namespace MeGUI.core.gui
                 }
                 first = false;
 
-                if (string.IsNullOrEmpty(row.Title))
+                string title = row.TitleLabel != null ? row.TitleLabel.Text : row.Title;
+                Color titleColor = Enabled && (row.TitleLabel == null || row.TitleLabel.Enabled) ? p.Text : p.TextDim;
+                if (string.IsNullOrEmpty(title))
                     continue;
                 int x = S(18) + (row.Sub ? S(34) : 0);
                 int width = Math.Max(0, (row.TextRight > 0 ? row.TextRight : Width - S(16)) - x);
                 if (string.IsNullOrEmpty(row.Description))
                 {
-                    TextRenderer.DrawText(g, row.Title, Font, new Rectangle(x, row.Top, width, row.HeaderHeight), p.Text, flags);
+                    TextRenderer.DrawText(g, title, Font, new Rectangle(x, row.Top, width, row.HeaderHeight), titleColor, flags);
                 }
                 else
                 {
-                    TextRenderer.DrawText(g, row.Title, Font, new Rectangle(x, row.Top + S(10), width, S(22)), p.Text, flags);
+                    TextRenderer.DrawText(g, title, Font, new Rectangle(x, row.Top + S(10), width, S(22)), titleColor, flags);
                     TextRenderer.DrawText(g, row.Description, descriptionFont, new Rectangle(x, row.Top + S(33), width, S(20)), p.TextDim, flags);
                 }
             }

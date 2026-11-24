@@ -43,6 +43,7 @@ namespace MeGUI.packages.video.x265
             : base()
         {
             InitializeComponent();
+            BuildModernLayout();
             cqmComboBox1.StandardItems = new string[] { "Flat (none)", "JVT" };
             cqmComboBox1.SelectedIndex = 0;
             x265Tunes.Items.AddRange(EnumProxy.CreateArray(x265Settings.SupportedPsyTuningModes));
@@ -525,7 +526,7 @@ namespace MeGUI.packages.video.x265
         #region dropdowns
         private void setNonQPOptionsEnabled(bool enabled)
         {
-            x265RCGroupbox.Enabled = enabled;
+            rcCard.Enabled = enabled;
         }
         /// <summary>
         /// Returns whether the given mode is a bitrate or quality-based mode
@@ -1150,6 +1151,203 @@ namespace MeGUI.packages.video.x265
             genericUpdate();
         }
 
+        private MeGUI.core.gui.SettingsCard rcCard, aqCard, cqmCard, hevcProfileCard, hevcLevelCard;
+
+        /// <summary>
+        /// Windows 11 settings look: one page of cards per tab (see ModernDialog). The controls are only moved:
+        /// names, events and the settings are unchanged. The labels which the code changes (text, enabled, visible)
+        /// are used as titles of their rows.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            MeGUI.core.gui.SettingsPage main = d.CurrentPage;
+            d.Section("Encoding mode");
+            MeGUI.core.gui.SettingsCard modeCard = d.Card();
+            modeCard.AddRow("Encoding mode", null, d.Wide(x265EncodingMode, 200));
+            modeCard.AddLabelRow(x265BitrateQuantizerLabel, null, d.Wide(x265BitrateQuantizer, 110));
+            d.Section("Preset");
+            MeGUI.core.gui.SettingsCard presetCard = d.Card();
+            presetCard.AddLabelRow(lbPreset, null, d.Wide(tbx265Presets, 320));
+            d.Section("Tuning");
+            MeGUI.core.gui.SettingsCard tuneCard = d.Card();
+            tuneCard.AddRow("Tuning", null, d.Wide(x265Tunes, 220));
+            d.Section("HEVC profile and level");
+            hevcProfileCard = d.Card();
+            hevcProfileCard.AddRow("HEVC profile", null, d.Wide(hevcProfile, 220));
+            hevcLevelCard = d.Card();
+            hevcLevelCard.AddRow("HEVC level", null, d.Wide(hevcLevel, 220));
+            d.Section("Other settings");
+            MeGUI.core.gui.SettingsCard otherCard = d.Card();
+            ch10BitsEncoder.Text = "Enable 10-bits encoding";
+            d.ToggleIn(otherCard, ch10BitsEncoder, null);
+            otherCard.AddRow("Frame-threads (0 = auto)", null, d.Wide(x265NbThreads, 90));
+            chkTuneFastDecode.Text = "Fast decode";
+            d.ToggleIn(otherCard, chkTuneFastDecode, null);
+            chkTuneZeroLatency.Text = "Zero latency";
+            d.ToggleIn(otherCard, chkTuneZeroLatency, null);
+            advancedSettings.Text = "Show advanced settings";
+            d.ToggleIn(otherCard, advancedSettings, null);
+            otherCard.AddRow("Help", null, helpButton1);
+            hevcLevelCard.Enabled = false;
+            MeGUI.core.gui.SettingsPage frame = d.BeginPage();
+            d.Section("H.264 features");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            x265DeblockActive.Text = "Deblocking";
+            d.ToggleIn(c1, x265DeblockActive, null);
+            c1.AddRow("Deblocking strength", null, d.Wide(x265AlphaDeblock, 90));
+            c1.AddRow("Deblocking threshold", null, d.Wide(x265BetaDeblock, 90));
+            cabac.Text = "CABAC";
+            d.ToggleIn(c1, cabac, null);
+            d.Section("GOP size");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            c2.AddRow("GOP calculation", null, d.Wide(cbGOPCalculation, 160));
+            c2.AddRow("Maximum GOP size (0 = infinite)", null, d.Wide(x265KeyframeInterval, 90));
+            c2.AddRow("Minimum GOP size", null, d.Wide(x265MinGOPSize, 90));
+            chkOpenGop.Text = "Open GOP";
+            d.ToggleIn(c2, chkOpenGop, null);
+            d.Section("B-frames");
+            MeGUI.core.gui.SettingsCard c3 = d.Card();
+            x265WeightedBPrediction.Text = "Weighted prediction for B-frames";
+            d.ToggleIn(c3, x265WeightedBPrediction, null);
+            c3.AddLabelRow(x265NumberOfBFramesLabel, null, d.Wide(x265NumberOfBFrames, 90));
+            c3.AddLabelRow(x265BframeBiasLabel, null, d.Wide(x265BframeBias, 90));
+            c3.AddLabelRow(x265AdaptiveBframesLabel, null, d.Wide(x265NewAdaptiveBframes, 160));
+            c3.AddRow("B-pyramid", null, d.Wide(cbBPyramid, 160));
+            d.Section("Other");
+            MeGUI.core.gui.SettingsCard c4 = d.Card();
+            c4.AddRow("Number of reference frames", null, d.Wide(x265NumberOfRefFrames, 90));
+            c4.AddRow("Number of extra I-frames", null, d.Wide(x265SCDSensitivity, 90));
+            c4.AddRow("P-frame weighted prediction", null, d.Wide(x265WeightedPPrediction, 160));
+            c4.AddRow("Interlaced mode", null, d.Wide(cbInterlaceMode, 160));
+            c4.AddRow("Pulldown", null, d.Wide(x265PullDown, 160));
+            scenecut.Text = "Adaptive I-frame decision";
+            d.ToggleIn(c4, scenecut, null);
+            d.Section("Slicing");
+            MeGUI.core.gui.SettingsCard c5 = d.Card();
+            c5.AddRow("Number of slices by frame", null, d.Wide(slicesnb, 90));
+            c5.AddRow("Max size (in bytes)", null, d.Wide(maxSliceSizeBytes, 90));
+            c5.AddRow("Max size (in mbs)", null, d.Wide(maxSliceSizeMB, 90));
+            MeGUI.core.gui.SettingsPage rate = d.BeginPage();
+            d.Section("Quantizers");
+            MeGUI.core.gui.SettingsCard c6 = d.Card();
+            c6.AddRow("Min / max / delta", null, d.Wide(x265MinimimQuantizer, 80), d.Wide(x265MaximumQuantizer, 80), d.Wide(x265MaxQuantDelta, 80));
+            c6.AddRow("Quantizers ratio (I:P / P:B)", null, d.Wide(x265IPFrameFactor, 80), d.Wide(x265PBFrameFactor, 80));
+            c6.AddLabelRow(lbx265DeadZones, null, d.Wide(deadzoneInter, 80), d.Wide(deadzoneIntra, 80));
+            c6.AddRow("Chroma QP offset", null, d.Wide(x265ChromaQPOffset, 90));
+            c6.AddRow("Credits quantizer", null, d.Wide(x265CreditsQuantizer, 90));
+            d.Section("Adaptive quantizers");
+            aqCard = d.Card();
+            aqCard.AddRow("Mode", null, d.Wide(cbAQMode, 180));
+            aqCard.AddRow("Strength", null, d.Wide(numAQStrength, 90));
+            d.Section("Quantizer matrices");
+            cqmCard = d.Card();
+            cqmCard.AddRow("Quantizer matrix", null, d.Wide(cqmComboBox1, 260));
+            d.Section("Rate control");
+            rcCard = d.Card();
+            rcCard.AddRow("VBV buffer size", null, d.Wide(x265VBVBufferSize, 90));
+            rcCard.AddLabelRow(x265VBVMaxRateLabel, null, d.Wide(x265VBVMaxRate, 90));
+            rcCard.AddRow("VBV initial buffer", null, d.Wide(x265VBVInitialBuffer, 90));
+            rcCard.AddLabelRow(x265RateTolLabel, null, d.Wide(x265RateTol, 90));
+            rcCard.AddRow("Quantizer compression", null, d.Wide(x265QuantizerCompression, 90));
+            rcCard.AddLabelRow(x265TempFrameComplexityBlurLabel, null, d.Wide(x265TempFrameComplexityBlur, 90));
+            rcCard.AddLabelRow(x265TempQuantBlurLabel, null, d.Wide(x265TempQuantBlur, 90));
+            rcCard.AddRow("Number of frames for lookahead", null, d.Wide(lookahead, 90));
+            mbtree.Text = "Use MB-tree";
+            d.ToggleIn(rcCard, mbtree, null);
+            MeGUI.core.gui.SettingsPage analysis = d.BeginPage();
+            d.Section("Motion estimation");
+            MeGUI.core.gui.SettingsCard c7 = d.Card();
+            x265ChromaMe.Text = "Chroma M.E.";
+            d.ToggleIn(c7, x265ChromaMe, null);
+            c7.AddRow("M.E. range", null, d.Wide(x265MERange, 90));
+            c7.AddRow("M.E. algorithm", null, d.Wide(x265METype, 180));
+            c7.AddRow("Subpixel refinement", null, d.Wide(x265SubpelRefinement, 180));
+            d.Section("Macroblocks");
+            MeGUI.core.gui.SettingsCard c8 = d.Card();
+            c8.AddRow("Partitions", null, d.Wide(macroblockOptions, 160));
+            adaptiveDCT.Text = "Adaptive DCT";
+            d.ToggleIn(c8, adaptiveDCT, null);
+            x265I4x4mv.Text = "I4x4";
+            d.ToggleIn(c8, x265I4x4mv, null);
+            x265I8x8mv.Text = "I8x8";
+            d.ToggleIn(c8, x265I8x8mv, null);
+            x265P4x4mv.Text = "P4x4";
+            d.ToggleIn(c8, x265P4x4mv, null);
+            x265P8x8mv.Text = "P8x8";
+            d.ToggleIn(c8, x265P8x8mv, null);
+            x265B8x8mv.Text = "B8x8";
+            d.ToggleIn(c8, x265B8x8mv, null);
+            d.Section("Extra");
+            MeGUI.core.gui.SettingsCard c9 = d.Card();
+            c9.AddRow("MV prediction mode", null, d.Wide(x265BframePredictionMode, 180));
+            c9.AddRow("Trellis", null, d.Wide(trellis, 180));
+            c9.AddLabelRow(PsyRDLabel, null, d.Wide(PsyRD, 90));
+            c9.AddLabelRow(PsyTrellisLabel, null, d.Wide(PsyTrellis, 90));
+            nopsy.Text = "No psychovisual enhancements";
+            d.ToggleIn(c9, nopsy, null);
+            noDCTDecimateOption.Text = "No DCT decimation";
+            d.ToggleIn(c9, noDCTDecimateOption, null);
+            noFastPSkip.Text = "No fast P-skip";
+            d.ToggleIn(c9, noFastPSkip, null);
+            x265MixedReferences.Text = "No mixed reference frames";
+            d.ToggleIn(c9, x265MixedReferences, null);
+            c9.AddRow("Noise reduction", null, d.Wide(NoiseReduction, 90));
+            d.Section("Blu-ray");
+            MeGUI.core.gui.SettingsCard c10 = d.Card();
+            c10.AddRow("HRD info", null, d.Wide(x265hrd, 160));
+            x265aud.Text = "Use access unit delimiters";
+            d.ToggleIn(c10, x265aud, null);
+            fakeInterlaced.Text = "Fake interlaced";
+            d.ToggleIn(c10, fakeInterlaced, null);
+            chkBlurayCompat.Text = "Enable Blu-ray compatibility";
+            d.ToggleIn(c10, chkBlurayCompat, null);
+            MeGUI.core.gui.SettingsPage misc = d.BeginPage();
+            d.Section("Custom command line");
+            d.Block(customCommandlineOptions, 600, 70, d.Card());
+
+            // each tab of the control gets its page of cards
+            AttachPage(mainTabPage, main);
+            AttachPage(FrameTypeTabPage, frame);
+            AttachPage(RCTabPage, rate);
+            AttachPage(AnalysisTabPage, analysis);
+            AttachPage(MiscTabPage, misc);
+            Size = new Size(d.S(780), d.S(690));
+            tabControl1.Bounds = new Rectangle(0, 0, Width, Height - d.S(96));
+            commandline.Bounds = new Rectangle(0, Height - d.S(90), Width, d.S(90));
+            d.AttachTheme();
+        }
+
+        private static void AttachPage(TabPage tab, MeGUI.core.gui.SettingsPage page)
+        {
+            tab.Controls.Clear();
+            tab.Padding = new Padding(0);
+            page.Dock = DockStyle.Fill;
+            tab.Controls.Add(page);
+        }
+
+        /// <summary>two controls which are shown one at a time share the same place</summary>
+        private static Control Overlap(MeGUI.core.gui.ModernDialog d, Control a, Control b, int width)
+        {
+            Panel p = new Panel();
+            p.Size = new Size(d.S(width), d.S(32));
+            foreach (Control c in new Control[] { a, b })
+            {
+                c.Dock = DockStyle.None;
+                c.Location = new Point(0, 0);
+                c.Width = p.Width;
+                p.Controls.Add(c);
+            }
+            return p;
+        }
+
+        private static MeGUI.core.gui.ToggleSwitch Tg(MeGUI.core.gui.ModernDialog d, MeGUI.core.gui.ToggleSwitch t)
+        {
+            t.AutoSize = false;
+            t.Size = new Size(d.S(96), d.S(26));
+            return t;
+        }
+
         private void advancedSettings_CheckedChanged(object sender, EventArgs e)
         {
 
@@ -1321,11 +1519,11 @@ namespace MeGUI.packages.video.x265
             if (ch10BitsEncoder.Checked)
             {
                 hevcProfile.SelectedIndex = 1; // Main 10 Profile
-                hevcProfileGroupbox.Enabled = false;
+                hevcProfileCard.Enabled = false;
             }
             else
             {
-                hevcProfileGroupbox.Enabled = true;
+                hevcProfileCard.Enabled = true;
             }
             updateEvent(sender, e);
         }
