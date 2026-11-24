@@ -297,6 +297,15 @@ namespace MeGUI.core.gui
             form.Controls.Add(content);
             form.Controls.Add(footer);
 
+            // the scrolling area of a flow panel ignores the bottom margin of its last control
+            foreach (SettingsPage p in pages)
+            {
+                Panel end = new Panel();
+                end.Height = S(24);
+                end.Margin = new Padding(0);
+                p.Controls.Add(end);
+            }
+
             Rectangle area = Screen.PrimaryScreen.WorkingArea;
             form.FormBorderStyle = FormBorderStyle.Sizable;
             form.SizeGripStyle = SizeGripStyle.Show;

@@ -930,13 +930,17 @@ namespace MeGUI.core.gui
             Color outside = Parent != null ? Parent.BackColor : ThemeManager.Palette.Window;
             g.Clear(outside);
 
-            Color back = BackColor;
+            // a button which is not styled (light theme, no ModernDialog): the colours of the palette
+            bool unstyled = UseVisualStyleBackColor || BackColor.A < 255;
+            ThemePalette pal = ThemeManager.Palette;
+            bool darkTheme = ThemeManager.IsDark;
+            Color back = unstyled ? ThemeManager.Blend(pal.Surface, pal.Text, darkTheme ? 0.08 : 0.02) : BackColor;
             if (Enabled && pressed)
-                back = FlatAppearance.MouseDownBackColor.IsEmpty ? back : FlatAppearance.MouseDownBackColor;
+                back = unstyled ? ThemeManager.Blend(pal.Surface, pal.Text, 0.10) : (FlatAppearance.MouseDownBackColor.IsEmpty ? back : FlatAppearance.MouseDownBackColor);
             else if (Enabled && hot)
-                back = FlatAppearance.MouseOverBackColor.IsEmpty ? back : FlatAppearance.MouseOverBackColor;
-            Color border = FlatAppearance.BorderColor.IsEmpty ? back : FlatAppearance.BorderColor;
-            Color text = ForeColor;
+                back = unstyled ? ThemeManager.Blend(pal.Surface, pal.Text, 0.14) : (FlatAppearance.MouseOverBackColor.IsEmpty ? back : FlatAppearance.MouseOverBackColor);
+            Color border = unstyled ? ThemeManager.Blend(pal.Surface, pal.Text, 0.18) : (FlatAppearance.BorderColor.IsEmpty ? back : FlatAppearance.BorderColor);
+            Color text = unstyled ? pal.Text : ForeColor;
             if (!Enabled)
             {
                 back = ThemeManager.Blend(outside, back, 0.5);
