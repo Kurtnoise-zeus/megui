@@ -203,6 +203,13 @@ namespace MeGUI.core.gui
             form.Controls.Add(content);
             form.Controls.Add(footer);
 
+            // the scrolling area of a flow panel ignores the bottom margin of its last control:
+            // an empty strip at the end makes the last card fully reachable
+            Panel end = new Panel();
+            end.Height = S(24);
+            end.Margin = new Padding(0);
+            page.Controls.Add(end);
+
             // the height of the content, limited to the screen (the page scrolls)
             int height = page.Padding.Vertical;
             foreach (Control c in page.Controls)
