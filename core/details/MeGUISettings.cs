@@ -74,6 +74,7 @@ namespace MeGUI
                      bVobSubberExtractForced, bVobSubberShowAll, bUsex64Tools, bShowDebugInformation, bEac3toDefaultToHD,
                      bEac3toEnableEncoder, bEac3toEnableDecoder, bEac3toEnableCustomOptions, bFirstUpdateCheck,
                      bChapterCreatorCounter, bX264AdvancedSettings, bEac3toAddPrefix, workerRemoveJob, bHwdVideoDecoder;
+        private bool bAudioProcessingExpanded;
         private decimal forceFilmThreshold, acceptableFPSError;
         private int nbPasses, autoUpdateServerSubList, minComplexity, updateFormSplitter,
                     maxComplexity, jobColumnWidth, inputColumnWidth, outputColumnWidth, codecColumnWidth,
@@ -506,6 +507,15 @@ namespace MeGUI
         {
             get { return bEac3toEnableCustomOptions; }
             set { bEac3toEnableCustomOptions = value; }
+        }
+
+        /// <summary>
+        /// the "Audio processing" expander of the audio profile windows is open (closed by default)
+        /// </summary>
+        public bool AudioProcessingExpanded
+        {
+            get { return bAudioProcessingExpanded; }
+            set { bAudioProcessingExpanded = value; }
         }
 
         public bool ChapterCreatorCounter

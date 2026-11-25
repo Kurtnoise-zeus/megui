@@ -328,6 +328,9 @@ namespace MeGUI.core.gui
             return Add(row);
         }
 
+        /// <summary>for an expander: raised when the rows are shown or hidden</summary>
+        public event EventHandler ExpandedChanged;
+
         /// <summary>for an expander: the rows under the header are shown</summary>
         public bool Expanded
         {
@@ -376,6 +379,8 @@ namespace MeGUI.core.gui
             }
             PerformLayout();
             Invalidate();
+            if (ExpandedChanged != null)
+                ExpandedChanged(this, EventArgs.Empty);
         }
 
         protected override void OnMouseClick(MouseEventArgs e)

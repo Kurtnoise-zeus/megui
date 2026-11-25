@@ -139,7 +139,14 @@ namespace MeGUI.core.details.audio
             // the audio processing options are in an expander, at the top of the page
             MeGUI.core.gui.SettingsCard processing = d.Card();
             processing.Margin = new Padding(0, d.S(12), 0, d.S(3));
-            processing.AddExpanderHeader("Audio processing", null, true);
+            bool open = MainForm.Instance != null && MainForm.Instance.Settings.AudioProcessingExpanded;
+            processing.AddExpanderHeader("Audio processing", null, open);
+            // the state of the expander is remembered (closed by default)
+            processing.ExpandedChanged += delegate
+            {
+                if (MainForm.Instance != null)
+                    MainForm.Instance.Settings.AudioProcessingExpanded = processing.Expanded;
+            };
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(primaryDecoding, 240));
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(BesweetChannelsLabel.Text), null, d.Wide(cbDownmixMode, 240));
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(lbSampleRate.Text), null, d.Wide(cbSampleRate, 240));
