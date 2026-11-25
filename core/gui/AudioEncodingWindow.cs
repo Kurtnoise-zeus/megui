@@ -48,6 +48,11 @@ namespace MeGUI.core.gui
             {
                 this.DialogResult = DialogResult.OK;
             };
+
+            // Windows 11 settings look: the controls of the tab in cards, the update button in the footer
+            ModernDialog d = new ModernDialog(this);
+            audioEncodingTab1.AddCards(d);
+            d.Finish(null, 700, audioEncodingTab1.QueueButton);
         }
     }
 }

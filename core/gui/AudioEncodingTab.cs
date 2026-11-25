@@ -60,6 +60,30 @@ namespace MeGUI.core.gui
             }
         }
 
+        /// <summary>the queue (or update) button, for the footer of a window which shows the tab as cards</summary>
+        internal Button QueueButton
+        {
+            get { return queueAudioButton; }
+        }
+
+        /// <summary>
+        /// Windows 11 settings look: moves the controls of the tab into the cards of a window (see ModernDialog).
+        /// The tab itself is then only the owner of the controls: names, events and the properties are unchanged.
+        /// </summary>
+        internal void AddCards(ModernDialog d)
+        {
+            d.Section("Files");
+            SettingsCard files = d.Card();
+            files.AddLabelRow(audioInputLabel, null, d.Bar(audioInput, 420));
+            files.AddLabelRow(label1, null, d.Bar(cuts, 420));
+            files.AddLabelRow(audioOutputLabel, null, d.Bar(audioOutput, 420));
+            d.Section("Encoding");
+            SettingsCard enc = d.Card();
+            enc.AddLabelRow(label4, null, d.Wide(audioProfile, 420));
+            enc.AddLabelRow(audioContainerLabel, null, d.Wide(audioContainer, 150));
+            enc.AddRow("Delay (ms)", null, d.Wide(delay, 110));
+        }
+
         public AudioEncoderProvider AudioEncoderProvider
         {
             get { return audioEncoderProvider; }

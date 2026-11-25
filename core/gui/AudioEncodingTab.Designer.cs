@@ -52,10 +52,10 @@ namespace MeGUI.core.gui
             this.label1 = new System.Windows.Forms.Label();
             this.audioContainer = new System.Windows.Forms.ComboBox();
             this.audioContainerLabel = new System.Windows.Forms.Label();
-            this.queueAudioButton = new System.Windows.Forms.Button();
+            this.queueAudioButton = new MeGUI.core.gui.RoundedButton();
             this.audioInputLabel = new System.Windows.Forms.Label();
             this.audioOutputLabel = new System.Windows.Forms.Label();
-            this.deleteAudioButton = new System.Windows.Forms.Button();
+            this.deleteAudioButton = new MeGUI.core.gui.RoundedButton();
             this.label2 = new System.Windows.Forms.Label();
             this.delay = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
@@ -316,10 +316,10 @@ namespace MeGUI.core.gui
         private FileBar audioInput;
         private System.Windows.Forms.ComboBox audioContainer;
         private System.Windows.Forms.Label audioContainerLabel;
-        private System.Windows.Forms.Button queueAudioButton;
+        private MeGUI.core.gui.RoundedButton queueAudioButton;
         private System.Windows.Forms.Label audioInputLabel;
         private System.Windows.Forms.Label audioOutputLabel;
-        private System.Windows.Forms.Button deleteAudioButton;
+        private MeGUI.core.gui.RoundedButton deleteAudioButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown delay;
         private System.Windows.Forms.Label label3;
