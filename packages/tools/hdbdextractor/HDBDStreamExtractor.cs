@@ -36,9 +36,50 @@ namespace MeGUI.packages.tools.hdbdextractor
         private Eac3toInfo _oEac3toInfo;
         private List<string> input = new List<string>();
 
+        /// <summary>
+        /// Windows 11 settings look (see ModernDialog). The controls are only moved: names and events are unchanged.
+        /// The menu and the status bar stay at the top and bottom of the window.
+        /// </summary>
+        private void BuildModernLayout()
+        {
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
+            d.Section("Input");
+            MeGUI.core.gui.SettingsCard input1 = d.Radios(200,
+                MeGUI.core.gui.ModernDialog.R(FolderSelection),
+                MeGUI.core.gui.ModernDialog.R(FileSelection));
+            input1.AddRow("Input", null, d.Wide(FolderInputTextBox, 360), d.Btn(FolderInputSourceButton));
+            d.Section("Output");
+            MeGUI.core.gui.SettingsCard out1 = d.Card();
+            out1.AddRow("Output folder", null, d.Wide(FolderOutputTextBox, 360), d.Btn(FolderOutputSourceButton));
+            d.Section("Feature(s)");
+            FeatureDataGridView.Dock = DockStyle.None;
+            d.Block(FeatureDataGridView, 700, 150, d.Card());
+            d.Section("Stream(s)");
+            StreamDataGridView.Dock = DockStyle.None;
+            d.Block(StreamDataGridView, 700, 240, d.Card());
+            d.Section("Options");
+            MeGUI.core.gui.SettingsCard opt = d.Card();
+            closeOnQueue.Text = "Close the window after queueing";
+            closeOnQueue.AutoSize = false;
+            closeOnQueue.Size = new System.Drawing.Size(d.S(96), d.S(26));
+            opt.AddToggle(closeOnQueue, null);
+            Eac3toLinkLabel.AutoSize = true;
+            opt.AddRow("Extraction tool", null, Eac3toLinkLabel);
+            d.Btn(HelpButton2);
+            d.Finish(HelpButton2, 800, QueueButton, CancelButton2);
+            // the menu and the status bar stay outside of the footer
+            StatusStrip.Dock = DockStyle.Bottom;
+            Controls.Add(StatusStrip);
+            menuStrip1.Dock = DockStyle.Top;
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
+            ClientSize = new System.Drawing.Size(ClientSize.Width, ClientSize.Height + StatusStrip.Height + menuStrip1.Height);
+        }
+
         public HdBdStreamExtractor()
         {
             InitializeComponent();
+            BuildModernLayout();
 
             FeatureDataGridView.RowTemplate.Height = MainForm.Instance.Settings.DPIRescale(22);
             FeatureDataGridView.ColumnHeadersHeight = MainForm.Instance.Settings.DPIRescale(23);
