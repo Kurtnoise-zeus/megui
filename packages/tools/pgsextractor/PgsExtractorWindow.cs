@@ -86,63 +86,33 @@ namespace MeGUI.packages.tools.pgsextractor
 
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-
-            this.AutoScaleDimensions = new SizeF(96F, 96F);
-            this.AutoScaleMode = AutoScaleMode.Dpi;
-            this.ClientSize = new Size(640, 632);
-            this.MinimumSize = new Size(560, 590);
+            // Windows 11 settings look (see ModernDialog): cards in a resizable page, buttons in the footer
+            this.Text = "PGS Subtitle Extractor (Blu-ray)";
+            this.StartPosition = FormStartPosition.CenterParent;
             this.FormClosed += new FormClosedEventHandler(PgsExtractorWindow_FormClosed);
             this.AllowDrop = true;
             this.DragEnter += new DragEventHandler(OnDragEnter);
             this.DragDrop += new DragEventHandler(OnDragDrop);
-            this.Text = "PGS Subtitle Extractor (Blu-ray)";
-            this.StartPosition = FormStartPosition.CenterParent;
 
-            Label lblInput = new Label();
-            lblInput.Text = "Blu-ray folder, playlist (.mpls) or M2TS file(s) (drag && drop is supported):";
-            lblInput.AutoSize = true;
-            lblInput.Location = new Point(12, 12);
+            MeGUI.core.gui.ModernDialog d = new MeGUI.core.gui.ModernDialog(this);
 
             txtInput = new TextBox();
             txtInput.ReadOnly = true;
-            txtInput.Location = new Point(12, 32);
-            txtInput.Size = new Size(392, 23);
-            txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtInput.AllowDrop = true;
             txtInput.DragEnter += new DragEventHandler(OnDragEnter);
             txtInput.DragDrop += new DragEventHandler(OnDragDrop);
 
-            btnFolder = new Button();
+            btnFolder = new MeGUI.core.gui.RoundedButton();
             btnFolder.Text = "Folder...";
-            btnFolder.Location = new Point(410, 31);
-            btnFolder.Size = new Size(100, 25);
-            btnFolder.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnFolder.Click += new EventHandler(btnFolder_Click);
 
-            btnFiles = new Button();
+            btnFiles = new MeGUI.core.gui.RoundedButton();
             btnFiles.Text = "File(s)...";
-            btnFiles.Location = new Point(516, 31);
-            btnFiles.Size = new Size(112, 25);
-            btnFiles.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnFiles.Click += new EventHandler(btnFiles_Click);
-
-            Label lblPlaylist = new Label();
-            lblPlaylist.Text = "Playlist:";
-            lblPlaylist.AutoSize = true;
-            lblPlaylist.Location = new Point(12, 66);
 
             cmbPlaylist = new ComboBox();
             cmbPlaylist.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbPlaylist.Location = new Point(12, 86);
-            cmbPlaylist.Size = new Size(616, 23);
-            cmbPlaylist.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbPlaylist.SelectedIndexChanged += new EventHandler(cmbPlaylist_SelectedIndexChanged);
-
-            Label lblTracks = new Label();
-            lblTracks.Text = "PGS subtitle tracks to extract:";
-            lblTracks.AutoSize = true;
-            lblTracks.Location = new Point(12, 120);
 
             lvTracks = new ListView();
             lvTracks.View = View.Details;
@@ -150,157 +120,110 @@ namespace MeGUI.packages.tools.pgsextractor
             lvTracks.FullRowSelect = true;
             lvTracks.GridLines = true;
             lvTracks.HideSelection = false;
-            lvTracks.Location = new Point(12, 140);
-            lvTracks.Size = new Size(616, 150);
-            lvTracks.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lvTracks.AllowDrop = true;
             lvTracks.MultiSelect = false;
             lvTracks.SelectedIndexChanged += new EventHandler(lvTracks_SelectedIndexChanged);
             lvTracks.DragEnter += new DragEventHandler(OnDragEnter);
             lvTracks.DragDrop += new DragEventHandler(OnDragDrop);
-            lvTracks.Columns.Add("#", 40);
-            lvTracks.Columns.Add("PID", 70);
-            lvTracks.Columns.Add("Language", 80);
-            lvTracks.Columns.Add("Output file", 400);
+            lvTracks.Columns.Add("#", d.S(40));
+            lvTracks.Columns.Add("PID", d.S(70));
+            lvTracks.Columns.Add("Language", d.S(90));
+            lvTracks.Columns.Add("Output file", d.S(400));
 
-            Label lblOutput = new Label();
-            lblOutput.Text = "Output folder:";
-            lblOutput.AutoSize = true;
-            GroupBox grpColors = new GroupBox();
-            grpColors.Text = "Subtitle colors";
-            grpColors.Location = new Point(12, 296);
-            grpColors.Size = new Size(616, 200);
-            grpColors.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtOutput = new TextBox();
 
-            chkColors = new CheckBox();
+            btnOutput = new MeGUI.core.gui.RoundedButton();
+            btnOutput.Text = "Browse...";
+            btnOutput.Click += new EventHandler(btnOutput_Click);
+
+            chkClose = new MeGUI.core.gui.ToggleSwitch();
+            chkClose.Text = "Close this window after queuing the job";
+            chkClose.Checked = true;
+
+            chkColors = new MeGUI.core.gui.ToggleSwitch();
             chkColors.Text = "Change the colors";
-            chkColors.AutoSize = true;
-            chkColors.Location = new Point(12, 22);
             chkColors.CheckedChanged += new EventHandler(chkColors_CheckedChanged);
 
-            Label lblText = new Label();
-            lblText.Text = "Text:";
-            lblText.AutoSize = true;
-            lblText.Location = new Point(190, 25);
-
-            btnTextColor = CreateColorButton(Color.White, new Point(232, 19));
-
-            Label lblOutline = new Label();
-            lblOutline.Text = "Outline:";
-            lblOutline.AutoSize = true;
-            lblOutline.Location = new Point(332, 25);
-
-            btnOutlineColor = CreateColorButton(Color.Black, new Point(386, 19));
-
-            Label lblColorsNote = new Label();
-            lblColorsNote.Text = "PGS subtitles are bitmaps: only their palette (text / outline colors) can be changed.";
-            lblColorsNote.AutoSize = true;
-            lblColorsNote.ForeColor = SystemColors.GrayText;
-            lblColorsNote.Location = new Point(12, 46);
-
-            grpColors.Controls.Add(chkColors);
-            grpColors.Controls.Add(lblText);
-            grpColors.Controls.Add(btnTextColor);
-            grpColors.Controls.Add(lblOutline);
-            grpColors.Controls.Add(btnOutlineColor);
-            grpColors.Controls.Add(lblColorsNote);
+            btnTextColor = CreateColorButton(Color.White, new Point(0, 0));
+            btnOutlineColor = CreateColorButton(Color.Black, new Point(0, 0));
 
             Label lblBefore = new Label();
             lblBefore.Text = "Before (first subtitle of the selected track):";
             lblBefore.AutoSize = true;
-            lblBefore.Location = new Point(12, 68);
+            lblBefore.Location = new Point(0, 0);
 
             Label lblAfter = new Label();
             lblAfter.Text = "After:";
             lblAfter.AutoSize = true;
-            lblAfter.Location = new Point(308, 68);
+            lblAfter.Location = new Point(d.S(316), 0);
 
-            picBefore = CreatePreviewBox(new Point(12, 86));
-            picAfter = CreatePreviewBox(new Point(308, 86));
+            picBefore = CreatePreviewBox(new Point(0, d.S(26)), d);
+            picAfter = CreatePreviewBox(new Point(d.S(316), d.S(26)), d);
 
             lblPreviewStatus = new Label();
             lblPreviewStatus.AutoSize = true;
             lblPreviewStatus.ForeColor = SystemColors.GrayText;
-            lblPreviewStatus.Location = new Point(12, 180);
+            lblPreviewStatus.Location = new Point(0, d.S(118));
 
-            chkLightBackground = new CheckBox();
+            chkLightBackground = new MeGUI.core.gui.ToggleSwitch();
             chkLightBackground.Text = "Light background";
-            chkLightBackground.AutoSize = true;
-            chkLightBackground.Location = new Point(490, 177);
             chkLightBackground.CheckedChanged += new EventHandler(chkLightBackground_CheckedChanged);
             UpdatePreviewBackground();
 
-            grpColors.Controls.Add(lblBefore);
-            grpColors.Controls.Add(lblAfter);
-            grpColors.Controls.Add(picBefore);
-            grpColors.Controls.Add(picAfter);
-            grpColors.Controls.Add(lblPreviewStatus);
-            grpColors.Controls.Add(chkLightBackground);
-            UpdateColorControls();
+            Panel preview = new Panel();
+            preview.Size = new Size(d.S(620), d.S(142));
+            preview.Controls.Add(lblBefore);
+            preview.Controls.Add(lblAfter);
+            preview.Controls.Add(picBefore);
+            preview.Controls.Add(picAfter);
+            preview.Controls.Add(lblPreviewStatus);
 
-            lblOutput.Location = new Point(12, 506);
-            lblOutput.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-
-            txtOutput = new TextBox();
-            txtOutput.Location = new Point(12, 526);
-            txtOutput.Size = new Size(498, 23);
-            txtOutput.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-
-            btnOutput = new Button();
-            btnOutput.Text = "Browse...";
-            btnOutput.Location = new Point(516, 525);
-            btnOutput.Size = new Size(112, 25);
-            btnOutput.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnOutput.Click += new EventHandler(btnOutput_Click);
-
-            chkClose = new CheckBox();
-            chkClose.Text = "Close this window after queuing the job";
-            chkClose.AutoSize = true;
-            chkClose.Checked = true;
-            chkClose.Location = new Point(12, 566);
-            chkClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-
-            btnQueue = new Button();
+            btnQueue = new MeGUI.core.gui.RoundedButton();
             btnQueue.Text = "Queue";
-            btnQueue.Location = new Point(440, 590);
-            btnQueue.Size = new Size(90, 28);
-            btnQueue.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnQueue.Click += new EventHandler(btnQueue_Click);
 
-            btnClose = new Button();
+            btnClose = new MeGUI.core.gui.RoundedButton();
             btnClose.Text = "Close";
             btnClose.DialogResult = DialogResult.Cancel;
-            btnClose.Location = new Point(538, 590);
-            btnClose.Size = new Size(90, 28);
-            btnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnClose.Click += new EventHandler(btnClose_Click);
 
+            // layout
+            d.Section("Source");
+            MeGUI.core.gui.SettingsCard c1 = d.Card();
+            c1.AddRow("Blu-ray folder, playlist or M2TS file(s)", "Drag and drop is supported",
+                new MeGUI.core.gui.RoundedBox(txtInput, d.S(260), d.S(32)), d.Btn(btnFolder), d.Btn(btnFiles));
+            c1.AddRow("Playlist", null, d.Wide(cmbPlaylist, 420));
+            d.Section("PGS subtitle tracks to extract");
+            d.Block(lvTracks, 620, 170, d.Card());
+            d.Section("Subtitle colors");
+            MeGUI.core.gui.SettingsCard c2 = d.Card();
+            chkColors.AutoSize = false;
+            chkColors.Size = new Size(d.S(96), d.S(26));
+            c2.AddToggle(chkColors, "PGS subtitles are bitmaps: only their palette (text / outline colors) can be changed.");
+            btnTextColor.Size = new Size(d.S(110), d.S(32));
+            btnOutlineColor.Size = new Size(d.S(110), d.S(32));
+            c2.AddRow("Text color", null, btnTextColor);
+            c2.AddRow("Outline color", null, btnOutlineColor);
+            c2.AddWide(null, null, preview);
+            chkLightBackground.AutoSize = false;
+            chkLightBackground.Size = new Size(d.S(96), d.S(26));
+            c2.AddToggle(chkLightBackground, null);
+            d.Section("Output");
+            MeGUI.core.gui.SettingsCard c3 = d.Card();
+            c3.AddRow("Output folder", null, new MeGUI.core.gui.RoundedBox(txtOutput, d.S(300), d.S(32)), d.Btn(btnOutput));
+            chkClose.AutoSize = false;
+            chkClose.Size = new Size(d.S(96), d.S(26));
+            c3.AddToggle(chkClose, null);
+
+            d.Finish(null, 700, btnQueue, btnClose);
             this.CancelButton = btnClose;
-
-            this.Controls.Add(lblInput);
-            this.Controls.Add(txtInput);
-            this.Controls.Add(btnFolder);
-            this.Controls.Add(btnFiles);
-            this.Controls.Add(lblPlaylist);
-            this.Controls.Add(cmbPlaylist);
-            this.Controls.Add(lblTracks);
-            this.Controls.Add(lvTracks);
-            this.Controls.Add(grpColors);
-            this.Controls.Add(lblOutput);
-            this.Controls.Add(txtOutput);
-            this.Controls.Add(btnOutput);
-            this.Controls.Add(chkClose);
-            this.Controls.Add(btnQueue);
-            this.Controls.Add(btnClose);
-
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            UpdateColorControls();
         }
 
         #region colors
         private Button CreateColorButton(Color color, Point location)
         {
-            Button button = new Button();
+            Button button = new MeGUI.core.gui.RoundedButton();
             button.Location = location;
             button.Size = new Size(78, 25);
             button.FlatStyle = FlatStyle.Standard;
@@ -352,11 +275,11 @@ namespace MeGUI.packages.tools.pgsextractor
         #endregion
 
         #region preview
-        private PictureBox CreatePreviewBox(Point location)
+        private PictureBox CreatePreviewBox(Point location, MeGUI.core.gui.ModernDialog d)
         {
             PictureBox box = new PictureBox();
             box.Location = location;
-            box.Size = new Size(296, 86);
+            box.Size = new Size(d.S(300), d.S(86));
             box.SizeMode = PictureBoxSizeMode.Zoom;
             box.BorderStyle = BorderStyle.FixedSingle;
             return box;
