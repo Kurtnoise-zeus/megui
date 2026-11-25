@@ -283,6 +283,11 @@ namespace MeGUI.core.gui
         private readonly float scale;
         private Font descriptionFont;
 
+        // expander: the first row is a header which shows or hides the rows under it
+        private Row headerRow;
+        private bool expanded = true;
+        private readonly List<Control> untabbed = new List<Control>();
+
         public SettingsCard(float scale)
         {
             this.scale = scale;
@@ -305,6 +310,86 @@ namespace MeGUI.core.gui
                 right.AddRange(leftOfSwitch);
             right.Add(toggle);
             return AddRow(toggle.Text, description, right.ToArray());
+        }
+
+        /// <summary>
+        /// makes the card an expander: call it before the other rows. The header row (title, description and a chevron)
+        /// shows or hides the rows under it when it is clicked.
+        /// </summary>
+        public SettingsCard AddExpanderHeader(string title, string description, bool expanded)
+        {
+            Row row = new Row();
+            row.Title = title;
+            row.Description = description;
+            row.HeaderHeight = string.IsNullOrEmpty(description) ? S(56) : S(64);
+            row.Height = row.HeaderHeight;
+            headerRow = row;
+            this.expanded = expanded;
+            return Add(row);
+        }
+
+        /// <summary>for an expander: the rows under the header are shown</summary>
+        public bool Expanded
+        {
+            get { return expanded; }
+            set
+            {
+                if (expanded == value)
+                    return;
+                expanded = value;
+                UpdateExpanded();
+            }
+        }
+
+        // the controls of the hidden rows are outside of the card (clipped): no tab stop on them either
+        private void UpdateExpanded()
+        {
+            if (headerRow != null)
+            {
+                if (expanded)
+                {
+                    foreach (Control c in untabbed)
+                        c.TabStop = true;
+                    untabbed.Clear();
+                }
+                else
+                {
+                    foreach (Row r in rows)
+                    {
+                        if (r == headerRow)
+                            continue;
+                        List<Control> all = new List<Control>();
+                        if (r.Left != null) all.Add(r.Left);
+                        all.AddRange(r.Right);
+                        if (r.Wide != null) all.Add(r.Wide);
+                        all.AddRange(r.Aside);
+                        foreach (Control c in all)
+                        {
+                            if (c.TabStop)
+                            {
+                                c.TabStop = false;
+                                untabbed.Add(c);
+                            }
+                        }
+                    }
+                }
+            }
+            PerformLayout();
+            Invalidate();
+        }
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            if (headerRow != null && e.Button == MouseButtons.Left && e.Y >= headerRow.Top && e.Y < headerRow.Top + headerRow.HeaderHeight)
+                Expanded = !expanded;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            bool overHeader = headerRow != null && e.Y >= headerRow.Top && e.Y < headerRow.Top + headerRow.HeaderHeight;
+            Cursor = overHeader ? Cursors.Hand : Cursors.Default;
         }
 
         /// <summary>a row with a title and controls on the right (listed from left to right)</summary>
@@ -408,6 +493,17 @@ namespace MeGUI.core.gui
             }
 
             ComputeTops();
+            if (headerRow != null && !expanded && row != headerRow)
+            {
+                foreach (Control c in controls)
+                {
+                    if (c.TabStop)
+                    {
+                        c.TabStop = false;
+                        untabbed.Add(c);
+                    }
+                }
+            }
             PerformLayout();
             return this;
         }
@@ -415,6 +511,8 @@ namespace MeGUI.core.gui
         // a row whose title label is hidden by the code takes no room
         private bool Collapsed(Row row)
         {
+            if (headerRow != null && !expanded && row != headerRow)
+                return true;
             if (row.TitleLabel != null)
                 return !row.TitleLabel.Visible;
             // a big control without a title which the code hides (a track bar...): no room while it is hidden
@@ -567,6 +665,20 @@ namespace MeGUI.core.gui
                         g.DrawLine(sep, 1, row.Top, Width - 2, row.Top);
                 }
                 first = false;
+
+                if (row == headerRow)
+                {
+                    // chevron: up when the rows are shown, down when they are hidden
+                    int cx = Width - S(28);
+                    int cy = row.Top + row.HeaderHeight / 2;
+                    int w = S(5);
+                    int h = S(3);
+                    int sign = expanded ? -1 : 1;
+                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    using (Pen chevron = new Pen(p.Text, Math.Max(1.5f, S(2) * 0.75f)))
+                        g.DrawLines(chevron, new Point[] { new Point(cx - w, cy - sign * h), new Point(cx, cy + sign * h), new Point(cx + w, cy - sign * h) });
+                    g.SmoothingMode = SmoothingMode.Default;
+                }
 
                 string title = row.TitleLabel != null ? row.TitleLabel.Text : row.Title;
                 Color titleColor = Enabled && (row.TitleLabel == null || row.TitleLabel.Enabled) ? p.Text : p.TextDim;

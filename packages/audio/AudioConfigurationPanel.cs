@@ -136,20 +136,23 @@ namespace MeGUI.core.details.audio
             MeGUI.core.gui.ModernDialog d = modern;
 
             MeGUI.core.gui.SettingsPage general = d.CurrentPage;
-            encoderSection = d.Section("Encoder");
-            encoderCard = d.Card();
-            d.Section("Audio processing");
+            // the audio processing options are in an expander, at the top of the page
             MeGUI.core.gui.SettingsCard processing = d.Card();
+            processing.Margin = new Padding(0, d.S(12), 0, d.S(3));
+            processing.AddExpanderHeader("Audio processing", null, true);
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(label1.Text), null, d.Wide(primaryDecoding, 240));
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(BesweetChannelsLabel.Text), null, d.Wide(cbDownmixMode, 240));
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(lbSampleRate.Text), null, d.Wide(cbSampleRate, 240));
             processing.AddRow(MeGUI.core.gui.ModernDialog.Cap(lbTimeModification.Text), null, d.Wide(cbTimeModification, 300));
             autoGain.AutoSize = false;
             autoGain.Size = new Size(d.S(96), d.S(26));
-            normalize.Dock = DockStyle.None;
-            normalize.Width = d.S(100);
-            processing.AddToggle(autoGain, null, normalize);
+            // the numeric box is framed (a bare NumericUpDown was drawn empty in the row)
+            MeGUI.core.gui.RoundedBox normalizeBox = new MeGUI.core.gui.RoundedBox(normalize, d.S(100), d.S(32));
+            processing.AddToggle(autoGain, null, normalizeBox);
             d.ToggleIn(processing, applyDRC, null);
+
+            encoderSection = d.Section("Encoder");
+            encoderCard = d.Card();
 
             MeGUI.core.gui.SettingsPage extra = d.BeginPage();
             d.Section("Custom command line");
