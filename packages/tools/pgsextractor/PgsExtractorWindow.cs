@@ -57,18 +57,18 @@ namespace MeGUI.packages.tools.pgsextractor
         private TextBox txtOutput;
         private ComboBox cmbPlaylist;
         private ListView lvTracks;
-        private CheckBox chkClose;
+        private MeGUI.core.gui.ToggleSwitch chkClose;
         private Button btnFolder;
         private Button btnFiles;
         private Button btnOutput;
         private Button btnQueue;
-        private CheckBox chkColors;
+        private MeGUI.core.gui.ToggleSwitch chkColors;
         private Button btnTextColor;
         private Button btnOutlineColor;
         private Button btnClose;
         private PictureBox picBefore;
         private PictureBox picAfter;
-        private CheckBox chkLightBackground;
+        private MeGUI.core.gui.ToggleSwitch chkLightBackground;
         private Label lblPreviewStatus;
 
         // first subtitle image of the selected track (palette indexes), rendered with the original / the new colors
